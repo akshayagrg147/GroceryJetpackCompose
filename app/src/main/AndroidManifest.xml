@@ -14,10 +14,20 @@
         android:theme="@style/Theme.GroceryApp"
         tools:targetApi="31">
         <activity
+            android:name=".Home.ui.OrderDetailScreen"
+            android:exported="false"
+            android:label="@string/title_activity_order_detail_screen"
+            android:theme="@style/Theme.GroceryApp" />
+        <activity
+            android:name=".Home.ui.OrdersActivity"
+            android:exported="false"
+            android:label="@string/title_activity_orders"
+            android:theme="@style/Theme.GroceryApp" />
+        <activity
             android:name=".Home.ui.HomeActivity"
             android:exported="true"
             android:label="@string/title_activity_home_screen"
-            android:theme="@style/Theme.GroceryApp" >
+            android:theme="@style/Theme.GroceryApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,9 +38,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.GroceryApp">
-
-        </activity>
+            android:theme="@style/Theme.GroceryApp"></activity>
     </application>
 
 </manifest>

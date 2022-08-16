@@ -3,4 +3,6 @@
     <string name="name">enter your name</string>
     <string name="phone_number">Enter Phone Number</string>
     <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="title_activity_orders">OrdersActivity</string>
+    <string name="title_activity_order_detail_screen">OrderDetailScreen</string>
 </resources>

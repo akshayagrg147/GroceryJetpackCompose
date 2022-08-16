@@ -7,6 +7,8 @@ sealed class ScreenRoute(val route: String) {
     object LocateMeScreen:ScreenRoute("locateMeScreen")
 
     object HomeScreen:ScreenRoute("homescreen")
+    object OrderHistory:ScreenRoute("OrderHistory")
+    object ItemDetailScreen:ScreenRoute("ItemDetailScreen")
 
 
 }

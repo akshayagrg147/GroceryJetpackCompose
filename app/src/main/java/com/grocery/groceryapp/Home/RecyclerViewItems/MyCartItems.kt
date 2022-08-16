@@ -4,6 +4,7 @@ import android.graphics.drawable.Icon
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -133,7 +134,9 @@ fun ItemEachRow() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row {
-                        CommonButton(icon = R.drawable.minus)
+                        CommonButton(icon = R.drawable.minus){
+
+                        }
                         Text16_700(
                             text = "1",
                             modifier = Modifier
@@ -141,7 +144,9 @@ fun ItemEachRow() {
                                 .padding(horizontal = 20.dp),
                             color = Black
                         )
-                        CommonButton(icon = R.drawable.add)
+                        CommonButton(icon = R.drawable.add){
+
+                        }
                     }
                     Text14_400(
                         text = "$4.99",
@@ -168,13 +173,13 @@ fun ItemEachRow() {
 
 @Composable
 fun CommonButton(
-    icon: Int
+    icon: Int,call:()->Unit
 ) {
 
     Card(
         elevation = 0.dp,
         shape = RoundedCornerShape(17.dp),
-        border = BorderStroke(1.dp, strokeColor)
+        border = BorderStroke(1.dp, strokeColor), modifier = Modifier.clickable { call.invoke() }
     ) {
         Box(modifier = Modifier.background(White), contentAlignment = Center) {
             androidx.compose.material.Icon(

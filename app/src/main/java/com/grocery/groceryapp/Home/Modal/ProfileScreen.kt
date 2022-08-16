@@ -1,27 +1,27 @@
 package com.grocery.groceryapp.Home.Modal
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.grocery.groceryapp.Home.ui.HomeActivity
+import com.grocery.groceryapp.Home.ui.OrdersActivity
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.Utils.Text20_700
 import com.grocery.groceryapp.Utils.Text24_700
 import com.grocery.groceryapp.ui.theme.blackColor
-import com.grocery.groceryapp.ui.theme.redColor
 
 @Composable
-fun profileScreen(){
+fun profileScreen( context: HomeActivity){
     Column() {
         Row(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, top = 20.dp)) {
             Image(
@@ -47,7 +47,14 @@ fun profileScreen(){
                 .height(1.dp)
                 .background(Color.Gray).padding(start = 5.dp, end = 20.dp)
         )
-        Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp),Arrangement.SpaceBetween) {
+        Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp).clickable {
+            context.startActivity(
+                Intent(
+                    context,
+                    OrdersActivity::class.java
+                )
+            )
+        },Arrangement.SpaceBetween) {
             Row(){
                 Icon(
                     painter = painterResource(id =R.drawable.ic_orders_icon)

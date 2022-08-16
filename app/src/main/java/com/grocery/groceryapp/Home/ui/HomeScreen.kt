@@ -31,7 +31,7 @@ import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.ui.theme.*
 
 @Composable
-fun homescreen() {
+fun homescreen(context: Context) {
     var search= remember {
         mutableStateOf("")
     }
@@ -142,7 +142,7 @@ fun homescreen() {
 
                   items(list) { data ->
                      // Column(modifier = Modifier.padding(10.dp)) {
-                          offerItems()
+                          offerItems(context)
                       //}
 
 

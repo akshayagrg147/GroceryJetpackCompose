@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.grocery.groceryapp.BottomNavigation.NavigationGraph
-import com.grocery.groceryapp.Spash.homescreenNavigation
 import com.grocery.groceryapp.ui.theme.GroceryAppTheme
 
 class HomeActivity : ComponentActivity() {
@@ -25,7 +24,7 @@ class HomeActivity : ComponentActivity() {
                     bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
                 ) {
 
-                    NavigationGraph(navController = navController)
+                    NavigationGraph(navController = navController,this@HomeActivity)
                 }
             }
         }

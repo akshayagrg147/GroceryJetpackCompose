@@ -1,19 +1,21 @@
 package com.grocery.groceryapp.BottomNavigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.grocery.groceryapp.Home.Modal.profileScreen
 import com.grocery.groceryapp.Home.ui.CartScreen
+import com.grocery.groceryapp.Home.ui.HomeActivity
 import com.grocery.groceryapp.Home.ui.SearchScreen
 import com.grocery.groceryapp.Home.ui.homescreen
 
 @Composable
-fun NavigationGraph(navController: NavHostController) {
+fun NavigationGraph(navController: NavHostController, context: HomeActivity) {
     NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
         composable(BottomNavItem.Home.screen_route) {
-            homescreen()
+            homescreen(context)
         }
         composable(BottomNavItem.MyNetwork.screen_route) {
             SearchScreen()
@@ -25,7 +27,7 @@ fun NavigationGraph(navController: NavHostController) {
             NotificationScreen()
         }
         composable(BottomNavItem.Jobs.screen_route) {
-            profileScreen()
+            profileScreen(context)
         }
     }
 }

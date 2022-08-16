@@ -3,13 +3,12 @@ package com.grocery.groceryapp.Utils
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -74,6 +73,25 @@ fun CommonButton(
         }
     }
 
+}
+@Composable
+fun CommonHeader(text: String, onClick: () -> Unit = {}) {
+    Row {
+        IconButton(
+            onClick = { onClick() }
+        ) {
+            Icon(
+                Icons.Default.ArrowBack,
+                contentDescription = "",
+            )
+        }
+        Text24_700(
+            text = text,
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .align(Alignment.CenterVertically)
+        )
+    }
 }
 @Composable
 fun CommonTextField(

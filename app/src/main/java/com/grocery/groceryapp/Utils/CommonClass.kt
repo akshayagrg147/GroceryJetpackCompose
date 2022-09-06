@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.Utils
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,11 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.ui.theme.*
+import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 
 @Composable
 fun Text14_400(text: String, color: Color = bodyTextColor, modifier: Modifier = Modifier) {
@@ -49,13 +51,13 @@ fun Text18_600(text: String, color: Color = headingColor, modifier: Modifier = M
 @Composable
 fun CommonButton(
     text: String,
+    modifier: Modifier,
     color: Color = Color.White,
     backgroundColor: Color = titleColor,
     onClick: () -> Unit = {}
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         shape = RoundedCornerShape(8.dp)
     ) {
         Box(
@@ -69,6 +71,27 @@ fun CommonButton(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .padding(vertical = 15.dp)
+            )
+        }
+    }
+
+}
+@Composable
+fun CommonButton(
+    icon: Int = 0 ,call:()->Unit
+) {
+
+    Card(
+        elevation = 0.dp,
+        shape = RoundedCornerShape(17.dp),
+        border = BorderStroke(1.dp, strokeColor), modifier = Modifier.clickable { call.invoke() }
+    ) {
+        Box(modifier = Modifier.background(Color.White), contentAlignment = Alignment.Center) {
+            androidx.compose.material.Icon(
+                painter = painterResource(id = icon),
+                contentDescription = "",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(10.dp)
             )
         }
     }
@@ -132,6 +155,9 @@ fun CommonTextField(
             .fillMaxWidth()
             .clickable { onClick() },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        enabled = enable
+        enabled = enable,
+        textStyle = TextStyle(
+            color = Color.Black
+        )
     )
 }

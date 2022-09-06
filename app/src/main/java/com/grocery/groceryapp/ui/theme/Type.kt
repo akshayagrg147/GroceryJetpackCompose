@@ -1,4 +1,4 @@
-package com.grocery.groceryapp.ui.theme
+package com.grocery.groceryapp.features.Home.ui.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.graphics.Color

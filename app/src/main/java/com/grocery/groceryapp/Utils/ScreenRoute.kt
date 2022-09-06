@@ -9,6 +9,4 @@ sealed class ScreenRoute(val route: String) {
     object HomeScreen:ScreenRoute("homescreen")
     object OrderHistory:ScreenRoute("OrderHistory")
     object ItemDetailScreen:ScreenRoute("ItemDetailScreen")
-
-
 }

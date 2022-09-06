@@ -4,7 +4,7 @@ package com.grocery.groceryapp.Utils
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.grocery.groceryapp.Spash.Modal.Country
+import com.grocery.groceryapp.features.Spash.domain.Modal.Country
 import java.io.IOException
 
 fun countryList(context: Context): MutableList<Country> {

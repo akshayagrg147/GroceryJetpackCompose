@@ -1,34 +1,32 @@
-package com.grocery.groceryapp
+package com.grocery.groceryapp.features.Home.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.grocery.groceryapp.features.Spash.splashScreenNavigation
+import androidx.navigation.compose.rememberNavController
+import com.grocery.groceryapp.BottomNavigation.NavigationGraph
 import com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterLoginViewModal
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    private val viewModal: RegisterLoginViewModal by viewModels()
+class HomeActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GroceryAppTheme {
+                val navController = rememberNavController()
                 // A surface container using the 'background' color from the theme
-                Surface(
+                Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
                 ) {
-                    splashScreenNavigation(this,viewModal)
+
+                    NavigationGraph(navController = navController,this@HomeActivity)
                 }
             }
         }
@@ -36,14 +34,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
+fun Greeting2(name: String) {
     Text(text = "Hello $name!")
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun DefaultPreview2() {
     GroceryAppTheme {
-        Greeting("Android")
+        Greeting2("Android")
     }
 }

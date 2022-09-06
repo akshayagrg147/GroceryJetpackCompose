@@ -1,15 +1,14 @@
 package com.grocery.groceryapp.BottomNavigation
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.grocery.groceryapp.Home.Modal.profileScreen
-import com.grocery.groceryapp.Home.ui.CartScreen
-import com.grocery.groceryapp.Home.ui.HomeActivity
-import com.grocery.groceryapp.Home.ui.SearchScreen
-import com.grocery.groceryapp.Home.ui.homescreen
+import com.grocery.groceryapp.features.Home.Modal.profileScreen
+import com.grocery.groceryapp.features.Home.ui.CartScreen
+import com.grocery.groceryapp.features.Home.ui.HomeActivity
+import com.grocery.groceryapp.features.Home.ui.SearchScreen
+import com.grocery.groceryapp.features.Home.ui.homescreen
 
 @Composable
 fun NavigationGraph(navController: NavHostController, context: HomeActivity) {

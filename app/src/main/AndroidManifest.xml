@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.grocery.groceryapp">
-
+<uses-permission android:name="android.permission.INTERNET"/>
     <application
+        android:name=".HiltApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -14,31 +15,38 @@
         android:theme="@style/Theme.GroceryApp"
         tools:targetApi="31">
         <activity
-            android:name=".Home.ui.OrderDetailScreen"
-            android:exported="false"
-            android:label="@string/title_activity_order_detail_screen"
-            android:theme="@style/Theme.GroceryApp" />
-        <activity
-            android:name=".Home.ui.OrdersActivity"
-            android:exported="false"
-            android:label="@string/title_activity_orders"
-            android:theme="@style/Theme.GroceryApp" />
-        <activity
-            android:name=".Home.ui.HomeActivity"
+            android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/title_activity_home_screen"
+            android:label="@string/app_name"
             android:theme="@style/Theme.GroceryApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.GroceryApp"></activity>
+            android:name="com.grocery.groceryapp.features.Home.ui.ProductItemsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_product_items"
+            android:theme="@style/Theme.GroceryApp" />
+        <activity
+            android:name="com.grocery.groceryapp.features.Home.ui.OrderDetailScreen"
+            android:exported="false"
+            android:label="@string/title_activity_order_detail_screen"
+            android:theme="@style/Theme.GroceryApp" />
+        <activity
+            android:name="com.grocery.groceryapp.features.Home.ui.OrdersActivity"
+            android:exported="false"
+            android:label="@string/title_activity_orders"
+            android:theme="@style/Theme.GroceryApp" />
+        <activity
+            android:name="com.grocery.groceryapp.features.Home.ui.HomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home_screen"
+            android:theme="@style/Theme.GroceryApp">
+
+        </activity>
+
     </application>
 
 </manifest>

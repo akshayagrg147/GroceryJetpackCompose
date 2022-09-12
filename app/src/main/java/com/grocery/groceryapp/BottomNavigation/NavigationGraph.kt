@@ -23,7 +23,7 @@ fun NavigationGraph(navController: NavHostController, context: HomeActivity) {
             CartScreen()
         }
         composable(BottomNavItem.Notification.screen_route) {
-            NotificationScreen()
+            SearchScreen()
         }
         composable(BottomNavItem.Jobs.screen_route) {
             profileScreen(context)

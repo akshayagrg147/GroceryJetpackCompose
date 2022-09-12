@@ -46,7 +46,9 @@
             android:theme="@style/Theme.GroceryApp">
 
         </activity>
-
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA8voWdO1QktiFZqkqpF8N87Q1l8Yf6AnQ"/>
     </application>
 
 </manifest>

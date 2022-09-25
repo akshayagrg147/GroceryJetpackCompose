@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.grocery.groceryapp">
-<uses-permission android:name="android.permission.INTERNET"/>
+    package="com.grocery.groceryapp" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:name=".HiltApplication"
         android:allowBackup="true"
@@ -13,42 +25,51 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GroceryApp"
-        tools:targetApi="31">
+        tools:targetApi="31" >
         <activity
-            android:name=".MainActivity"
+            android:name=".features.Home.ui.ListItemsActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.GroceryApp">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/title_activity_list_items"
+            android:theme="@style/Theme.GroceryApp" >
+
         </activity>
         <activity
-            android:name="com.grocery.groceryapp.features.Home.ui.ProductItemsActivity"
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GroceryApp" >
+
+        </activity>
+        <activity
+            android:name=".features.Home.ui.ProductItemsActivity"
             android:exported="false"
             android:label="@string/title_activity_product_items"
             android:theme="@style/Theme.GroceryApp" />
         <activity
-            android:name="com.grocery.groceryapp.features.Home.ui.OrderDetailScreen"
+            android:name=".features.Home.ui.screens.OrderDetailScreen"
             android:exported="false"
             android:label="@string/title_activity_order_detail_screen"
             android:theme="@style/Theme.GroceryApp" />
         <activity
-            android:name="com.grocery.groceryapp.features.Home.ui.OrdersActivity"
+            android:name=".features.Home.ui.OrdersActivity"
             android:exported="false"
             android:label="@string/title_activity_orders"
             android:theme="@style/Theme.GroceryApp" />
         <activity
-            android:name="com.grocery.groceryapp.features.Home.ui.HomeActivity"
-            android:exported="false"
+            android:name=".features.Home.ui.HomeActivity"
+            android:exported="true"
             android:label="@string/title_activity_home_screen"
-            android:theme="@style/Theme.GroceryApp">
+            android:theme="@style/Theme.GroceryApp" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA8voWdO1QktiFZqkqpF8N87Q1l8Yf6AnQ"/>
+            android:value="AIzaSyC8DEM92vc794PO4gLq46PCUyPQOnq8RGk" />
     </application>
 
 </manifest>

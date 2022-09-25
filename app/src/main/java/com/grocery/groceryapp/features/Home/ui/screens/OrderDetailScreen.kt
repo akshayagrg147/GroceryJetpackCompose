@@ -10,15 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme
 import com.grocery.groceryapp.features.Spash.ItemScreenNavigation
+import dagger.hilt.android.AndroidEntryPoint
 
-class OrderDetailScreen : ComponentActivity() {
+@AndroidEntryPoint
+class OrderDetailScreen() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            val bundle = intent.extras?.getString("name")
+            val productId = intent.extras?.getString("productId")
+            val productCategory = intent.extras?.getString("ProductCategory")
             GroceryAppTheme(){
                 Surface(color = MaterialTheme.colors.background) {
-                    ItemScreenNavigation(context = this)
+                    ItemScreenNavigation(context = this,productId,productCategory)
                 }
             }
         }

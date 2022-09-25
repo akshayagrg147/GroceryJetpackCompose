@@ -121,26 +121,26 @@ private fun productItems() {
                 )
 
             }
-            LazyColumn(
-                modifier = Modifier
-                    .background(MaterialTheme.colors.background)
-                    .constrainAs(l2) {
-                        top.linkTo(l1.bottom)
-
-                    },
-                contentPadding = PaddingValues(top = 26.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-                val list = mutableListOf<String>("A", "B", "C", "D","E","f")
-                gridItems(
-                    data = list,
-                    columnCount = 2,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) { itemData ->
-                    SellingItems()
-                }
-            }
+//            LazyColumn(
+//                modifier = Modifier
+//                    .background(MaterialTheme.colors.background)
+//                    .constrainAs(l2) {
+//                        top.linkTo(l1.bottom)
+//
+//                    },
+//                contentPadding = PaddingValues(top = 26.dp),
+//                verticalArrangement = Arrangement.spacedBy(8.dp)
+//            ){
+//                val list = mutableListOf<String>("A", "B", "C", "D","E","f")
+//                gridItems(
+//                    data = list,
+//                    columnCount = 2,
+//                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                    modifier = Modifier.padding(horizontal = 16.dp)
+//                ) { itemData ->
+//                    SellingItems(data)
+//                }
+//            }
 
         }
     }

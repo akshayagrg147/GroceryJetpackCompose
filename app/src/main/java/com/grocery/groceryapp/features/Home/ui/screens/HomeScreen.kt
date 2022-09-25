@@ -1,13 +1,14 @@
 package com.grocery.groceryapp.features.Home.ui
 
 import android.content.Context
-import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -24,25 +25,39 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.*
-import com.grocery.groceryapp.features.Home.Navigator.gridItems
-
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.Utils.Text24_700
 import com.grocery.groceryapp.Utils.launchActivity
+import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.screens.OrderDetailScreen
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun homescreen(context: Context) {
+fun homescreen(context: Context,  viewModal: HomeAllProductsViewModal = hiltViewModel()) {
     var search = remember {
         mutableStateOf("")
     }
+    //calling api
+
+    viewModal.callingBestSelling()
+    viewModal.callingExcusiveProducts()
+    viewModal.callingHomeAllProducts()
+    var res= viewModal.exclusiveProductsResponse1.value
+    var all= viewModal.homeAllProductsResponse1.value
+    var best= viewModal.bestsellingProductsResponse1.value
         val pager = rememberPagerState()
     LazyColumn(
         //  verticalArrangement = Arrangement.SpaceBetween,
@@ -153,12 +168,16 @@ fun homescreen(context: Context) {
                     Text14_400(
                         "See all", color = seallcolor, modifier = Modifier
                             .weight(1f)
-                            .padding(top = 5.dp, start = 20.dp).clickable {  context.startActivity(
-                                Intent(
-                                    context,
-                                    ProductItemsActivity::class.java
-                                )
-                            ) }
+                            .padding(top = 5.dp, start = 20.dp)
+                            .clickable {
+                                if (res.statusCode == 200) {
+                                    val list1 = res.list
+                                    context.launchActivity<ListItemsActivity>() {
+                                        putExtra("parced", HomeAllProductsResponse(list1, "Exclusive Offers", 200))
+
+                                    }
+                                    }
+                            }
                     )
                 }
                 LazyRow(
@@ -166,19 +185,20 @@ fun homescreen(context: Context) {
                         .fillMaxWidth()
                     // .height(260.dp)
                 ) {
-                    val list = listOf(
-                        "A", "B", "C", "D"
-                    )
-                    items(list,
-                        key = {
-                            it }
-                    ) { data ->
-                        // Column(modifier = Modifier.padding(10.dp)) {
-                        offerItems(context)
-                        //}
+
+                    if(res.statusCode==200){
+                        val list1=res.list
+                        Log.d("listofdata", "homescreen: $list1")
+                        items(list1!!) { data ->
+                            ExclusiveOffers(data,context)
+                        }
 
 
                     }
+
+
+
+
                 }
 //Best selling
                 Row(
@@ -195,12 +215,16 @@ fun homescreen(context: Context) {
                     Text14_400(
                         "See all", color = seallcolor, modifier = Modifier
                             .weight(1f)
-                            .padding(top = 5.dp, start = 20.dp).clickable {  context.startActivity(
-                                Intent(
-                                    context,
-                                    ProductItemsActivity::class.java
-                                )
-                            ) }
+                            .padding(top = 5.dp, start = 20.dp)
+                            .clickable {
+                                if (best.statusCode == 200) {
+                                    val list1 = best.list
+                                    context.launchActivity<ListItemsActivity>() {
+                                        putExtra("parced", HomeAllProductsResponse(list1, "Best Selling", 200))
+
+                                    }
+                                }
+                            }
                     )
                 }
                 LazyRow(
@@ -208,14 +232,20 @@ fun homescreen(context: Context) {
                         .fillMaxWidth()
                     // .height(260.dp)
                 ) {
-                    val list = listOf("A", "B", "C", "D")
-                    items(list) { data ->
-                        // Column(modifier = Modifier.padding(10.dp)) {
-                        SellingItems()
-                        //}
 
+                    if(best.statusCode==200){
+                        val list1=best.list
+                        items(list1!!) { data ->
+                            // Column(modifier = Modifier.padding(10.dp)) {
+                            BestOffers(data,context)
+                            //}
+
+
+                        }
 
                     }
+
+
                 }
 
                 //groceries
@@ -230,11 +260,19 @@ fun homescreen(context: Context) {
                             .weight(3f)
                             .padding(start = 10.dp),
                     )
-                    Text14_400(
-                        "See all", color = seallcolor, modifier = Modifier
-                            .weight(1f)
-                            .padding(top = 5.dp, start = 20.dp)
-                    )
+//                    Text14_400(
+//                        "See all", color = seallcolor, modifier = Modifier
+//                            .weight(1f)
+//                            .padding(top = 5.dp, start = 20.dp).clickable {
+//                                if (all.statusCode == 200) {
+//                                    val list1 = all.list
+//                                    context.launchActivity<ListItemsActivity>() {
+//                                        putExtra("parced", HomeAllProductsResponse(list1, "", 200))
+//
+//                                    }
+//                                }
+//                            }
+//                    )
                 }
                 LazyRow(
                     modifier = Modifier
@@ -255,22 +293,29 @@ fun homescreen(context: Context) {
 
                     }
                 }
-                //recycler view items
-                LazyRow(
-                    modifier = Modifier.background(MaterialTheme.colors.background),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ){
-                    val list = mutableListOf<String>("A", "B", "C", "D")
-                    gridItems(
-                        data = list,
-                        columnCount = 2,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    ) { itemData ->
-                        SellingItems()
-                    }
-                }
+//                LazyColumn(
+//                    modifier = Modifier.background(MaterialTheme.colors.background),
+//                    contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
+//                    verticalArrangement = Arrangement.spacedBy(8.dp)
+//                ) {
+//
+//                    val ls: MutableList<MainProducts> = ArrayList()
+//                    ls.add(MainProducts("Fruit Basket", R.drawable.fruitbasket, Purple700))
+//                    ls.add(MainProducts("Snacks", R.drawable.snacks, borderColor))
+//                    ls.add(MainProducts("Non Veg", R.drawable.nonveg, disableColor))
+//                    ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor))
+//
+//
+//                    gridItems(
+//                        data = ls,
+//                        columnCount = 2,
+//                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+//                        modifier = Modifier.padding(horizontal = 16.dp)
+//                    ) { itemData ->
+//                        SearchItems(itemData)
+//                    }
+//                }
+
 
 
                 LazyRow(
@@ -279,23 +324,64 @@ fun homescreen(context: Context) {
                         .padding(top = 10.dp)
                     // .height(260.dp)
                 ) {
-                    val list = listOf("A", "B", "C", "D")
-                    items(list) { data ->
-                        // Column(modifier = Modifier.padding(10.dp)) {
-                        SellingItems()
-                        //}
+
+                    if(all.statusCode==200){
+                        items(all.list!!) { data ->
+                            // Column(modifier = Modifier.padding(10.dp)) {
+                            AllItems(data,context)
+                            //}
 
 
+                        }
                     }
+
+
                 }
 
 
             }
         }
 
+
     }
 
 
+}
+@Composable
+fun LazyVerticalGridDemo(){
+    val list = (1..10).map { it.toString() }
+
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(128.dp),
+
+        // content padding
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            top = 16.dp,
+            end = 12.dp,
+            bottom = 16.dp
+        ),
+        content = {
+            items(list.size) { index ->
+                Card(
+                    backgroundColor = Color.Red,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    elevation = 8.dp,
+                ) {
+                    Text(
+                        text = list[index],
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 30.sp,
+                        color = Color(0xFFFFFFFF),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+        }
+    )
 }
 
 
@@ -329,13 +415,14 @@ fun Banner(
 }
 
 @Composable
-fun offerItems(context: Context) {
+fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.clickable {
             context.launchActivity<OrderDetailScreen>(){
-                putExtra("name","Hey")
+                putExtra("productId",data.ProductId)
+                putExtra("ProductCategory","exclusive")
             }
         }
 
@@ -346,7 +433,7 @@ fun offerItems(context: Context) {
                 .padding(5.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.banana),
+                painter = rememberAsyncImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(200.dp)
@@ -355,13 +442,13 @@ fun offerItems(context: Context) {
 
             )
             Text24_700(
-                text = "Orange Carror", color = headingColor,
+                text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
             Text14_400(
-                text = "7 pcs,Price", color = headingColor,
+                text = "${data.quantity} pcs,Price", color = headingColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
@@ -372,7 +459,72 @@ fun offerItems(context: Context) {
             ) {
 
                 Text16_700(
-                    text = "$4.99",
+                    text = "₹ ${data.price}",
+                    color = headingColor,
+                    //  modifier= Modifier.weight(0.5F)
+                )
+
+                Icon(
+                    painter = rememberAsyncImagePainter(data.productImage1),
+                    contentDescription = "",
+                    modifier = Modifier.padding(start = 100.dp),
+                    tint = redColor
+                )
+            }
+
+
+        }
+    }
+}
+@Composable
+fun AllItems(data: HomeAllProductsResponse.HomeResponse, context: Context) {
+    Card(
+        elevation = 4.dp,
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier.clickable {
+            context.launchActivity<OrderDetailScreen>(){
+                putExtra("productId",data.ProductId)
+                putExtra("ProductCategory","all")
+            }
+        }
+
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp)
+        ) {
+            Image(
+
+                painter = rememberAsyncImagePainter(data.productImage1),
+                contentDescription = "splash image",
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(150.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
+
+
+
+            )
+            Text24_700(
+                text = data.productName!!, color = headingColor,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Text14_400(
+                text = "${data.quantity} pcs,Price", color = headingColor,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Row(
+                modifier = Modifier.padding(start = 10.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+
+                Text16_700(
+                    text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
@@ -391,10 +543,16 @@ fun offerItems(context: Context) {
 }
 
 @Composable
-fun SellingItems() {
+fun BestOffers(data: HomeAllProductsResponse.HomeResponse, context: Context) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
+        modifier = Modifier.clickable {
+            context.launchActivity<OrderDetailScreen>(){
+                putExtra("productId",data.ProductId)
+                putExtra("ProductCategory","Best")
+            }
+        }
 
         ) {
         Column(
@@ -403,7 +561,7 @@ fun SellingItems() {
                 .padding(5.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.bell_peeper),
+                painter = rememberAsyncImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(200.dp)
@@ -412,13 +570,13 @@ fun SellingItems() {
 
             )
             Text24_700(
-                text = "Orange Carror", color = headingColor,
+                text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
             Text14_400(
-                text = "7 pcs,Price", color = headingColor,
+                text = "${data.quantity} pcs,Price", color = headingColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
@@ -429,7 +587,7 @@ fun SellingItems() {
             ) {
 
                 Text16_700(
-                    text = "$4.99",
+                    text =  "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )

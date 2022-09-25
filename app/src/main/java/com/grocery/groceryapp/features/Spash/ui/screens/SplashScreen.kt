@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.features.Spash
 
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.compose.foundation.Image
@@ -14,13 +15,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.grocery.groceryapp.R
+import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.ScreenRoute
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text24_700
+import com.grocery.groceryapp.features.Home.ui.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.availColor
+import javax.inject.Inject
 
 @Composable
-fun SplashScreen(navController: NavHostController, context: Context){
+fun SplashScreen(navController: NavHostController, context: Context,sharedpreferenceCommon: sharedpreferenceCommon){
+
     Row(
         modifier = Modifier.fillMaxSize().background(availColor),
         horizontalArrangement = Arrangement.Center,
@@ -45,6 +50,14 @@ fun SplashScreen(navController: NavHostController, context: Context){
 
     }
     Handler(Looper.getMainLooper()).postDelayed({
+        if(sharedpreferenceCommon.getJwtToken().isNotEmpty()){
+            if(sharedpreferenceCommon.getCombinedAddress().isNotEmpty())
+            context.startActivity(Intent(context, HomeActivity::class.java))
+            else
+            {
+                navController.navigate(ScreenRoute.LocateMeScreen.route)
+            }
+        }else
         navController.navigate(ScreenRoute.LoginScreen.route)
     },500)
 

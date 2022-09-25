@@ -1,5 +1,6 @@
 package com.grocery.groceryapp.features.Spash.domain.repository
 
+import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.data.modal.RegisterLoginRequest
 import com.grocery.groceryapp.data.network.ApiService
 import com.grocery.groceryapp.toResultFlow
@@ -19,7 +20,32 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.LoginUser(addUser)
     }
-
+    fun HomeAllProducts(
+    ) = toResultFlow {
+        apiService.getHomeAllProducts()
+    }
+    fun ExclusiveProducts(
+    ) = toResultFlow {
+        apiService.getExclusiveProducts()
+    }
+    fun BestSellingProducts(
+    ) = toResultFlow {
+        apiService.getBestSellingProducts()
+    }
+    fun callPendingProductById(productIdIdModal: ProductIdIdModal
+    ) = toResultFlow {
+        apiService.GetPendingProductById(productIdIdModal)
+    }
+    fun callBestProductById(productIdIdModal: ProductIdIdModal
+    ) = toResultFlow {
+        apiService.getBestProductById(productIdIdModal)
+    }
+    fun callEclusiveById(productIdIdModal: ProductIdIdModal
+    ) = toResultFlow {
+        apiService.getExclusiveProductById(productIdIdModal)
+    }
+    fun gettingJwt()= toResultFlow {apiService.gettingJwtToken()  }
+    fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest) = toResultFlow { apiService.checkMobileNumberExist(registerLoginRequest) }
 
 
 

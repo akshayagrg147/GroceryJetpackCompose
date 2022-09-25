@@ -1,6 +1,8 @@
 package com.grocery.groceryapp.features.Spash
 
 import android.app.Activity
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.R
+import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.CommonProgressBar
 import com.grocery.groceryapp.common.OtpView
@@ -26,16 +29,18 @@ import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun loginScreen(
-    navController: NavHostController, context: Activity,
+    navController: NavHostController, context: Activity,sharedPreferences:sharedpreferenceCommon,
     viewModal: LoginViewModel = hiltViewModel()
 ) {
+
     val scope = rememberCoroutineScope()
-    var isCompleted by remember { mutableStateOf(true) }
+    var isCompleted by remember { mutableStateOf(false) }
     var isDialog by remember { mutableStateOf(false) }
     var mobile by remember { mutableStateOf("") }
 
@@ -102,11 +107,13 @@ fun loginScreen(
                                 ).collect {
                                     when (it) {
                                         is ApiState.Success -> {
+                                            Log.d("passingmessage", "loginScreen: success")
                                             isDialog = false
                                             context.showMsg(it.data)
-                                            isCompleted = false
+                                            isCompleted = true
                                         }
                                         is ApiState.Failure -> {
+                                            Log.d("passingmessage", "loginScreen: failure")
                                             isDialog = false
                                             context.showMsg(it.msg.toString())
                                         }
@@ -120,30 +127,10 @@ fun loginScreen(
                         }
                     }
 
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 10.dp)
-
-                    ) {
-                        Text14_400(
-                            text = "Don't have an account?", color = fadedTextColor,
-                        )
-                        Text14_400(
-                            text = "Sign Up",
-                            color = titleColor,
-                            modifier = Modifier
-                                .padding(start = 2.dp)
-                                .clickable {
-                                    navController.navigate(ScreenRoute.SignUpScreen.route)
-                                }
-                        )
-
-                    }
                 }
 
             }
-        if (isCompleted)
+        else{
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -174,7 +161,25 @@ fun loginScreen(
                                 is ApiState.Success -> {
                                     isDialog = false
                                     context.showMsg(it.data)
-                                    navController.navigate(ScreenRoute.LocateMeScreen.route)
+                                    viewModal.checkMobileNumberExist("+91${mobile}")
+                                    var response=  viewModal.resp.value
+                                    if(response.statusCode==200)
+                                    {if(response.isMobileExist==true)
+                                    { sharedPreferences.setJwtToken(response.jwtToken!!)
+                                        navController.navigate(ScreenRoute.LocateMeScreen.route)}
+                                    else{
+                                        navController.currentBackStackEntry?.arguments?.apply {
+                                            putString("mobileNumber","+91${mobile}")
+                                        }
+                                        navController.navigate(ScreenRoute.SignUpScreen.route)
+                                    }
+                                    }
+                                    else
+                                    { navController.currentBackStackEntry?.arguments?.apply {
+                                        putString("mobileNumber","+91${mobile}")
+
+                                        navController.navigate(ScreenRoute.SignUpScreen.route)
+                                    }}
                                 }
                                 is ApiState.Failure -> {
                                     isDialog = false
@@ -189,6 +194,9 @@ fun loginScreen(
                 }
 
             }
+        }
+
+
     }
 
 

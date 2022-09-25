@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.features.Spash
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,16 +22,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.grocery.groceryapp.data.modal.RegisterLoginRequest
 import com.grocery.groceryapp.R
+import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterLoginViewModal
 import com.grocery.groceryapp.features.Spash.domain.Modal.Country
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.CommonProgressBar
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.fadedTextColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.headingColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -38,15 +43,21 @@ import java.util.*
 @Composable
 fun SignUpScreen(
     navController: NavHostController,
-    context: Context,
-    viewModal: RegisterLoginViewModal
+    context: Context, sharedPreferences: sharedpreferenceCommon,
+    viewModal: RegisterLoginViewModal = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     var filteredFavData: List<Country>
     val countries = remember { countryList(context) }
     val isCompleted = remember { mutableStateOf("") }
+    var isDialog by remember { mutableStateOf(false) }
 
+    if (isDialog)
+        CommonProgressBar()
 
+    val contactNum = remember {
+        mutableStateOf(navController.previousBackStackEntry?.arguments?.getString("mobileNumber")!!)
+    }
     val name = remember {
         mutableStateOf("")
     }
@@ -56,125 +67,11 @@ fun SignUpScreen(
     val code = remember {
         mutableStateOf("")
     }
-    val contactNum = remember {
-        mutableStateOf("")
-    }
+
     val email = remember {
         mutableStateOf("")
     }
-    val modalBottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-    ModalBottomSheetLayout(
-        sheetContent = {
-            Column {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 10.dp)
-                ) {
-                    TextField(
-                        value = search.value,
-                        onValueChange = {
-                            search.value = it
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(24.dp)),
-                        placeholder = {
-                            Text14_400(
-                                text = "Search Country",
-                                color = bodyTextColor,
-                            )
-                        },
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            cursorColor = Color.Transparent,
-                            trailingIconColor = titleColor,
-                            backgroundColor = Color.White,
-                            disabledIndicatorColor = Color.Transparent
-                        ),
-                        trailingIcon = {
-                            if (search.value != "") {
-                                IconButton(onClick = {
-                                    search.value = ""
-                                }) {
-                                    Icon(
-                                        Icons.Default.Close, contentDescription = "",
-                                    )
-                                }
-                            }
-                        },
-                        leadingIcon = {
-                            IconButton(onClick = {}) {
-                                Icon(
-                                    Icons.Default.Search, contentDescription = "",
-                                )
-                            }
-                        },
-                        singleLine = true,
-                    )
-                }
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp)
-                ) {
-
-                    val searchedText = search.value
-                    filteredFavData = if (searchedText.isEmpty()) {
-                        countries
-                    } else {
-                        val resultData = arrayListOf<Country>()
-                        for (fav in countries) {
-                            if (fav.name.lowercase(Locale.getDefault()).contains(
-                                    searchedText.lowercase(Locale.getDefault())
-                                )
-                            ) {
-                                resultData.add(fav)
-                            }
-                        }
-                        resultData
-                    }
-
-                    items(filteredFavData) { country ->
-                        Row(
-                            modifier = Modifier
-                                .clickable {
-                                    code.value = country.dialCode
-                                    scope.launch {
-                                        modalBottomSheetState.hide()
-                                    }
-
-                                }
-                                .padding(10.dp)
-                        ) {
-                            Text(
-                                text = localeToEmoji(countryCode = country.code)
-                            )
-
-                            Text(
-                                text = country.name,
-                                modifier = Modifier
-                                    .padding(start = 6.dp)
-                                    .weight(2f)
-                            )
-
-                            Text(
-                                text = country.dialCode,
-                                modifier = Modifier.padding(start = 6.dp)
-                            )
-                        }
-
-                        Divider(color = Color.LightGray, thickness = 0.5.dp)
-                    }
-                }
-            }
-        },
-        sheetState = modalBottomSheetState,
-        sheetShape = RoundedCornerShape(
-            topStart = 20.dp, topEnd = 20.dp
-        )
-    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -213,21 +110,7 @@ fun SignUpScreen(
                         .fillMaxWidth()
                 )
                 {
-                    CommonTextField(
-                        text = code,
-                        placeholder = "",
-                        keyboardType = KeyboardType.Phone,
-                        modifier = Modifier.width(50.dp),
-                        trailingIcon = R.drawable.ic_baseline_arrow_drop_down_24,
-                        iconColor = Color.Unspecified,
-                        size = 12.dp,
-                        enable = false
 
-                    ) {
-                        scope.launch { modalBottomSheetState.show() }
-
-
-                    }
 
                     CommonTextField(
                         text = contactNum,
@@ -256,6 +139,7 @@ fun SignUpScreen(
                             color = Color.White
 
                         ) {
+                            isDialog=true
                             val res = viewModal.registrationGetResponse.value
 
 
@@ -266,11 +150,13 @@ fun SignUpScreen(
                             )
                             viewModal.getRegistration()
                             if(res.statusCode == 200)
-                            {
+                            {  isDialog=false
                                 Toast.makeText(context, res.message, Toast.LENGTH_SHORT).show()
-                                navController.navigate(ScreenRoute.SignUpScreen.route)
+                                sharedPreferences.setJwtToken(res.token!!)
+                                navController.navigate(ScreenRoute.LocateMeScreen.route)
                             }
                             else{
+                                isDialog=false
                                 Toast.makeText(context, res.message, Toast.LENGTH_SHORT).show()
                             }
 
@@ -278,33 +164,15 @@ fun SignUpScreen(
                         }
                     }
 
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 10.dp)
 
-                    ) {
-                        Text14_400(
-                            text = "Already have an account?", color = fadedTextColor,
-                        )
-                        Text14_400(
-                            text = "Sign In",
-                            color = titleColor,
-                            modifier = Modifier
-                                .padding(start = 2.dp)
-                                .clickable {
-                                    navController.navigate(ScreenRoute.LoginScreen.route)
-                                }
-                        )
-
-                    }
                 }
 
             }
 
 
         }
-    }
+
+
 
 
 }

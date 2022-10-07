@@ -41,7 +41,7 @@
 
         </activity>
         <activity
-            android:name=".features.Home.ui.ProductItemsActivity"
+            android:name=".features.Home.ui.CartActivity"
             android:exported="false"
             android:label="@string/title_activity_product_items"
             android:theme="@style/Theme.GroceryApp" />

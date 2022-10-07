@@ -69,12 +69,11 @@ fun homescreen(context: Context,  viewModal: HomeAllProductsViewModal = hiltView
     ) {
         item {
             Column(modifier = Modifier.fillMaxSize()) {
+                Spacer(modifier = Modifier.width(10.dp))
                 Image(
-                    painter = painterResource(id = R.drawable.ornge_carrot),
+                    painter = painterResource(id = R.drawable.location_icon),
                     contentDescription = "Carrot Icon",
                     alignment = Alignment.Center,
-
-
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp)
@@ -83,20 +82,31 @@ fun homescreen(context: Context,  viewModal: HomeAllProductsViewModal = hiltView
                         .align(Alignment.CenterHorizontally)
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier.fillMaxWidth(),Arrangement.SpaceEvenly
                 ) {
-                    Icon(
-                        Icons.Default.LocationOn,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(20.dp),
-                        tint = redColor
-                    )
+
+
                     Text16_700(
                         text = "kaithal,Haryana",
                         color = headingColor,
                     )
+                    Image(
+                        painter = painterResource(id = R.drawable.cart_icon),
+                        contentDescription = "Carrot Icon",
+                        alignment = Alignment.TopEnd,
+
+
+                        modifier = Modifier
+                            .width(50.dp)
+                            .height(50.dp)
+                            .clickable {
+                                context.launchActivity<CartActivity>() {
+
+                                }
+                            }
+
+                    )
+
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -173,10 +183,13 @@ fun homescreen(context: Context,  viewModal: HomeAllProductsViewModal = hiltView
                                 if (res.statusCode == 200) {
                                     val list1 = res.list
                                     context.launchActivity<ListItemsActivity>() {
-                                        putExtra("parced", HomeAllProductsResponse(list1, "Exclusive Offers", 200))
+                                        putExtra(
+                                            "parced",
+                                            HomeAllProductsResponse(list1, "Exclusive Offers", 200)
+                                        )
 
                                     }
-                                    }
+                                }
                             }
                     )
                 }
@@ -195,9 +208,6 @@ fun homescreen(context: Context,  viewModal: HomeAllProductsViewModal = hiltView
 
 
                     }
-
-
-
 
                 }
 //Best selling
@@ -220,7 +230,10 @@ fun homescreen(context: Context,  viewModal: HomeAllProductsViewModal = hiltView
                                 if (best.statusCode == 200) {
                                     val list1 = best.list
                                     context.launchActivity<ListItemsActivity>() {
-                                        putExtra("parced", HomeAllProductsResponse(list1, "Best Selling", 200))
+                                        putExtra(
+                                            "parced",
+                                            HomeAllProductsResponse(list1, "Best Selling", 200)
+                                        )
 
                                     }
                                 }

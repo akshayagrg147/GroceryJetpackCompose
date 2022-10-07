@@ -98,6 +98,27 @@ fun CommonButton(
 
 }
 @Composable
+fun CommonMathButton(
+    icon: Int = 0 ,call:()->Unit
+) {
+
+    Card(
+        elevation = 0.dp,
+        shape = RoundedCornerShape(13.dp),
+        border = BorderStroke(1.dp, strokeColor), modifier = Modifier.clickable { call.invoke() }
+    ) {
+        Box(modifier = Modifier.background(Color.White), contentAlignment = Alignment.Center) {
+            androidx.compose.material.Icon(
+                painter = painterResource(id = icon),
+                contentDescription = "",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+    }
+
+}
+@Composable
 fun CommonHeader(text: String, onClick: () -> Unit = {}) {
     Row {
         IconButton(
@@ -115,6 +136,51 @@ fun CommonHeader(text: String, onClick: () -> Unit = {}) {
                 .align(Alignment.CenterVertically)
         )
     }
+}
+@Composable
+fun CommonNumberField(
+    text: MutableState<String>,
+    placeholder: String,
+    trailingIcon: Int=R.drawable.eye,
+    iconColor: Color = Color.Transparent,
+    keyboardType: KeyboardType = KeyboardType.Number,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    size: Dp = 25.dp,
+    enable: Boolean = true,
+    onClick: () -> Unit = {}
+
+) {
+    TextField(
+        value = text.value,
+        onValueChange = { text.value = it },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            focusedLabelColor = fadedTextColor,
+            textColor = headingColor,
+            unfocusedLabelColor = fadedTextColor,
+            unfocusedIndicatorColor = borderColor,
+            focusedIndicatorColor = headingColor,
+            disabledIndicatorColor = fadedTextColor
+        ),
+        label = { Text(text = placeholder) },
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = trailingIcon),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(size),
+                tint = iconColor,
+            )
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        enabled = enable,
+        textStyle = TextStyle(
+            color = Color.Black
+        )
+    )
 }
 @Composable
 fun CommonTextField(

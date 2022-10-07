@@ -10,4 +10,8 @@ sealed class ScreenRoute(val route: String) {
     object HomeScreen:ScreenRoute("homescreen")
     object OrderHistory:ScreenRoute("OrderHistory")
     object ItemDetailScreen:ScreenRoute("ItemDetailScreen")
+
+    //cart screen
+    object CartScreen : ScreenRoute("CartScreen")
+    object AddressScreen : ScreenRoute("AddressScreen")
 }

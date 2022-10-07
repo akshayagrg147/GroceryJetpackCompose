@@ -18,7 +18,7 @@ fun BottomNavigation(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.MyNetwork,
-        BottomNavItem.AddPost,
+//        BottomNavItem.AddPost,
         BottomNavItem.Notification,
         BottomNavItem.Jobs
     )

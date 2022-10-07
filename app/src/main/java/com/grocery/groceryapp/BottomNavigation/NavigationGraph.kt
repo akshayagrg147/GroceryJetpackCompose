@@ -19,9 +19,9 @@ fun NavigationGraph(navController: NavHostController, context: HomeActivity) {
         composable(BottomNavItem.MyNetwork.screen_route) {
             SearchScreen()
         }
-        composable(BottomNavItem.AddPost.screen_route) {
-            CartScreen()
-        }
+//        composable(BottomNavItem.AddPost.screen_route) {
+//            CartScreen()
+//        }
         composable(BottomNavItem.Notification.screen_route) {
             SearchScreen()
         }

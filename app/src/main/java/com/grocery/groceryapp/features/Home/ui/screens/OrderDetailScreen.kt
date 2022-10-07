@@ -5,15 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme
 import com.grocery.groceryapp.features.Spash.ItemScreenNavigation
+import com.grocery.groceryapp.RoomDatabase.Dao
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class OrderDetailScreen() : ComponentActivity() {
+class OrderDetailScreen  : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,17 +27,7 @@ class OrderDetailScreen() : ComponentActivity() {
             }
         }
     }
-}
 
-@Composable
-fun Greeting3(name: String) {
-    Text(text = "Hello $name!")
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview3() {
-    GroceryAppTheme {
-        Greeting3("Android")
-    }
+
 }

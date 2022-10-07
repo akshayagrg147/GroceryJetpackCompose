@@ -2,6 +2,10 @@
     <string name="app_name">GroceryApp</string>
     <string name="name">enter your name</string>
     <string name="phone_number">Enter Phone Number</string>
+    <string name="landmark">LandMark</string>
+    <string name="address1">Address</string>
+    <string name="address2">Alternative Address</string>
+    <string name="pincode">Enter Pincode</string>
     <string name="title_activity_home_screen">HomeScreen</string>
     <string name="title_activity_orders">OrdersActivity</string>
     <string name="title_activity_order_detail_screen">OrderDetailScreen</string>

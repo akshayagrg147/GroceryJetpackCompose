@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterLoginViewModal
 import com.grocery.groceryapp.Utils.ScreenRoute
 import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 
@@ -33,7 +32,7 @@ fun splashScreenNavigation(
             locateMeScreen(navController, context)
         }
         composable(ScreenRoute.MapScreen.route) {
-            MapScreen(navController, context)
+            MapScreen(navController, context,sharedPreferences)
         }
     }
 

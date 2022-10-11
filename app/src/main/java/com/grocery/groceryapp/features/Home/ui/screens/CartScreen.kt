@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -45,12 +46,14 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
     val scope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val cartcount = remember { mutableStateOf(0) }
+    var cartcount = remember { mutableStateOf(0)}
     val totalamount = remember { mutableStateOf(0) }
 
     viewModal.getCartItem()
     viewModal.getAddress()
-    cartcount.value= viewModal.getitemcount.value
+    viewModal.getcartItems()
+
+    cartcount=viewModal.getitemcount
     ModalBottomSheetLayout(
         sheetContent = {
 
@@ -84,7 +87,7 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                     Text14_400(
-                        text = "₹ 4.99",
+                        text = "₹ ${totalamount.value}",
                         color = blackColor,
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
@@ -103,7 +106,7 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                     Text14_400(
-                        text = "4.99",
+                        text = "₹ ${(totalamount.value*10)/100}",
                         color = blackColor,
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
@@ -131,59 +134,73 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
         )
     ) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize(), Arrangement.SpaceEvenly
-        ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.TopCenter)
-                        .padding(vertical = 20.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text24_700(text = "MY Cart", color = Color.Black)
-                }
-            }
 
-            viewModal.getcartItems()
+            ConstraintLayout(modifier = Modifier.fillMaxWidth().fillMaxSize()) {
+                val (l1, l2,l3) = createRefs()
+                Box(modifier = Modifier.fillMaxWidth().constrainAs(l1) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                    start.linkTo(parent.start)
+//                    bottom.linkTo(l2.top)
 
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                items(viewModal.responseLiveData.value) { data ->
-                    ItemEachRow(data, viewModal, cartcount, totalamount)
-
-                }
-            }
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                elevation = 0.dp,
-                shape = CutCornerShape(30.dp),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp)
-                        .background(colorResource(id = R.color.green_700))
-                        .clickable { scope.launch { modalBottomSheetState.show() } },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text24_700(
-                        text = "Go to Checkout ${cartcount.value} ${totalamount.value}",
-                        color = Color.White,
+                }) {
+                    Row(
                         modifier = Modifier
-                            .padding(vertical = 20.dp)
-                    )
+                            .fillMaxWidth()
+                            .align(Alignment.TopCenter)
+                            .padding(vertical = 20.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text24_700(text = "MY Cart", color = Color.Black)
+                    }
+                }
 
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth().constrainAs(l2) {
+                            top.linkTo(l1.bottom)
+                            bottom.linkTo(l3.top)
+
+                        }
+                ) {
+                    items(viewModal.responseLiveData.value) { data ->
+                        ItemEachRow(data, viewModal, cartcount, totalamount)
+
+                    }
+                }
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth().constrainAs(l3) {
+                            end.linkTo(parent.end)
+                            start.linkTo(parent.start)
+                            bottom.linkTo(parent.bottom)
+
+                        },
+                    elevation = 0.dp,
+                    shape = CutCornerShape(30.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp)
+                            .background(colorResource(id = R.color.green_700))
+                            .clickable { scope.launch { modalBottomSheetState.show() } },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text24_700(
+                            text = "Go to Checkout(${cartcount.value})",
+                            color = Color.White,
+                            modifier = Modifier
+                                .padding(vertical = 20.dp)
+                        )
+
+                    }
                 }
             }
 
-        }
+
+
     }}
 
 @Composable
@@ -313,13 +330,11 @@ fun ItemEachRow(
     data: CartItems,
     viewModal: CartItemsViewModal,
     cartcount: MutableState<Int>,
-    totalamount: MutableState<Int>
+    totalamount: MutableState<Int>,
+
 ) {
     viewModal.getItemBaseOnProductId(data.ProductIdNumber)
-    val each_item_count = remember { mutableStateOf(0) }
-    each_item_count.value = viewModal.productIdCount.value
-    Log.d("normalcalling", "ItemEachRow: ${System.currentTimeMillis()}")
-    totalamount.value=totalamount.value+(each_item_count.value*data.strProductPrice!!)
+    var each_item_count = remember {viewModal.productIdCount }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -367,13 +382,11 @@ fun ItemEachRow(
                 ) {
                     Row {
                         CommonMathButton(icon = R.drawable.minus) {
-
                             cartcount.value -= 1
                             viewModal.deleteCartItems(data)
                             // viewModal.getItemBaseOnProductId(data.ProductIdNumber)
                             each_item_count.value -= 1
                             totalamount.value = totalamount.value - (data.strProductPrice!!)
-
 
                         }
                         Text14_400(
@@ -388,7 +401,7 @@ fun ItemEachRow(
                             each_item_count.value += 1
                             viewModal.insertCartItem(data)
                             totalamount.value = totalamount.value + (data.strProductPrice!!)
-                            //   viewModal.getItemBaseOnProductId(data.ProductIdNumber)
+                        //   viewModal.getItemBaseOnProductId(data.ProductIdNumber)
 //                            viewModal.getCartItem()
 
 

@@ -39,6 +39,7 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.GroceryApp" >
 
+
         </activity>
         <activity
             android:name=".features.Home.ui.CartActivity"
@@ -69,7 +70,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC8DEM92vc794PO4gLq46PCUyPQOnq8RGk" />
+            android:value="AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U" />
     </application>
 
 </manifest>

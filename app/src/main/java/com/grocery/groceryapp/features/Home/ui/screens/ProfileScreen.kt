@@ -124,7 +124,9 @@ fun profileScreen( context: HomeActivity){
                     ,
                     tint = blackColor
                 )
-                Text16_700(text = "Delivery Address", modifier = Modifier.padding(start = 15.dp, top = 5.dp))
+                Text16_700(text = "Add Address", modifier = Modifier.padding(start = 15.dp, top = 5.dp).clickable {
+
+                })
             }
             Icon(
                 painter = painterResource(id =R.drawable.ic_rightarrow),

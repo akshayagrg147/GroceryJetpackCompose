@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.modal.RegisterLoginResponse
@@ -20,7 +21,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
-class HomeAllProductsViewModal @Inject constructor(val repository: CommonRepository):ViewModel(){
+class HomeAllProductsViewModal @Inject constructor(val repository: CommonRepository,val
+  sharedPreferences: sharedpreferenceCommon
+):ViewModel(){
     var passingdata:MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
     public val homeAllProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
     private val exclusiveProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
@@ -30,6 +33,9 @@ class HomeAllProductsViewModal @Inject constructor(val repository: CommonReposit
     val exclusiveProductsResponse1: State<HomeAllProductsResponse> = exclusiveProductsResponse
     val bestsellingProductsResponse1: State<HomeAllProductsResponse> = bestsellingProductsResponse
 
+fun gettingAddres():String{
+    return sharedPreferences.getCombinedAddress()
+}
     fun callingHomeAllProducts()=viewModelScope.launch {
         repository.HomeAllProducts().collectLatest {
             when(it){

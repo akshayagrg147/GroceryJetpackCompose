@@ -17,6 +17,7 @@ import com.grocery.groceryapp.Utils.Text24_700
 
 @Composable
 fun locateMeScreen(navController: NavHostController, context: Context) {
+
     Column( verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()) {

@@ -87,7 +87,7 @@ fun homescreen(context: Context,  viewModal: HomeAllProductsViewModal = hiltView
 
 
                     Text16_700(
-                        text = "kaithal,Haryana",
+                        text = viewModal.gettingAddres(),
                         color = headingColor,
                     )
                     Image(

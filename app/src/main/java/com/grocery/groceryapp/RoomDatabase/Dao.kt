@@ -21,6 +21,7 @@ interface Dao {
 
     @Query("SELECT SUM(totalCount) FROM CartItems")
     fun getTotalProductItems(): Int
+
     @Query("DELETE  FROM CartItems WHERE ProductIdNumber = :id" )
     fun deleteCartItem(id:String?)
 

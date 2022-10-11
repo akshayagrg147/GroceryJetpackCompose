@@ -1,24 +1,14 @@
 package com.grocery.groceryapp.features.Spash.ui.viewmodel
 
-import android.util.Log
-import android.view.View
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.viewModelScope
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
-import com.grocery.groceryapp.common.ApiState
-import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
-import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
-import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -62,8 +52,7 @@ class CartItemsViewModal @Inject constructor( val dao: Dao):ViewModel() {
         list.value= dao.getAllAddress()
     }
     fun insertCartItem(value: CartItems)=viewModelScope.launch (Dispatchers.IO){
-        val intger: Int = dao.getProductBasedIdCount(value?.ProductIdNumber!!)
-        Log.d("jdjjdjd",intger.toString())
+        val intger: Int = dao.getProductBasedIdCount(value.ProductIdNumber!!)
         if (intger == 0) {
             dao
                 .insertCartItem(
@@ -85,7 +74,7 @@ class CartItemsViewModal @Inject constructor( val dao: Dao):ViewModel() {
     fun getCartItem()= viewModelScope.launch(Dispatchers.IO){
         var totalcount: Int =
             dao.getTotalProductItems()
-      //  updatecount.value=totalcount
+        updatecount.value=totalcount
 
 
     }
@@ -93,6 +82,7 @@ class CartItemsViewModal @Inject constructor( val dao: Dao):ViewModel() {
 
     fun getcartItems()=viewModelScope.launch(Dispatchers.IO){
         live.value=dao.getAllCartItems()
+
     }
     fun DeleteProduct(productIdNumber: String?) =viewModelScope.launch(Dispatchers.IO){
         dao.deleteCartItem(productIdNumber)

@@ -2,6 +2,7 @@ package com.grocery.groceryapp.features.Spash.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -59,8 +60,13 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
     }
 
     fun getItemBaseOnProductId(value: String?)=viewModelScope.launch(Dispatchers.IO){
+        Log.d("callingcart", "getItemBaseOnProductId: --")
         val intger: Int = dao.getProductBasedIdCount(value)
-        productIdCountMutable.value=intger
+        Log.d("callingcart", "getItemBaseOnProductId: $intger")
+        if (intger == 0) {
+            productIdCountMutable.value = 1
+        }    else
+            productIdCountMutable.value=intger
     }
     fun getAddress()=viewModelScope.launch(Dispatchers.IO) {
         list.value= dao.getAllAddress()

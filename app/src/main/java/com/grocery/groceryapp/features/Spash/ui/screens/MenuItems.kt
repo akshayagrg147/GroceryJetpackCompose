@@ -17,6 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -309,7 +311,8 @@ fun SearchItems(
     data: ItemsCollectionsResponse.SubItems,
     viewModal: CartItemsViewModal,
     totalamount: MutableState<Int>
-) {
+) { viewModal.getItemBaseOnProductId(data.productId)
+
     var cartcount = remember { mutableStateOf(0) }
     var each_item_count = remember { viewModal.productIdCount }
     Card(
@@ -323,10 +326,13 @@ fun SearchItems(
                 .fillMaxWidth()
                 .padding(5.dp)
         ) {
+            val offpercentage= data.actualPrice?.toInt()?.minus((data.price?.toInt()?:0))
+            Text(text ="${offpercentage}% off" , color = bodyTextColor, modifier = Modifier.align(Alignment.End))
+
             Image(
                 painter = rememberAsyncImagePainter(data.productImage1),
 
-                contentDescription = "splash image",
+                contentDescription = "",
                 modifier = Modifier
                     .width(200.dp)
                     .height(150.dp)
@@ -335,17 +341,29 @@ fun SearchItems(
 
                 )
             Text24_700(
-                text = data.productName ?: "empty", color = headingColor,
+                text = data.productName ?: "", color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
+
             Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth() .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ){
+
+                Text(text ="₹${data.actualPrice ?: "0.00"}" , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                Text14_400(
+                    text = "₹${data.price ?: "0.00"}", color = headingColor,
+                    modifier = Modifier.width(IntrinsicSize.Min)
+                )
+            }
+            Spacer(modifier = Modifier.height(5.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row {
                     CommonMathButton(icon = R.drawable.minus) {
                         cartcount.value -= 1
                         // viewModal.deleteCartItems(data)
@@ -357,7 +375,7 @@ fun SearchItems(
                         text = "${each_item_count.value}",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(horizontal = 20.dp),
+                            .padding(horizontal = 10.dp),
                         color = Color.Black
                     )
                     CommonMathButton(icon = R.drawable.add) {
@@ -370,7 +388,7 @@ fun SearchItems(
                 }
 
 
-            }
+
         }
     }
 }

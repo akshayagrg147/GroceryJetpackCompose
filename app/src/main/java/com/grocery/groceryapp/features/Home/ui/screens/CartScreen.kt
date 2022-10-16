@@ -385,7 +385,7 @@ fun ItemEachRow(
                             cartcount.value -= 1
                             viewModal.deleteCartItems(data)
                             // viewModal.getItemBaseOnProductId(data.ProductIdNumber)
-                            each_item_count.value -= 1
+                          //  each_item_count.value -= 1
                             totalamount.value = totalamount.value - (data.strProductPrice!!)
 
                         }
@@ -398,7 +398,7 @@ fun ItemEachRow(
                         )
                         CommonMathButton(icon = R.drawable.add) {
                             cartcount.value += 1
-                            each_item_count.value += 1
+                         //   each_item_count.value += 1
                             viewModal.insertCartItem(data)
                             totalamount.value = totalamount.value + (data.strProductPrice!!)
                         //   viewModal.getItemBaseOnProductId(data.ProductIdNumber)

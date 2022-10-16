@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 fun <T> LazyListScope.gridItems(
-    data: MutableList<T>,
+    data: List<T>,
     columnCount: Int,
     modifier: Modifier,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,

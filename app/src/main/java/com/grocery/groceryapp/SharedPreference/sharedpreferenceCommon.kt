@@ -70,9 +70,15 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     fun getJwtToken(): String {
         return mPrefs.getString(AppConstant.jwttoken, "").toString()
     }
+    fun getMobileNumber(): String {
+        return mPrefs.getString(AppConstant.mobilenumber, "").toString()
+    }
 
     fun setJwtToken(token: String): Any {
         return mPrefs.edit().putString(AppConstant.jwttoken, token).apply()
+    }
+    fun setMobileNumber(number: String){
+        return mPrefs.edit().putString(AppConstant.mobilenumber, number).apply()
     }
 
 

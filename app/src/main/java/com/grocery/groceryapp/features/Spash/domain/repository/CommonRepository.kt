@@ -32,6 +32,7 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.getBestSellingProducts()
     }
+    fun getUserResponse( mobileNumber:String) = toResultFlow { apiService.getuserdetails(RegisterLoginRequest(null,null,mobileNumber)) }
     fun callPendingProductById(productIdIdModal: ProductIdIdModal
     ) = toResultFlow {
         apiService.GetPendingProductById(productIdIdModal)
@@ -43,6 +44,10 @@ class CommonRepository @Inject constructor(
     fun callEclusiveById(productIdIdModal: ProductIdIdModal
     ) = toResultFlow {
         apiService.getExclusiveProductById(productIdIdModal)
+    }
+    fun ItemsCollections(productIdIdModal: ProductIdIdModal
+    ) = toResultFlow {
+        apiService.getItemsCollections(productIdIdModal)
     }
     fun gettingJwt()= toResultFlow {apiService.gettingJwtToken()  }
     fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest) = toResultFlow { apiService.checkMobileNumberExist(registerLoginRequest) }

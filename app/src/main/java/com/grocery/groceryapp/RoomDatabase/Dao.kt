@@ -33,5 +33,7 @@ interface Dao {
     fun insertAddressItem(address: AddressItems)
     @Query("SELECT * FROM AddressItems")
     fun getAllAddress():List<AddressItems>
+    @Query("DELETE  FROM AddressItems WHERE id = :id")
+    fun deleteAddress(id:String?)
 
 }

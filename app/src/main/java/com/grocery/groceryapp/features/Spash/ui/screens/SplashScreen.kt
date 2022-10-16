@@ -57,8 +57,7 @@ fun SplashScreen(navController: NavHostController, context: Context,sharedprefer
             {
                 navController.navigate(ScreenRoute.LocateMeScreen.route)
             }
-        }else
-        navController.navigate(ScreenRoute.LoginScreen.route)
+        }
     },500)
 
 

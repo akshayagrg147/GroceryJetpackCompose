@@ -43,3 +43,12 @@ val faqColor = Color(0XFF212529)
 val faqIconColor = Color(0XFF292D32)
 val lineColor = Color(0XFFEFEFEF)
 val strokeColor = Color(0XFFF0F0F0)
+val ShimmerColorShades = listOf(
+
+    Color.LightGray.copy(0.9f),
+
+    Color.LightGray.copy(0.2f),
+
+    Color.LightGray.copy(0.9f)
+
+)

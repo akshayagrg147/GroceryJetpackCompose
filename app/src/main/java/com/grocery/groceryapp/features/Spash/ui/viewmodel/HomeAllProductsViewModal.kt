@@ -9,10 +9,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.modal.RegisterLoginResponse
+import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +24,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
 class HomeAllProductsViewModal @Inject constructor(val repository: CommonRepository,val
-  sharedPreferences: sharedpreferenceCommon
+  sharedPreferences: sharedpreferenceCommon,val dao: Dao
 ):ViewModel(){
     var passingdata:MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
     public val homeAllProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
@@ -33,9 +35,25 @@ class HomeAllProductsViewModal @Inject constructor(val repository: CommonReposit
     val exclusiveProductsResponse1: State<HomeAllProductsResponse> = exclusiveProductsResponse
     val bestsellingProductsResponse1: State<HomeAllProductsResponse> = bestsellingProductsResponse
 
+    private val addresslist:MutableList<AddressItems> = mutableListOf()
+    val list:MutableList<AddressItems> =addresslist
+
+
+
+
 fun gettingAddres():String{
     return sharedPreferences.getCombinedAddress()
 }
+    fun getAddress()=viewModelScope.launch(Dispatchers.IO) {
+        addresslist.addAll(
+            dao.getAllAddress()
+        )
+    }
+    fun deleteAddress(id:Int)=viewModelScope.launch(Dispatchers.IO){
+        dao.deleteAddress(id.toString())
+
+    }
+
     fun callingHomeAllProducts()=viewModelScope.launch {
         repository.HomeAllProducts().collectLatest {
             when(it){

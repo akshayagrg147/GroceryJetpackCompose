@@ -21,7 +21,7 @@ data class HomeAllProductsResponse(
     data class HomeResponse(
         @Json(name = "price")
         val price: String?,
-        @Json(name = "ProductImage")
+        @Json(name = "ProductImage1")
         val productImage1: String?=null,
         @Json(name = "productName")
         val productName: String?,

@@ -166,6 +166,7 @@ fun loginScreen(
                                     if(response.statusCode==200)
                                     {if(response.isMobileExist==true)
                                     { sharedPreferences.setJwtToken(response.jwtToken!!)
+                                        sharedPreferences.setMobileNumber("+91${mobile}")
                                         navController.navigate(ScreenRoute.LocateMeScreen.route)}
                                     else{
                                         navController.currentBackStackEntry?.arguments?.apply {

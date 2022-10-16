@@ -12,6 +12,9 @@ interface ApiService {
         @Body addUser: RegisterLoginRequest,
     ): Response<RegisterLoginResponse>
 
+//    @POST(Constants.getuserdetails)
+//    suspend fun getUserDetails():Response<>
+
     @POST(Constants.exclusive_collectionProducts)
     suspend fun getExclusiveProducts(
     ): Response<HomeAllProductsResponse>
@@ -36,10 +39,15 @@ interface ApiService {
     suspend fun LoginUser(
         @Body addUser: String,
     ): Response<String>
+    @POST(Constants.getuserdetails)
+    suspend fun getuserdetails(@Body user:RegisterLoginRequest):Response<UserResponse>
 
     @POST(Constants.gettingjwt)
     suspend fun gettingJwtToken(
     ): Response<String>
+
+    @POST(Constants.ItemsCollections)
+    suspend fun getItemsCollections(@Body productIdIdModal: ProductIdIdModal):Response<ItemsCollectionsResponse>
 @POST(Constants.checkMobileNumberExist)
     suspend fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest):Response<CheckNumberExistResponse>
 

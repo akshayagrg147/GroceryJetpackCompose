@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.common.ApiState
+import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,val dao: Dao):ViewModel() {
     private val live:MutableState<ProductByIdResponseModal> = mutableStateOf(ProductByIdResponseModal(null,null,null))
     val responseLiveData:MutableState<ProductByIdResponseModal> =live
+
 
     private val updatecount:MutableState<Int> =mutableStateOf(0)
     val getitemcount:MutableState<Int> =updatecount
@@ -137,6 +139,7 @@ class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,
         }
 
     }
+
 
 
 }

@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -86,7 +87,6 @@ fun ItemDetailsScreen(
         val (l1, l2) = createRefs()
         Box(modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
             .constrainAs(l1) {
                 top.linkTo(parent.top)
 
@@ -98,7 +98,7 @@ fun ItemDetailsScreen(
                     shape = RoundedCornerShape(20.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(2.dp)
+
                 ) {
                     HorizontalPager(count = 3, state = pager) { index ->
                         if (index == 0)
@@ -179,7 +179,7 @@ fun ItemDetailsScreen(
                         }
                     }
 
-                    Text18_600(
+                    Text16_700(
                         text = if(cartcount.value==0) "₹ ${(Integer.parseInt(value.homeproducts?.price))}" else "₹ ${(java.lang.Integer.parseInt(value.homeproducts?.price)*cartcount.value)} ",
                         color = blackColor,
                         modifier = Modifier.align(Alignment.CenterVertically)
@@ -192,13 +192,15 @@ fun ItemDetailsScreen(
             }
             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                 var createguidlinefromtop = createGuidelineFromBottom(70.dp)
+                var createguidlinefromtop1 = createGuidelineFromAbsoluteLeft(2.dp)
                 Box(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+
                     .constrainAs(l2) {
-                        top.linkTo(createguidlinefromtop)
-                        bottom.linkTo(createguidlinefromtop)
+
                         end.linkTo((parent.end))
+                        start.linkTo(parent.end)
+
 
                     }) {
                     Box(modifier = Modifier.fillMaxWidth()) {
@@ -243,7 +245,7 @@ fun Banner(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(bottom = 20.dp)
     ) {
         Image(
             painter = rememberAsyncImagePainter(productImage1),
@@ -298,7 +300,6 @@ fun Tabs(pagerState: PagerState) {
 
     val list = listOf(
         "Description",
-        "Manufacture",
         "Reviews"
     )
 
@@ -324,7 +325,7 @@ fun Tabs(pagerState: PagerState) {
                 text = {
                     Text(
                         list[index],
-                        color = if (pagerState.currentPage == index) Color.Black else Color.DarkGray
+                        color = if (pagerState.currentPage == index) Color.Black else Color.DarkGray, fontSize = 11.sp
                     )
                 },
                 selected = pagerState.currentPage == index,
@@ -353,10 +354,11 @@ fun TabsContent(pagerState: PagerState, value: ProductByIdResponseModal) {
             0 -> TabContentScreen(data = value.homeproducts?.ProductDescription ?: "null")
             // on below line we are calling tab content screen
             // and specifying data as Shopping Screen.
-            1 -> TabContentScreen(data = value.homeproducts?.productName ?: "null")
+
+            1 -> ReviewsCollection(value)
             // on below line we are calling tab content screen
             // and specifying data as Settings Screen.
-            2 -> ReviewsCollection(value)
+            2 -> TabContentScreen(data = value.homeproducts?.productName ?: "null")
         }
     }
 }

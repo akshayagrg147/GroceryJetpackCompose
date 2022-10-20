@@ -1,6 +1,10 @@
 package com.grocery.groceryapp.features.Home.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -37,6 +41,8 @@ import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -49,15 +55,16 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
     var cartcount = remember { mutableStateOf(0)}
     val totalamount = remember { mutableStateOf(0) }
 
-    viewModal.getCartItem()
-    viewModal.getAddress()
-    viewModal.getcartItems()
 
-    cartcount=viewModal.getitemcount
+
+
+
+    cartcount.value=viewModal.getitemcount.value
     ModalBottomSheetLayout(
         sheetContent = {
 
             Column(modifier = Modifier.fillMaxSize()) {
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -132,18 +139,25 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
         sheetShape = RoundedCornerShape(
             topStart = 20.dp, topEnd = 20.dp
         )
+
+
     ) {
 
 
-            ConstraintLayout(modifier = Modifier.fillMaxWidth().fillMaxSize()) {
+            ConstraintLayout(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxSize()) {
+
                 val (l1, l2,l3) = createRefs()
-                Box(modifier = Modifier.fillMaxWidth().constrainAs(l1) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                    start.linkTo(parent.start)
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(l1) {
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                        start.linkTo(parent.start)
 //                    bottom.linkTo(l2.top)
 
-                }) {
+                    }) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -157,12 +171,18 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
 
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth().constrainAs(l2) {
+                        .fillMaxWidth()
+                        .constrainAs(l2) {
                             top.linkTo(l1.bottom)
                             bottom.linkTo(l3.top)
 
                         }
                 ) {
+                    scope.launch{
+                          viewModal.getCartItem()
+                         viewModal.getAddress()
+                        viewModal.getcartItems()
+                    }
                     items(viewModal.responseLiveData.value) { data ->
                         ItemEachRow(data, viewModal, cartcount, totalamount)
 
@@ -171,7 +191,8 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
 
                 Card(
                     modifier = Modifier
-                        .fillMaxWidth().constrainAs(l3) {
+                        .fillMaxWidth()
+                        .constrainAs(l3) {
                             end.linkTo(parent.end)
                             start.linkTo(parent.start)
                             bottom.linkTo(parent.bottom)
@@ -212,16 +233,15 @@ fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostContro
                 .fillMaxWidth()
             // .height(260.dp)
         ) {
-            items(viewModal.list.value) { data ->
-                    AddressFiled(data,selectedIndex)
-                }
-
+//            items(viewModal.list.value) { data ->
+//                    AddressFiled(data,selectedIndex)
+//                }
+//
 
 
 
         }
-        Log.d("cartlistsize", "${viewModal.list.value.size}--${viewModal.list.value} ")
-            Spacer(modifier = Modifier.height((2.dp)))
+           Spacer(modifier = Modifier.height((2.dp)))
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
@@ -325,6 +345,7 @@ fun SimpleRadioButtonComponent() {
     }
 
 }
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ItemEachRow(
     data: CartItems,
@@ -333,13 +354,16 @@ fun ItemEachRow(
     totalamount: MutableState<Int>,
 
 ) {
-    viewModal.getItemBaseOnProductId(data.ProductIdNumber)
-    var each_item_count = remember {viewModal.productIdCount }
+    Log.d("jdjdjjd","djjjdjd")
+   // viewModal.getItemBaseOnProductId(data.ProductIdNumber)
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
     ) {
+
         Row(
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -384,13 +408,12 @@ fun ItemEachRow(
                         CommonMathButton(icon = R.drawable.minus) {
                             cartcount.value -= 1
                             viewModal.deleteCartItems(data)
-                            // viewModal.getItemBaseOnProductId(data.ProductIdNumber)
-                          //  each_item_count.value -= 1
                             totalamount.value = totalamount.value - (data.strProductPrice!!)
 
                         }
                         Text14_400(
-                            text = "${each_item_count.value}",
+                            text = viewModal.getItemBaseOnProductId(data.ProductIdNumber)
+                            ,
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
                                 .padding(horizontal = 20.dp),
@@ -398,12 +421,9 @@ fun ItemEachRow(
                         )
                         CommonMathButton(icon = R.drawable.add) {
                             cartcount.value += 1
-                         //   each_item_count.value += 1
+                            viewModal.setcartvalue(viewModal.getcartvalue()+1 )
                             viewModal.insertCartItem(data)
                             totalamount.value = totalamount.value + (data.strProductPrice!!)
-                        //   viewModal.getItemBaseOnProductId(data.ProductIdNumber)
-//                            viewModal.getCartItem()
-
 
                         }
                     }
@@ -425,3 +445,5 @@ fun ItemEachRow(
     }
 
 }
+
+

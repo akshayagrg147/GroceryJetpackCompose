@@ -23,24 +23,30 @@ import javax.inject.Inject
 @HiltViewModel
 class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: CommonRepository):ViewModel() {
     private val live:MutableState<List<CartItems>> = mutableStateOf(emptyList())
-    val responseLiveData:MutableState<List<CartItems>> =live
+    val responseLiveData:State<List<CartItems>> =live
 
     private val itemcollections:MutableState<ItemsCollectionsResponse> = mutableStateOf(ItemsCollectionsResponse(null,null,null))
-    val itemcollections1:MutableState<ItemsCollectionsResponse> =itemcollections
+    val itemcollections1:State<ItemsCollectionsResponse> =itemcollections
 
 
 
     private val updatecount:MutableState<Int> =mutableStateOf(0)
-    val getitemcount:MutableState<Int> =updatecount
+    val getitemcount:State<Int> =updatecount
 
-    private val productIdCountMutable:MutableState<Int> =mutableStateOf(0)
-    val productIdCount:MutableState<Int> =productIdCountMutable
+    private var productIdCountMutable:Int =0
+    var productIdCount:Int =productIdCountMutable
 
     private val addresslist:MutableState<List<AddressItems>> = mutableStateOf(emptyList())
-    val list:MutableState<List<AddressItems>> =addresslist
+    val list:State<List<AddressItems>> =addresslist
 
-    fun getItemsCollections(){
 
+
+    fun setcartvalue(value: Int){
+
+        productIdCountMutable=value
+    }
+    fun getcartvalue():Int{
+       return productIdCount
     }
 
     fun deleteCartItems(value: CartItems)=viewModelScope.launch(Dispatchers.IO){
@@ -59,17 +65,21 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
         }
     }
 
-    fun getItemBaseOnProductId(value: String?)=viewModelScope.launch(Dispatchers.IO){
-        Log.d("callingcart", "getItemBaseOnProductId: --")
-        val intger: Int = dao.getProductBasedIdCount(value)
-        Log.d("callingcart", "getItemBaseOnProductId: $intger")
-        if (intger == 0) {
-            productIdCountMutable.value = 1
-        }    else
-            productIdCountMutable.value=intger
+    fun getItemBaseOnProductId(value: String?):String{
+        viewModelScope.launch(Dispatchers.IO){
+            Log.d("callingcart", "getItemBaseOnProductId: --")
+            val intger: Int = dao.getProductBasedIdCount(value)
+            Log.d("callingcart", "getItemBaseOnProductId: $intger")
+            if (intger == 0) {
+                productIdCountMutable = 1
+            }    else
+                productIdCountMutable=intger
+        }
+        return productIdCountMutable.toString()
+
     }
     fun getAddress()=viewModelScope.launch(Dispatchers.IO) {
-        list.value= dao.getAllAddress()
+        addresslist.value= dao.getAllAddress()
     }
     fun insertCartItem(value: CartItems)=viewModelScope.launch (Dispatchers.IO){
         val intger: Int = dao.getProductBasedIdCount(value.ProductIdNumber!!)
@@ -100,7 +110,7 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
     }
 
 
-    fun getcartItems()=viewModelScope.launch(Dispatchers.IO){
+   suspend fun getcartItems()= withContext(Dispatchers.IO){
         live.value=dao.getAllCartItems()
 
     }

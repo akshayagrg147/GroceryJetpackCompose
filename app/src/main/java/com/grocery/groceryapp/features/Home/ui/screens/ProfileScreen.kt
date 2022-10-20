@@ -46,7 +46,7 @@ fun profileScreen(navController: NavHostController, context: HomeActivity,viewMo
             )
             Column() {
                 if(viewModal.responseLiveData.value.statusCode==200) {
-                    Text16_700(text = "${viewModal.responseLiveData.value.name}")
+                    Text16_700(text = "${viewModal.responseLiveData.value.name?.name}")
                     Text14_400(text = "Valueable Customer")
                 }
                 else

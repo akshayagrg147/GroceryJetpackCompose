@@ -1,5 +1,6 @@
 package com.grocery.groceryapp.features.Spash.ui.screens
 
+import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -17,17 +18,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.accompanist.pager.*
+import com.google.gson.Gson
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.Utils.CommonMathButton
-import com.grocery.groceryapp.Utils.Text14_400
-import com.grocery.groceryapp.Utils.Text20_700
-import com.grocery.groceryapp.Utils.Text24_700
+import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
@@ -35,6 +37,8 @@ import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.AddressComponent
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
+import kotlinx.coroutines.launch
+
 @Composable
 fun ShimmerItem(
     brush: Brush
@@ -81,7 +85,7 @@ fun ShimmerAnimation(
     ShimmerItem(brush = brush)
 
 }
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 @Composable
 fun menuitems(
     navController: NavHostController,
@@ -91,7 +95,12 @@ fun menuitems(
     val totalamount = remember { mutableStateOf(0) }
     var selectedIndex = remember { mutableStateOf(1) }
     val passingvalue = value
+    var productdetail= remember {
+        mutableStateOf(ItemsCollectionsResponse.SubItems())
+    }
+
     val scope = rememberCoroutineScope()
+    val pager = rememberPagerState()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val ls: MutableList<MainProducts> = ArrayList()
@@ -120,77 +129,70 @@ fun menuitems(
 
     ModalBottomSheetLayout(
         sheetContent = {
+            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                val (l1, l2) = createRefs()
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(l1) {
+                        top.linkTo(parent.top)
 
-            Column(modifier = Modifier.fillMaxSize()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp)
-                ) {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.TopCenter)
-                            .padding(vertical = 20.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text24_700(text = "Order Summary", color = Color.Black)
                     }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text14_400(
-                        text = "Order Amount",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-                    Text14_400(
-                        text = "₹ ${totalamount.value}",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Card(
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+
+                        ) {
+                            HorizontalPager(count = 3, state = pager) { index ->
+                                if (index == 0)
+                                    Banner(pagerState = pager, productdetail.value.productImage1?: "")
+                                if (index == 1)
+                                    Banner(pagerState = pager, productdetail.value.productImage2 ?: "")
+                                if (index == 2)
+                                    Banner(pagerState = pager, productdetail.value.productImage3 ?: "")
+                            }
+
+                        }
+
+
+                        val itemcart: MutableState<Int> = remember { mutableStateOf(1) }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text20_700(
+                                text = productdetail.value.productName ?: "",
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                            IconButton(onClick = {
+
+                            }) {
+
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Text16_700(text = "Product Detail", modifier = Modifier.fillMaxWidth(),)
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Text14_400(text = productdetail.value.productDescription?:"", modifier = Modifier.fillMaxWidth(),)
+
+
+
+
+
+                    }
+
+
 
                 }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text14_400(
-                        text = "Service Charges",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-                    Text14_400(
-                        text = "₹ ${(totalamount.value*10)/100}",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-
-                        .padding(start = 10.dp),
-
-                    ) {
-                    Text24_700(text = "Choose Address", color = Color.Black)
-                }
-                AddressComponent(viewModal,navController)
-
-
 
 
             }
+
         },
         sheetState = modalBottomSheetState,
         sheetShape = RoundedCornerShape(
@@ -237,7 +239,11 @@ fun menuitems(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier.padding(horizontal = 1.dp)
                         ) { itemData ->
-                            SearchItems(itemData, viewModal, totalamount)
+                            SearchItems(itemData, viewModal, totalamount){passvalue->
+                                Log.d("passingdataclass", passvalue.productDescription!!)
+                                productdetail.value=passvalue
+                                scope.launch { modalBottomSheetState.show() }
+                            }
                         }
                     } else {
                         repeat(5) {
@@ -310,8 +316,10 @@ fun ItemEachRow(
 fun SearchItems(
     data: ItemsCollectionsResponse.SubItems,
     viewModal: CartItemsViewModal,
-    totalamount: MutableState<Int>
-) { viewModal.getItemBaseOnProductId(data.productId)
+    totalamount: MutableState<Int>,passItem:(productdetail:ItemsCollectionsResponse.SubItems)->Unit
+) {
+//    rememberCoroutineScope().launch {  viewModal.getItemBaseOnProductId(data.productId) }
+//
 
     var cartcount = remember { mutableStateOf(0) }
     var each_item_count = remember { viewModal.productIdCount }
@@ -336,7 +344,10 @@ fun SearchItems(
                 modifier = Modifier
                     .width(200.dp)
                     .height(150.dp)
-                    .align(alignment = Alignment.CenterHorizontally),
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .clickable {
+                        passItem(data)
+                    },
 
 
                 )
@@ -349,7 +360,9 @@ fun SearchItems(
 
             Spacer(modifier = Modifier.height(10.dp))
             Row(
-                modifier = Modifier.fillMaxWidth() .padding(top = 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
             ){
 
@@ -367,12 +380,12 @@ fun SearchItems(
                     CommonMathButton(icon = R.drawable.minus) {
                         cartcount.value -= 1
                         // viewModal.deleteCartItems(data)
-                        each_item_count.value -= 1
+                      //  each_item_count.value -= 1
                         //    totalamount.value = totalamount.value - (data.strProductPrice!!)
 
                     }
                     Text14_400(
-                        text = "${each_item_count.value}",
+                        text = "${each_item_count}",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(horizontal = 10.dp),
@@ -380,8 +393,8 @@ fun SearchItems(
                     )
                     CommonMathButton(icon = R.drawable.add) {
                         cartcount.value += 1
-                        each_item_count.value += 1
-                        //  viewModal.insertCartItem(data)
+                      //  each_item_count.value += 1
+                       //   viewModal.insertCartItem(data)
 
 
                     }
@@ -391,5 +404,37 @@ fun SearchItems(
 
         }
     }
+}
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun Banner(
+    pagerState: PagerState,
+    productImage1: String?
+) {
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 20.dp)
+    ) {
+        Image(
+            painter = rememberAsyncImagePainter(productImage1),
+            contentDescription = "",
+            modifier = Modifier
+                .height(250.dp)
+                .fillMaxWidth()
+
+        )
+
+        HorizontalPagerIndicator(
+            pagerState = pagerState, pageCount = 3,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(vertical = 10.dp),
+            indicatorWidth = 8.dp,
+            indicatorShape = RectangleShape
+        )
+    }
+
 }
 

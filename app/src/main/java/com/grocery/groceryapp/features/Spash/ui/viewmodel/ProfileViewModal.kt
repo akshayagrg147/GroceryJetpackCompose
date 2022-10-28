@@ -9,9 +9,7 @@ import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.common.ApiState
-import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
-import com.grocery.groceryapp.data.modal.ProductIdIdModal
-import com.grocery.groceryapp.data.modal.UserResponse
+import com.grocery.groceryapp.data.modal.*
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,11 +22,12 @@ class ProfileViewModal @Inject constructor(val repository: CommonRepository, val
     private val live:MutableState<UserResponse> = mutableStateOf(UserResponse(null,null,null,null))
     val responseLiveData:MutableState<UserResponse> =live
 
+    private val orderhistory:MutableState<AllOrdersHistoryList> = mutableStateOf(AllOrdersHistoryList(null,null,null))
+    val orderhistorydata:MutableState<AllOrdersHistoryList> =orderhistory
 
+    fun callingUserDetails()=viewModelScope.launch(Dispatchers.IO) {
 
-    fun callingUserDetails()=viewModelScope.launch {
-
-        repository.getUserResponse("+919812205054").collectLatest {
+        repository.getUserResponse("+91"+shared.getMobileNumber()).collectLatest {
             when(it){
                 is ApiState.Success->{
 
@@ -45,6 +44,30 @@ class ProfileViewModal @Inject constructor(val repository: CommonRepository, val
 
             }
         }
+
+    }
+    fun callingOrderHistory()=viewModelScope.launch(Dispatchers.IO) {
+
+        repository.Allorders().collectLatest {
+            when(it){
+                is ApiState.Success->{
+                    orderhistory.value=it.data
+
+                }
+                is ApiState.Failure->{
+                    orderhistory.value= AllOrdersHistoryList(message = it.msg.message, statusCode = 401, list = null)
+
+                }
+                is ApiState.Loading->{
+
+                }
+
+            }
+        }
+
+    }
+
+    fun setData(it: AllOrdersHistoryList.Order) {
 
     }
 

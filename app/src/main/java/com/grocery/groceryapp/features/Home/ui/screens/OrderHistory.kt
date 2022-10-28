@@ -4,54 +4,52 @@ import android.app.Activity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
 import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
+import com.grocery.groceryapp.features.Home.ui.ui.theme.greyLightColor
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProfileViewModal
 
 @Composable
-fun ProfileScreenNavigation(context: Activity) {
+fun ProfileScreenNavigation(navController: NavHostController, context: Activity) {
 
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = ScreenRoute.OrderHistory.route) {
-        composable(ScreenRoute.OrderHistory.route) {
-            OrderHistoryScreen(navController, context)
-        }
-    }
+
+            OrderHistoryScreen(context,navController)
+
+
 }
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun OrderHistoryScreen(
-    navHostController: NavHostController,
 
-    context: Activity
+    context: Activity,navController: NavHostController,viewModal: ProfileViewModal= hiltViewModel()
 ) {
-
-    val scope = rememberCoroutineScope()
-    val sheet = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-
 
     Column(
         modifier = Modifier
             .padding(horizontal = 10.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        viewModal.callingOrderHistory()
         CommonHeader(text = "Order History") {
             context.finish()
         }
@@ -64,7 +62,8 @@ fun OrderHistoryScreen(
             LazyColumn(
                 //  verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .fillMaxSize().padding(bottom = 15.dp)
+                    .fillMaxSize()
+                    .padding(bottom = 15.dp)
                 // .verticalScroll(state = scrollState)
 
             ){
@@ -77,9 +76,13 @@ fun OrderHistoryScreen(
                             .background(Color.Gray)
                     )
                 }
-                items(5){
-                    ItemEachRow()
-                }
+                if(viewModal.orderhistorydata.value.statusCode==200)
+                {items(viewModal.orderhistorydata.value.list!!){data->
+                    OrderHistoryRow(data){
+
+                        navController.navigate(BottomNavItem.OrderDetail.senddata(viewModal.orderhistorydata.value.toString()))
+                    }
+                }}
 
             }
 
@@ -91,8 +94,10 @@ fun OrderHistoryScreen(
 
 }
 @Composable
-fun ItemEachRow() {
-
+fun OrderHistoryRow(data: AllOrdersHistoryList.Order,call:(AllOrdersHistoryList.Order)->Unit) {
+Card(modifier = Modifier.fillMaxWidth() .padding(5.dp).clickable {
+    call(data)
+}, elevation = 3.dp) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,67 +107,50 @@ fun ItemEachRow() {
             modifier = Modifier.fillMaxWidth(),
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ornge_carrot),
+                painter = painterResource(id = R.drawable.ic_orders_icon),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(70.dp)
+                    .size(40.dp)
                     .align(Alignment.CenterVertically)
             )
             Column(
                 modifier = Modifier.padding(start = 20.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text20_700(text = "Bell Peper Red", modifier = Modifier.align(Alignment.CenterVertically))
-                    IconButton(onClick = {
 
-                    }) {
-                        Icon(Icons.Default.Close, contentDescription = "")
-                    }
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                Text14_400(text = "1 kg")
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row {
-                        CommonButton(icon = R.drawable.minus){
+                Text16_700(text = data?.orderId?:"", modifier = Modifier.align(Alignment.CenterHorizontally))
 
-                        }
-                        Text16_700(
-                            text = "1",
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(horizontal = 20.dp),
-                            color = Color.Black
-                        )
-                        CommonButton(icon = R.drawable.add){
+                Spacer(modifier = Modifier.height(2.dp))
+                Text14_400(text = "Total Amount ₹ ${data?.totalOrderValue}")
+                Spacer(modifier = Modifier.height(2.dp))
 
-                        }
-                    }
-                    Text14_400(
-                        text = "$4.99",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-
-                }
             }
         }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colorResource(id = androidx.browser.R.color.browser_actions_bg_grey)),
 
-        Spacer(modifier = Modifier.height(20.dp))
 
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text14_400(text = "${data?.orderList?.size} items")
+
+
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
                 .background(Color.Gray)
         )
+        Text14_400(text = "Order Date ${data?.createdDate} ")
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+
 
     }
+}
+
 
 }

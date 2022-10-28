@@ -1,6 +1,6 @@
 package com.grocery.groceryapp.features.Spash.ui.viewmodel
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -9,22 +9,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.common.ApiState
+import com.grocery.groceryapp.data.modal.FetchCart
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
-import com.grocery.groceryapp.data.modal.RegisterLoginResponse
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 @HiltViewModel
 class HomeAllProductsViewModal @Inject constructor(val repository: CommonRepository,val
-  sharedPreferences: sharedpreferenceCommon,val dao: Dao
+  sharedPreferences: sharedpreferenceCommon,val dao: Dao,@ApplicationContext context: Context
 ):ViewModel(){
     var passingdata:MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
     public val homeAllProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
@@ -35,8 +37,11 @@ class HomeAllProductsViewModal @Inject constructor(val repository: CommonReposit
     val exclusiveProductsResponse1: State<HomeAllProductsResponse> = exclusiveProductsResponse
     val bestsellingProductsResponse1: State<HomeAllProductsResponse> = bestsellingProductsResponse
 
-    private val addresslist:MutableList<AddressItems> = mutableListOf()
-    val list:MutableList<AddressItems> =addresslist
+    private val addresslist:MutableState<List<AddressItems>> = mutableStateOf(emptyList())
+    val list:State<List<AddressItems>> =addresslist
+
+    private val updatecount:MutableState<FetchCart> =mutableStateOf(FetchCart())
+    val getitemcount:MutableState<FetchCart> =updatecount
 
 
 
@@ -44,13 +49,25 @@ class HomeAllProductsViewModal @Inject constructor(val repository: CommonReposit
 fun gettingAddres():String{
     return sharedPreferences.getCombinedAddress()
 }
-    fun getAddress()=viewModelScope.launch(Dispatchers.IO) {
-        addresslist.addAll(
-            dao.getAllAddress()
-        )
+    suspend fun getAddress()= withContext(Dispatchers.IO) {
+        dao.getAllAddress().collectLatest {
+            addresslist.value=it
+            Log.d("addessget", Gson().toJson(it.size))
+        }
+
+
     }
     fun deleteAddress(id:Int)=viewModelScope.launch(Dispatchers.IO){
         dao.deleteAddress(id.toString())
+
+    }
+   suspend fun getCartItem(context: Context)= withContext(Dispatchers.IO){
+       var totalcount: Int =
+           dao.getTotalProductItems()
+       var totalPrice: Int =
+           dao.getTotalProductItemsPrice()
+       updatecount.value.totalcount=totalcount
+       updatecount.value.totalprice=totalPrice
 
     }
 

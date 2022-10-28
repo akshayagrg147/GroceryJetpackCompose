@@ -6,16 +6,18 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
+
 import com.grocery.groceryapp.common.ApiState
-import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
-import com.grocery.groceryapp.data.modal.ProductIdIdModal
+import com.grocery.groceryapp.data.modal.*
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,10 +30,11 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
     private val itemcollections:MutableState<ItemsCollectionsResponse> = mutableStateOf(ItemsCollectionsResponse(null,null,null))
     val itemcollections1:State<ItemsCollectionsResponse> =itemcollections
 
+    private val bookedorderResponse:MutableState<OrderIdResponse> = mutableStateOf(OrderIdResponse())
+    val bookedorderResponse1:State<OrderIdResponse> =bookedorderResponse
 
-
-    private val updatecount:MutableState<Int> =mutableStateOf(0)
-    val getitemcount:State<Int> =updatecount
+    private val updatecount:MutableState<FetchCart> =mutableStateOf(FetchCart())
+    val getitemcount:State<FetchCart> =updatecount
 
     private var productIdCountMutable:Int =0
     var productIdCount:Int =productIdCountMutable
@@ -78,8 +81,11 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
         return productIdCountMutable.toString()
 
     }
-    fun getAddress()=viewModelScope.launch(Dispatchers.IO) {
-        addresslist.value= dao.getAllAddress()
+    suspend fun getAddress()= withContext(Dispatchers.IO) {
+       dao.getAllAddress().collectLatest {
+           addresslist.value=it
+       }
+
     }
     fun insertCartItem(value: CartItems)=viewModelScope.launch (Dispatchers.IO){
         val intger: Int = dao.getProductBasedIdCount(value.ProductIdNumber!!)
@@ -89,7 +95,7 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
                     CartItems(
                         value.ProductIdNumber,
                         value.strCategoryThumb,intger + 1,
-                        value.strProductPrice, value.strProductName)
+                        value.strProductPrice, value.strProductName,value.actualprice)
 
                 )
 
@@ -104,7 +110,10 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
     fun getCartItem()= viewModelScope.launch(Dispatchers.IO){
         var totalcount: Int =
             dao.getTotalProductItems()
-        updatecount.value=totalcount
+        var totalPrice: Int =
+            dao.getTotalProductItemsPrice()
+        updatecount.value.totalcount=totalcount
+        updatecount.value.totalcount=totalPrice
 
 
     }
@@ -128,6 +137,28 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
                 }
                 is ApiState.Failure->{
                     itemcollections.value= ItemsCollectionsResponse(null,it.msg.message,401)
+
+                }
+                is ApiState.Loading->{
+
+                }
+
+            }
+        }
+
+    }
+    fun calllingBookingOrder(productIdIdModal: OrderIdCreateRequest)=viewModelScope.launch {
+        repository.OrderIdRequest(productIdIdModal).collectLatest {
+            when(it){
+                is ApiState.Success->{
+                    bookedorderResponse.value=it.data
+
+
+
+                }
+                is ApiState.Failure->{
+                    bookedorderResponse.value= OrderIdResponse(message = it.msg.message, statusCode = 401)
+
 
                 }
                 is ApiState.Loading->{

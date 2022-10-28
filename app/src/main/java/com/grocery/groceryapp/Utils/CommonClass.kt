@@ -42,6 +42,10 @@ fun Text20_700(text: String, color: Color = titleColor, modifier: Modifier = Mod
 fun Text16_700(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.body2, color = color, modifier = modifier,)
 }
+@Composable
+fun Text16_700Error(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
+    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier,)
+}
 
 
 @Composable
@@ -147,12 +151,13 @@ fun CommonNumberField(
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     size: Dp = 25.dp,
     enable: Boolean = true,
-    onClick: () -> Unit = {}
+    onClick: (String) -> Unit = {}
 
 ) {
     TextField(
         value = text.value,
-        onValueChange = { text.value = it },
+        onValueChange = { text.value=it
+            onClick(it)},
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.White,
             focusedLabelColor = fadedTextColor,
@@ -174,7 +179,7 @@ fun CommonNumberField(
         },
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick(text.value) },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         enabled = enable,
         textStyle = TextStyle(
@@ -192,12 +197,13 @@ fun CommonTextField(
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     size: Dp = 25.dp,
     enable: Boolean = true,
-    onClick: () -> Unit = {}
+    onClick: (String) -> Unit = {}
 
 ) {
     TextField(
         value = text.value,
-        onValueChange = { text.value = it },
+        onValueChange = { text.value = it
+            onClick(it)},
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.White,
             focusedLabelColor = fadedTextColor,
@@ -219,7 +225,7 @@ fun CommonTextField(
         },
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick(text.value) },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         enabled = enable,
         textStyle = TextStyle(

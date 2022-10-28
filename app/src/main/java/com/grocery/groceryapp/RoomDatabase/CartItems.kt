@@ -21,6 +21,8 @@ data class CartItems(
 
     @ColumnInfo(name = "strProductName")
     var strProductName: String?=null,
+    @ColumnInfo(name = "actualprice")
+    var actualprice: String?=null,
 
 
 )
@@ -31,8 +33,9 @@ data class CartItems(
         totalCount: Int?,
         price:Int?,
         strCategoryDescription: String?,
+        actualprice: String?,
 
-        ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription)
+        ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription,actualprice)
 }
 
 

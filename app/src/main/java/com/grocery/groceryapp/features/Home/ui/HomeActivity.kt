@@ -29,7 +29,7 @@ class HomeActivity() : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
+                //    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
                 ) {
 
                     NavigationGraph(navController = navController,this@HomeActivity)

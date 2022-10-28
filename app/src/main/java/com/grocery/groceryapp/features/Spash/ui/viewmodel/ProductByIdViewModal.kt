@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.common.ApiState
+import com.grocery.groceryapp.data.modal.FetchCart
 import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
@@ -23,9 +24,9 @@ class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,
     private val live:MutableState<ProductByIdResponseModal> = mutableStateOf(ProductByIdResponseModal(null,null,null))
     val responseLiveData:MutableState<ProductByIdResponseModal> =live
 
-
-    private val updatecount:MutableState<Int> =mutableStateOf(0)
-    val getitemcount:MutableState<Int> =updatecount
+var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = null, message = "", statusCode = 101)
+    private val updatecount:MutableState<FetchCart> =mutableStateOf(FetchCart())
+    val getitemcount:MutableState<FetchCart> =updatecount
 
     private val getItemCount:MutableState<Int> =mutableStateOf(0)
     val productIdCount:MutableState<Int> =getItemCount
@@ -44,6 +45,7 @@ class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,
              .deleteCartItem(value.homeproducts.productId)
 
      }
+     getItemBaseOnProductId(value)
 }
 
     fun getItemBaseOnProductId(value: ProductByIdResponseModal)=viewModelScope.launch(Dispatchers.IO){
@@ -53,13 +55,14 @@ class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,
     fun insertCartItem(value: ProductByIdResponseModal)=viewModelScope.launch (Dispatchers.IO){
        val intger: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!)
        Log.d("jdjjdjd",intger.toString())
+        valueCart=value
        if (intger == 0) {
            dao
                .insertCartItem(
                    CartItems(
                        value.homeproducts.productId,
                        value.homeproducts.productImage1,intger + 1,
-                       Integer.parseInt(value.homeproducts.price?:"1000"), value.homeproducts.productName!!)
+                       Integer.parseInt(value.homeproducts.price?:"1000"), value.homeproducts.productName!!,value.homeproducts.orignalprice)
 
                )
 
@@ -68,6 +71,8 @@ class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,
            val intger1: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!)
            Log.d("jdjjdjd",intger1.toString())
        }
+        getItemBaseOnProductId(value)
+
 
 
 
@@ -75,7 +80,11 @@ class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,
     fun getCartItem()= viewModelScope.launch(Dispatchers.IO){
         var totalcount: Int =
             dao.getTotalProductItems()
-        updatecount.value=totalcount
+        var totalPrice: Int =
+            dao.getTotalProductItemsPrice()
+
+        updatecount.value.totalcount=totalcount
+        updatecount.value.totalprice=totalPrice
 
 
     }

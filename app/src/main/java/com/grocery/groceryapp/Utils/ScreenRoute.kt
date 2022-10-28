@@ -1,5 +1,7 @@
 package com.grocery.groceryapp.Utils
 
+import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+
 sealed class ScreenRoute(val route: String) {
     object SplashScreen : ScreenRoute("splashscreen")
     object SignUpScreen : ScreenRoute("signupscreen")
@@ -14,6 +16,11 @@ sealed class ScreenRoute(val route: String) {
     //cart screen
     object CartScreen : ScreenRoute("CartScreen")
     object AddressScreen : ScreenRoute("AddressScreen")
+
+    object OrderSuccessful : ScreenRoute("{data}/OrderSuccessful"){
+        fun senddata(data:Boolean)="$data/OrderSuccessful"
+
+    }
 
 
 }

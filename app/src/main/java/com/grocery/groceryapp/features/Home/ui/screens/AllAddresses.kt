@@ -26,37 +26,55 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
+import com.grocery.groceryapp.Utils.ScreenRoute
 import com.grocery.groceryapp.Utils.Text14_400
+import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.Utils.Text24_700
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
+import com.grocery.groceryapp.features.Home.ui.ui.theme.navdrawerColor
 
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import kotlinx.coroutines.launch
 
 @Composable
 fun AllAddress(navHostController: NavHostController,context: Context,viewModal: HomeAllProductsViewModal = hiltViewModel()){
     var selectedIndex = remember{ mutableStateOf(1) }
-    viewModal.getAddress()
+    val scope = rememberCoroutineScope()
+
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxWidth()){
-            Text24_700(text = "All address", modifier = Modifier
+//        Text24_700(text = "All address", modifier = Modifier
+//                .fillMaxWidth()
+//            .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
+//                .align(Alignment.CenterHorizontally))
+
+            Text16_700(text = "Add Address", modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 20.dp)
-                .align(Alignment.TopCenter))
-        }
+                .clickable { navHostController.navigate(BottomNavItem.AddnewAddressScreen.senddata("1")) }
+                .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
+                .align(Alignment.CenterHorizontally), color = navdrawerColor
+            )
 
         }
+
         LazyColumn(
             modifier = Modifier
+                .padding(top = 45.dp)
                 .fillMaxSize()
             // .height(260.dp)
         ) {
-            items(viewModal.list, key = {
-              it.id
-            }){item ->
+//            key = {
+//                it.id
+//            }
+            scope.launch{
+                viewModal.getAddress()
+
+            }
+            items(viewModal.list.value){item ->
                 AddressFiled(item,selectedIndex, call = {
-                    viewModal.list.remove(item)
+                  //  viewModal.list.remove(item)
                     viewModal.deleteAddress(it)
 
                 })

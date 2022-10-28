@@ -15,6 +15,8 @@ data class ProductByIdResponseModal(
 ) {
     @JsonClass(generateAdapter = true)
     data class ProductResponse(
+        @Json(name="actual_price")
+        val orignalprice: String?,
         @Json(name = "price")
         val price: String?=null,
         @Json(name = "productId")

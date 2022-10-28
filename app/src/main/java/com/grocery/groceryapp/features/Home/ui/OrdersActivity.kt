@@ -22,7 +22,7 @@ class OrdersActivity : ComponentActivity() {
             }
             com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    ProfileScreenNavigation(context = this)
+                    ProfileScreenNavigation(navController = navController, context = this)
                 }
             }
         }

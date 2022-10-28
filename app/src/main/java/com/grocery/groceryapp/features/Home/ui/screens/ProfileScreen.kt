@@ -71,12 +71,8 @@ fun profileScreen(navController: NavHostController, context: HomeActivity,viewMo
             .fillMaxWidth()
             .padding(top = 10.dp, bottom = 10.dp)
             .clickable {
-                context.startActivity(
-                    Intent(
-                        context,
-                        OrdersActivity::class.java
-                    )
-                )
+                navController.navigate(BottomNavItem.AllOrderHistory.screen_route)
+
             },Arrangement.SpaceBetween) {
             Row(){
                 Icon(
@@ -104,41 +100,7 @@ fun profileScreen(navController: NavHostController, context: HomeActivity,viewMo
             
         }
         Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray)
-                .padding(start = 5.dp, end = 20.dp)
-        )
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 10.dp),Arrangement.SpaceBetween) {
-            Row(){
-                Icon(
-                    painter = painterResource(id =R.drawable.ic_my_details_icon) ,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(start = 10.dp, top = 5.dp)
-                    ,
-                    tint = blackColor
-                )
-                Text16_700(text = "My Details", modifier = Modifier.padding(start = 15.dp, top = 5.dp))
-            }
-            Icon(
-                painter = painterResource(id =R.drawable.ic_rightarrow),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(25.dp)
-                    .padding(top = 5.dp)
-                ,
-                tint = blackColor
-            )
 
-
-        }
-        Spacer(modifier = Modifier.height(10.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -223,7 +185,7 @@ fun profileScreen(navController: NavHostController, context: HomeActivity,viewMo
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp, bottom = 10.dp),Arrangement.SpaceBetween) {
-            Row(){
+            Row(modifier = Modifier.clickable {  navController.navigate(BottomNavItem.PrivacyPolicyScreen.screen_route) }){
                 Icon(
                     painter = painterResource(id =R.drawable.ic_promocode),
                     contentDescription = "",
@@ -233,7 +195,7 @@ fun profileScreen(navController: NavHostController, context: HomeActivity,viewMo
                     ,
                     tint = blackColor
                 )
-                Text16_700(text = "Promo Code", modifier = Modifier.padding(start = 15.dp, top = 5.dp))
+                Text16_700(text = "Privacy Policy", modifier = Modifier.padding(start = 15.dp, top = 5.dp))
             }
             Icon(
                 painter = painterResource(id =R.drawable.ic_rightarrow),

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.Dao
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface Dao {
@@ -22,6 +23,9 @@ interface Dao {
     @Query("SELECT SUM(totalCount) FROM CartItems")
     fun getTotalProductItems(): Int
 
+    @Query("SELECT SUM(productPrice*totalCount) FROM CartItems")
+    fun getTotalProductItemsPrice(): Int
+
     @Query("DELETE  FROM CartItems WHERE ProductIdNumber = :id" )
     fun deleteCartItem(id:String?)
 
@@ -32,7 +36,7 @@ interface Dao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAddressItem(address: AddressItems)
     @Query("SELECT * FROM AddressItems")
-    fun getAllAddress():List<AddressItems>
+    fun getAllAddress(): Flow<List<AddressItems>>
     @Query("DELETE  FROM AddressItems WHERE id = :id")
     fun deleteAddress(id:String?)
 

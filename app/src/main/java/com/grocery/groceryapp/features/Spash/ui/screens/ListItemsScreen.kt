@@ -16,32 +16,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.domain.modal.FilterOptions
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ListItems(
     context: Context,
-    ls: HomeAllProductsResponse?,
+    ls: HomeAllProductsResponse,
     viewModal: LoginViewModel = hiltViewModel()
 ) {
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val mutablelist= remember {
-        ls
+        mutableStateOf<HomeAllProductsResponse>(ls)
+
     }
     var filterclicked by remember { mutableStateOf(false) }
     var minimum by remember { mutableStateOf("") }
@@ -82,6 +89,21 @@ fun ListItems(
                 )
 
                 Column(modifier = Modifier.fillMaxSize()) {
+
+
+                    var sliderPosition by remember { mutableStateOf(0f) }
+                    Column {
+                        Text(text = sliderPosition.toString())
+
+                    }
+
+
+
+
+
+
+
+
                     Text20_700(
                         text = "FILTER & SORT",
                         modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -132,22 +154,38 @@ fun ListItems(
                 .padding(start = 10.dp)
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)) {
-                Text16_700(text = "Asending(A-Z)", modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 5.dp).clickable {
-                    mutablelist?.list?.sortedBy{it->it.productName?.contains("Potato")}
-//                    mutablelist?.list?.filter { it->Integer.parseInt(it.price?:"")<=40 }
-                   scope.launch {
-                       modalBottomSheetState.hide()}
+                Text16_700(text = "Asending(A-Z)", modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 5.dp)
+                    .clickable {
 
-                })
-                Text16_700(text = "Desending(Z-A)", modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 5.dp).clickable{
-                    scope.launch {   modalBottomSheetState.hide()}
-                })
-                Text16_700(text = "High to low", modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 5.dp).clickable{
-                    scope.launch {   modalBottomSheetState.hide()}
-                })
-                Text16_700(text = "Low to high", modifier = Modifier.align(Alignment.CenterHorizontally).padding(vertical = 5.dp).clickable{
-                    scope.launch {   modalBottomSheetState.hide()}
-                })
+                        mutablelist.value.list?.sortedBy { it -> Integer.parseInt(it.price)<40 }
+                        scope.launch {
+                            modalBottomSheetState.hide()
+                        }
+
+                    })
+                Text16_700(text = "Desending(Z-A)", modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 5.dp)
+                    .clickable {
+                        mutablelist.value.list?.sortedByDescending { it -> it.productName }
+                        scope.launch { modalBottomSheetState.hide() }
+                    })
+                Text16_700(text = "High to low", modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 5.dp)
+                    .clickable {
+                        mutablelist.value.list?.sortedBy { it -> it.price?.toInt() }
+                        scope.launch { modalBottomSheetState.hide() }
+                    })
+                Text16_700(text = "Low to high", modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 5.dp)
+                    .clickable {
+                        mutablelist.value.list?.sortedByDescending { it -> it.price?.toInt() }
+                        scope.launch { modalBottomSheetState.hide() }
+                    })
 
             }
 
@@ -164,14 +202,24 @@ fun ListItems(
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Gray)) {
-                Spacer(modifier = Modifier.height(50.dp))
-                Text24_700(text = mutablelist?.message?:"none", modifier = Modifier.align(Alignment.CenterHorizontally))
-                Spacer(modifier = Modifier.height(60.dp))
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(110.dp)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.banner), contentDescription = "",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                    Text24_700(text = mutablelist?.value.message?:"none", modifier = Modifier.align(
+                        Alignment.BottomCenter))
+
+                }
+                Spacer(modifier = Modifier.height(10.dp))
                 Box(modifier = Modifier
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))) {
                     LazyColumn( modifier = Modifier.fillMaxHeight()) {
-                        items(mutablelist?.list!!) { data ->
+                        items(mutablelist?.value.list!!) { data ->
                             // Column(modifier = Modifier.padding(10.dp)) {
                             SubItems(data)
                             //}

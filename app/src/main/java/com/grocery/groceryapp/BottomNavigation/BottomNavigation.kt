@@ -26,7 +26,7 @@ fun BottomNavigation(navController: NavController) {
         BottomNavItem.MyNetwork,
 //        BottomNavItem.AddPost,
         BottomNavItem.Notification,
-        BottomNavItem.Jobs
+        BottomNavItem.Profile
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -48,7 +48,7 @@ fun BottomNavigation(navController: NavController) {
             bottomBarState.value = true
 
         }
-        BottomNavItem.Jobs.screen_route-> {
+        BottomNavItem.Profile.screen_route-> {
             // Hide BottomBar and TopBar
             bottomBarState.value = true
 

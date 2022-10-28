@@ -1,5 +1,6 @@
 package com.grocery.groceryapp.features.Spash.domain.repository
 
+import com.grocery.groceryapp.data.modal.OrderIdCreateRequest
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.data.modal.RegisterLoginRequest
 import com.grocery.groceryapp.data.network.ApiService
@@ -48,6 +49,14 @@ class CommonRepository @Inject constructor(
     fun ItemsCollections(productIdIdModal: ProductIdIdModal
     ) = toResultFlow {
         apiService.getItemsCollections(productIdIdModal)
+    }
+    fun OrderIdRequest(productIdIdModal: OrderIdCreateRequest
+    ) = toResultFlow {
+        apiService.CreateOrderId(productIdIdModal)
+    }
+    fun Allorders(
+    ) = toResultFlow {
+        apiService.AllOrders()
     }
     fun gettingJwt()= toResultFlow {apiService.gettingJwtToken()  }
     fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest) = toResultFlow { apiService.checkMobileNumberExist(registerLoginRequest) }

@@ -19,7 +19,7 @@ class ListItemsActivity : ComponentActivity() {
         setContent {
             val data = intent.getParcelableExtra<HomeAllProductsResponse>("parced")
             com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme {
-                ListItems(this,data)
+                ListItems(this,data!!)
             }
 
         }

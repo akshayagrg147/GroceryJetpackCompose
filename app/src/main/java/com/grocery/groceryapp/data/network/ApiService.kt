@@ -50,6 +50,11 @@ interface ApiService {
     suspend fun getItemsCollections(@Body productIdIdModal: ProductIdIdModal):Response<ItemsCollectionsResponse>
 @POST(Constants.checkMobileNumberExist)
     suspend fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest):Response<CheckNumberExistResponse>
+    @POST(Constants.CreateOrderId)
+    suspend fun CreateOrderId(@Body registerLoginRequest: OrderIdCreateRequest):Response<OrderIdResponse>
+    @POST(Constants.AllOrders)
+    suspend fun AllOrders():Response<AllOrdersHistoryList>
+
 
 
 }

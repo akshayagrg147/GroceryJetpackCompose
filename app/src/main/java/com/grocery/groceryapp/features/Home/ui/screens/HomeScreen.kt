@@ -3,6 +3,7 @@ package com.grocery.groceryapp.features.Home.ui
 import android.content.Context
 import android.util.Log
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,10 +18,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,21 +32,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.*
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.Utils.Text14_400
-import com.grocery.groceryapp.Utils.Text16_700
-import com.grocery.groceryapp.Utils.Text24_700
-import com.grocery.groceryapp.Utils.launchActivity
+import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.screens.OrderDetailScreen
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPagerApi::class)
@@ -70,236 +67,240 @@ fun homescreen(
     var all = viewModal.homeAllProductsResponse1.value
     var best = viewModal.bestsellingProductsResponse1.value
     val pager = rememberPagerState()
-    LazyColumn(
-        //  verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 50.dp)
-        // .verticalScroll(state = scrollState)
+    LaunchedEffect(key1 = 0, block ={
+        viewModal.getCartItem(context)
+    } )
 
-    ) {
-        item {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Spacer(modifier = Modifier.width(10.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.location_icon),
-                    contentDescription = "Carrot Icon",
-                    alignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp)
-                        .width(30.dp)
-                        .height(30.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(), Arrangement.SpaceEvenly
-                ) {
+    Box(modifier = Modifier.fillMaxSize()){
+        LazyColumn(
+            //  verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxSize()
+//            .padding(bottom = 50.dp)
+            // .verticalScroll(state = scrollState)
 
+        ) {
 
-                    Text16_700(
-                        text = viewModal.gettingAddres(),
-                        color = headingColor,
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.cart_icon),
-                        contentDescription = "Carrot Icon",
-                        alignment = Alignment.TopEnd,
-
-
+            item {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Row(
                         modifier = Modifier
-                            .width(50.dp)
-                            .height(50.dp)
-                            .clickable {
-                                context.launchActivity<CartActivity>() {
-
-                                }
-                            }
-
-                    )
-
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-
-                TextField(
-                    value = search.value,
-                    shape = RoundedCornerShape(8.dp),
-
-
-                    onValueChange = {
-                        search.value = it
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(24.dp))
-                        .padding(start = 10.dp, end = 10.dp),
-                    placeholder = {
-                        Text14_400(
-                            text = "Search Store",
-                            color = bodyTextColor,
-                        )
-                    },
-
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = Color.Transparent,
-                        trailingIconColor = titleColor,
-                        backgroundColor = greycolor,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-
-                    trailingIcon = {
-                        if (search.value != "") {
-                            IconButton(onClick = {
-                                search.value = ""
-                            }) {
-                                Icon(
-                                    Icons.Default.Close, contentDescription = "",
-                                )
-                            }
-                        }
-                    },
-                    leadingIcon = {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                Icons.Default.Search, contentDescription = "",
+                            .fillMaxWidth()
+                            .padding(10.dp), Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text18_600(text = "Delivery in 10 minutes")
+                            Text(
+                                text = viewModal.gettingAddres(),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 10.sp,
+                                color = greyLightColor,
+                                textAlign = TextAlign.Center,
+                                maxLines=1,
+                                modifier = Modifier
+                                    .padding(start = 5.dp)
+                                    .width(100.dp)
                             )
                         }
-                    },
-                    singleLine = true,
-                )
 
-                HorizontalPager(count = 3, state = pager) { index ->
-                    Banner(pagerState = pager)
-                }
+
+
+                        Image(
+                            painter = painterResource(id = R.drawable.avatar),
+                            contentDescription = "ProfileImage",
+                            alignment = Alignment.Center,
+                            modifier = Modifier
+
+                                .padding(vertical = 10.dp)
+                                .width(45.dp)
+                                .height(45.dp)
+                                .clickable {
+                                    navcontroller.navigate(BottomNavItem.Profile.screen_route)
+                                }
+                        )
+                    }
+                    TextField(
+                        value = search.value,
+                        shape = RoundedCornerShape(8.dp),
+                        onValueChange = {
+                            search.value = it
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(24.dp))
+                            .padding(start = 10.dp, end = 10.dp),
+                        placeholder = {
+                            Text14_400(
+                                text = "Search Store",
+                                color = bodyTextColor,
+                            )
+                        },
+
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = Color.Transparent,
+                            trailingIconColor = titleColor,
+                            backgroundColor = greycolor,
+                            disabledIndicatorColor = Color.Transparent
+                        ),
+
+                        trailingIcon = {
+                            if (search.value != "") {
+                                IconButton(onClick = {
+                                    search.value = ""
+                                }) {
+                                    Icon(
+                                        Icons.Default.Close, contentDescription = "",
+                                    )
+                                }
+                            }
+                        },
+                        leadingIcon = {
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    Icons.Default.Search, contentDescription = "",
+                                )
+                            }
+                        },
+                        singleLine = true,
+                    )
+
+                    HorizontalPager(count = 3, state = pager) { index ->
+                        Banner(pagerState = pager)
+                    }
 
 //exclusive offers
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                ) {
-                    Text16_700(
-                        text = "Exclusive Offers", color = Color.Black,
+                    Row(
                         modifier = Modifier
-                            .weight(3f)
-                            .padding(start = 10.dp),
-                    )
-                    Text14_400(
-                        "See all", color = seallcolor, modifier = Modifier
-                            .weight(1f)
-                            .padding(top = 5.dp, start = 20.dp)
-                            .clickable {
-                                if (res.statusCode == 200) {
-                                    val list1 = res.list
-                                    context.launchActivity<ListItemsActivity>() {
-                                        putExtra(
-                                            "parced",
-                                            HomeAllProductsResponse(list1, "Exclusive Offers", 200)
-                                        )
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    ) {
+                        Text16_700(
+                            text = "Exclusive Offers", color = Color.Black,
+                            modifier = Modifier
+                                .weight(3f)
+                                .padding(start = 10.dp),
+                        )
+                        Text14_400(
+                            "See all", color = seallcolor, modifier = Modifier
+                                .weight(1f)
+                                .padding(top = 5.dp, start = 20.dp)
+                                .clickable {
+                                    if (res.statusCode == 200) {
+                                        val list1 = res.list
+                                        context.launchActivity<ListItemsActivity>() {
+                                            putExtra(
+                                                "parced",
+                                                HomeAllProductsResponse(
+                                                    list1,
+                                                    "Exclusive Offers",
+                                                    200
+                                                )
+                                            )
 
+                                        }
                                     }
                                 }
-                            }
-                    )
-                }
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                    // .height(260.dp)
-                ) {
-
-                    if (res.statusCode == 200) {
-                        val list1 = res.list
-                        Log.d("listofdata", "homescreen: $list1")
-                        items(list1!!) { data ->
-                            ExclusiveOffers(data, context)
-                        }
-
-
-                    } else {
-                        repeat(5) {
-                            item {
-                                ShimmerAnimation()
-
-                            }
-                        }
+                        )
                     }
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        // .height(260.dp)
+                    ) {
 
-                }
+                        if (res.statusCode == 200) {
+                            val list1 = res.list
+                            Log.d("listofdata", "homescreen: $list1")
+                            items(list1!!) { data ->
+                                ExclusiveOffers(data, context)
+                            }
+
+
+                        } else {
+                            repeat(5) {
+                                item {
+                                    ShimmerAnimation()
+
+                                }
+                            }
+                        }
+
+                    }
 //Best selling
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                ) {
-                    Text16_700(
-                        text = "Best Selling", color = Color.Black,
+                    Row(
                         modifier = Modifier
-                            .weight(3f)
-                            .padding(start = 10.dp),
-                    )
-                    Text14_400(
-                        "See all", color = seallcolor, modifier = Modifier
-                            .weight(1f)
-                            .padding(top = 5.dp, start = 20.dp)
-                            .clickable {
-                                if (best.statusCode == 200) {
-                                    val list1 = best.list
-                                    context.launchActivity<ListItemsActivity>() {
-                                        putExtra(
-                                            "parced",
-                                            HomeAllProductsResponse(list1, "Best Selling", 200)
-                                        )
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    ) {
+                        Text16_700(
+                            text = "Best Selling", color = Color.Black,
+                            modifier = Modifier
+                                .weight(3f)
+                                .padding(start = 10.dp),
+                        )
+                        Text14_400(
+                            "See all", color = seallcolor, modifier = Modifier
+                                .weight(1f)
+                                .padding(top = 5.dp, start = 20.dp)
+                                .clickable {
+                                    if (best.statusCode == 200) {
+                                        val list1 = best.list
+                                        context.launchActivity<ListItemsActivity>() {
+                                            putExtra(
+                                                "parced",
+                                                HomeAllProductsResponse(list1, "Best Selling", 200)
+                                            )
 
+                                        }
                                     }
+
                                 }
-
-                            }
-                    )
-                }
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                    // .height(260.dp)
-                ) {
-
-                    if (best.statusCode == 200) {
-                        val list1 = best.list
-                        items(list1!!) { data ->
-                            // Column(modifier = Modifier.padding(10.dp)) {
-                            BestOffers(data, context)
-                            //}
-
-
-                        }
-
+                        )
                     }
-                    else{
-                        repeat(5) {
-                            item {
-                                ShimmerAnimation()
-
-                            }
-                        }
-                    }
-
-
-                }
-
-                //groceries
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                ) {
-                    Text16_700(
-                        text = "Groceries", color = Color.Black,
+                    LazyRow(
                         modifier = Modifier
-                            .weight(3f)
-                            .padding(start = 10.dp),
-                    )
+                            .fillMaxWidth()
+                        // .height(260.dp)
+                    ) {
+
+                        if (best.statusCode == 200) {
+                            val list1 = best.list
+                            items(list1!!) { data ->
+                                // Column(modifier = Modifier.padding(10.dp)) {
+                                BestOffers(data, context)
+                                //}
+
+
+                            }
+
+                        }
+                        else{
+                            repeat(5) {
+                                item {
+                                    ShimmerAnimation()
+
+                                }
+                            }
+                        }
+
+
+                    }
+
+                    //groceries
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    ) {
+                        Text16_700(
+                            text = "Groceries", color = Color.Black,
+                            modifier = Modifier
+                                .weight(3f)
+                                .padding(start = 10.dp),
+                        )
 //                    Text14_400(
 //                        "See all", color = seallcolor, modifier = Modifier
 //                            .weight(1f)
@@ -313,26 +314,26 @@ fun homescreen(
 //                                }
 //                            }
 //                    )
-                }
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                    // .height(260.dp)
-                ) {
-                    val ls: MutableList<MainProducts> = ArrayList()
-                    ls.add(MainProducts("vegetables", R.drawable.bolt, Purple700, null))
-                    ls.add(MainProducts("diary", R.drawable.bolt, borderColor, null))
-                    ls.add(MainProducts("grocery", R.drawable.bolt, disableColor, null))
-                    ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor, null))
-
-                    items(ls) { data ->
-                        // Column(modifier = Modifier.padding(10.dp)) {
-                        GroceriesItems(data.color, data.image, data.name, navcontroller, viewModal)
-                        //}
-
-
                     }
-                }
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        // .height(260.dp)
+                    ) {
+                        val ls: MutableList<MainProducts> = ArrayList()
+                        ls.add(MainProducts("vegetables", R.drawable.bolt, Purple700, null))
+                        ls.add(MainProducts("diary", R.drawable.bolt, borderColor, null))
+                        ls.add(MainProducts("grocery", R.drawable.bolt, disableColor, null))
+                        ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor, null))
+
+                        items(ls) { data ->
+                            // Column(modifier = Modifier.padding(10.dp)) {
+                            GroceriesItems(data.color, data.image, data.name, navcontroller, viewModal)
+                            //}
+
+
+                        }
+                    }
 //                LazyColumn(
 //                    modifier = Modifier.background(MaterialTheme.colors.background),
 //                    contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
@@ -357,39 +358,45 @@ fun homescreen(
 //                }
 
 
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                    // .height(260.dp)
-                ) {
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                        // .height(260.dp)
+                    ) {
 
-                    if (all.statusCode == 200) {
-                        items(all.list!!) { data ->
-                            // Column(modifier = Modifier.padding(10.dp)) {
-                            AllItems(data, context)
-                            //}
+                        if (all.statusCode == 200) {
+                            items(all.list!!) { data ->
+                                // Column(modifier = Modifier.padding(10.dp)) {
+                                AllItems(data, context)
+                                //}
 
-
-                        }
-                    } else {
-                        repeat(5) {
-                            item {
-                                ShimmerAnimation()
 
                             }
+                        } else {
+                            repeat(5) {
+                                item {
+                                    ShimmerAnimation()
+
+                                }
+                            }
                         }
+
+
                     }
 
 
                 }
-
-
             }
+
+
         }
 
 
+        cardviewAddtoCart(viewModal,context,modifier=Modifier.align(Alignment.BottomCenter))
     }
+
+
 
 
 }
@@ -740,3 +747,69 @@ fun ShimmerItem(
         )
     }
 }
+
+@Composable
+fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,context:Context,modifier: Modifier){
+    Card(
+        elevation = 4.dp,
+        shape = RoundedCornerShape(10.dp),
+        backgroundColor = seallcolor,modifier = modifier
+            .fillMaxWidth()
+            .height(65.dp)
+            .padding(5.dp)
+            .clickable {
+                context.launchActivity<CartActivity>() {
+
+                }
+            }
+            .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
+
+
+    ){
+        Box(modifier = Modifier
+
+        ){
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp)
+            ) {
+                var (l0,l1,l2) = createRefs()
+
+                Image(
+                    painter = painterResource(id = R.drawable.cart_icon),
+                    contentDescription = "Carrot Icon",
+                    alignment = Alignment.Center,
+                    modifier = Modifier
+
+
+                        .width(40.dp)
+                        .padding(top = 10.dp)
+                        .height(40.dp)
+                        .constrainAs(l0) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+
+                )
+                Column(Modifier.constrainAs(l1){
+                    start.linkTo(l0.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }) {
+                    Text14_400(text = "${viewmodal.getitemcount.value.totalcount.toString()} items", color = Color.White)
+                    Text14_400(text = "₹ ${viewmodal.getitemcount.value.totalprice.toString()}",color = Color.White)
+
+
+                }
+                Text16_700(text = "view cart >",color = Color.White, modifier = Modifier.constrainAs(l2){
+                  end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                    top.linkTo(parent.top)
+                })
+
+            }
+
+        }
+}}

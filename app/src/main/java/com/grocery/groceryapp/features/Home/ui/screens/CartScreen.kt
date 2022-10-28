@@ -2,9 +2,6 @@ package com.grocery.groceryapp.features.Home.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -28,32 +25,40 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.google.gson.Gson
+import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.RoomDatabase.CartItems
+import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.data.modal.FetchCart
+import com.grocery.groceryapp.data.modal.OrderIdCreateRequest
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
-import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
+import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.squareup.moshi.Json
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CartScreen(navController: NavHostController, context: Activity, viewModal: CartItemsViewModal = hiltViewModel()) {
+fun CartScreen(navController: NavHostController, context: Activity,sharedpreferenceCommon: sharedpreferenceCommon, viewModal: CartItemsViewModal = hiltViewModel()) {
 
     val scope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    var cartcount = remember { mutableStateOf(0)}
+    var cartcount = remember { mutableStateOf(FetchCart())}
     val totalamount = remember { mutableStateOf(0) }
+    var choose:MutableState<Boolean> = remember { mutableStateOf(false)}
+    var order:ArrayList<OrderIdCreateRequest.Order> = ArrayList()
 
 
 
@@ -119,6 +124,9 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
                     )
 
                 }
+                if(choose.value)
+                {
+                    Text16_700(text = "Choose Address", color = Color.Black, modifier = Modifier.padding(start = 10.dp, top = 15.dp, bottom = 10.dp))}
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -126,9 +134,42 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
                         .padding(start = 10.dp),
 
                 ) {
-                    Text24_700(text = "Choose Address", color = Color.Black)
+
+
+                    AddressComponent(viewModal,navController){
+
+                        when (it) {
+
+                            "containsData" -> {choose.value = true
+                            }
+                            "ProceedButton" -> {
+
+
+                                viewModal.calllingBookingOrder(OrderIdCreateRequest(orderList=order,address="abc",paymentmode="COD",totalOrderValue=totalamount.value.toString(),mobilenumber=sharedpreferenceCommon.getMobileNumber()))
+                               if (viewModal.bookedorderResponse1.value.statusCode == 200){
+                                   Log.d("failedorder--", Gson().toJson(viewModal.bookedorderResponse1))
+
+                                   navController.navigate(ScreenRoute.OrderSuccessful.senddata(true))
+
+                                }
+                                else
+                                {
+                                    Log.d("failedorder", Gson().toJson(viewModal.bookedorderResponse1))
+
+
+                                    navController.navigate(ScreenRoute.OrderSuccessful.senddata(true))
+                                 }
+                            }
+                            else -> {
+
+                                choose.value = false
+                            }
+                        }
+
+
+                    }
                 }
-                AddressComponent(viewModal,navController)
+
 
 
 
@@ -143,89 +184,122 @@ fun CartScreen(navController: NavHostController, context: Activity, viewModal: C
 
     ) {
 
+Box(modifier = Modifier.fillMaxSize()){
+    ConstraintLayout(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxSize()) {
 
-            ConstraintLayout(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxSize()) {
-
-                val (l1, l2,l3) = createRefs()
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(l1) {
-                        top.linkTo(parent.top)
-                        end.linkTo(parent.end)
-                        start.linkTo(parent.start)
+        val (l1, l2,l3) = createRefs()
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .constrainAs(l1) {
+                top.linkTo(parent.top)
+                end.linkTo(parent.end)
+                start.linkTo(parent.start)
 //                    bottom.linkTo(l2.top)
 
-                    }) {
+            }) {
+
+
+
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(l2) {
+                    top.linkTo(l1.bottom)
+                    bottom.linkTo(l3.top)
+
+                }
+        ) {
+            scope.launch{
+                viewModal.getCartItem()
+                viewModal.getAddress()
+                viewModal.getcartItems()
+            }
+            item {
+
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.TopCenter)
                             .padding(vertical = 20.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text24_700(text = "MY Cart", color = Color.Black)
+                        Text24_700(text = "Checkout", color = Color.Black)
                     }
-                }
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(l2) {
-                            top.linkTo(l1.bottom)
-                            bottom.linkTo(l3.top)
 
-                        }
-                ) {
-                    scope.launch{
-                          viewModal.getCartItem()
-                         viewModal.getAddress()
-                        viewModal.getcartItems()
-                    }
-                    items(viewModal.responseLiveData.value) { data ->
-                        ItemEachRow(data, viewModal, cartcount, totalamount)
-
-                    }
-                }
-
+                Spacer(modifier = Modifier.height(10.dp))
                 Card(
-                    modifier = Modifier
+                    elevation = 4.dp,
+                    shape = RoundedCornerShape(10.dp),
+                    backgroundColor = titleColor,modifier = Modifier
                         .fillMaxWidth()
-                        .constrainAs(l3) {
-                            end.linkTo(parent.end)
-                            start.linkTo(parent.start)
-                            bottom.linkTo(parent.bottom)
+                        .fillMaxWidth()
+                        .height(35.dp)
+                        .padding(horizontal = 10.dp)
+                        .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 
-                        },
-                    elevation = 0.dp,
-                    shape = CutCornerShape(30.dp),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 10.dp, end = 10.dp)
-                            .background(colorResource(id = R.color.green_700))
-                            .clickable { scope.launch { modalBottomSheetState.show() } },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text24_700(
-                            text = "Go to Checkout(${cartcount.value})",
-                            color = Color.White,
-                            modifier = Modifier
-                                .padding(vertical = 20.dp)
-                        )
+
+                ){
+                    Row(modifier = Modifier,Arrangement.SpaceBetween
+
+                    ){
+                        Text14_400(text = "Your total savings", whiteColor, modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 10.dp))
+                        Text14_400(text = "₹ 142",color = whiteColor, modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 10.dp))
+
 
                     }
                 }
             }
+            item {
+                if(viewModal.responseLiveData.value.isEmpty())
+                noHistoryAvailable() }
+            items(viewModal.responseLiveData.value) { data ->
+                ItemEachRow(data, viewModal, cartcount, totalamount,order)
+
+            }
+        }
+
+
+    }
+  //  if(viewModal.responseLiveData.value.isNotEmpty())
+        Card(modifier=Modifier.align(Alignment.BottomCenter),
+        elevation = 0.dp,
+        shape = CutCornerShape(30.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .background(colorResource(id = R.color.green_700))
+                .clickable { scope.launch { modalBottomSheetState.show() } },
+            contentAlignment = Alignment.Center
+        ) {
+            Text24_700(
+                text = "Go to Checkout(${cartcount.value.totalcount})",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(vertical = 15.dp)
+            )
+
+        }
+    }
+}
+
 
 
 
     }}
 
 @Composable
-fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostController) {
+fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostController,call:(String)->Unit) {
     var selectedIndex = remember{mutableStateOf(1)}
     Column(modifier = Modifier.fillMaxSize()) {
         LazyRow(
@@ -233,12 +307,15 @@ fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostContro
                 .fillMaxWidth()
             // .height(260.dp)
         ) {
-//            items(viewModal.list.value) { data ->
-//                    AddressFiled(data,selectedIndex)
-//                }
-//
-
-
+            if(viewModal.list.value.isNotEmpty())
+            {  call("containsData")
+                items(viewModal.list.value) { data ->
+                AddressFiled(data, selectedIndex)
+            }
+                }
+            else{
+                call("empty")
+            }
 
         }
            Spacer(modifier = Modifier.height((2.dp)))
@@ -250,21 +327,34 @@ fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostContro
                 }) {
                 Text16_700(text = "Add Address", modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 10.dp)
-                    .align(Alignment.Center), color = Color.Blue)
+                    .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
+                    .align(Alignment.Center), color = navdrawerColor)
 
             }
+        Spacer(modifier = Modifier.height((20.dp)))
         CommonButton(
             text = "Proceed to payment",
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
         )
         {
+            Log.d("callingdata","Callhappenig")
+            call("ProceedButton")
         }
 
 
     }
 
 
+
+}
+@Composable
+fun noHistoryAvailable(){
+    Box(modifier = Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(250.dp))
+        Text14_400(text = "No order available", modifier = Modifier.align(Alignment.Center))
+
+
+    }
 
 }
 
@@ -350,13 +440,16 @@ fun SimpleRadioButtonComponent() {
 fun ItemEachRow(
     data: CartItems,
     viewModal: CartItemsViewModal,
-    cartcount: MutableState<Int>,
+    cartcount: MutableState<FetchCart>,
     totalamount: MutableState<Int>,
+    order: ArrayList<OrderIdCreateRequest.Order>,
 
-) {
+    ) {
     Log.d("jdjdjjd","djjjdjd")
    // viewModal.getItemBaseOnProductId(data.ProductIdNumber)
 
+
+    order.add(OrderIdCreateRequest.Order(productId=data.ProductIdNumber, productName = data.strProductName, productprice = data.strProductPrice.toString(), quantity = viewModal.getItemBaseOnProductId(data.ProductIdNumber)))
 
     Column(
         modifier = Modifier
@@ -394,10 +487,13 @@ fun ItemEachRow(
                     }
                 }
                 Spacer(modifier = Modifier.height(5.dp))
+
                 Text14_400(
                     text = "₹ ${data.strProductPrice}",
                     color = blackColor,
                 )
+                Text(text ="₹${data.actualprice ?: "0.00"}" , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+
 //                Text14_400(text = data.strProductName.toString())
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
@@ -406,7 +502,7 @@ fun ItemEachRow(
                 ) {
                     Row {
                         CommonMathButton(icon = R.drawable.minus) {
-                            cartcount.value -= 1
+                            cartcount.value.totalcount -= 1
                             viewModal.deleteCartItems(data)
                             totalamount.value = totalamount.value - (data.strProductPrice!!)
 
@@ -420,7 +516,7 @@ fun ItemEachRow(
                             color = Color.Black
                         )
                         CommonMathButton(icon = R.drawable.add) {
-                            cartcount.value += 1
+                            cartcount.value.totalcount += 1
                             viewModal.setcartvalue(viewModal.getcartvalue()+1 )
                             viewModal.insertCartItem(data)
                             totalamount.value = totalamount.value + (data.strProductPrice!!)

@@ -23,6 +23,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme
 import com.grocery.groceryapp.R
+import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
@@ -30,8 +31,12 @@ import com.grocery.groceryapp.features.Spash.AddressCartScreenNavigation
 import com.grocery.groceryapp.features.Spash.splashScreenNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 @AndroidEntryPoint
 class CartActivity : ComponentActivity() {
+    @Inject
+    lateinit var sharedpreferenceCommon:sharedpreferenceCommon
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,7 +46,7 @@ class CartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    AddressCartScreenNavigation(this)
+                    AddressCartScreenNavigation(this,sharedpreferenceCommon)
                 }
             }
         }

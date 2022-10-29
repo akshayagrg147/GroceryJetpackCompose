@@ -21,16 +21,16 @@ interface Dao {
     fun updateCartItem(count: Int,id:String?)
 
     @Query("SELECT SUM(totalCount) FROM CartItems")
-    fun getTotalProductItems(): Int
+    fun getTotalProductItems():Flow< Int>
 
     @Query("SELECT SUM(productPrice*totalCount) FROM CartItems")
-    fun getTotalProductItemsPrice(): Int
+    fun getTotalProductItemsPrice(): Flow<Int>
 
     @Query("DELETE  FROM CartItems WHERE ProductIdNumber = :id" )
     fun deleteCartItem(id:String?)
 
     @Query("SELECT * FROM CartItems")
-    fun getAllCartItems():List<CartItems>
+    fun getAllCartItems():Flow<List<CartItems>>
 
     //address
     @Insert(onConflict = OnConflictStrategy.REPLACE)

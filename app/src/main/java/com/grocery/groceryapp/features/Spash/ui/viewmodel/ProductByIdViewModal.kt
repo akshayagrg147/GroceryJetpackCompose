@@ -16,6 +16,7 @@ import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -78,10 +79,11 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 
     }
     fun getCartItem()= viewModelScope.launch(Dispatchers.IO){
+
         var totalcount: Int =
-            dao.getTotalProductItems()
+            dao.getTotalProductItems().first()
         var totalPrice: Int =
-            dao.getTotalProductItemsPrice()
+            dao.getTotalProductItemsPrice().first()
 
         updatecount.value.totalcount=totalcount
         updatecount.value.totalprice=totalPrice

@@ -55,7 +55,7 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
     val scope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    var cartcount = remember { mutableStateOf(FetchCart())}
+
     val totalamount = remember { mutableStateOf(0) }
     var choose:MutableState<Boolean> = remember { mutableStateOf(false)}
     var order:ArrayList<OrderIdCreateRequest.Order> = ArrayList()
@@ -64,7 +64,7 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
 
 
 
-    cartcount.value=viewModal.getitemcount.value
+
     ModalBottomSheetLayout(
         sheetContent = {
 
@@ -214,9 +214,10 @@ Box(modifier = Modifier.fillMaxSize()){
                 }
         ) {
             scope.launch{
-                viewModal.getCartItem()
-                viewModal.getAddress()
+                viewModal.getCartPrice()
                 viewModal.getcartItems()
+                viewModal.getAddress()
+
             }
             item {
 
@@ -262,7 +263,7 @@ Box(modifier = Modifier.fillMaxSize()){
                 if(viewModal.responseLiveData.value.isEmpty())
                 noHistoryAvailable() }
             items(viewModal.responseLiveData.value) { data ->
-                ItemEachRow(data, viewModal, cartcount, totalamount,order)
+                ItemEachRow(data, viewModal, totalamount,order)
 
             }
         }
@@ -283,7 +284,7 @@ Box(modifier = Modifier.fillMaxSize()){
             contentAlignment = Alignment.Center
         ) {
             Text24_700(
-                text = "Go to Checkout(${cartcount.value.totalcount})",
+                text = "Go to Checkout(${viewModal.getitemcount.value.totalprice})",
                 color = Color.White,
                 modifier = Modifier
                     .padding(vertical = 15.dp)
@@ -440,7 +441,7 @@ fun SimpleRadioButtonComponent() {
 fun ItemEachRow(
     data: CartItems,
     viewModal: CartItemsViewModal,
-    cartcount: MutableState<FetchCart>,
+
     totalamount: MutableState<Int>,
     order: ArrayList<OrderIdCreateRequest.Order>,
 
@@ -502,9 +503,7 @@ fun ItemEachRow(
                 ) {
                     Row {
                         CommonMathButton(icon = R.drawable.minus) {
-                            cartcount.value.totalcount -= 1
                             viewModal.deleteCartItems(data)
-                            totalamount.value = totalamount.value - (data.strProductPrice!!)
 
                         }
                         Text14_400(
@@ -516,8 +515,7 @@ fun ItemEachRow(
                             color = Color.Black
                         )
                         CommonMathButton(icon = R.drawable.add) {
-                            cartcount.value.totalcount += 1
-                            viewModal.setcartvalue(viewModal.getcartvalue()+1 )
+                        //    viewModal.setcartvalue(viewModal.getcartvalue()+1 )
                             viewModal.insertCartItem(data)
                             totalamount.value = totalamount.value + (data.strProductPrice!!)
 

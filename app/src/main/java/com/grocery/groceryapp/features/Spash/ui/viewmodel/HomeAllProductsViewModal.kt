@@ -21,6 +21,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -63,9 +64,9 @@ fun gettingAddres():String{
     }
    suspend fun getCartItem(context: Context)= withContext(Dispatchers.IO){
        var totalcount: Int =
-           dao.getTotalProductItems()
+           dao.getTotalProductItems().first()
        var totalPrice: Int =
-           dao.getTotalProductItemsPrice()
+           dao.getTotalProductItemsPrice().first()
        updatecount.value.totalcount=totalcount
        updatecount.value.totalprice=totalPrice
 
@@ -91,11 +92,9 @@ fun gettingAddres():String{
         repository.ExclusiveProducts().collectLatest {
             when(it){
                 is ApiState.Success->{
-                    Log.d("listofdata", "exclsuive")
                     exclusiveProductsResponse.value=it.data
                 }
                 is ApiState.Failure->{
-                    Log.d("listofdata", "exclusivefail")
                     exclusiveProductsResponse.value=HomeAllProductsResponse(null,"Something went wrong",401)
                 }
                 is ApiState.Loading ->{
@@ -116,11 +115,9 @@ fun gettingAddres():String{
         repository.BestSellingProducts().collectLatest {
             when(it){
                 is ApiState.Success->{
-                    Log.d("listofdata", "best")
                     bestsellingProductsResponse.value=it.data
                 }
                 is ApiState.Failure->{
-                    Log.d("listofdata", "bestfail${it.msg}")
                     bestsellingProductsResponse.value=HomeAllProductsResponse(null,"Something went wrong",401)
                 }
                 is ApiState.Loading ->{

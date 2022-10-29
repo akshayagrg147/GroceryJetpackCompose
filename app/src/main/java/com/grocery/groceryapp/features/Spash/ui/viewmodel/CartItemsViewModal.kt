@@ -17,6 +17,7 @@ import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -107,20 +108,24 @@ class CartItemsViewModal @Inject constructor( val dao: Dao,val repository: Commo
 
 
     }
-    fun getCartItem()= viewModelScope.launch(Dispatchers.IO){
+    suspend fun getCartPrice()= withContext(Dispatchers.IO){
         var totalcount: Int =
-            dao.getTotalProductItems()
+            dao.getTotalProductItems().first()
         var totalPrice: Int =
-            dao.getTotalProductItemsPrice()
+            dao.getTotalProductItemsPrice().first()
+        Log.d("updatingdata", totalPrice.toString())
         updatecount.value.totalcount=totalcount
-        updatecount.value.totalcount=totalPrice
+        updatecount.value.totalprice=totalPrice
+
 
 
     }
 
 
    suspend fun getcartItems()= withContext(Dispatchers.IO){
-        live.value=dao.getAllCartItems()
+        dao.getAllCartItems().collectLatest {
+            live.value=it
+        }
 
     }
     fun DeleteProduct(productIdNumber: String?) =viewModelScope.launch(Dispatchers.IO){

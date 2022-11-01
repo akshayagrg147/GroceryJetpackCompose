@@ -19,8 +19,10 @@ interface ApiService {
     suspend fun getExclusiveProducts(
     ): Response<HomeAllProductsResponse>
 
-    @POST(Constants.HomeAllProducts)
+    @GET(Constants.HomeAllProducts)
     suspend fun getHomeAllProducts(
+        @Query("skip") skip: Int,
+        @Query("limit") limit: Int
     ): Response<HomeAllProductsResponse>
 
     @POST(Constants.BestSelling_collectionProducts)

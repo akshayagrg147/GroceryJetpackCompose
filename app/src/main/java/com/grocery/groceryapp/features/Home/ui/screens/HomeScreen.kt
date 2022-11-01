@@ -3,10 +3,7 @@ package com.grocery.groceryapp.features.Home.ui
 import android.content.Context
 import android.util.Log
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -35,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.*
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
@@ -44,6 +43,7 @@ import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.screens.OrderDetailScreen
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
+import com.grocery.groceryapp.features.Spash.ui.screens.SubItems
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import kotlinx.coroutines.launch
 
@@ -59,6 +59,8 @@ fun homescreen(
         mutableStateOf("")
     }
     //calling api
+
+   val list= viewModal.allresponse.collectAsLazyPagingItems()
 
     viewModal.callingBestSelling()
     viewModal.callingExcusiveProducts()
@@ -314,19 +316,7 @@ fun homescreen(
                                 .weight(3f)
                                 .padding(start = 10.dp),
                         )
-//                    Text14_400(
-//                        "See all", color = seallcolor, modifier = Modifier
-//                            .weight(1f)
-//                            .padding(top = 5.dp, start = 20.dp).clickable {
-//                                if (all.statusCode == 200) {
-//                                    val list1 = all.list
-//                                    context.launchActivity<ListItemsActivity>() {
-//                                        putExtra("parced", HomeAllProductsResponse(list1, "", 200))
-//
-//                                    }
-//                                }
-//                            }
-//                    )
+
                     }
                     LazyRow(
                         modifier = Modifier
@@ -347,56 +337,18 @@ fun homescreen(
 
                         }
                     }
-//                LazyColumn(
-//                    modifier = Modifier.background(MaterialTheme.colors.background),
-//                    contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
-//                    verticalArrangement = Arrangement.spacedBy(8.dp)
-//                ) {
-//
-//                    val ls: MutableList<MainProducts> = ArrayList()
-//                    ls.add(MainProducts("Fruit Basket", R.drawable.fruitbasket, Purple700))
-//                    ls.add(MainProducts("Snacks", R.drawable.snacks, borderColor))
-//                    ls.add(MainProducts("Non Veg", R.drawable.nonveg, disableColor))
-//                    ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor))
-//
-//
-//                    gridItems(
-//                        data = ls,
-//                        columnCount = 2,
-//                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-//                        modifier = Modifier.padding(horizontal = 16.dp)
-//                    ) { itemData ->
-//                        SearchItems(itemData)
-//                    }
-//                }
 
 
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp)
-                        // .height(260.dp)
-                    ) {
-
-                        if (all.statusCode == 200) {
-                            items(all.list!!) { data ->
-                                // Column(modifier = Modifier.padding(10.dp)) {
-                                AllItems(data, context)
-                                //}
-
-
-                            }
-                        } else {
-                            repeat(5) {
-                                item {
-                                    ShimmerAnimation()
-
-                                }
-                            }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                           )
+                    {
+                        repeat(list.itemCount ?:0) {
+                            AllItems(list.peek(it)!!, context)
                         }
-
-
                     }
+
+
 
 
                 }

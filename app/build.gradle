@@ -113,6 +113,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
 
+    //Paging 3.0
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha10'
+
     //map design
     implementation "com.google.maps.android:maps-compose:1.0.0"
     //coil

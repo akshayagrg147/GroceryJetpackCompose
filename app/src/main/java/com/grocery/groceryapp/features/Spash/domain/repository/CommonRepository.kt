@@ -23,7 +23,7 @@ class CommonRepository @Inject constructor(
     }
     fun HomeAllProducts(
     ) = toResultFlow {
-        apiService.getHomeAllProducts()
+        apiService.getHomeAllProducts(1,2)
     }
     fun ExclusiveProducts(
     ) = toResultFlow {

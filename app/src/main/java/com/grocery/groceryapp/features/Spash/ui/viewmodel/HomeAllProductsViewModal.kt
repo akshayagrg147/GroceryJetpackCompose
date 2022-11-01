@@ -9,26 +9,33 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.*
 import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
+import com.grocery.groceryapp.Utils.Constants.Companion.NETWORK_PAGE_SIZE
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.FetchCart
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
+import com.grocery.groceryapp.data.network.ApiService
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 @HiltViewModel
-class HomeAllProductsViewModal @Inject constructor(val repository: CommonRepository,val
+class HomeAllProductsViewModal @Inject constructor( private val pagingDataSource:PaginSoucrce ,val repository: CommonRepository,val
   sharedPreferences: sharedpreferenceCommon,val dao: Dao,@ApplicationContext context: Context
 ):ViewModel(){
+
     var passingdata:MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
     public val homeAllProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
     private val exclusiveProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
@@ -129,5 +136,49 @@ fun gettingAddres():String{
             }
         }
     }
+    val allresponse: Flow<PagingData< HomeAllProductsResponse.HomeResponse>> = Pager(PagingConfig(pageSize = NETWORK_PAGE_SIZE)) {
+        pagingDataSource
+    }.flow.cachedIn(viewModelScope)
 
 }
+class PaginSoucrce @Inject constructor(private val apiService: ApiService,) : PagingSource<Int, HomeAllProductsResponse.HomeResponse>() {
+
+    val INITIAL_LOAD_SIZE = 0
+    override fun getRefreshKey(state: PagingState<Int, HomeAllProductsResponse.HomeResponse>): Int?
+    {
+        return state.anchorPosition
+    }
+
+    override suspend fun load(params: LoadParams<Int>):            LoadResult<Int,  HomeAllProductsResponse.HomeResponse> {
+        return try {
+
+            val position = params.key ?: 1
+            val offset =
+                if (params.key != null) ((position - 1) * NETWORK_PAGE_SIZE) + 1 else INITIAL_LOAD_SIZE
+            return try {
+                // val jsonResponse = service.getCryptoList(start = offset, limit = params.loadSize).data
+                val homeproduts = apiService.getHomeAllProducts(offset,params.loadSize)
+
+                val nextKey = if (homeproduts.body()?.list?.isEmpty() == true) {
+                    null
+                } else {
+                    // initial load size = 3 * NETWORK_PAGE_SIZE
+                    // ensure we're not requesting duplicating items, at the 2nd request
+                    position + (params.loadSize / NETWORK_PAGE_SIZE)
+                }
+                LoadResult.Page(
+                    data = homeproduts.body()?.list ?: emptyList(),
+                    prevKey = null, // Only paging forward.
+                    // assume that if a full page is not loaded, that means the end of the data
+                    nextKey = nextKey
+                )
+
+            } catch (exception: IOException) {
+                return LoadResult.Error(exception)
+            } catch (exception: HttpException) {
+                return LoadResult.Error(exception)
+            }
+        } catch (exception: Exception) {
+            return LoadResult.Error(exception)
+        }
+    }}

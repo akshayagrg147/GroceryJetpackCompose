@@ -2,6 +2,7 @@ package com.grocery.groceryapp.BottomNavigation
 
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.ScreenRoute
+import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 
 
 sealed class BottomNavItem(var title:String, var icon:Int, var screen_route:String){
@@ -20,6 +21,8 @@ sealed class BottomNavItem(var title:String, var icon:Int, var screen_route:Stri
     object OrderDetail : BottomNavItem("OrderDetail",R.drawable.location_icon,"{data}/OrderDetail"){
         fun senddata(data:String)="$data/OrderDetail"
     }
+    object MapScreen : BottomNavItem("MapScreen",1,"MapScreen")
+
 
     object PrivacyPolicyScreen : BottomNavItem("PrivacyPolicyScreen",R.drawable.location_icon,"PrivacyPolicy")
     //submenu items
@@ -27,4 +30,6 @@ sealed class BottomNavItem(var title:String, var icon:Int, var screen_route:Stri
         fun senddata(data:String)="$data/MenuItems"
 
     }
+
+
 }

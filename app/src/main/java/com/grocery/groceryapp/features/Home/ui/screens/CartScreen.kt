@@ -56,15 +56,11 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-    val totalamount = remember { mutableStateOf(0) }
+
     var choose:MutableState<Boolean> = remember { mutableStateOf(false)}
     var order:ArrayList<OrderIdCreateRequest.Order> = ArrayList()
 
-
-
-
-
-
+    viewModal.getCartPrice()
     ModalBottomSheetLayout(
         sheetContent = {
 
@@ -99,7 +95,7 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                     Text14_400(
-                        text = "₹ ${totalamount.value}",
+                        text = "₹ ${viewModal.totalPriceState.value}",
                         color = blackColor,
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
@@ -118,7 +114,7 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                     Text14_400(
-                        text = "₹ ${(totalamount.value*10)/100}",
+                        text = "₹ ${viewModal.totalPriceState.value*0.1}",
                         color = blackColor,
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
@@ -145,16 +141,16 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
                             "ProceedButton" -> {
 
 
-                                viewModal.calllingBookingOrder(OrderIdCreateRequest(orderList=order,address="abc",paymentmode="COD",totalOrderValue=totalamount.value.toString(),mobilenumber=sharedpreferenceCommon.getMobileNumber()))
-                               if (viewModal.bookedorderResponse1.value.statusCode == 200){
-                                   Log.d("failedorder--", Gson().toJson(viewModal.bookedorderResponse1))
+                                viewModal.calllingBookingOrder(OrderIdCreateRequest(orderList=order,address="abc",paymentmode="COD",totalOrderValue="0",mobilenumber=sharedpreferenceCommon.getMobileNumber()))
+                               if (viewModal.orderConfirmedStatusState.value.statusCode == 200){
+                                   Log.d("failedorder--", Gson().toJson(viewModal.orderConfirmedStatusState))
 
                                    navController.navigate(ScreenRoute.OrderSuccessful.senddata(true))
 
                                 }
                                 else
                                 {
-                                    Log.d("failedorder", Gson().toJson(viewModal.bookedorderResponse1))
+                                    Log.d("failedorder", Gson().toJson(viewModal.orderConfirmedStatusState))
 
 
                                     navController.navigate(ScreenRoute.OrderSuccessful.senddata(true))
@@ -214,7 +210,7 @@ Box(modifier = Modifier.fillMaxSize()){
                 }
         ) {
             scope.launch{
-                viewModal.getCartPrice()
+
                 viewModal.getcartItems()
                 viewModal.getAddress()
 
@@ -260,10 +256,10 @@ Box(modifier = Modifier.fillMaxSize()){
                 }
             }
             item {
-                if(viewModal.responseLiveData.value.isEmpty())
+                if(viewModal.allcartitemsState.value.isEmpty())
                 noHistoryAvailable() }
-            items(viewModal.responseLiveData.value) { data ->
-                ItemEachRow(data, viewModal, totalamount,order)
+            items(viewModal.allcartitemsState.value) { data ->
+                ItemEachRow(data, viewModal,order)
 
             }
         }
@@ -283,8 +279,9 @@ Box(modifier = Modifier.fillMaxSize()){
                 .clickable { scope.launch { modalBottomSheetState.show() } },
             contentAlignment = Alignment.Center
         ) {
+
             Text24_700(
-                text = "Go to Checkout(${viewModal.getitemcount.value.totalprice})",
+                text = "Go to Checkout(${viewModal.totalPriceState.value})",
                 color = Color.White,
                 modifier = Modifier
                     .padding(vertical = 15.dp)
@@ -308,9 +305,10 @@ fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostContro
                 .fillMaxWidth()
             // .height(260.dp)
         ) {
-            if(viewModal.list.value.isNotEmpty())
-            {  call("containsData")
-                items(viewModal.list.value) { data ->
+            if(viewModal.addresslistState.value.isNotEmpty())
+            {
+                call("containsData")
+                items(viewModal.addresslistState.value) { data ->
                 AddressFiled(data, selectedIndex)
             }
                 }
@@ -441,8 +439,6 @@ fun SimpleRadioButtonComponent() {
 fun ItemEachRow(
     data: CartItems,
     viewModal: CartItemsViewModal,
-
-    totalamount: MutableState<Int>,
     order: ArrayList<OrderIdCreateRequest.Order>,
 
     ) {
@@ -503,7 +499,8 @@ fun ItemEachRow(
                 ) {
                     Row {
                         CommonMathButton(icon = R.drawable.minus) {
-                            viewModal.deleteCartItems(data)
+                            viewModal.deleteCartItems(data.ProductIdNumber)
+                            viewModal.getCartPrice()
 
                         }
                         Text14_400(
@@ -515,9 +512,8 @@ fun ItemEachRow(
                             color = Color.Black
                         )
                         CommonMathButton(icon = R.drawable.add) {
-                        //    viewModal.setcartvalue(viewModal.getcartvalue()+1 )
-                            viewModal.insertCartItem(data)
-                            totalamount.value = totalamount.value + (data.strProductPrice!!)
+                            viewModal.insertCartItem(data.ProductIdNumber?:"",data.strCategoryThumb?:"",data.strProductPrice?:0,data.strProductName?:"",data.actualprice?:"")
+                            viewModal.getCartPrice()
 
                         }
                     }

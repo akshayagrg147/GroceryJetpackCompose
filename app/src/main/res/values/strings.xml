@@ -11,4 +11,5 @@
     <string name="title_activity_order_detail_screen">OrderDetailScreen</string>
     <string name="title_activity_product_items">ProductItemsActivity</string>
     <string name="title_activity_list_items">ListItemsActivity</string>
+    <string name="title_activity_main1">MainActivity1</string>
 </resources>

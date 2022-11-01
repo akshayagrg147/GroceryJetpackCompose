@@ -1,27 +1,37 @@
 package com.grocery.groceryapp.features.Spash.ui.screens
 
 import android.content.Context
-import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
@@ -31,11 +41,20 @@ import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.domain.modal.FilterOptions
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.LoginViewModel
+import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.collections.ArrayList
 
+private val headerHeight = 210.dp
+private val toolbarHeight = 56.dp
 
+private val paddingMedium = 16.dp
+
+private val titlePaddingStart = 16.dp
+private val titlePaddingEnd = 72.dp
+
+private const val titleFontScaleStart = 1f
+private const val titleFontScaleEnd = 0.66f
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ListItems(
@@ -43,13 +62,14 @@ fun ListItems(
     ls: HomeAllProductsResponse,
     viewModal: LoginViewModel = hiltViewModel()
 ) {
+    var lss by remember { mutableStateOf(ls.list)}
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    val mutablelist= remember {
-        mutableStateOf<HomeAllProductsResponse>(ls)
 
-    }
+
+
+
     var filterclicked by remember { mutableStateOf(false) }
     var minimum by remember { mutableStateOf("") }
     var maximum by remember { mutableStateOf("") }
@@ -96,14 +116,6 @@ fun ListItems(
                         Text(text = sliderPosition.toString())
 
                     }
-
-
-
-
-
-
-
-
                     Text20_700(
                         text = "FILTER & SORT",
                         modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -158,32 +170,27 @@ fun ListItems(
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp)
                     .clickable {
-
-                        mutablelist.value.list?.sortedBy { it -> Integer.parseInt(it.price)<40 }
-                        scope.launch {
-                            modalBottomSheetState.hide()
-                        }
+                        lss?.sortedByDescending { it -> it.productName }
+                        scope.launch { modalBottomSheetState.hide() }
 
                     })
                 Text16_700(text = "Desending(Z-A)", modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp)
                     .clickable {
-                        mutablelist.value.list?.sortedByDescending { it -> it.productName }
+
                         scope.launch { modalBottomSheetState.hide() }
                     })
                 Text16_700(text = "High to low", modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp)
                     .clickable {
-                        mutablelist.value.list?.sortedBy { it -> it.price?.toInt() }
                         scope.launch { modalBottomSheetState.hide() }
                     })
                 Text16_700(text = "Low to high", modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp)
                     .clickable {
-                        mutablelist.value.list?.sortedByDescending { it -> it.price?.toInt() }
                         scope.launch { modalBottomSheetState.hide() }
                     })
 
@@ -201,35 +208,52 @@ fun ListItems(
 
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Gray)) {
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(110.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.banner), contentDescription = "",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                    Text24_700(text = mutablelist?.value.message?:"none", modifier = Modifier.align(
-                        Alignment.BottomCenter))
+                .background(Color.White)) {
+                val scroll: ScrollState = rememberScrollState(0)
 
+                val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
+                val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
+
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Header(scroll, headerHeightPx)
+                    Body(lss,scroll)
+                    Toolbar(scroll, headerHeightPx, toolbarHeightPx)
+                    Title(ls?.message?:"none",scroll, headerHeightPx, toolbarHeightPx)
                 }
-                Spacer(modifier = Modifier.height(10.dp))
-                Box(modifier = Modifier
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))) {
-                    LazyColumn( modifier = Modifier.fillMaxHeight()) {
-                        items(mutablelist?.value.list!!) { data ->
-                            // Column(modifier = Modifier.padding(10.dp)) {
-                            SubItems(data)
-                            //}
 
+//                item{
+//                    Box(modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(110.dp)) {
+//                        Image(
+//                            painter = painterResource(id = R.drawable.banner), contentDescription = "",
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                        )
+//                        Text24_700(text = ls?.message?:"none", modifier = Modifier.align(
+//                            Alignment.BottomCenter))
+//
+//                    }
+//                }
+//
+//
+//                items(   lss!!) { data ->
+//                    Box(modifier = Modifier
+//                        .fillMaxHeight()
+//                        .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))) {
+//                        SubItems(data){
+//                            lss?.sortedByDescending { it->it.productName }
+//                        }
+//                    }
+//                    // Column(modifier = Modifier.padding(10.dp)) {
+//
+//                    //}
+//
+//
+//                }
 
-                        }
-
-
-                    }
-                }
 
             }
             Card(modifier = Modifier
@@ -271,7 +295,7 @@ fun ListItems(
 }
 
 @Composable
-fun SubItems(data: HomeAllProductsResponse.HomeResponse) {
+fun SubItems(data: HomeAllProductsResponse.HomeResponse,call:()->Unit) {
 
     Column(
         modifier = Modifier
@@ -280,7 +304,8 @@ fun SubItems(data: HomeAllProductsResponse.HomeResponse) {
                 border = ButtonDefaults.outlinedBorder,
                 shape = RoundedCornerShape(4.dp)
             )
-            .padding(10.dp)
+            .clickable { call() }
+            .padding(top = 30.dp)
             .fillMaxSize()
     ) {
         ConstraintLayout(
@@ -380,6 +405,171 @@ fun ItemEachRow(
     }
 
 
+}
+
+@Composable
+private fun Header(scroll: ScrollState, headerHeightPx: Float) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(headerHeight)
+        .graphicsLayer {
+            translationY = -scroll.value.toFloat() / 2f // Parallax effect
+            alpha = (-1f / headerHeightPx) * scroll.value + 1
+        }
+    ) {
+        Image(
+
+            painter = painterResource(id = R.drawable.banner),
+            contentDescription = "",
+            contentScale = ContentScale.FillBounds
+        )
+
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, Color(0xAA000000)),
+                        startY = 3 * headerHeightPx / 4 // Gradient applied to wrap the title only
+                    )
+                )
+        )
+    }
+}
+
+@Composable
+private fun Body(lss: @RawValue List<HomeAllProductsResponse.HomeResponse>?, scroll: ScrollState) {
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+            .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
+            .verticalScroll(scroll)
+
+    ) {
+        Spacer(Modifier.height(headerHeight))
+                repeat(lss?.size?:0) {
+                    SubItems(lss?.get(it)!!){
+                        lss?.sortedByDescending { it->it.productName }
+                    }
+        }
+        Spacer(modifier = Modifier.height(70.dp))
+        
+    }
+}
+
+@Composable
+private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float) {
+    val toolbarBottom = headerHeightPx - toolbarHeightPx
+    val showToolbar by remember {
+        derivedStateOf {
+            scroll.value >= toolbarBottom
+        }
+    }
+
+    AnimatedVisibility(
+        visible = showToolbar,
+        enter = fadeIn(animationSpec = tween(300)),
+        exit = fadeOut(animationSpec = tween(300))
+    ) {
+        TopAppBar(
+            modifier = Modifier.background(
+                brush = Brush.horizontalGradient(
+                    listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
+                )
+            ),
+            navigationIcon = {
+                IconButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .size(24.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "",
+                        tint = Color.Black
+                    )
+                }
+            },
+            title = {},
+            backgroundColor = Color.Transparent,
+            elevation = 0.dp
+        )
+    }
+}
+
+@Composable
+private fun Title(str:String,
+    scroll: ScrollState,
+    headerHeightPx: Float,
+    toolbarHeightPx: Float
+) {
+    var titleHeightPx by remember { mutableStateOf(0f) }
+    var titleWidthPx by remember { mutableStateOf(0f) }
+
+    Text(
+        text = str,
+        fontSize = 30.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .graphicsLayer {
+                val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
+                val collapseFraction: Float = (scroll.value / collapseRange).coerceIn(0f, 1f)
+
+                val scaleXY = lerp(
+                    titleFontScaleStart.dp,
+                    titleFontScaleEnd.dp,
+                    collapseFraction
+                )
+
+                val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 2f
+
+                val titleYFirstInterpolatedPoint = lerp(
+                    headerHeight - titleHeightPx.toDp() - paddingMedium,
+                    headerHeight / 2,
+                    collapseFraction
+                )
+
+                val titleXFirstInterpolatedPoint = lerp(
+                    titlePaddingStart,
+                    (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
+                    collapseFraction
+                )
+
+                val titleYSecondInterpolatedPoint = lerp(
+                    headerHeight / 2,
+                    toolbarHeight / 2 - titleHeightPx.toDp() / 2,
+                    collapseFraction
+                )
+
+                val titleXSecondInterpolatedPoint = lerp(
+                    (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
+                    titlePaddingEnd - titleExtraStartPadding,
+                    collapseFraction
+                )
+
+                val titleY = lerp(
+                    titleYFirstInterpolatedPoint,
+                    titleYSecondInterpolatedPoint,
+                    collapseFraction
+                )
+
+                val titleX = lerp(
+                    titleXFirstInterpolatedPoint,
+                    titleXSecondInterpolatedPoint,
+                    collapseFraction
+                )
+
+                translationY = titleY.toPx()
+                translationX = titleX.toPx()
+                scaleX = scaleXY.value
+                scaleY = scaleXY.value
+            }
+            .onGloballyPositioned {
+                titleHeightPx = it.size.height.toFloat()
+                titleWidthPx = it.size.width.toFloat()
+            }
+    )
 }
 
 

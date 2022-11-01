@@ -72,54 +72,67 @@ fun homescreen(
     } )
 
     Box(modifier = Modifier.fillMaxSize()){
+        Column() {
+            Spacer(modifier = Modifier.width(10.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp), Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text18_600(text = "Delivery in 10 minutes")
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row() {
+                        Image(painter = painterResource(id = R.drawable.home_icon) , contentDescription ="" )
+                        Text(
+                            text = viewModal.gettingAddres(),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 10.sp,
+                            color = greyLightColor,
+
+                            textAlign = TextAlign.Start,
+
+                            maxLines=1,
+                            modifier = Modifier
+                                .padding(start = 5.dp)
+                                .width(200.dp)
+                                .clickable { navcontroller.navigate(BottomNavItem.MapScreen.screen_route) }
+                        )
+                    }
+
+                }
+
+
+
+                Image(
+                    painter = painterResource(id = R.drawable.avatar),
+                    contentDescription = "ProfileImage",
+                    alignment = Alignment.Center,
+                    modifier = Modifier
+
+                        .padding(vertical = 10.dp)
+                        .width(45.dp)
+                        .height(45.dp)
+                        .clickable {
+                            navcontroller.navigate(BottomNavItem.Profile.screen_route)
+                        }
+                )
+            }
+
+        }
         LazyColumn(
             //  verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize().padding(top=80.dp)
 //            .padding(bottom = 50.dp)
             // .verticalScroll(state = scrollState)
 
         ) {
 
+
             item {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp), Arrangement.SpaceBetween
-                    ) {
-                        Column {
-                            Text18_600(text = "Delivery in 10 minutes")
-                            Text(
-                                text = viewModal.gettingAddres(),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 10.sp,
-                                color = greyLightColor,
-                                textAlign = TextAlign.Center,
-                                maxLines=1,
-                                modifier = Modifier
-                                    .padding(start = 5.dp)
-                                    .width(100.dp)
-                            )
-                        }
 
-
-
-                        Image(
-                            painter = painterResource(id = R.drawable.avatar),
-                            contentDescription = "ProfileImage",
-                            alignment = Alignment.Center,
-                            modifier = Modifier
-
-                                .padding(vertical = 10.dp)
-                                .width(45.dp)
-                                .height(45.dp)
-                                .clickable {
-                                    navcontroller.navigate(BottomNavItem.Profile.screen_route)
-                                }
-                        )
-                    }
                     TextField(
                         value = search.value,
                         shape = RoundedCornerShape(8.dp),

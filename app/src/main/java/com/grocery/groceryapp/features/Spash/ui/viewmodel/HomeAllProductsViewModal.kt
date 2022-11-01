@@ -63,12 +63,15 @@ fun gettingAddres():String{
 
     }
    suspend fun getCartItem(context: Context)= withContext(Dispatchers.IO){
-       var totalcount: Int =
-           dao.getTotalProductItems().first()
-       var totalPrice: Int =
-           dao.getTotalProductItemsPrice().first()
-       updatecount.value.totalcount=totalcount
-       updatecount.value.totalprice=totalPrice
+       if(dao.getTotalProductItems()!=null){
+           var totalcount: Int =
+               dao.getTotalProductItems()!!.first()
+           var totalPrice: Int =
+               dao.getTotalProductItemsPrice()!!.first()
+           updatecount.value.totalcount=totalcount
+           updatecount.value.totalprice=totalPrice
+       }
+
 
     }
 

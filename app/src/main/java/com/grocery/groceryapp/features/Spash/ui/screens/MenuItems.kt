@@ -322,7 +322,7 @@ fun SearchItems(
 //
 
     var cartcount = remember { mutableStateOf(0) }
-    var each_item_count = remember { viewModal.productIdCount }
+
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
@@ -379,13 +379,13 @@ fun SearchItems(
             ) {
                     CommonMathButton(icon = R.drawable.minus) {
                         cartcount.value -= 1
-                        // viewModal.deleteCartItems(data)
+                         viewModal.deleteCartItems(data.productId)
                       //  each_item_count.value -= 1
                         //    totalamount.value = totalamount.value - (data.strProductPrice!!)
 
                     }
                     Text14_400(
-                        text = "${each_item_count}",
+                        text = "${viewModal.getItemBaseOnProductId(data.productId)}",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(horizontal = 10.dp),
@@ -394,7 +394,9 @@ fun SearchItems(
                     CommonMathButton(icon = R.drawable.add) {
                         cartcount.value += 1
                       //  each_item_count.value += 1
-                       //   viewModal.insertCartItem(data)
+                        viewModal.insertCartItem(data.productId?:"",data.productImage1?:"",data.price.toInt()?:0,data.productName?:"",data.actualPrice?:"")
+
+
 
 
                     }

@@ -79,14 +79,16 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 
     }
     fun getCartItem()= viewModelScope.launch(Dispatchers.IO){
+        if( dao.getTotalProductItems()!=null){
+            var totalcount: Int =
+                dao.getTotalProductItems()!!.first()
+            var totalPrice: Int =
+                dao.getTotalProductItemsPrice()!!.first()
 
-        var totalcount: Int =
-            dao.getTotalProductItems().first()
-        var totalPrice: Int =
-            dao.getTotalProductItemsPrice().first()
+            updatecount.value.totalcount=totalcount
+            updatecount.value.totalprice=totalPrice
+        }
 
-        updatecount.value.totalcount=totalcount
-        updatecount.value.totalprice=totalPrice
 
 
     }

@@ -16,10 +16,13 @@ import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity() : ComponentActivity() {
     private val viewModal: HomeAllProductsViewModal by viewModels()
+    @Inject
+    lateinit var sharedpreferenceCommon:sharedpreferenceCommon
      @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +35,7 @@ class HomeActivity() : ComponentActivity() {
                 //    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
                 ) {
 
-                    NavigationGraph(navController = navController,this@HomeActivity)
+                    NavigationGraph(navController = navController,this@HomeActivity,sharedpreferenceCommon)
                 }
             }
         }

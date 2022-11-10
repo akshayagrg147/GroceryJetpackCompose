@@ -10,27 +10,27 @@ import kotlinx.android.parcel.RawValue
 @JsonClass(generateAdapter = true)
 data class HomeAllProductsResponse(
     @Json(name = "list")
-    val list: @RawValue List<HomeResponse>?,
+    val list: @RawValue List<HomeResponse>?= emptyList(),
     @Json(name = "message")
-    val message: String?,
+    val message: String?=null,
     @Json(name = "statusCode")
-    val statusCode: Int?
+    val statusCode: Int?=0
 ): Parcelable {
     @JsonClass(generateAdapter = true)
     @Parcelize
     data class HomeResponse(
         @Json(name = "price")
-        val price: String?,
+        val price: String?=null,
         @Json(name = "ProductImage1")
         val productImage1: String?=null,
         @Json(name = "productName")
-        val productName: String?,
+        val productName: String?=null,
         @Json(name = "quantity")
-        val quantity: String?,
+        val quantity: String?=null,
         @Json(name = "productId")
-        val ProductId: String?,
+        val ProductId: String?=null,
         @Json(name="actual_price")
-        val orignalprice: String?
+        val orignalprice: String?=null
 
     ):Parcelable
 }

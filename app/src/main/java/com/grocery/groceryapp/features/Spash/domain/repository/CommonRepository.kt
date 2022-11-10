@@ -21,9 +21,9 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.LoginUser(addUser)
     }
-    fun HomeAllProducts(
+    fun HomeAllProducts(ss:String
     ) = toResultFlow {
-        apiService.getHomeAllProducts(1,2)
+        apiService.getHomeAllProductsSearch(ss)
     }
     fun ExclusiveProducts(
     ) = toResultFlow {

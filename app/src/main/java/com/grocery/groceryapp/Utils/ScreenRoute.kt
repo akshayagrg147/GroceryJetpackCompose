@@ -17,8 +17,9 @@ sealed class ScreenRoute(val route: String) {
     object CartScreen : ScreenRoute("CartScreen")
     object AddressScreen : ScreenRoute("AddressScreen")
 
-    object OrderSuccessful : ScreenRoute("{data}/OrderSuccessful"){
-        fun senddata(data:Boolean)="$data/OrderSuccessful"
+    object OrderSuccessful : ScreenRoute("OrderSuccessful"){
+
+
 
     }
 

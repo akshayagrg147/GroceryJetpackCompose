@@ -15,12 +15,14 @@ import com.grocery.groceryapp.features.Home.ui.PrivacyPolicyScreen
 import com.grocery.groceryapp.features.Home.ui.SearchScreen
 import com.grocery.groceryapp.features.Home.ui.homescreen
 import com.grocery.groceryapp.features.Home.ui.screens.AllAddress
+import com.grocery.groceryapp.features.Home.ui.screens.SearchScreenProducts
 import com.grocery.groceryapp.features.Home.ui.screens.addressScreen
 import com.grocery.groceryapp.features.Home.ui.screens.orderDetil
 import com.grocery.groceryapp.features.Spash.ProfileScreenNavigation
 import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 import com.grocery.groceryapp.features.Spash.ui.screens.menuitems
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProfileViewModal
+import com.wajahatkarim3.compose.books.ui.model.PassingAddress
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -31,9 +33,13 @@ fun NavigationGraph(
 
 ) {
 
+
     NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
         composable(BottomNavItem.Home.screen_route) {
             homescreen(navController,context)
+        }
+        composable(BottomNavItem.SearchProductItems.screen_route){
+            SearchScreenProducts()
         }
         composable(BottomNavItem.MyNetwork.screen_route) {
             SearchScreen()
@@ -62,8 +68,12 @@ fun NavigationGraph(
             AllAddress(navController,context)
         }
         composable(BottomNavItem.AddnewAddressScreen.screen_route) {
-            val data=it.arguments?.getString("data")?:""
-            addressScreen(data,navController,context)
+            var addressmodal = navController.previousBackStackEntry?.arguments?.getParcelable<PassingAddress>("address")
+            addressmodal?.let {
+                addressScreen(address = it, navController = navController,context)
+            }
+
+
         }
         composable(BottomNavItem.MenuItems.screen_route){
             val data=it.arguments?.getString("data")?:""

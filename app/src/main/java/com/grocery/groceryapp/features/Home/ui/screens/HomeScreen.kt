@@ -25,12 +25,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -39,12 +42,18 @@ import com.google.accompanist.pager.*
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
+import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
+import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.screens.OrderDetailScreen
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.screens.SubItems
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -58,24 +67,26 @@ fun homescreen(
     var search = rememberSaveable {
         mutableStateOf("")
     }
+    val scope = rememberCoroutineScope()
     //calling api
 
    val list= viewModal.allresponse.collectAsLazyPagingItems()
 
     viewModal.callingBestSelling()
     viewModal.callingExcusiveProducts()
-    viewModal.callingHomeAllProducts()
     var res = viewModal.exclusiveProductsResponse1.value
-    var all = viewModal.homeAllProductsResponse1.value
+
     var best = viewModal.bestsellingProductsResponse1.value
     val pager = rememberPagerState()
     LaunchedEffect(key1 = 0, block ={
         viewModal.getCartItem(context)
     } )
 
+
     Box(modifier = Modifier.fillMaxSize()){
         Column() {
             Spacer(modifier = Modifier.width(10.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -121,29 +132,34 @@ fun homescreen(
                 )
             }
 
+
         }
         LazyColumn(
             //  verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .fillMaxSize().padding(top=80.dp)
+                .fillMaxSize()
+                .padding(top = 80.dp)
 //            .padding(bottom = 50.dp)
             // .verticalScroll(state = scrollState)
 
         ) {
-
-
             item {
-                Column(modifier = Modifier.fillMaxSize()) {
+
+
+               Column(modifier = Modifier.fillMaxSize()) {
 
                     TextField(
-                        value = search.value,
+                        value ="",
                         shape = RoundedCornerShape(8.dp),
+                        enabled = false,
                         onValueChange = {
-                            search.value = it
+
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(24.dp))
+                            .clip(RoundedCornerShape(24.dp)).clickable {
+                                navcontroller.navigate(BottomNavItem.SearchProductItems.screen_route)
+                            }
                             .padding(start = 10.dp, end = 10.dp),
                         placeholder = {
                             Text14_400(
@@ -161,17 +177,7 @@ fun homescreen(
                             disabledIndicatorColor = Color.Transparent
                         ),
 
-                        trailingIcon = {
-                            if (search.value != "") {
-                                IconButton(onClick = {
-                                    search.value = ""
-                                }) {
-                                    Icon(
-                                        Icons.Default.Close, contentDescription = "",
-                                    )
-                                }
-                            }
-                        },
+
                         leadingIcon = {
                             IconButton(onClick = {}) {
                                 Icon(
@@ -318,41 +324,50 @@ fun homescreen(
                         )
 
                     }
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                        // .height(260.dp)
-                    ) {
-                        val ls: MutableList<MainProducts> = ArrayList()
-                        ls.add(MainProducts("vegetables", R.drawable.bolt, Purple700, null))
-                        ls.add(MainProducts("diary", R.drawable.bolt, borderColor, null))
-                        ls.add(MainProducts("grocery", R.drawable.bolt, disableColor, null))
-                        ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor, null))
 
-                        items(ls) { data ->
-                            // Column(modifier = Modifier.padding(10.dp)) {
-                            GroceriesItems(data.color, data.image, data.name, navcontroller, viewModal)
-                            //}
-
-
-                        }
-                    }
-
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                           )
-                    {
-                        repeat(list.itemCount ?:0) {
-                            AllItems(list.peek(it)!!, context)
-                        }
-                    }
 
 
 
 
                 }
             }
+
+                val ls: MutableList<MainProducts> = ArrayList()
+                ls.add(MainProducts("vegetables", R.drawable.bolt, Purple700, null))
+                ls.add(MainProducts("diary", R.drawable.bolt, borderColor, null))
+                ls.add(MainProducts("grocery", R.drawable.bolt, disableColor, null))
+                ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor, null))
+            gridItems(
+                data = ls,
+                columnCount = 2,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) { data ->
+                GroceriesItems(data.color, data.image, data.name, navcontroller, viewModal)
+            }
+            list.snapshot().items
+            item{
+
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                )
+                {
+                    repeat(list.itemCount ?:0) {
+                        AllItems(list.peek(it)!!, context)
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+
+
 
 
         }
@@ -366,42 +381,7 @@ fun homescreen(
 
 }
 
-@Composable
-fun LazyVerticalGridDemo() {
-    val list = (1..10).map { it.toString() }
 
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(128.dp),
-
-        // content padding
-        contentPadding = PaddingValues(
-            start = 12.dp,
-            top = 16.dp,
-            end = 12.dp,
-            bottom = 16.dp
-        ),
-        content = {
-            items(list.size) { index ->
-                Card(
-                    backgroundColor = Color.Red,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth(),
-                    elevation = 8.dp,
-                ) {
-                    Text(
-                        text = list[index],
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-        }
-    )
-}
 
 
 @OptIn(ExperimentalPagerApi::class)
@@ -438,12 +418,14 @@ fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.clickable {
-            context.launchActivity<OrderDetailScreen>() {
-                putExtra("productId", data.ProductId)
-                putExtra("ProductCategory", "exclusive")
+        modifier = Modifier
+            .padding(horizontal = 4.dp)
+            .clickable {
+                context.launchActivity<OrderDetailScreen>() {
+                    putExtra("productId", data.ProductId)
+                    putExtra("ProductCategory", "exclusive")
+                }
             }
-        }
 
     ) {
         Column(
@@ -451,6 +433,7 @@ fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context
                 .fillMaxWidth()
                 .padding(5.dp)
         ) {
+
             Log.d("productimage11", data.productImage1.toString())
             Image(
 
@@ -470,7 +453,7 @@ fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text14_400(
+            Text12Sp_600(
                 text = "${data.quantity} pcs,Price", color = headingColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -481,10 +464,18 @@ fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text16_700(
+                Text13_700(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
+                )
+                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 13.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+
+                Icon(
+                    painter = painterResource(id = R.drawable.heart_icon),
+                    contentDescription = "",
+                    modifier = Modifier.padding(start = 100.dp),
+                    tint = redColor
                 )
 
 
@@ -500,15 +491,17 @@ fun AllItems(data: HomeAllProductsResponse.HomeResponse, context: Context) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.clickable {
-            context.launchActivity<OrderDetailScreen>() {
-                putExtra("productId", data.ProductId)
-                putExtra("ProductCategory", "all")
+        modifier = Modifier
+            .padding(5.dp)
+            .clickable {
+                context.launchActivity<OrderDetailScreen>() {
+                    putExtra("productId", data.ProductId)
+                    putExtra("ProductCategory", "all")
+                }
             }
-        }
 
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)
@@ -518,42 +511,50 @@ fun AllItems(data: HomeAllProductsResponse.HomeResponse, context: Context) {
                 painter = rememberAsyncImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(150.dp)
-                    .align(alignment = Alignment.CenterHorizontally)
+                    .width(100.dp)
+                    .height(100.dp)
+                    .align(alignment = Alignment.CenterVertically)
 
 
             )
-            Text24_700(
-                text = data.productName!!, color = headingColor,
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Text14_400(
-                text = "${data.quantity} pcs,Price", color = headingColor,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Row(
-                modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-
-                Text16_700(
-                    text = "₹ ${data.price}",
-                    color = headingColor,
-                    //  modifier= Modifier.weight(0.5F)
+            Column() {
+                Text18_600(
+                    text = data.productName!!, color = headingColor,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
-
-                Icon(
-                    painter = painterResource(id = R.drawable.heart_icon),
-                    contentDescription = "",
-                    modifier = Modifier.padding(start = 100.dp),
-                    tint = redColor
+                Text12Sp_600(
+                    text = "${data.quantity} pcs,Price", color = headingColor,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                       ,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+
+                    Text13_700(
+                        text = "₹ ${data.price}",
+                        color = headingColor,
+                          modifier= Modifier
+                    )
+                    Text(text ="₹${data.orignalprice ?: "0.00"}", fontSize = 13.sp , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+
+
+//                Icon(
+//                    painter = painterResource(id = R.drawable.heart_icon),
+//                    contentDescription = "",
+//                    modifier = Modifier,
+//                    tint = redColor
+//                )
+                }
             }
+
 
 
         }
@@ -565,12 +566,14 @@ fun BestOffers(data: HomeAllProductsResponse.HomeResponse, context: Context) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.clickable {
-            context.launchActivity<OrderDetailScreen>() {
-                putExtra("productId", data.ProductId)
-                putExtra("ProductCategory", "Best")
+        modifier = Modifier
+            .padding(4.dp)
+            .clickable {
+                context.launchActivity<OrderDetailScreen>() {
+                    putExtra("productId", data.ProductId)
+                    putExtra("ProductCategory", "Best")
+                }
             }
-        }
 
     ) {
         Column(
@@ -593,7 +596,7 @@ fun BestOffers(data: HomeAllProductsResponse.HomeResponse, context: Context) {
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text14_400(
+            Text12Sp_600(
                 text = "${data.quantity} pcs,Price", color = headingColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -604,11 +607,13 @@ fun BestOffers(data: HomeAllProductsResponse.HomeResponse, context: Context) {
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text16_700(
+                Text13_700(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
+                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 13.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+
 
                 Icon(
                     painter = painterResource(id = R.drawable.heart_icon),
@@ -656,10 +661,10 @@ fun GroceriesItems(
                     .height(105.dp)
             )
             Text14_400(
-                text = item, color = headingColor,
+                text = item, color = whiteColor,
                 modifier = Modifier
                     .padding(top = 10.dp, end = 10.dp)
-                    .align(Alignment.CenterEnd)
+                    .align(Alignment.Center)
             )
 
 
@@ -768,6 +773,7 @@ fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,context:Context,modifi
 
 
                 }
+
                 Text16_700(text = "view cart >",color = Color.White, modifier = Modifier.constrainAs(l2){
                   end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)

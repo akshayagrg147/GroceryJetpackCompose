@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.CheckNumberExistResponse
+import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.RegisterLoginRequest
 import com.grocery.groceryapp.features.Spash.domain.repository.AuthRepository
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
@@ -23,6 +24,11 @@ class LoginViewModel @Inject constructor(
         CheckNumberExistResponse(false,null,null,null)
     )
     val resp=response
+
+    private val live:MutableState<String> = mutableStateOf(
+       ""
+    )
+    val responseLiveData:MutableState<String> =live
 
 
     fun createUserWithPhone(
@@ -53,5 +59,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun setvalue(str:String){
+        live.value=str
+
+    }
     fun gettingJwtToken()=commonRepository.gettingJwt()
 }

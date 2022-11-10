@@ -27,7 +27,7 @@ class ProfileViewModal @Inject constructor(val repository: CommonRepository, val
 
     fun callingUserDetails()=viewModelScope.launch(Dispatchers.IO) {
 
-        repository.getUserResponse("+91"+shared.getMobileNumber()).collectLatest {
+        repository.getUserResponse("+919812205054").collectLatest {
             when(it){
                 is ApiState.Success->{
 

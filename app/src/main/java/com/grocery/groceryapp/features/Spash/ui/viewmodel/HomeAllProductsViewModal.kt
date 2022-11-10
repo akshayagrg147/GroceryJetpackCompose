@@ -22,134 +22,151 @@ import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+
 @HiltViewModel
-class HomeAllProductsViewModal @Inject constructor( private val pagingDataSource:PaginSoucrce ,val repository: CommonRepository,val
-  sharedPreferences: sharedpreferenceCommon,val dao: Dao,@ApplicationContext context: Context
-):ViewModel(){
+class HomeAllProductsViewModal @Inject constructor(
+    private val pagingDataSource: PaginSoucrce, val repository: CommonRepository, val
+    sharedPreferences: sharedpreferenceCommon, val dao: Dao, @ApplicationContext context: Context
+) : ViewModel() {
 
-    var passingdata:MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
-    public val homeAllProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
-    private val exclusiveProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
+    var passingdata: MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
+    private val exclusiveProductsResponse: MutableState<HomeAllProductsResponse> =
+        mutableStateOf(HomeAllProductsResponse(null, null, null))
 
-    private val bestsellingProductsResponse:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
-    val homeAllProductsResponse1: State<HomeAllProductsResponse> = homeAllProductsResponse
+    private val bestsellingProductsResponse: MutableState<HomeAllProductsResponse> =
+        mutableStateOf(HomeAllProductsResponse(null, null, null))
+
     val exclusiveProductsResponse1: State<HomeAllProductsResponse> = exclusiveProductsResponse
     val bestsellingProductsResponse1: State<HomeAllProductsResponse> = bestsellingProductsResponse
 
-    private val addresslist:MutableState<List<AddressItems>> = mutableStateOf(emptyList())
-    val list:State<List<AddressItems>> =addresslist
+    private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
+    val list: State<List<AddressItems>> = addresslist
 
-    private val updatecount:MutableState<FetchCart> =mutableStateOf(FetchCart())
-    val getitemcount:MutableState<FetchCart> =updatecount
+    private val updatecount: MutableState<FetchCart> = mutableStateOf(FetchCart())
+    val getitemcount: MutableState<FetchCart> = updatecount
+
+    private val m11: MutableStateFlow<String> = MutableStateFlow("")
+    val getitemcount11 = m11.asSharedFlow()
 
 
 
 
-fun gettingAddres():String{
-    return sharedPreferences.getCombinedAddress()
-}
-    suspend fun getAddress()= withContext(Dispatchers.IO) {
+
+
+    val repo = getitemcount11
+        .debounce(300)
+        .filter {
+            it.trim().isEmpty().not()
+        }
+        .distinctUntilChanged()
+        .flatMapLatest {
+            repository.HomeAllProducts(it)
+        }
+
+
+
+    fun setupFlow(query: String){
+        m11.value=query
+
+    }
+
+    fun gettingAddres(): String {
+        return sharedPreferences.getCombinedAddress()
+    }
+
+    suspend fun getAddress() = withContext(Dispatchers.IO) {
         dao.getAllAddress().collectLatest {
-            addresslist.value=it
+            addresslist.value = it
             Log.d("addessget", Gson().toJson(it.size))
         }
 
 
     }
-    fun deleteAddress(id:Int)=viewModelScope.launch(Dispatchers.IO){
+
+    fun deleteAddress(id: Int) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteAddress(id.toString())
 
     }
-   suspend fun getCartItem(context: Context)= withContext(Dispatchers.IO){
-       if(dao.getTotalProductItems()!=null){
-           var totalcount: Int =
-               dao.getTotalProductItems()!!.first()
-           var totalPrice: Int =
-               dao.getTotalProductItemsPrice()!!.first()
-           updatecount.value.totalcount=totalcount
-           updatecount.value.totalprice=totalPrice
-       }
+
+    suspend fun getCartItem(context: Context) = withContext(Dispatchers.IO) {
+
+//            var totalcount: Int =
+//                dao.getTotalProductItems().first()
+//            var totalPrice: Int =
+//                dao.getTotalProductItemsPrice()!!.first()
+//            updatecount.value.totalcount = totalcount
+//            updatecount.value.totalprice = totalPrice
+
 
 
     }
 
-    fun callingHomeAllProducts()=viewModelScope.launch {
-        repository.HomeAllProducts().collectLatest {
-            when(it){
-                is ApiState.Success->{
-                    Log.d("listofdata", "home")
-                    homeAllProductsResponse.value=it.data
-                }
-                is ApiState.Failure->{
-                    homeAllProductsResponse.value=HomeAllProductsResponse(null,it.msg.message,401)
-                }
-                is ApiState.Loading ->{
 
-                }
-            }
-        }
-    }
-    fun callingExcusiveProducts()=viewModelScope.launch {
+    fun callingExcusiveProducts() = viewModelScope.launch {
         repository.ExclusiveProducts().collectLatest {
-            when(it){
-                is ApiState.Success->{
-                    exclusiveProductsResponse.value=it.data
+            when (it) {
+                is ApiState.Success -> {
+                    exclusiveProductsResponse.value = it.data
                 }
-                is ApiState.Failure->{
-                    exclusiveProductsResponse.value=HomeAllProductsResponse(null,"Something went wrong",401)
+                is ApiState.Failure -> {
+                    exclusiveProductsResponse.value =
+                        HomeAllProductsResponse(null, "Something went wrong", 401)
                 }
-                is ApiState.Loading ->{
+                is ApiState.Loading -> {
 
                 }
             }
         }
     }
-    fun gettingData():LiveData<List<HomeAllProductsResponse.HomeResponse>>{
+
+    fun gettingData(): LiveData<List<HomeAllProductsResponse.HomeResponse>> {
         return passingdata
 
     }
-    fun passingData(list: List<HomeAllProductsResponse.HomeResponse>){
-        passingdata.value=list
+
+    fun passingData(list: List<HomeAllProductsResponse.HomeResponse>) {
+        passingdata.value = list
 
     }
-    fun callingBestSelling()=viewModelScope.launch {
+
+    fun callingBestSelling() = viewModelScope.launch {
         repository.BestSellingProducts().collectLatest {
-            when(it){
-                is ApiState.Success->{
-                    bestsellingProductsResponse.value=it.data
+            when (it) {
+                is ApiState.Success -> {
+                    bestsellingProductsResponse.value = it.data
                 }
-                is ApiState.Failure->{
-                    bestsellingProductsResponse.value=HomeAllProductsResponse(null,"Something went wrong",401)
+                is ApiState.Failure -> {
+                    bestsellingProductsResponse.value =
+                        HomeAllProductsResponse(null, "Something went wrong", 401)
                 }
-                is ApiState.Loading ->{
+                is ApiState.Loading -> {
 
                 }
             }
         }
     }
-    val allresponse: Flow<PagingData< HomeAllProductsResponse.HomeResponse>> = Pager(PagingConfig(pageSize = NETWORK_PAGE_SIZE)) {
-        pagingDataSource
-    }.flow.cachedIn(viewModelScope)
+
+    val allresponse: Flow<PagingData<HomeAllProductsResponse.HomeResponse>> =
+        Pager(PagingConfig(pageSize = NETWORK_PAGE_SIZE)) {
+            pagingDataSource
+        }.flow.cachedIn(viewModelScope)
 
 }
-class PaginSoucrce @Inject constructor(private val apiService: ApiService,) : PagingSource<Int, HomeAllProductsResponse.HomeResponse>() {
+
+class PaginSoucrce @Inject constructor(private val apiService: ApiService) :
+    PagingSource<Int, HomeAllProductsResponse.HomeResponse>() {
 
     val INITIAL_LOAD_SIZE = 0
-    override fun getRefreshKey(state: PagingState<Int, HomeAllProductsResponse.HomeResponse>): Int?
-    {
+    override fun getRefreshKey(state: PagingState<Int, HomeAllProductsResponse.HomeResponse>): Int? {
         return state.anchorPosition
     }
 
-    override suspend fun load(params: LoadParams<Int>):            LoadResult<Int,  HomeAllProductsResponse.HomeResponse> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, HomeAllProductsResponse.HomeResponse> {
         return try {
 
             val position = params.key ?: 1
@@ -157,7 +174,7 @@ class PaginSoucrce @Inject constructor(private val apiService: ApiService,) : Pa
                 if (params.key != null) ((position - 1) * NETWORK_PAGE_SIZE) + 1 else INITIAL_LOAD_SIZE
             return try {
                 // val jsonResponse = service.getCryptoList(start = offset, limit = params.loadSize).data
-                val homeproduts = apiService.getHomeAllProducts(offset,params.loadSize)
+                val homeproduts = apiService.getHomeAllProducts(offset, params.loadSize)
 
                 val nextKey = if (homeproduts.body()?.list?.isEmpty() == true) {
                     null
@@ -181,4 +198,5 @@ class PaginSoucrce @Inject constructor(private val apiService: ApiService,) : Pa
         } catch (exception: Exception) {
             return LoadResult.Error(exception)
         }
-    }}
+    }
+}

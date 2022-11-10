@@ -25,6 +25,11 @@ interface ApiService {
         @Query("limit") limit: Int
     ): Response<HomeAllProductsResponse>
 
+    @GET(Constants.SearchAllProductsSearch)
+    suspend fun getHomeAllProductsSearch(
+        @Query("query") character: String,
+    ): Response<HomeAllProductsResponse>
+
     @POST(Constants.BestSelling_collectionProducts)
     suspend fun getBestSellingProducts(
     ): Response<HomeAllProductsResponse>

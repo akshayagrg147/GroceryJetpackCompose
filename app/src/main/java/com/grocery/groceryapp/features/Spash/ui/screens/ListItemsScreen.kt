@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.features.Spash.ui.screens
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -13,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
@@ -52,6 +51,7 @@ private val paddingMedium = 16.dp
 
 private val titlePaddingStart = 16.dp
 private val titlePaddingEnd = 72.dp
+private var sortType by mutableStateOf("")
 
 private const val titleFontScaleStart = 1f
 private const val titleFontScaleEnd = 0.66f
@@ -75,11 +75,12 @@ fun ListItems(
     var maximum by remember { mutableStateOf("") }
     var selectedIndex = remember { mutableStateOf(1) }
     ModalBottomSheetLayout(
+
         sheetContent = {
             if (filterclicked)
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().height(500.dp)
                     .padding(top = 10.dp), Arrangement.SpaceEvenly
             ) {
                 val ls: MutableList<FilterOptions> = ArrayList()
@@ -112,10 +113,7 @@ fun ListItems(
 
 
                     var sliderPosition by remember { mutableStateOf(0f) }
-                    Column {
-                        Text(text = sliderPosition.toString())
 
-                    }
                     Text20_700(
                         text = "FILTER & SORT",
                         modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -170,8 +168,19 @@ fun ListItems(
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 5.dp)
                     .clickable {
-                        lss?.sortedByDescending { it -> it.productName }
+                        viewModal.setvalue("asc")
+
+
+//                       lss?.sortedBy { it.productName?.lowercase() }
+//                        var list = arrayListOf<HomeAllProductsResponse.HomeResponse>()
+//                        lss?.forEach {
+//                            list.add(it)
+//                        }
+//                        var dou=list.sortBy { it.price?.toInt() }
+                        sortType = "asc"
+
                         scope.launch { modalBottomSheetState.hide() }
+//                        srt(sortType,lss!!)
 
                     })
                 Text16_700(text = "Desending(Z-A)", modifier = Modifier
@@ -218,7 +227,7 @@ fun ListItems(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Header(scroll, headerHeightPx)
-                    Body(lss,scroll)
+                    Body(lss,scroll,viewModal)
                     Toolbar(scroll, headerHeightPx, toolbarHeightPx)
                     Title(ls?.message?:"none",scroll, headerHeightPx, toolbarHeightPx)
                 }
@@ -291,6 +300,17 @@ fun ListItems(
         }
     }
 
+
+
+}
+fun srt(sortTyoe:String,lss:List<HomeAllProductsResponse.HomeResponse>){
+    when (sortTyoe){
+        "asc" -> { lss?.sortedBy { it.productName }}
+        "dsc" -> { lss?.sortedByDescending { it.productName }}
+        "high" -> { lss?.sortedBy { it.price?.toInt() }}
+        "low" -> {lss?.sortedByDescending { it.price?.toInt() }}
+
+    }
 
 }
 
@@ -438,18 +458,29 @@ private fun Header(scroll: ScrollState, headerHeightPx: Float) {
 }
 
 @Composable
-private fun Body(lss: @RawValue List<HomeAllProductsResponse.HomeResponse>?, scroll: ScrollState) {
+private fun Body(
+    lss: @RawValue List<HomeAllProductsResponse.HomeResponse>?,
+    scroll: ScrollState,
+    viewModal: LoginViewModel
+) {
+    Log.d("callingmsg",viewModal.responseLiveData.value)
+    when (viewModal.responseLiveData.value){
+        "asc" -> { lss?.sortedBy { it.productName }}
+        "dsc" -> { lss?.sortedByDescending { it.productName }}
+        "high" -> { lss?.sortedBy { it.price?.toInt() }}
+        "low" -> {lss?.sortedByDescending { it.price?.toInt() }}
 
-    Column(
+    }
+    Log.d("callingmsg",lss.toString())
+       Column(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-            .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
-            .verticalScroll(scroll)
+               .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
+               .verticalScroll(scroll)
 
     ) {
         Spacer(Modifier.height(headerHeight))
                 repeat(lss?.size?:0) {
                     SubItems(lss?.get(it)!!){
-                        lss?.sortedByDescending { it->it.productName }
                     }
         }
         Spacer(modifier = Modifier.height(70.dp))
@@ -570,6 +601,9 @@ private fun Title(str:String,
                 titleWidthPx = it.size.width.toFloat()
             }
     )
+}
+private val productnamecompare = Comparator<HomeAllProductsResponse.HomeResponse> { left, right ->
+    left.productName!!.compareTo(right.productName!!)
 }
 
 

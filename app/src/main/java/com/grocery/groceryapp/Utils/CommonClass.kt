@@ -20,6 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 
@@ -43,6 +44,10 @@ fun Text16_700(text: String, color: Color = blackColor, modifier: Modifier = Mod
     Text(text = text, style = loginTypography.body2, color = color, modifier = modifier,)
 }
 @Composable
+fun Text13_700(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
+    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 13.sp)
+}
+@Composable
 fun Text16_700Error(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.body2, color = color, modifier = modifier,)
 }
@@ -51,6 +56,10 @@ fun Text16_700Error(text: String, color: Color = blackColor, modifier: Modifier 
 @Composable
 fun Text18_600(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h2, color = color, modifier = modifier)
+}
+@Composable
+fun Text12Sp_600(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
+    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 12.sp)
 }
 @Composable
 fun CommonButton(

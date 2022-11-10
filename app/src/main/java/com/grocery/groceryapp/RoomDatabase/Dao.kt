@@ -40,4 +40,8 @@ interface Dao {
     @Query("DELETE  FROM AddressItems WHERE id = :id")
     fun deleteAddress(id:String?)
 
+    @Query("UPDATE AddressItems SET customer_name=:customer_name, customer_PhoneNumber=:customer_PhoneNumber, PinCode=:PinCode, Address1=:Address1, Address2=:Address2,LandMark=:LandMark WHERE addressitems.id = :id")
+    fun updateAddressItem(customer_name: String,customer_PhoneNumber: String,PinCode: Int,Address1: String,Address2: String,LandMark: String,id:Long?)
+
+
 }

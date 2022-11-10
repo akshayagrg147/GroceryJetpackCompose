@@ -11,7 +11,10 @@ import com.grocery.groceryapp.Utils.ScreenRoute
 import com.grocery.groceryapp.features.Home.ui.CartScreen
 import com.grocery.groceryapp.features.Home.ui.screens.OrderConfirmation
 import com.grocery.groceryapp.features.Home.ui.screens.addressScreen
+import com.grocery.groceryapp.features.Home.ui.screens.orderDetil
 import com.grocery.groceryapp.features.Spash.ui.screens.menuitems
+import com.wajahatkarim3.compose.books.ui.model.PassingAddress
+import com.wajahatkarim3.compose.books.ui.model.PassingOrderResponse
 
 @Composable
 fun AddressCartScreenNavigation(
@@ -22,15 +25,17 @@ fun AddressCartScreenNavigation(
 
     NavHost(navController = navController, startDestination = ScreenRoute.CartScreen.route) {
         composable(ScreenRoute.AddressScreen.route) {
-            addressScreen(null,navController,context)
+            addressScreen(PassingAddress(name=null),navController,context)
         }
         composable(ScreenRoute.CartScreen.route) {
             CartScreen(navController,context,sharedpreferenceCommon)
         }
 
         composable(ScreenRoute.OrderSuccessful.route){
-            val data=it.arguments?.getBoolean("data")
-            OrderConfirmation(data!!,navController,context)
+            var model = navController.previousBackStackEntry?.arguments?.getParcelable<PassingOrderResponse>("orderstatus")
+            OrderConfirmation(data = model!!)
+
+
         }
 
     }

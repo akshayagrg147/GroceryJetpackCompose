@@ -46,6 +46,8 @@ import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
 import com.squareup.moshi.Json
+import com.wajahatkarim3.compose.books.ui.model.PassingAddress
+import com.wajahatkarim3.compose.books.ui.model.PassingOrderResponse
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -143,18 +145,19 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
 
                                 viewModal.calllingBookingOrder(OrderIdCreateRequest(orderList=order,address="abc",paymentmode="COD",totalOrderValue="0",mobilenumber=sharedpreferenceCommon.getMobileNumber()))
                                if (viewModal.orderConfirmedStatusState.value.statusCode == 200){
-                                   Log.d("failedorder--", Gson().toJson(viewModal.orderConfirmedStatusState))
+                                   viewModal.orderConfirmedStatusState.value.apply {
+                                       val passing= PassingOrderResponse(this.address,this.message,this.mobilenumber,this.paymentmode,this.statusCode,this.totalOrderValue)
 
-                                   navController.navigate(ScreenRoute.OrderSuccessful.senddata(true))
-
-                                }
+                                       navController.currentBackStackEntry?.arguments?.putParcelable("orderstatus", passing)
+                                       navController.navigate(ScreenRoute.OrderSuccessful.route)
+                                   }
+                               }
                                 else
                                 {
-                                    Log.d("failedorder", Gson().toJson(viewModal.orderConfirmedStatusState))
-
-
-                                    navController.navigate(ScreenRoute.OrderSuccessful.senddata(true))
-                                 }
+                                    val passing= PassingOrderResponse("al","al","al","al",400,"al")
+                                    navController.currentBackStackEntry?.arguments?.putParcelable("orderstatus", passing)
+                                    navController.navigate(ScreenRoute.OrderSuccessful.route)
+                                }
                             }
                             else -> {
 
@@ -221,7 +224,9 @@ Box(modifier = Modifier.fillMaxSize()){
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 20.dp),
+                            .padding(vertical = 20.dp).clickable {
+                                navController.navigate(ScreenRoute.CartScreen.route)
+                            },
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text24_700(text = "Checkout", color = Color.Black)

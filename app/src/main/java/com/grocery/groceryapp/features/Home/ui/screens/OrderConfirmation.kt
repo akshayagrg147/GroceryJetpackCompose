@@ -25,17 +25,14 @@ import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.Utils.Text24_700
 import com.grocery.groceryapp.features.Home.ui.ui.theme.whiteColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.AddressViewModal
+import com.wajahatkarim3.compose.books.ui.model.PassingOrderResponse
 
 @Composable
 fun OrderConfirmation(
-    data: Boolean,
-    navController: NavHostController,
-    context: Activity,
-    viewModal: AddressViewModal = hiltViewModel()
+    data: PassingOrderResponse,
 ) {
-    Toast.makeText(context, "$data", Toast.LENGTH_SHORT).show()
     val success = rememberSaveable { data }
-    if(success)
+    if(data.totalOrderValue!=null)
     Column(modifier = Modifier.fillMaxSize()) {
         Text24_700(text = "Order Confirmed",  modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.Black)
 

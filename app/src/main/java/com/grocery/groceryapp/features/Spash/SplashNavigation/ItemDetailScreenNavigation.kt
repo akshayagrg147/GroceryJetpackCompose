@@ -144,7 +144,7 @@ fun ItemDetailsScreen(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(2.dp))
                     Text14_400(
                         text = value.homeproducts?.quantity ?: "", modifier = Modifier
                             .fillMaxWidth()

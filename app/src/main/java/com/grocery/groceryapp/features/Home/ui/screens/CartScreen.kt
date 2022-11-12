@@ -32,7 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+
 import com.google.gson.Gson
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 
@@ -40,6 +41,7 @@ import com.grocery.groceryapp.R
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.CommonProgressBar
 import com.grocery.groceryapp.data.modal.FetchCart
 import com.grocery.groceryapp.data.modal.OrderIdCreateRequest
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
@@ -47,7 +49,7 @@ import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
 import com.squareup.moshi.Json
 import com.wajahatkarim3.compose.books.ui.model.PassingAddress
-import com.wajahatkarim3.compose.books.ui.model.PassingOrderResponse
+
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -57,12 +59,17 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
     val scope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var isDialog by remember { mutableStateOf(false) }
 
 
     var choose:MutableState<Boolean> = remember { mutableStateOf(false)}
     var order:ArrayList<OrderIdCreateRequest.Order> = ArrayList()
 
     viewModal.getCartPrice()
+    if (isDialog)
+        CommonProgressBar()
+
+
     ModalBottomSheetLayout(
         sheetContent = {
 
@@ -138,29 +145,38 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
 
                         when (it) {
 
-                            "containsData" -> {choose.value = true
+                            "containsData" -> {
+                                Log.d("fffffffff","true2")
+                                choose.value = true
                             }
                             "ProceedButton" -> {
+                                val request=OrderIdCreateRequest(orderList=order,address="abc",paymentmode="COD",totalOrderValue="0",mobilenumber=sharedpreferenceCommon.getMobileNumber())
+                                viewModal.calllingBookingOrder(request)
+                                isDialog=true
+                                when (viewModal.orderConfirmedStatusState.value.statusCode) {
+                                    200 -> {
+                                        isDialog=false
+                                        scope.launch { modalBottomSheetState.hide() }
+                                        viewModal.orderConfirmedStatusState.value.apply {
 
-
-                                viewModal.calllingBookingOrder(OrderIdCreateRequest(orderList=order,address="abc",paymentmode="COD",totalOrderValue="0",mobilenumber=sharedpreferenceCommon.getMobileNumber()))
-                               if (viewModal.orderConfirmedStatusState.value.statusCode == 200){
-                                   viewModal.orderConfirmedStatusState.value.apply {
-                                       val passing= PassingOrderResponse(this.address,this.message,this.mobilenumber,this.paymentmode,this.statusCode,this.totalOrderValue)
-
-                                       navController.currentBackStackEntry?.arguments?.putParcelable("orderstatus", passing)
-                                       navController.navigate(ScreenRoute.OrderSuccessful.route)
-                                   }
-                               }
-                                else
-                                {
-                                    val passing= PassingOrderResponse("al","al","al","al",400,"al")
-                                    navController.currentBackStackEntry?.arguments?.putParcelable("orderstatus", passing)
-                                    navController.navigate(ScreenRoute.OrderSuccessful.route)
+                                            navController.currentBackStackEntry?.arguments?.putParcelable("orderstatus", viewModal.orderConfirmedStatusState.value)
+                                            navController.navigate(BottomNavItem.OrderSuccessful.screen_route)
+                                        }
+                                    }
+                                    401 -> {
+                                        isDialog=false
+                                        scope.launch { modalBottomSheetState.hide() }
+                                        navController.currentBackStackEntry?.arguments?.putParcelable("orderstatus", viewModal.orderConfirmedStatusState.value)
+                                        navController.navigate(BottomNavItem.OrderSuccessful.screen_route)
+                                    }
+                                    else -> {
+                                        isDialog=false
+                                        Log.d("messagecoming","someting went wrong")
+                                    }
                                 }
                             }
                             else -> {
-
+                                Log.d("fffffffff","true1")
                                 choose.value = false
                             }
                         }
@@ -464,7 +480,7 @@ fun ItemEachRow(
         ) {
 
             Image(
-                painter = rememberAsyncImagePainter(data.strCategoryThumb),
+                painter = rememberImagePainter(data.strCategoryThumb),
                 contentDescription = "",
                 modifier = Modifier
                     .size(70.dp)

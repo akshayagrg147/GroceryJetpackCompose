@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.ScreenRoute
@@ -52,7 +52,7 @@ fun profileScreen(
                 .padding(start = 20.dp, top = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 if (viewModal.responseLiveData.value.statusCode == 200) {
                     Image(
-                        painter = rememberAsyncImagePainter(viewModal.responseLiveData.value.profileImage),
+                        painter = rememberImagePainter(viewModal.responseLiveData.value.profileImage),
 
                         contentDescription = "splash image",
                         modifier = Modifier

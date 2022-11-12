@@ -16,19 +16,3 @@ data class PassingAddress(
     val address1: String? =null,
     val address2: String? =null,
 ): Parcelable
-
-@Parcelize
-data class PassingOrderResponse(
-
-    val address: String?=null,
-
-    val message: String?=null,
-
-    val mobilenumber: String?=null,
-
-    val paymentmode: String?=null,
-
-    val statusCode: Int?=null,
-
-    val totalOrderValue: String?=null
-) : Parcelable

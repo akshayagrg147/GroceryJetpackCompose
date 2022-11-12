@@ -6,6 +6,7 @@ import com.grocery.groceryapp.RoomDatabase.AppDatabase
 import com.grocery.groceryapp.Utils.Constants
 import com.grocery.groceryapp.data.network.ApiService
 import com.grocery.groceryapp.RoomDatabase.Dao
+import com.grocery.groceryapp.data.network.OAuthInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -13,6 +14,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -49,13 +52,25 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesApiServicewithToken(moshi: Moshi): ApiService =
+    fun providesApiServicewithToken(moshi: Moshi, client: OkHttpClient): ApiService =
         Retrofit
             .Builder()
             .run {
                 baseUrl(Constants.AppUrl)
                 addConverterFactory(MoshiConverterFactory.create(moshi))
-              //  client(client)
+                client(client)
                 build()
             }.create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesOkHttp(oAuthInterceptor: OAuthInterceptor): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        return OkHttpClient.Builder().addInterceptor(interceptor)
+            .addInterceptor(
+                oAuthInterceptor
+            )
+            .build()
+    }
 }

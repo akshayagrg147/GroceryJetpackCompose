@@ -23,7 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.Utils.Text24_700
@@ -62,7 +62,7 @@ fun SearchResult(
             )
 
             Image(
-                painter = rememberAsyncImagePainter(data.productImage1),
+                painter = rememberImagePainter(data.productImage1),
 
                 contentDescription = "",
                 modifier = Modifier

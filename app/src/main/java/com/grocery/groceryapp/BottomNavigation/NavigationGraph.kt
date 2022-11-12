@@ -1,28 +1,20 @@
 package com.grocery.groceryapp.BottomNavigation
 
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.android.gms.common.util.SharedPreferencesUtils
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
-import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
+import com.grocery.groceryapp.data.modal.OrderIdResponse
 import com.grocery.groceryapp.features.Home.Modal.profileScreen
-import com.grocery.groceryapp.features.Home.ui.HomeActivity
-import com.grocery.groceryapp.features.Home.ui.PrivacyPolicyScreen
-import com.grocery.groceryapp.features.Home.ui.SearchScreen
-import com.grocery.groceryapp.features.Home.ui.homescreen
-import com.grocery.groceryapp.features.Home.ui.screens.AllAddress
-import com.grocery.groceryapp.features.Home.ui.screens.SearchScreenProducts
-import com.grocery.groceryapp.features.Home.ui.screens.addressScreen
-import com.grocery.groceryapp.features.Home.ui.screens.orderDetil
+import com.grocery.groceryapp.features.Home.ui.*
+import com.grocery.groceryapp.features.Home.ui.screens.*
 import com.grocery.groceryapp.features.Spash.ProfileScreenNavigation
 import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 import com.grocery.groceryapp.features.Spash.ui.screens.menuitems
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProfileViewModal
 import com.wajahatkarim3.compose.books.ui.model.PassingAddress
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -66,6 +58,19 @@ fun NavigationGraph(
         }
         composable(BottomNavItem.AddressScreen.screen_route) {
             AllAddress(navController,context)
+        }
+        composable(BottomNavItem.AddressScreen.screen_route) {
+            addressScreen(PassingAddress(name=null),navController,context)
+        }
+        composable(BottomNavItem.CartScreen.screen_route) {
+            CartScreen(navController,context,sharedPreferences)
+        }
+
+        composable(BottomNavItem.OrderSuccessful.screen_route){
+            var model = navController.previousBackStackEntry?.arguments?.getParcelable<OrderIdResponse>("orderstatus")
+            OrderConfirmation(data = model?:OrderIdResponse(),navController)
+
+
         }
         composable(BottomNavItem.AddnewAddressScreen.screen_route) {
             var addressmodal = navController.previousBackStackEntry?.arguments?.getParcelable<PassingAddress>("address")

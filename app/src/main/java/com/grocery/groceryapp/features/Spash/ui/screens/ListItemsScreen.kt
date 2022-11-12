@@ -33,7 +33,8 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import coil.compose.rememberImagePainter
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
@@ -342,7 +343,7 @@ fun SubItems(data: HomeAllProductsResponse.HomeResponse,call:()->Unit) {
                     end.linkTo(l1.start)
                 })
             Image(
-                painter = rememberAsyncImagePainter(data.productImage1),
+                painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(50.dp)

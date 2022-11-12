@@ -5,7 +5,7 @@ import com.grocery.groceryapp.Utils.ScreenRoute
 import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 
 
-sealed class BottomNavItem(var title:String, var icon:Int, var screen_route:String){
+sealed class BottomNavItem(var title:String, var icon:Int=0, var screen_route:String=""){
 
     object Home : BottomNavItem("Shop", R.drawable.ic_shop,"Shop")
     object SearchProductItems : BottomNavItem("Search", R.drawable.ic_shop,"Search")
@@ -16,6 +16,8 @@ sealed class BottomNavItem(var title:String, var icon:Int, var screen_route:Stri
     object Profile: BottomNavItem("Account",R.drawable.ic_accounts,"Account")
     object AddressScreen : BottomNavItem("AddressScreen",1,"AddressScreen")
     object AllOrderHistory : BottomNavItem("AllOrderHistory",1,"AllOrderHistory")
+    object CartScreen : BottomNavItem("CartScreen",1,"CartScreen")
+    object OrderSuccessful : BottomNavItem("OrderSuccessful",1,"OrderSuccessful")
     object AddnewAddressScreen : BottomNavItem("AddnewAddressScreen",R.drawable.location_icon,"AddnewAddressScreen")
 
     object OrderDetail : BottomNavItem("OrderDetail",R.drawable.location_icon,"{data}/OrderDetail"){

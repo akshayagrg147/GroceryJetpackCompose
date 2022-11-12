@@ -95,12 +95,12 @@ class HomeAllProductsViewModal @Inject constructor(
 
     suspend fun getCartItem(context: Context) = withContext(Dispatchers.IO) {
 
-//            var totalcount: Int =
-//                dao.getTotalProductItems().first()
-//            var totalPrice: Int =
-//                dao.getTotalProductItemsPrice()!!.first()
-//            updatecount.value.totalcount = totalcount
-//            updatecount.value.totalprice = totalPrice
+            var totalcount: Int =
+                dao.getTotalProductItems().first()
+            var totalPrice: Int =
+                dao.getTotalProductItemsPrice()!!.first()
+            updatecount.value.totalcount = totalcount
+            updatecount.value.totalprice = totalPrice
 
 
 

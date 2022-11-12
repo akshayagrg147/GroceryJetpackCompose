@@ -37,7 +37,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+
 import com.google.accompanist.pager.*
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
@@ -373,7 +374,7 @@ fun homescreen(
         }
 
 
-        cardviewAddtoCart(viewModal,context,modifier=Modifier.align(Alignment.BottomCenter))
+        cardviewAddtoCart(viewModal,navcontroller,context,modifier=Modifier.align(Alignment.BottomCenter))
     }
 
 
@@ -437,7 +438,7 @@ fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context
             Log.d("productimage11", data.productImage1.toString())
             Image(
 
-                painter = rememberAsyncImagePainter(data.productImage1),
+                painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(200.dp)
@@ -508,7 +509,7 @@ fun AllItems(data: HomeAllProductsResponse.HomeResponse, context: Context) {
         ) {
             Image(
 
-                painter = rememberAsyncImagePainter(data.productImage1),
+                painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(100.dp)
@@ -582,7 +583,7 @@ fun BestOffers(data: HomeAllProductsResponse.HomeResponse, context: Context) {
                 .padding(5.dp)
         ) {
             Image(
-                painter = rememberAsyncImagePainter(data.productImage1),
+                painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(200.dp)
@@ -719,7 +720,7 @@ fun ShimmerItem(
 }
 
 @Composable
-fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,context:Context,modifier: Modifier){
+fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,navController: NavHostController,context:Context,modifier: Modifier){
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(10.dp),
@@ -728,9 +729,7 @@ fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,context:Context,modifi
             .height(65.dp)
             .padding(5.dp)
             .clickable {
-                context.launchActivity<CartActivity>() {
-
-                }
+                navController.navigate(BottomNavItem.CartScreen.screen_route)
             }
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 

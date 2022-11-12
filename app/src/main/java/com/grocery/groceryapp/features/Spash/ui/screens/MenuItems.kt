@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
 import com.google.gson.Gson
 import com.grocery.groceryapp.R
@@ -294,7 +294,7 @@ fun ItemEachRow(
         ) {
 
             Image(
-                painter = rememberAsyncImagePainter(item.image),
+                painter = rememberImagePainter(item.image),
                 contentDescription = "",
                 modifier = Modifier
                     .size(40.dp)
@@ -338,7 +338,7 @@ fun SearchItems(
             Text(text ="${offpercentage}% off" , color = bodyTextColor, modifier = Modifier.align(Alignment.End))
 
             Image(
-                painter = rememberAsyncImagePainter(data.productImage1),
+                painter = rememberImagePainter(data.productImage1),
 
                 contentDescription = "",
                 modifier = Modifier
@@ -420,7 +420,7 @@ fun Banner(
             .padding(bottom = 20.dp)
     ) {
         Image(
-            painter = rememberAsyncImagePainter(productImage1),
+            painter = rememberImagePainter(productImage1),
             contentDescription = "",
             modifier = Modifier
                 .height(250.dp)

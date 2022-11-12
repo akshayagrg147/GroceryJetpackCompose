@@ -7,12 +7,9 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -27,16 +24,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberAsyncImagePainter
+
+import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
+import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
-import com.grocery.groceryapp.features.Home.ui.CartActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.greyLightColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.redColor
@@ -65,7 +64,7 @@ fun ItemScreenNavigation(
             }
             var response = viewModal.responseLiveData
             if (response.value.statusCode == 200) {
-                ItemDetailsScreen(response.value, context, viewModal)
+                ItemDetailsScreen(response.value,navController, context, viewModal)
             }
 
         }
@@ -78,6 +77,7 @@ fun ItemScreenNavigation(
 @Composable
 fun ItemDetailsScreen(
     value: ProductByIdResponseModal,
+    navController: NavHostController,
     context: Context,
     viewModal: ProductByIdViewModal
 ) {
@@ -214,7 +214,7 @@ fun ItemDetailsScreen(
 
 
         }
-        cardviewAddtoCart(viewModal,
+        cardviewAddtoCart(viewModal,navController,
             context,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -224,16 +224,14 @@ fun ItemDetailsScreen(
 
 }
 @Composable
-fun cardviewAddtoCart(viewModal: ProductByIdViewModal, context: Context, modifier: Modifier){
+fun cardviewAddtoCart(viewModal: ProductByIdViewModal,navController:NavHostController, context: Context, modifier: Modifier){
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(10.dp),
         backgroundColor = seallcolor,modifier = modifier
             .fillMaxWidth().height(65.dp)
             .padding(5.dp)
-            .clickable { context.launchActivity<CartActivity>() {
-
-            } }
+            .clickable { navController.navigate(BottomNavItem.CartScreen.screen_route) }
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 
 
@@ -300,7 +298,7 @@ fun Banner(
             .padding(bottom = 20.dp)
     ) {
         Image(
-            painter = rememberAsyncImagePainter(productImage1),
+            painter = rememberImagePainter(productImage1),
             contentDescription = "",
             modifier = Modifier
                 .height(250.dp)

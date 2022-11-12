@@ -20,17 +20,12 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/app_logo"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/app_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.GroceryApp"
         tools:targetApi="31">
-        <activity
-            android:name=".screens.MainActivity1"
-            android:exported="false"
-            android:label="@string/title_activity_main1"
-            android:theme="@style/Theme.GroceryApp" />
         <activity
             android:name=".features.Home.ui.ListItemsActivity"
             android:exported="true"
@@ -41,11 +36,6 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.GroceryApp"/>
-        <activity
-            android:name=".features.Home.ui.CartActivity"
-            android:exported="true"
-            android:label="@string/title_activity_product_items"
-            android:theme="@style/Theme.GroceryApp"></activity>
         <activity
             android:name=".features.Home.ui.screens.OrderDetailScreen"
             android:exported="false"

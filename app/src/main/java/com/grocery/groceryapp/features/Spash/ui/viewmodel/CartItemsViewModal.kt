@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.common.ApiState
@@ -172,12 +173,14 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
             when (it) {
                 is ApiState.Success -> {
                     orderConfirmedStatus.value = it.data
+                    Log.d("djjdjdj",Gson().toJson(  orderConfirmedStatus.value))
 
 
                 }
                 is ApiState.Failure -> {
                     orderConfirmedStatus.value =
-                        OrderIdResponse(message = it.msg.message, statusCode = 401)
+                        OrderIdResponse(message = it.msg.message?:"Order Failed", statusCode = 401)
+                    Log.d("djjdjdj",Gson().toJson(  orderConfirmedStatus.value))
 
 
                 }

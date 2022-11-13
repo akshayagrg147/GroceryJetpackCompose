@@ -31,11 +31,9 @@ class AddressViewModal @Inject constructor(val dao: Dao):ViewModel() {
 
     fun saveAddress(address: AddressItems)=viewModelScope.launch(Dispatchers.IO){
         dao.insertAddressItem(address)
-        Log.d("datasaved", "saveAddress: true")
 
     }
     fun UpdateAddress(address: AddressItems)=viewModelScope.launch(Dispatchers.IO){
-        Log.d("datasaved", "${address.id.toString()}")
         dao.updateAddressItem(
             address.customer_name,address.customer_PhoneNumber,address.PinCode,address.Address1,address.Address2,address.LandMark,address.id)
 

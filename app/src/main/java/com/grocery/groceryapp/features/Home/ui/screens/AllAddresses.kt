@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.features.Home.ui.screens
 
 import android.content.Context
+import android.widget.SeekBar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -40,6 +41,7 @@ import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
+import com.grocery.groceryapp.features.Home.ui.noHistoryAvailable
 import com.grocery.groceryapp.features.Home.ui.ui.theme.navdrawerColor
 
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
@@ -109,10 +111,9 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
 
             Text16_700(text = "Add Address", modifier = Modifier
                 .fillMaxWidth()
-                .clickable {  val passing=PassingAddress(0,"","ak@gmail.com","","","","","")
-
-                    navHostController.currentBackStackEntry?.arguments?.putParcelable("address", passing)
+                .clickable {
                     navHostController.navigate(BottomNavItem.AddnewAddressScreen.screen_route)
+                 //   viewModal.list.value.sortedBy { it.customer_name }
 
                 }
                 .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
@@ -134,6 +135,9 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                 viewModal.getAddress()
 
             }
+            item {
+                if(viewModal.list.value.isEmpty())
+                    noAddressAvailable() }
             items(viewModal.list.value) { item ->
                 val dismissState = rememberDismissState()
 
@@ -239,3 +243,13 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
             }
 
         }}
+@Composable
+fun noAddressAvailable(){
+    Box(modifier = Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(250.dp))
+        Text14_400(text = "No Address available", modifier = Modifier.align(Alignment.Center))
+
+
+    }
+
+}

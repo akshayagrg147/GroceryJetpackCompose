@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 
 import com.grocery.groceryapp.R
@@ -79,8 +80,8 @@ fun OrderHistoryScreen(
                 if(viewModal.orderhistorydata.value.statusCode==200)
                 {items(viewModal.orderhistorydata.value.list!!){data->
                     OrderHistoryRow(data){
-
-                        navController.navigate(BottomNavItem.OrderDetail.senddata(viewModal.orderhistorydata.value.toString()))
+                        navController.currentBackStackEntry?.arguments?.putParcelable("orderDetail", viewModal.orderhistorydata.value)
+                        navController.navigate(BottomNavItem.OrderDetail.screen_route)
                     }
                 }}
 
@@ -94,7 +95,7 @@ fun OrderHistoryScreen(
 
 }
 @Composable
-fun OrderHistoryRow(data: AllOrdersHistoryList.Order,call:(AllOrdersHistoryList.Order)->Unit) {
+fun OrderHistoryRow(data: AllOrdersHistoryList.Orders,call:(AllOrdersHistoryList.Orders)->Unit) {
 Card(modifier = Modifier.fillMaxWidth() .padding(5.dp).clickable {
     call(data)
 }, elevation = 3.dp) {
@@ -144,8 +145,28 @@ Card(modifier = Modifier.fillMaxWidth() .padding(5.dp).clickable {
                 .background(Color.Gray)
         )
         Text14_400(text = "Order Date ${data?.createdDate} ")
+        Spacer(modifier = Modifier.height(5.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
 
-        Spacer(modifier = Modifier.height(20.dp))
+
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Image(
+                painter = rememberImagePainter(R.drawable.location_pin_icon),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(20.dp)
+
+
+            )
+            Text14_400(text = "${data.address}")
+
+
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
 
 
 

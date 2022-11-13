@@ -1,5 +1,6 @@
 package com.grocery.groceryapp.features.Spash.ui.screens
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
@@ -19,6 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -28,6 +30,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
 import com.google.gson.Gson
+import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
@@ -35,14 +38,17 @@ import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.AddressComponent
+
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import kotlinx.coroutines.launch
 
 @Composable
 fun ShimmerItem(
     brush: Brush
 ) {
+
     Column(modifier = Modifier.padding(16.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Spacer(
@@ -62,7 +68,70 @@ fun ShimmerItem(
 
     }
 }
+@Composable
+fun cardviewAddtoCart(viewmodal: CartItemsViewModal, navController: NavHostController, context: Context, modifier: Modifier){
+    Card(
+        elevation = 4.dp,
+        shape = RoundedCornerShape(10.dp),
+        backgroundColor = seallcolor,modifier = modifier
+            .fillMaxWidth()
+            .height(65.dp)
+            .padding(5.dp)
+            .clickable {
+                navController.navigate(BottomNavItem.CartScreen.screen_route)
+            }
+            .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 
+
+    ){
+        Box(modifier = Modifier
+
+        ){
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp)
+            ) {
+                var (l0,l1,l2) = createRefs()
+
+                Image(
+                    painter = painterResource(id = R.drawable.cart_icon),
+                    contentDescription = "Carrot Icon",
+                    alignment = Alignment.Center,
+                    modifier = Modifier
+
+
+                        .width(40.dp)
+                        .padding(top = 10.dp)
+                        .height(40.dp)
+                        .constrainAs(l0) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+
+                )
+                Column(Modifier.constrainAs(l1){
+                    start.linkTo(l0.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }) {
+                    Text14_400(text = "${viewmodal.getitemcount.value.totalcount.toString()} items", color = Color.White)
+                    Text14_400(text = "₹ ${viewmodal.getitemcount.value.totalprice.toString()}",color = Color.White)
+
+
+                }
+
+                Text16_700(text = "view cart >",color = Color.White, modifier = Modifier.constrainAs(l2){
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                    top.linkTo(parent.top)
+                })
+
+            }
+
+        }
+    }}
 @Composable
 fun ShimmerAnimation(
 ) {
@@ -89,6 +158,7 @@ fun ShimmerAnimation(
 @Composable
 fun menuitems(
     navController: NavHostController,
+    context:Context,
     value: String,
     viewModal: CartItemsViewModal = hiltViewModel()
 ) {
@@ -103,13 +173,17 @@ fun menuitems(
     val pager = rememberPagerState()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    LaunchedEffect(key1 = 0, block ={
+        viewModal.getCartItem(context)
+    })
+
     val ls: MutableList<MainProducts> = ArrayList()
     if (passingvalue.equals("vegetables")) {
-        ls.add(MainProducts("Fresh vegetables", R.drawable.fruitbasket, Purple700, "1001"))
-        ls.add(MainProducts("Fresh Fruits", R.drawable.snacks, borderColor, "1002"))
+        ls.add(MainProducts("vegetables", R.drawable.fruitbasket, Purple700, "1001"))
+        ls.add(MainProducts("Fruits", R.drawable.snacks, borderColor, "1002"))
         ls.add(MainProducts("Exotics", R.drawable.nonveg, disableColor, "1003"))
         ls.add(MainProducts("Orgain", R.drawable.oils, darkFadedColor, "1004"))
-        ls.add(MainProducts("Combo Recepies", R.drawable.oils, darkFadedColor, "1005"))
+        ls.add(MainProducts("Recepies", R.drawable.oils, darkFadedColor, "1005"))
         ls.add(MainProducts("Flowers", R.drawable.oils, darkFadedColor, "1006"))
     } else if (passingvalue.equals("diary")) {
         ls.add(MainProducts("Milk", R.drawable.fruitbasket, Purple700, "2001"))
@@ -119,10 +193,10 @@ fun menuitems(
         ls.add(MainProducts("Panner", R.drawable.oils, darkFadedColor, "2005"))
         ls.add(MainProducts("Curd", R.drawable.oils, darkFadedColor, "2006"))
     } else {
-        ls.add(MainProducts("Soft Drinks", R.drawable.fruitbasket, Purple700, "3001"))
-        ls.add(MainProducts("Fruit Juics", R.drawable.snacks, borderColor, "3002"))
+        ls.add(MainProducts("Drinks", R.drawable.fruitbasket, Purple700, "3001"))
+        ls.add(MainProducts("Juics", R.drawable.snacks, borderColor, "3002"))
         ls.add(MainProducts("Coldpress", R.drawable.nonveg, disableColor, "3003"))
-        ls.add(MainProducts("Energy Drinks", R.drawable.oils, darkFadedColor, "3004"))
+        ls.add(MainProducts("Drinks", R.drawable.oils, darkFadedColor, "3004"))
         ls.add(MainProducts("Water", R.drawable.oils, darkFadedColor, "3005"))
         ls.add(MainProducts("Soda", R.drawable.oils, darkFadedColor, "3006"))
     }
@@ -158,7 +232,6 @@ fun menuitems(
                         }
 
 
-                        val itemcart: MutableState<Int> = remember { mutableStateOf(1) }
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -199,70 +272,72 @@ fun menuitems(
             topStart = 20.dp, topEnd = 20.dp
         )
     ){
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text20_700(text = "Sub cart menus", modifier = Modifier.align(Alignment.CenterHorizontally))
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 5.dp)
-                // .height(400.dp)
-            ) {
-                LazyColumn(
-                    //  verticalArrangement = Arrangement.SpaceBetween,
+
+        Box(modifier = Modifier.fillMaxSize()){
+            Column(modifier = Modifier.fillMaxSize()) {
+                Text20_700(text = "Sub cart menus", modifier = Modifier.align(Alignment.CenterHorizontally))
+                Row(
                     modifier = Modifier
-                        .padding(bottom = 15.dp)
-                    // .verticalScroll(state = scrollState)
+                        .fillMaxSize()
+                        .padding(top = 5.dp)
 
                 ) {
-                    selectedIndex.value = ls[0].productId?.toInt()?:0
-                    viewModal.calllingItemsCollectionsId(ProductIdIdModal(ls[0].productId))
-                    items(ls) { item ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(bottom = 15.dp)
+                    ) {
+                        selectedIndex.value = ls[0].productId?.toInt()?:0
+                        viewModal.calllingItemsCollectionsId(ProductIdIdModal(ls[0].productId))
+                        items(ls) { item ->
 
-                        ItemEachRow(item, selectedIndex, viewModal) { productid, selectedvalue ->
-                            viewModal.calllingItemsCollectionsId(ProductIdIdModal(productid))
-                            selectedIndex.value = selectedvalue
-
-                        }
-                    }
-
-                }
-                LazyColumn(
-                    modifier = Modifier.background(MaterialTheme.colors.background),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-
-                    if (viewModal.itemcollections1.value.statusCode == 200) {
-                        gridItems(
-                            data = viewModal.itemcollections1.value.list!!,
-                            columnCount = 2,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.padding(horizontal = 1.dp)
-                        ) { itemData ->
-                            SearchItems(itemData, viewModal, totalamount){passvalue->
-                                Log.d("passingdataclass", passvalue.productDescription!!)
-                                productdetail.value=passvalue
-                                scope.launch { modalBottomSheetState.show() }
-                            }
-                        }
-                    } else {
-                        repeat(5) {
-                            item {
-                                ShimmerAnimation()
+                            ItemEachRow(item, selectedIndex, viewModal) { productid, selectedvalue ->
+                                viewModal.calllingItemsCollectionsId(ProductIdIdModal(productid))
+                                selectedIndex.value = selectedvalue
 
                             }
                         }
+
                     }
+                    LazyColumn(
+                        modifier = Modifier.background(MaterialTheme.colors.background),
+                        contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+
+                        if (viewModal.itemcollections1.value.statusCode == 200) {
+                            gridItems(
+                                data = viewModal.itemcollections1.value.list!!,
+                                columnCount = 2,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.padding(horizontal = 1.dp)
+                            ) { itemData ->
+                                MenuItemGrid(itemData, viewModal, totalamount){passvalue->
+                                   productdetail.value=passvalue
+                                    scope.launch { modalBottomSheetState.show() }
+                                }
+                            }
+                        } else {
+                            repeat(5) {
+                                item {
+                                    ShimmerAnimation()
+
+                                }
+                            }
+                        }
+                    }
+
+
                 }
-
-
             }
+            cardviewAddtoCart(viewModal,navController,context,modifier=Modifier.align(Alignment.BottomCenter))
         }
+
     }
 
 
 
 }
+
 
 @Composable
 fun ItemEachRow(
@@ -277,9 +352,9 @@ fun ItemEachRow(
         backgroundColor = if (selectedIndex.value == item.productId?.toInt()) Color.LightGray else Color.White,
         modifier = Modifier
 
-            .width(100.dp)
-            .height(100.dp)
-            .padding(start = 5.dp)
+            .width(120.dp)
+            .height(120.dp)
+
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
             .padding(5.dp)
             .clickable {
@@ -287,7 +362,7 @@ fun ItemEachRow(
                 call(item.productId ?: "", item.productId?.toInt()!!)
             }) {
         Column(
-            modifier = Modifier,
+            modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.Center
 
 
@@ -301,7 +376,7 @@ fun ItemEachRow(
                     .align(Alignment.CenterHorizontally)
 
             )
-            Text14_400(text = item.name, modifier = Modifier.align(Alignment.CenterHorizontally))
+            Text13_700(text = item.name, modifier = Modifier.align(Alignment.CenterHorizontally))
 
 
         }
@@ -313,15 +388,17 @@ fun ItemEachRow(
 
 
 @Composable
-fun SearchItems(
+fun MenuItemGrid(
     data: ItemsCollectionsResponse.SubItems,
     viewModal: CartItemsViewModal,
     totalamount: MutableState<Int>,passItem:(productdetail:ItemsCollectionsResponse.SubItems)->Unit
 ) {
-//    rememberCoroutineScope().launch {  viewModal.getItemBaseOnProductId(data.productId) }
-//
 
-    var cartcount = remember { mutableStateOf(0) }
+
+
+        viewModal.getItemBaseOnProductId(data.productId)
+
+
 
     Card(
         elevation = 4.dp,
@@ -377,29 +454,52 @@ fun SearchItems(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+
+                if( viewModal.productIdCountState.value.toInt()==0){
+                    CommonButton(
+                        text = "Add",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                viewModal.insertCartItem(
+                                    data.productId ?: "",
+                                    data.productImage1 ?: "",
+                                    data.price.toInt() ?: 0,
+                                    data.productName ?: "",
+                                    data.actualPrice ?: ""
+                                )
+                                viewModal.getItemBaseOnProductId(data.productId)
+
+                            }
+                    )
+                }
+                else if( viewModal.productIdCountState.value.toInt()>0){
                     CommonMathButton(icon = R.drawable.minus) {
-                        cartcount.value -= 1
-                         viewModal.deleteCartItems(data.productId)
-                      //  each_item_count.value -= 1
+                       // cartcount.toInt() -= 1
+                        viewModal.deleteCartItems(data.productId)
+                        //  each_item_count.value -= 1
                         //    totalamount.value = totalamount.value - (data.strProductPrice!!)
 
                     }
                     Text14_400(
-                        text = "${viewModal.getItemBaseOnProductId(data.productId)}",
+                        text =  viewModal.getItemBaseOnProductId(data.productId),
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(horizontal = 10.dp),
                         color = Color.Black
                     )
                     CommonMathButton(icon = R.drawable.add) {
-                        cartcount.value += 1
-                      //  each_item_count.value += 1
+                     //   cartcount.value += 1
+                        //  each_item_count.value += 1
                         viewModal.insertCartItem(data.productId?:"",data.productImage1?:"",data.price.toInt()?:0,data.productName?:"",data.actualPrice?:"")
-
+                        viewModal.getCartPrice()
 
 
 
                     }
+                }
+
+
                 }
 
 

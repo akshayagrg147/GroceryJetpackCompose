@@ -1,9 +1,7 @@
 package com.grocery.groceryapp.features.Home.Modal
 
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,7 +19,6 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.Utils.ScreenRoute
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.features.Home.ui.HomeActivity
@@ -35,13 +32,12 @@ fun profileScreen(
     viewModal: ProfileViewModal = hiltViewModel()
 ) {
     var bounc=true
-    var sizestate by remember { mutableStateOf(5.dp) }
-    Handler(Looper.getMainLooper()).postDelayed({
-       sizestate+=10.dp;
-    },500)
+
+    viewModal.setState()
+
 
     val size by animateDpAsState(
-       targetValue = sizestate,
+       targetValue = viewModal.orderstate.value,
 //        tween(durationMillis = 3000, delayMillis = 200, easing = LinearOutSlowInEasing)
     spring(Spring.DampingRatioMediumBouncy)
     )
@@ -52,12 +48,12 @@ fun profileScreen(
                 .padding(start = 20.dp, top = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 if (viewModal.responseLiveData.value.statusCode == 200) {
                     Image(
-                        painter = rememberImagePainter(viewModal.responseLiveData.value.profileImage),
+                        painter = painterResource(id = R.drawable. avatar),
 
                         contentDescription = "splash image",
                         modifier = Modifier
-                            .width(50.dp)
-                            .height(50.dp)
+                            .width(if(size<100.dp) size else 100.dp)
+                            .height( if(size<100.dp) size else 100.dp)
                     )
                     Text16_700(text = "${viewModal.responseLiveData.value.name?.name}")
                     Text14_400(text = "Valueable Customer")

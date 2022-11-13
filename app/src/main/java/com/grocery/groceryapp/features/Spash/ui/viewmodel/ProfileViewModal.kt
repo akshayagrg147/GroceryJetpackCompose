@@ -2,9 +2,13 @@ package com.grocery.groceryapp.features.Spash.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
@@ -24,6 +28,14 @@ class ProfileViewModal @Inject constructor(val repository: CommonRepository, val
 
     private val orderhistory:MutableState<AllOrdersHistoryList> = mutableStateOf(AllOrdersHistoryList(null,null,null))
     val orderhistorydata:MutableState<AllOrdersHistoryList> =orderhistory
+
+    private val orderstateMutable:MutableState<Dp> = mutableStateOf(5.dp)
+    val orderstate:State<Dp> =orderstateMutable
+
+    fun setState() {
+        if(orderstateMutable.value<=150.dp)
+        orderstateMutable.value= orderstateMutable.value+10.dp
+    }
 
     fun callingUserDetails()=viewModelScope.launch(Dispatchers.IO) {
 
@@ -55,6 +67,7 @@ class ProfileViewModal @Inject constructor(val repository: CommonRepository, val
 
                 }
                 is ApiState.Failure->{
+                    Log.d("djdjjdd",Gson().toJson(it.msg.message!!))
                     orderhistory.value= AllOrdersHistoryList(message = it.msg.message, statusCode = 401, list = null)
 
                 }
@@ -67,7 +80,7 @@ class ProfileViewModal @Inject constructor(val repository: CommonRepository, val
 
     }
 
-    fun setData(it: AllOrdersHistoryList.Order) {
+    fun setData(it: AllOrdersHistoryList.Orders) {
 
     }
 

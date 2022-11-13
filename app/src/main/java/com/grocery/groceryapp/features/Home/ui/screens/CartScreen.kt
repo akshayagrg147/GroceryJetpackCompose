@@ -66,6 +66,7 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
     var order:ArrayList<OrderIdCreateRequest.Order> = ArrayList()
 
     viewModal.getCartPrice()
+    viewModal.getSavingAmount()
     if (isDialog)
         CommonProgressBar()
 
@@ -146,7 +147,6 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
                         when (it) {
 
                             "containsData" -> {
-                                Log.d("fffffffff","true2")
                                 choose.value = true
                             }
                             "ProceedButton" -> {
@@ -176,7 +176,7 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
                                 }
                             }
                             else -> {
-                                Log.d("fffffffff","true1")
+
                                 choose.value = false
                             }
                         }
@@ -268,9 +268,9 @@ Box(modifier = Modifier.fillMaxSize()){
                         Text14_400(text = "Your total savings", whiteColor, modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(start = 10.dp))
-                        Text14_400(text = "₹ 142",color = whiteColor, modifier = Modifier
+                        Text14_400(text = "₹ ${viewModal.SavingAmountState.value}",color = whiteColor, modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(end = 10.dp))
+                            .padding(end = 20.dp))
 
 
                     }
@@ -357,7 +357,7 @@ fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostContro
             modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
         )
         {
-            Log.d("callingdata","Callhappenig")
+
             call("ProceedButton")
         }
 
@@ -463,7 +463,6 @@ fun ItemEachRow(
     order: ArrayList<OrderIdCreateRequest.Order>,
 
     ) {
-    Log.d("jdjdjjd","djjjdjd")
    // viewModal.getItemBaseOnProductId(data.ProductIdNumber)
 
 

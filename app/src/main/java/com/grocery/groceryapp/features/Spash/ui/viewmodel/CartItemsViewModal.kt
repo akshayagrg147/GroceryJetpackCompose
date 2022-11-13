@@ -1,5 +1,6 @@
 package com.grocery.groceryapp.features.Spash.ui.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -18,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -27,9 +29,15 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
     private val allcartitems: MutableState<List<CartItems>> = mutableStateOf(emptyList())
     val allcartitemsState: State<List<CartItems>> = allcartitems
 
+    private val SavingAmmountMutable: MutableState<Int> = mutableStateOf(0)
+    val SavingAmountState: State<Int> = SavingAmmountMutable
+
     private val itemcollections: MutableState<ItemsCollectionsResponse> =
         mutableStateOf(ItemsCollectionsResponse(null, null, null))
     val itemcollections1: State<ItemsCollectionsResponse> = itemcollections
+
+    private val updatecount: MutableState<FetchCart> = mutableStateOf(FetchCart())
+    val getitemcount: MutableState<FetchCart> = updatecount
 
     private val totalcount: MutableState<Int> =
         mutableStateOf(0)
@@ -47,8 +55,8 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
     private val CartCountPrice: FetchCart = FetchCart()
 
 
-    private var productIdCountMutable: Int = 0
-
+    private var productIdCountMutable: MutableState<Int> = mutableStateOf(-1)
+    val productIdCountState: State<Int> = productIdCountMutable
 
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val addresslistState: State<List<AddressItems>> = addresslist
@@ -57,7 +65,7 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
     fun deleteCartItems(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
 
         var intger: Int =
-            dao.getProductBasedIdCount(productIdNumber)
+            dao.getProductBasedIdCount(productIdNumber).first()?:0
         intger -= 1
 
         if (intger >= 1) {
@@ -69,16 +77,45 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
 
         }
     }
+    suspend fun getCartItem(context: Context) = withContext(Dispatchers.IO) {
 
+        var totalcount: Int =
+            dao.getTotalProductItems()?.first()?:0
+        var totalPrice: Int =
+            dao.getTotalProductItemsPrice()?.first()?:0
+        updatecount.value.totalcount = totalcount
+        updatecount.value.totalprice = totalPrice
+
+
+
+    }
+     fun getSavingAmount()  {
+         viewModelScope.launch {
+             var totalcount1: Int =0
+             withContext(Dispatchers.IO){
+
+                 totalcount1=   dao.getTotalSavingAmount()?.first()?:0
+             }
+             SavingAmmountMutable.value = totalcount1
+         }
+
+
+
+
+
+    }
     fun getItemBaseOnProductId(value: String?): String {
-        viewModelScope.launch(Dispatchers.IO) {
-            val intger: Int = dao.getProductBasedIdCount(value)
-            productIdCountMutable = if (intger == 0) {
-                1
-            } else
-                intger
+        viewModelScope.launch() {
+
+            var intger: Int = 0
+
+            withContext(Dispatchers.IO) {
+                 intger = dao.getProductBasedIdCount(value).first() ?:0
+            }
+            productIdCountMutable.value = intger
+
         }
-        return productIdCountMutable.toString()
+        return  productIdCountMutable.value.toString()
 
     }
 
@@ -96,14 +133,14 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
         productname: String,
         actualprice: String
     ) = viewModelScope.launch(Dispatchers.IO) {
-        val intger: Int = dao.getProductBasedIdCount(productIdNumber)
+        val intger: Int = dao.getProductBasedIdCount(productIdNumber).first()?:0
         if (intger == 0) {
             dao
                 .insertCartItem(
                     CartItems(
                         productIdNumber,
                         thumb, intger + 1,
-                        price, productname, actualprice
+                        price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
                     )
 
                 )
@@ -123,10 +160,10 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
             var totalcount1: Int = 0
             var totalPrice1: Int = 0
             withContext(Dispatchers.IO) {
-                totalcount1 = dao.getTotalProductItems().first()
-                totalPrice1 = dao.getTotalProductItemsPrice().first()
+                totalcount1 = dao.getTotalProductItems()?.first()?:0
+                totalPrice1 = dao.getTotalProductItemsPrice()?.first()?:0
             }
-            Log.d("dnfvnvn",totalPrice.toString())
+
             totalcount.value = totalcount1
             totalPrice.value=totalPrice1
 
@@ -148,7 +185,6 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
     }
 
     fun calllingItemsCollectionsId(productIdIdModal: ProductIdIdModal) = viewModelScope.launch {
-        Log.d("passingmessage", "calllingBestProductById: $productIdIdModal")
         repository.ItemsCollections(productIdIdModal).collectLatest {
             when (it) {
                 is ApiState.Success -> {
@@ -173,14 +209,12 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
             when (it) {
                 is ApiState.Success -> {
                     orderConfirmedStatus.value = it.data
-                    Log.d("djjdjdj",Gson().toJson(  orderConfirmedStatus.value))
 
 
                 }
                 is ApiState.Failure -> {
                     orderConfirmedStatus.value =
                         OrderIdResponse(message = it.msg.message?:"Order Failed", statusCode = 401)
-                    Log.d("djjdjdj",Gson().toJson(  orderConfirmedStatus.value))
 
 
                 }

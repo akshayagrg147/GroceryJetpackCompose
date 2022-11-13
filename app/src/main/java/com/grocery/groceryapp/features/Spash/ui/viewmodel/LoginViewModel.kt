@@ -1,17 +1,22 @@
 package com.grocery.groceryapp.features.Spash.ui.viewmodel
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.CheckNumberExistResponse
+import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.RegisterLoginRequest
 import com.grocery.groceryapp.features.Spash.domain.repository.AuthRepository
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,10 +30,13 @@ class LoginViewModel @Inject constructor(
     )
     val resp=response
 
-    private val live:MutableState<String> = mutableStateOf(
-       ""
-    )
+    private val live:MutableState<String> = mutableStateOf("")
     val responseLiveData:MutableState<String> =live
+
+    private var listMutable:MutableState< HomeAllProductsResponse> = mutableStateOf(
+        HomeAllProductsResponse()
+    )
+    val listState:State<HomeAllProductsResponse> =listMutable
 
 
     fun createUserWithPhone(
@@ -58,9 +66,16 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+    fun setList(response: @RawValue HomeAllProductsResponse){
+        Log.d("callingmsgak", Gson().toJson(response))
+        listMutable.value=response
+
+    }
 
     fun setvalue(str:String){
         live.value=str
+        listMutable.value=   listMutable.value
+
 
     }
     fun gettingJwtToken()=commonRepository.gettingJwt()

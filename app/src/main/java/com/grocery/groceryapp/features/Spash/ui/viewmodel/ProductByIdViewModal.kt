@@ -35,7 +35,7 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
  fun deleteCartItems(value: ProductByIdResponseModal)=viewModelScope.launch(Dispatchers.IO){
 
      var intger: Int =
-         dao.getProductBasedIdCount(value.homeproducts?.productId!!)
+         dao.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
      intger -= 1
 
      if (intger >= 1) {
@@ -50,12 +50,11 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 }
 
     fun getItemBaseOnProductId(value: ProductByIdResponseModal)=viewModelScope.launch(Dispatchers.IO){
-        val intger: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!)
+        val intger: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
         getItemCount.value=intger
     }
     fun insertCartItem(value: ProductByIdResponseModal)=viewModelScope.launch (Dispatchers.IO){
-       val intger: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!)
-       Log.d("jdjjdjd",intger.toString())
+       val intger: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
         valueCart=value
        if (intger == 0) {
            dao
@@ -63,14 +62,13 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
                    CartItems(
                        value.homeproducts.productId,
                        value.homeproducts.productImage1,intger + 1,
-                       Integer.parseInt(value.homeproducts.price?:"1000"), value.homeproducts.productName!!,value.homeproducts.orignalprice)
+                       Integer.parseInt(value.homeproducts.price?:"0"), value.homeproducts.productName!!,value.homeproducts.orignalprice,savingAmount = (value.homeproducts.orignalprice?.toInt()!!-value.homeproducts.price?.toInt()!!).toString())
 
                )
 
        } else if (intger >= 1) {
            dao.updateCartItem(intger + 1,  value.homeproducts.productId)
-           val intger1: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!)
-           Log.d("jdjjdjd",intger1.toString())
+           val intger1: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
        }
         getItemBaseOnProductId(value)
 
@@ -81,9 +79,9 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
     fun getCartItem()= viewModelScope.launch(Dispatchers.IO){
         if( dao.getTotalProductItems()!=null){
             var totalcount: Int =
-                dao.getTotalProductItems()!!.first()
+                dao.getTotalProductItems()?.first()?:0
             var totalPrice: Int =
-                dao.getTotalProductItemsPrice()!!.first()
+                dao.getTotalProductItemsPrice()?.first()?:0
 
             updatecount.value.totalcount=totalcount
             updatecount.value.totalprice=totalPrice
@@ -93,7 +91,6 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 
     }
     fun calllingAllProductById(productIdIdModal: ProductIdIdModal)=viewModelScope.launch {
-        Log.d("passingmessage", "calllingAllProductById: $productIdIdModal")
         repository.callPendingProductById(productIdIdModal).collectLatest {
             when(it){
                is ApiState.Success->{
@@ -113,7 +110,6 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 
     }
     fun calllingExclsuiveProductById(productIdIdModal: ProductIdIdModal)=viewModelScope.launch {
-        Log.d("passingmessage", "calllingExProductById: $productIdIdModal")
         repository.callEclusiveById(productIdIdModal).collectLatest {
             when(it){
                 is ApiState.Success->{
@@ -133,7 +129,6 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 
     }
     fun calllingBestProductById(productIdIdModal: ProductIdIdModal)=viewModelScope.launch {
-        Log.d("passingmessage", "calllingBestProductById: $productIdIdModal")
         repository.callBestProductById(productIdIdModal).collectLatest {
             when(it){
                 is ApiState.Success->{

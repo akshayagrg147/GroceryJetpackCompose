@@ -28,12 +28,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
 import coil.compose.rememberImagePainter
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
@@ -63,7 +63,8 @@ fun ListItems(
     ls: HomeAllProductsResponse,
     viewModal: LoginViewModel = hiltViewModel()
 ) {
-    var lss by remember { mutableStateOf(ls.list)}
+    viewModal.setList(ls)
+
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -78,10 +79,12 @@ fun ListItems(
     ModalBottomSheetLayout(
 
         sheetContent = {
+
             if (filterclicked)
             Row(
                 modifier = Modifier
-                    .fillMaxWidth().height(500.dp)
+                    .fillMaxWidth()
+                    .height(500.dp)
                     .padding(top = 10.dp), Arrangement.SpaceEvenly
             ) {
                 val ls: MutableList<FilterOptions> = ArrayList()
@@ -113,38 +116,67 @@ fun ListItems(
                 Column(modifier = Modifier.fillMaxSize()) {
 
 
-                    var sliderPosition by remember { mutableStateOf(0f) }
-
+                    val hundredone = remember { mutableStateOf(true) }
+                    val twohundredone = remember { mutableStateOf(false) }
+                    val threehundredone = remember { mutableStateOf(false) }
+                    val fuvehundredone = remember { mutableStateOf(false) }
                     Text20_700(
                         text = "FILTER & SORT",
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
 
                         Column(modifier = Modifier.padding(start = 10.dp)) {
-                            Text14_400(text = "Choose a range below")
-                            Row(modifier = Modifier, Arrangement.SpaceEvenly) {
-                                OutlinedTextField(value = minimum, onValueChange = {
-                                    minimum = it
-                                }, label = { Text(text = "min") }, modifier = Modifier
-                                    .width(100.dp)
-                                    .height(50.dp)
+                            Text14_400(text = "Choose a range below", modifier = Modifier.align(Alignment.CenterHorizontally))
+                            Row {
+                                Checkbox(
 
+                                    checked = hundredone.value,
+                                    modifier = Modifier.padding(10.dp),
+                                    onCheckedChange = { hundredone.value = it },
+                                )
+                                // below line is use to add text to our check box and we are
+                                // adding padding to our text of checkbox
+                                Text(text = "Rs. 200 and below", modifier = Modifier.padding(16.dp), fontSize = 14.sp)
+                            }
 
-                                )
-                                Text14_400(
-                                    text = "to",
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                OutlinedTextField(value = maximum, onValueChange = {
-                                    maximum = it
-                                }, label = { Text(text = "max") }, modifier = Modifier
-                                    .width(100.dp)
-                                    .height(50.dp)
+                            Row {
+                                Checkbox(
 
+                                    checked = twohundredone.value,
+                                    modifier = Modifier.padding(10.dp),
+                                    onCheckedChange = { twohundredone.value = it },
                                 )
+                                // below line is use to add text to our check box and we are
+                                // adding padding to our text of checkbox
+                                Text(text = "Rs. 201 and 300", modifier = Modifier.padding(16.dp), fontSize = 14.sp)
+                            }
+
+                            Row {
+                                Checkbox(
+
+                                    checked = threehundredone.value,
+                                    modifier = Modifier.padding(10.dp),
+                                    onCheckedChange = { threehundredone.value = it },
+                                )
+                                // below line is use to add text to our check box and we are
+                                // adding padding to our text of checkbox
+                                Text(text = "Rs. 301 and 499", modifier = Modifier.padding(16.dp), fontSize = 14.sp)
+                            }
+                            Row {
+                                Checkbox(
+
+                                    checked = fuvehundredone.value,
+                                    modifier = Modifier.padding(10.dp),
+                                    onCheckedChange = { fuvehundredone.value = it },
+                                )
+                                // below line is use to add text to our check box and we are
+                                // adding padding to our text of checkbox
+                                Text(text = "Rs. 500 and above", modifier = Modifier.padding(16.dp), fontSize = 14.sp)
                             }
 
                         }
+
+
 
                     Spacer(modifier = Modifier.height(25.dp))
 
@@ -152,7 +184,20 @@ fun ListItems(
                         text = "Apply",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 15.dp)
+                            .padding(horizontal = 15.dp).clickable {
+                                scope.launch { modalBottomSheetState.hide() }
+//                                lss?.map {
+//                                    if(hundredone.value)
+//                                    it.price!!.toInt() <= 10
+//                                    if(twohundredone.value)
+//                                        it.price!!.toInt() >20 &&   it.price.toInt() < 30
+//                                    if(threehundredone.value)
+//                                        it.price!!.toInt() >30 &&   it.price.toInt() < 40
+//                                    if(fuvehundredone.value)
+//                                        it.price!!.toInt() > 50
+//                                }
+
+                            }
                     )
                     {
 
@@ -170,6 +215,7 @@ fun ListItems(
                     .padding(vertical = 5.dp)
                     .clickable {
                         viewModal.setvalue("asc")
+
 
 
 //                       lss?.sortedBy { it.productName?.lowercase() }
@@ -228,7 +274,7 @@ fun ListItems(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Header(scroll, headerHeightPx)
-                    Body(lss,scroll,viewModal)
+                    Body(scroll,viewModal)
                     Toolbar(scroll, headerHeightPx, toolbarHeightPx)
                     Title(ls?.message?:"none",scroll, headerHeightPx, toolbarHeightPx)
                 }
@@ -429,7 +475,11 @@ fun ItemEachRow(
 }
 
 @Composable
-private fun Header(scroll: ScrollState, headerHeightPx: Float) {
+private fun Header(
+    scroll: ScrollState,
+    headerHeightPx: Float,
+   
+) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .height(headerHeight)
@@ -441,6 +491,7 @@ private fun Header(scroll: ScrollState, headerHeightPx: Float) {
         Image(
 
             painter = painterResource(id = R.drawable.banner),
+            modifier = Modifier,
             contentDescription = "",
             contentScale = ContentScale.FillBounds
         )
@@ -460,32 +511,35 @@ private fun Header(scroll: ScrollState, headerHeightPx: Float) {
 
 @Composable
 private fun Body(
-    lss: @RawValue List<HomeAllProductsResponse.HomeResponse>?,
+
     scroll: ScrollState,
     viewModal: LoginViewModel
 ) {
-    Log.d("callingmsg",viewModal.responseLiveData.value)
     when (viewModal.responseLiveData.value){
-        "asc" -> { lss?.sortedBy { it.productName }}
-        "dsc" -> { lss?.sortedByDescending { it.productName }}
-        "high" -> { lss?.sortedBy { it.price?.toInt() }}
-        "low" -> {lss?.sortedByDescending { it.price?.toInt() }}
+        "asc" -> {
+            Log.d("sjsjjsj", viewModal.listState.value.list?.get(0)!!.productName!!)
+            viewModal.listState.value.list?.sortedWith(comparator = productnamecompare)
+            Log.d("sjsjjsj", viewModal.listState.value!!.list?.get(0)!!.productName!!)}
+
+        "dsc" -> { viewModal.listState.value.list?.sortedByDescending { it?.productName ?.lowercase()}}
+        "high" -> { viewModal.listState.value.list?.sortedBy { it.price?.toInt() }}
+        "low" -> {viewModal.listState.value.list?.sortedByDescending { it?.price?.toInt() }}
 
     }
-    Log.d("callingmsg",lss.toString())
        Column(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
                .verticalScroll(scroll)
 
     ) {
+
         Spacer(Modifier.height(headerHeight))
-                repeat(lss?.size?:0) {
-                    SubItems(lss?.get(it)!!){
+                repeat(viewModal.listState.value.list?.sortedWith(comparator = productnamecompare)?.size?:0) {
+                    SubItems(viewModal.listState.value.list?.get(it)!!){
                     }
         }
         Spacer(modifier = Modifier.height(70.dp))
-        
+
     }
 }
 
@@ -604,7 +658,7 @@ private fun Title(str:String,
     )
 }
 private val productnamecompare = Comparator<HomeAllProductsResponse.HomeResponse> { left, right ->
-    left.productName!!.compareTo(right.productName!!)
+    left.productName?.lowercase()!!.compareTo(right.productName?.lowercase()!!)
 }
 
 

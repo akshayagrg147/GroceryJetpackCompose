@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
+import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
 import com.grocery.groceryapp.data.modal.OrderIdResponse
 import com.grocery.groceryapp.features.Home.Modal.profileScreen
 import com.grocery.groceryapp.features.Home.ui.*
@@ -49,8 +50,9 @@ fun NavigationGraph(
             profileScreen(navController,context)
         }
         composable(BottomNavItem.OrderDetail.screen_route) {
-            val data=it.arguments?.getString("data")?:""
-            orderDetil(data)
+            var model = navController.previousBackStackEntry?.arguments?.getParcelable<AllOrdersHistoryList>("orderDetail")
+
+            orderDetil(data = model?:AllOrdersHistoryList(),navController)
         }
         composable(BottomNavItem.AllOrderHistory.screen_route) {
 
@@ -59,9 +61,7 @@ fun NavigationGraph(
         composable(BottomNavItem.AddressScreen.screen_route) {
             AllAddress(navController,context)
         }
-        composable(BottomNavItem.AddressScreen.screen_route) {
-            addressScreen(PassingAddress(name=null),navController,context)
-        }
+
         composable(BottomNavItem.CartScreen.screen_route) {
             CartScreen(navController,context,sharedPreferences)
         }
@@ -74,15 +74,19 @@ fun NavigationGraph(
         }
         composable(BottomNavItem.AddnewAddressScreen.screen_route) {
             var addressmodal = navController.previousBackStackEntry?.arguments?.getParcelable<PassingAddress>("address")
-            addressmodal?.let {
-                addressScreen(address = it, navController = navController,context)
+            if(addressmodal!=null){
+                addressScreen(address = addressmodal, navController = navController,context)
             }
+            else{
+                addressScreen(address = PassingAddress(), navController = navController,context)
+            }
+
 
 
         }
         composable(BottomNavItem.MenuItems.screen_route){
             val data=it.arguments?.getString("data")?:""
-            menuitems(navController,data)
+            menuitems(navController,context,data)
         }
         composable(BottomNavItem.MapScreen.screen_route) {
             MapScreen(navController, context,sharedPreferences)

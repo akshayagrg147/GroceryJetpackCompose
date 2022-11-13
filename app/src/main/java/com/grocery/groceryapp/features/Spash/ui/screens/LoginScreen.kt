@@ -107,13 +107,11 @@ fun loginScreen(
                                 ).collect {
                                     when (it) {
                                         is ApiState.Success -> {
-                                            Log.d("passingmessage", "loginScreen: success")
                                             isDialog = false
                                             context.showMsg(it.data)
                                             isCompleted = true
                                         }
                                         is ApiState.Failure -> {
-                                            Log.d("passingmessage", "loginScreen: failure")
                                             isDialog = false
                                             context.showMsg(it.msg.toString())
                                         }

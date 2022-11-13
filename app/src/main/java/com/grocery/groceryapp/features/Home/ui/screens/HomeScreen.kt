@@ -235,7 +235,6 @@ fun homescreen(
 
                         if (res.statusCode == 200) {
                             val list1 = res.list
-                            Log.d("listofdata", "homescreen: $list1")
                             items(list1!!) { data ->
                                 ExclusiveOffers(data, context)
                             }
@@ -334,15 +333,16 @@ fun homescreen(
             }
 
                 val ls: MutableList<MainProducts> = ArrayList()
-                ls.add(MainProducts("vegetables", R.drawable.bolt, Purple700, null))
-                ls.add(MainProducts("diary", R.drawable.bolt, borderColor, null))
-                ls.add(MainProducts("grocery", R.drawable.bolt, disableColor, null))
+                ls.add(MainProducts("vegetables", R.drawable.vegetables, Purple700, null))
+                ls.add(MainProducts("diary", R.drawable.diary, borderColor, null))
+                ls.add(MainProducts("grocery", R.drawable.grocery, disableColor, null))
                 ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor, null))
+            ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor, null))
             gridItems(
                 data = ls,
-                columnCount = 2,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                columnCount = 3,
+                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                modifier = Modifier.padding(horizontal = 3.dp)
             ) { data ->
                 GroceriesItems(data.color, data.image, data.name, navcontroller, viewModal)
             }
@@ -435,7 +435,7 @@ fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context
                 .padding(5.dp)
         ) {
 
-            Log.d("productimage11", data.productImage1.toString())
+
             Image(
 
                 painter = rememberImagePainter(data.productImage1),
@@ -493,7 +493,7 @@ fun AllItems(data: HomeAllProductsResponse.HomeResponse, context: Context) {
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .padding(5.dp)
+            .padding(5.dp).background(whiteColor)
             .clickable {
                 context.launchActivity<OrderDetailScreen>() {
                     putExtra("productId", data.ProductId)
@@ -512,8 +512,8 @@ fun AllItems(data: HomeAllProductsResponse.HomeResponse, context: Context) {
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(100.dp)
+                    .width(50.dp)
+                    .height(50.dp)
                     .align(alignment = Alignment.CenterVertically)
 
 

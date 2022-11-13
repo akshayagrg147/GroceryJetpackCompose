@@ -82,7 +82,6 @@ class HomeAllProductsViewModal @Inject constructor(
     suspend fun getAddress() = withContext(Dispatchers.IO) {
         dao.getAllAddress().collectLatest {
             addresslist.value = it
-            Log.d("addessget", Gson().toJson(it.size))
         }
 
 
@@ -96,9 +95,9 @@ class HomeAllProductsViewModal @Inject constructor(
     suspend fun getCartItem(context: Context) = withContext(Dispatchers.IO) {
 
             var totalcount: Int =
-                dao.getTotalProductItems().first()
+                dao.getTotalProductItems()?.first()?:0
             var totalPrice: Int =
-                dao.getTotalProductItemsPrice()!!.first()
+                dao.getTotalProductItemsPrice()?.first() ?:0
             updatecount.value.totalcount = totalcount
             updatecount.value.totalprice = totalPrice
 

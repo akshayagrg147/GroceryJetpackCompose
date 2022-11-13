@@ -47,11 +47,9 @@ class RegisterLoginViewModal @Inject constructor(private val repository: CommonR
         repository.registerUser(_res.first()).collect {
             when (it) {
                 is ApiState.Success -> {
-                    Log.d("main", "getRegistration: ${it.data}")
                     registrationResponse.value = RegisterLoginResponse(it.data.message, it.data.statusCode, it.data.token,it.data.status)
                 }
                 is ApiState.Failure -> {
-                    Log.d("main", "getRegistration: ${it.msg}")
                     registrationResponse.value = RegisterLoginResponse("Something went wrong", 400, null,false)
                 }
                 ApiState.Loading -> {

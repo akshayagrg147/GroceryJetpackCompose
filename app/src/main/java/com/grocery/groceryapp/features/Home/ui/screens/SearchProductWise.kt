@@ -22,11 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
-import com.grocery.groceryapp.Utils.Text14_400
-import com.grocery.groceryapp.Utils.Text16_700
-import com.grocery.groceryapp.Utils.Text24_700
+import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
@@ -56,9 +55,9 @@ fun SearchResult(
         ) {
             val offpercentage = data.orignalprice?.toInt()?.minus((data.price?.toInt() ?: 0))
             Text(
-                text = "${offpercentage}% off", color = bodyTextColor, modifier = Modifier.align(
+                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
                     Alignment.End
-                )
+                ),fontSize = 10.sp,
             )
 
             Image(
@@ -67,12 +66,12 @@ fun SearchResult(
                 contentDescription = "",
                 modifier = Modifier
                     .width(200.dp)
-                    .height(150.dp)
+                    .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally),
 
 
                 )
-            Text24_700(
+            Text13_700(
                 text = data.productName ?: "", color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
@@ -89,11 +88,11 @@ fun SearchResult(
 
                 Text(
                     text = "₹${data.orignalprice ?: "0.00"}",
-                    color = bodyTextColor,
+                    color = bodyTextColor,fontSize = 11.sp,
                     modifier = Modifier.padding(start = 10.dp),
                     style = TextStyle(textDecoration = TextDecoration.LineThrough)
                 )
-                Text14_400(
+                Text12Sp_600(
                     text = "₹${data.price ?: "0.00"}", color = headingColor,
                     modifier = Modifier.width(IntrinsicSize.Min)
                 )

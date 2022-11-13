@@ -23,6 +23,8 @@ data class CartItems(
     var strProductName: String?=null,
     @ColumnInfo(name = "actualprice")
     var actualprice: String?=null,
+    @ColumnInfo(name = "SavingAmount")
+    var savingAmount: Int?=null,
 
 
 )
@@ -34,8 +36,9 @@ data class CartItems(
         price:Int?,
         strCategoryDescription: String?,
         actualprice: String?,
+         savingAmount: String?=null,
 
-        ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription,actualprice)
+        ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription,actualprice,savingAmount?.toInt())
 }
 
 

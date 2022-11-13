@@ -1,35 +1,40 @@
 package com.grocery.groceryapp.data.modal
 
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class AllOrdersHistoryList(
     @Json(name = "list")
-    val list: List<Order>?,
+    val list: List<Orders>?= emptyList(),
     @Json(name = "message")
-    val message: String?,
+    val message: String?=null,
     @Json(name = "statusCode")
-    val statusCode: Int?
-) {
+    val statusCode: Int?=0
+):Parcelable {
+    @Parcelize
     @JsonClass(generateAdapter = true)
-    data class Order (
+    data class Orders(
         @Json(name = "address")
-        val address: String?=null,
+        val address: String?,
         @Json(name = "createdDate")
-        val createdDate: String?=null,
+        val createdDate: String?,
         @Json(name = "mobilenumber")
-        val mobilenumber: String?=null,
+        val mobilenumber: String?,
         @Json(name = "orderId")
-        val orderId: String?=null,
+        val orderId: String?,
         @Json(name = "orderList")
-        val orderList: List<Order?>?=null,
+        val orderList: List<Order?>?,
         @Json(name = "paymentmode")
-        val paymentmode: String?=null,
+        val paymentmode: String?,
         @Json(name = "totalOrderValue")
-        val totalOrderValue: String?=null
-    ) {
+        val totalOrderValue: String?
+    ):Parcelable {
+        @Parcelize
         @JsonClass(generateAdapter = true)
         data class Order(
             @Json(name = "productId")
@@ -40,6 +45,6 @@ data class AllOrdersHistoryList(
             val productprice: String?,
             @Json(name = "quantity")
             val quantity: String?
-        )
+        ):Parcelable
     }
 }

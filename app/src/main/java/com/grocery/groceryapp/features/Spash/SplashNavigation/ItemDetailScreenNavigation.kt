@@ -48,13 +48,12 @@ fun ItemScreenNavigation(
     context: Context,
     productId: String?,
     category: String?,
+    navController: NavHostController,
     viewModal: ProductByIdViewModal = hiltViewModel()
 ) {
 
 
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = ScreenRoute.ItemDetailScreen.route) {
-        composable(ScreenRoute.ItemDetailScreen.route) {
+
             when (category) {
                 "Best" -> viewModal.calllingBestProductById(ProductIdIdModal(productId = productId))
                 "exclusive" -> viewModal.calllingExclsuiveProductById(ProductIdIdModal(productId = productId))
@@ -67,10 +66,10 @@ fun ItemScreenNavigation(
                 ItemDetailsScreen(response.value,navController, context, viewModal)
             }
 
-        }
+
     }
 
-}
+
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalPagerApi::class)

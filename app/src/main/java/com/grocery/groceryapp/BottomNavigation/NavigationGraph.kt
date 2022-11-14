@@ -9,6 +9,7 @@ import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
 import com.grocery.groceryapp.data.modal.OrderIdResponse
 import com.grocery.groceryapp.features.Home.Modal.profileScreen
+import com.grocery.groceryapp.features.Home.domain.modal.PassProductIdCategory
 import com.grocery.groceryapp.features.Home.ui.*
 import com.grocery.groceryapp.features.Home.ui.screens.*
 import com.grocery.groceryapp.features.Spash.ProfileScreenNavigation
@@ -37,9 +38,11 @@ fun NavigationGraph(
         composable(BottomNavItem.MyNetwork.screen_route) {
             SearchScreen()
         }
-//        composable(BottomNavItem.AddPost.screen_route) {
-//            CartScreen()
-//        }
+        composable(BottomNavItem.ProductDetail.screen_route) {
+            val data=it.arguments?.getString("data")?:""
+
+            OrderDetailsScreen(data,context,navController)
+        }
         composable(BottomNavItem.Notification.screen_route) {
             SearchScreen()
         }

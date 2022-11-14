@@ -18,6 +18,10 @@ sealed class BottomNavItem(var title:String, var icon:Int=0, var screen_route:St
     object AllOrderHistory : BottomNavItem("AllOrderHistory",1,"AllOrderHistory")
     object CartScreen : BottomNavItem("CartScreen",1,"CartScreen")
     object OrderSuccessful : BottomNavItem("OrderSuccessful",1,"OrderSuccessful")
+    object ProductDetail : BottomNavItem("ProductDetail",0,"{data}/ProductDetail"){
+        fun senddata(data:String)="$data/ProductDetail"
+
+    }
     object AddnewAddressScreen : BottomNavItem("AddnewAddressScreen",R.drawable.location_icon,"AddnewAddressScreen")
 
     object OrderDetail : BottomNavItem("OrderDetail",R.drawable.location_icon,"OrderDetail")

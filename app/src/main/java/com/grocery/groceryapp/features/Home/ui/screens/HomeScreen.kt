@@ -1,19 +1,15 @@
 package com.grocery.groceryapp.features.Home.ui
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,29 +29,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 
 import com.google.accompanist.pager.*
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
-import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
-import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
-import com.grocery.groceryapp.features.Home.ui.screens.OrderDetailScreen
+import com.grocery.groceryapp.features.Home.domain.modal.PassProductIdCategory
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
-import com.grocery.groceryapp.features.Spash.ui.screens.SubItems
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPagerApi::class)
@@ -236,7 +223,7 @@ fun homescreen(
                         if (res.statusCode == 200) {
                             val list1 = res.list
                             items(list1!!) { data ->
-                                ExclusiveOffers(data, context)
+                                ExclusiveOffers(data, context,navcontroller)
                             }
 
 
@@ -291,7 +278,7 @@ fun homescreen(
                             val list1 = best.list
                             items(list1!!) { data ->
                                 // Column(modifier = Modifier.padding(10.dp)) {
-                                BestOffers(data, context)
+                                BestOffers(navcontroller,data, context)
                                 //}
 
 
@@ -355,7 +342,7 @@ fun homescreen(
                 )
                 {
                     repeat(list.itemCount ?:0) {
-                        AllItems(list.peek(it)!!, context)
+                        AllItems(list.peek(it)!!, context,navcontroller)
                     }
                 }
             }
@@ -415,17 +402,18 @@ fun Banner(
 }
 
 @Composable
-fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context) {
+fun ExclusiveOffers(
+    data: HomeAllProductsResponse.HomeResponse,
+    context: Context,
+    navcontroller: NavHostController
+) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 4.dp)
             .clickable {
-                context.launchActivity<OrderDetailScreen>() {
-                    putExtra("productId", data.ProductId)
-                    putExtra("ProductCategory", "exclusive")
-                }
+                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {
@@ -488,17 +476,20 @@ fun ExclusiveOffers(data: HomeAllProductsResponse.HomeResponse, context: Context
 }
 
 @Composable
-fun AllItems(data: HomeAllProductsResponse.HomeResponse, context: Context) {
+fun AllItems(
+    data: HomeAllProductsResponse.HomeResponse,
+    context: Context,
+    navcontroller: NavHostController
+) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(5.dp).background(whiteColor)
             .clickable {
-                context.launchActivity<OrderDetailScreen>() {
-                    putExtra("productId", data.ProductId)
-                    putExtra("ProductCategory", "all")
-                }
+                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} all"))
+
+
             }
 
     ) {
@@ -563,17 +554,17 @@ fun AllItems(data: HomeAllProductsResponse.HomeResponse, context: Context) {
 }
 
 @Composable
-fun BestOffers(data: HomeAllProductsResponse.HomeResponse, context: Context) {
+fun BestOffers(navcontroller: NavHostController,data: HomeAllProductsResponse.HomeResponse, context: Context) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(4.dp)
             .clickable {
-                context.launchActivity<OrderDetailScreen>() {
-                    putExtra("productId", data.ProductId)
-                    putExtra("ProductCategory", "Best")
-                }
+
+                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} Best"))
+
+
             }
 
     ) {

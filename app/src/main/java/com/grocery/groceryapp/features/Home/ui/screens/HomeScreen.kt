@@ -145,7 +145,8 @@ fun homescreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(24.dp)).clickable {
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable {
                                 navcontroller.navigate(BottomNavItem.SearchProductItems.screen_route)
                             }
                             .padding(start = 10.dp, end = 10.dp),
@@ -469,6 +470,19 @@ fun ExclusiveOffers(
 
 
             }
+            CommonButton(
+                text = "   Add   ",
+                modifier = Modifier
+                    .width(50.dp)
+                    .align(Alignment.CenterHorizontally)
+
+            )
+            {
+
+
+            }
+
+
 
 
         }
@@ -485,7 +499,8 @@ fun AllItems(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .padding(5.dp).background(whiteColor)
+            .padding(5.dp)
+            .background(whiteColor)
             .clickable {
                 navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} all"))
 
@@ -545,6 +560,34 @@ fun AllItems(
 //                    tint = redColor
 //                )
                 }
+                var value= remember {
+                   mutableStateOf(false)
+                }
+                if(value.value)
+                CommonButton(
+                    text = "   Added to cart   ",
+                    modifier = Modifier
+                        .width(150.dp)
+                        .align(Alignment.CenterHorizontally)
+
+                )
+                {
+                    value.value=false
+
+
+                }
+                else
+                    CommonButton(
+                    text = "   Add   ",
+                    modifier = Modifier
+                        .width(150.dp)
+                        .align(Alignment.CenterHorizontally)
+
+                )
+                {
+                    value.value=true
+
+                }
             }
 
 
@@ -588,6 +631,8 @@ fun BestOffers(navcontroller: NavHostController,data: HomeAllProductsResponse.Ho
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
+
+
             Text12Sp_600(
                 text = "${data.quantity} pcs,Price", color = headingColor,
                 modifier = Modifier
@@ -613,6 +658,17 @@ fun BestOffers(navcontroller: NavHostController,data: HomeAllProductsResponse.Ho
                     modifier = Modifier.padding(start = 100.dp),
                     tint = redColor
                 )
+            }
+            CommonButton(
+                text = "   Add   ",
+                modifier = Modifier
+                    .width(50.dp)
+                    .align(Alignment.CenterHorizontally)
+
+            )
+            {
+
+
             }
 
 

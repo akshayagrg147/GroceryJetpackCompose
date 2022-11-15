@@ -179,7 +179,7 @@ fun menuitems(
 
     val ls: MutableList<MainProducts> = ArrayList()
     if (passingvalue.equals("vegetables")) {
-        ls.add(MainProducts("vegetables", R.drawable.fruitbasket, Purple700, "1001"))
+        ls.add(MainProducts("vegetable", R.drawable.fruitbasket, Purple700, "1001"))
         ls.add(MainProducts("Fruits", R.drawable.snacks, borderColor, "1002"))
         ls.add(MainProducts("Exotics", R.drawable.nonveg, disableColor, "1003"))
         ls.add(MainProducts("Orgain", R.drawable.oils, darkFadedColor, "1004"))
@@ -420,7 +420,7 @@ fun MenuItemGrid(
                 contentDescription = "",
                 modifier = Modifier
                     .width(200.dp)
-                    .height(150.dp)
+                    .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
                     .clickable {
                         passItem(data)
@@ -431,11 +431,11 @@ fun MenuItemGrid(
             Text24_700(
                 text = data.productName ?: "", color = headingColor,
                 modifier = Modifier
-                    .padding(top = 10.dp)
+
                     .align(Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(7.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

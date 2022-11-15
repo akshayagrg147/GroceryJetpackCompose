@@ -71,7 +71,8 @@ fun CommonButton(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, strokeColor),
     ) {
         Box(
             modifier = Modifier
@@ -89,6 +90,7 @@ fun CommonButton(
     }
 
 }
+
 @Composable
 fun CommonButton(
     icon: Int = 0 ,call:()->Unit
@@ -110,6 +112,7 @@ fun CommonButton(
     }
 
 }
+
 @Composable
 fun CommonMathButton(
     icon: Int = 0 ,call:()->Unit

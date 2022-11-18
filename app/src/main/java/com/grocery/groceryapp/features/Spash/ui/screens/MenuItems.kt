@@ -2,6 +2,7 @@ package com.grocery.groceryapp.features.Spash.ui.screens
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -311,7 +312,7 @@ fun menuitems(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 modifier = Modifier.padding(horizontal = 1.dp)
                             ) { itemData ->
-                                MenuItemGrid(itemData, viewModal, totalamount){passvalue->
+                                MenuItemGrid(itemData,context, viewModal, totalamount){passvalue->
                                    productdetail.value=passvalue
                                     scope.launch { modalBottomSheetState.show() }
                                 }
@@ -389,16 +390,10 @@ fun ItemEachRow(
 
 @Composable
 fun MenuItemGrid(
-    data: ItemsCollectionsResponse.SubItems,
+    data: ItemsCollectionsResponse.SubItems,context:Context,
     viewModal: CartItemsViewModal,
     totalamount: MutableState<Int>,passItem:(productdetail:ItemsCollectionsResponse.SubItems)->Unit
 ) {
-
-
-
-        viewModal.getItemBaseOnProductId(data.productId)
-
-
 
     Card(
         elevation = 4.dp,
@@ -455,49 +450,70 @@ fun MenuItemGrid(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                if( viewModal.productIdCountState.value.toInt()==0){
-                    CommonButton(
-                        text = "Add",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                viewModal.insertCartItem(
-                                    data.productId ?: "",
-                                    data.productImage1 ?: "",
-                                    data.price.toInt() ?: 0,
-                                    data.productName ?: "",
-                                    data.actualPrice ?: ""
-                                )
-                                viewModal.getItemBaseOnProductId(data.productId)
+                CommonButton(
+                    text = "Add",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+//                            viewModal.insertCartItem(
+//                                data.productId ?: "",
+//                                data.productImage1 ?: "",
+//                                data.price.toInt() ?: 0,
+//                                data.productName ?: "",
+//                                data.actualPrice ?: ""
+//                            )
+//
+//                            viewModal.getCartItem()
+                            Log.d("dnndndn","jjdjjd")
 
-                            }
-                    )
-                }
-                else if( viewModal.productIdCountState.value.toInt()>0){
-                    CommonMathButton(icon = R.drawable.minus) {
-                       // cartcount.toInt() -= 1
-                        viewModal.deleteCartItems(data.productId)
-                        //  each_item_count.value -= 1
-                        //    totalamount.value = totalamount.value - (data.strProductPrice!!)
+                            Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
 
-                    }
-                    Text14_400(
-                        text =  viewModal.getItemBaseOnProductId(data.productId),
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(horizontal = 10.dp),
-                        color = Color.Black
-                    )
-                    CommonMathButton(icon = R.drawable.add) {
-                     //   cartcount.value += 1
-                        //  each_item_count.value += 1
-                        viewModal.insertCartItem(data.productId?:"",data.productImage1?:"",data.price.toInt()?:0,data.productName?:"",data.actualPrice?:"")
-                        viewModal.getCartPrice()
+                        }
+                )
 
-
-
-                    }
-                }
+//                if( viewModal.getItemBaseOnProductId(data.productId).toInt()==0){
+//                    CommonButton(
+//                        text = "Add",
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .clickable {
+//                                viewModal.insertCartItem(
+//                                    data.productId ?: "",
+//                                    data.productImage1 ?: "",
+//                                    data.price.toInt() ?: 0,
+//                                    data.productName ?: "",
+//                                    data.actualPrice ?: ""
+//                                )
+//                                viewModal.getItemBaseOnProductId(data.productId)
+//
+//                            }
+//                    )
+//                }
+//                else if( viewModal.getItemBaseOnProductId(data.productId).toInt()>0){
+//                    CommonMathButton(icon = R.drawable.minus) {
+//                       // cartcount.toInt() -= 1
+//                        viewModal.deleteCartItems(data.productId)
+//                        //  each_item_count.value -= 1
+//                        //    totalamount.value = totalamount.value - (data.strProductPrice!!)
+//
+//                    }
+//                    Text14_400(
+//                        text =  viewModal.getItemBaseOnProductId(data.productId),
+//                        modifier = Modifier
+//                            .align(Alignment.CenterVertically)
+//                            .padding(horizontal = 10.dp),
+//                        color = Color.Black
+//                    )
+//                    CommonMathButton(icon = R.drawable.add) {
+//                     //   cartcount.value += 1
+//                        //  each_item_count.value += 1
+//                        viewModal.insertCartItem(data.productId?:"",data.productImage1?:"",data.price.toInt()?:0,data.productName?:"",data.actualPrice?:"")
+//                        viewModal.getCartPrice()
+//
+//
+//
+//                    }
+//                }
 
 
                 }

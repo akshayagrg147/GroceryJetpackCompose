@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import coil.ImageLoader
 import coil.compose.rememberImagePainter
@@ -24,18 +26,24 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
+import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.Utils.Text20_700
 import com.grocery.groceryapp.Utils.Text24_700
 import com.grocery.groceryapp.data.modal.OrderIdResponse
 import com.grocery.groceryapp.features.Home.ui.ui.theme.whiteColor
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.AddressViewModal
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Composable
 fun OrderConfirmation(
     data: OrderIdResponse,
-    navController: NavHostController,
+    navController: NavHostController,viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
 
     val imageLoader = ImageLoader.Builder(LocalContext.current)
@@ -62,6 +70,7 @@ fun OrderConfirmation(
                 .fillMaxSize(), verticalArrangement = Arrangement.Center
 
         ) {
+            viewModal.deleteCartItems()
 
 
             Card(
@@ -73,7 +82,7 @@ fun OrderConfirmation(
             ) {
                 Column(
                     modifier = Modifier
-                        .background(whiteColor)
+                        .background(whiteColor).padding(20.dp)
                         .clickable { }
                 ) {
                     Box(modifier = Modifier.fillMaxWidth(),  Alignment.Center) {
@@ -109,7 +118,7 @@ fun OrderConfirmation(
                                 .padding(vertical = 5.dp)
                         )
                         Text14_400(
-                            text = "Bk12H2121",
+                            text = "${data.productResponse?.orderId}",
                             modifier = Modifier
                                 .padding(vertical = 5.dp)
                         )
@@ -120,23 +129,19 @@ fun OrderConfirmation(
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
                         Text16_700(
-                            text = "Order Id:",
+                            text = "Order value",
                             modifier = Modifier
                                 .padding(vertical = 5.dp)
                         )
                         Text14_400(
-                            text = "Bk12H2121",
+                            text = "${data.productResponse?.totalOrderValue}",
                             modifier = Modifier
                                 .padding(vertical = 5.dp)
                         )
 
                     }
 
-                        Text16_700(
-                            text = "View Detials >",
-                            modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
+
 
 
                     }
@@ -145,25 +150,68 @@ fun OrderConfirmation(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(20.dp),
+                    .height(250.dp).padding(20.dp),
                 shape = RoundedCornerShape(8.dp), elevation = 10.dp
             ){
                 Column(
                     modifier = Modifier
-                        .background(whiteColor)
-                        .clickable { }
+                        .background(whiteColor).padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+
                 ){
                     Text16_700(
                         text = "Delivery by Wed,Sept 7th 22",
                         modifier = Modifier
                             .padding(vertical = 5.dp)
                     )
-                    Text16_700(
-                        text = "${data.productResponse?.address}",
-                        modifier = Modifier
-                            .padding(vertical = 5.dp)
-                    )
+
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
+                        Text16_700(
+                            text = "Deliver Address:",
+                            modifier = Modifier
+                                .padding(vertical = 5.dp)
+                        )
+                        Text14_400(
+                            text = "${data.productResponse?.address}",
+                            modifier = Modifier
+                                .padding(vertical = 5.dp)
+                        )
+
+                    }
+
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
+                        Text16_700(
+                            text = "Contact Number:",
+                            modifier = Modifier
+                                .padding(vertical = 5.dp)
+                        )
+                        Text14_400(
+                            text = "${data.productResponse?.mobilenumber}",
+                            modifier = Modifier
+                                .padding(vertical = 5.dp)
+                        )
+
+                    }
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
+                        Text16_700(
+                            text = "Order Date:",
+                            modifier = Modifier
+                                .padding(vertical = 5.dp)
+                        )
+                        Text14_400(
+                            text = "${data.productResponse?.createdDate}",
+                            modifier = Modifier
+                                .padding(vertical = 5.dp)
+                        )
+
+                    }
+
 
                 }
             }

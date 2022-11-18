@@ -10,12 +10,14 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
+import com.grocery.groceryapp.RoomDatabase.TodoRepository
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.*
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -24,8 +26,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: CommonRepository) :
+class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: CommonRepository,val repo:TodoRepository) :
     ViewModel() {
+
+init {
+    getAllCartAddressItems()
+}
+
+
+
     private val allcartitems: MutableState<List<CartItems>> = mutableStateOf(emptyList())
     val allcartitemsState: State<List<CartItems>> = allcartitems
 
@@ -61,6 +70,16 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val addresslistState: State<List<AddressItems>> = addresslist
 
+    private fun getAllCartAddressItems() = viewModelScope.launch {
+
+        repo.getCartItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
+            allcartitems.value=it
+        }
+        repo. getAddressItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
+            addresslist.value=it
+        }
+
+    }
 
     fun deleteCartItems(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
 
@@ -119,10 +138,14 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
 
     }
 
-    suspend fun getAddress() = withContext(Dispatchers.IO) {
-        dao.getAllAddress().collectLatest {
-            addresslist.value = it
-        }
+     fun getAddress() {
+         viewModelScope.launch() {
+             var list= emptyList<AddressItems>()
+             withContext(Dispatchers.IO) {
+                 list= dao.getAllAddress().first()
+             }
+             addresslist.value = list
+         }
 
     }
 
@@ -135,15 +158,14 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
     ) = viewModelScope.launch(Dispatchers.IO) {
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first()?:0
         if (intger == 0) {
-            dao
-                .insertCartItem(
-                    CartItems(
-                        productIdNumber,
-                        thumb, intger + 1,
-                        price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
-                    )
+            val data= CartItems(
+                productIdNumber,
+                thumb, intger + 1,
+                price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
+            )
+            repo.insert(data)
 
-                )
+
 
         } else if (intger >= 1) {
             dao.updateCartItem(intger + 1, productIdNumber)
@@ -173,12 +195,18 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
     }
 
 
-    suspend fun getcartItems() = withContext(Dispatchers.IO) {
-        dao.getAllCartItems().collectLatest {
-            allcartitems.value = it
-        }
-
-    }
+//     fun getcartItems() {
+//
+//         viewModelScope.launch() {
+//             var list  = emptyList<CartItems>()
+//             withContext(Dispatchers.IO) {
+//
+//                 list=  dao.getAllCartItems().first()
+//             }
+//             allcartitems.value = list
+//
+//         }
+//     }
 
     fun DeleteProduct(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteCartItem(productIdNumber)

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.google.gson.Gson
+import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.Constants.Companion.NETWORK_PAGE_SIZE
@@ -47,8 +48,10 @@ class HomeAllProductsViewModal @Inject constructor(
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val list: State<List<AddressItems>> = addresslist
 
-    private val updatecount: MutableState<FetchCart> = mutableStateOf(FetchCart())
-    val getitemcount: MutableState<FetchCart> = updatecount
+    private val totalcount: MutableState<Int> = mutableStateOf(0)
+    val getitemcountState: MutableState<Int> = totalcount
+    private val totalprice: MutableState<Int> = mutableStateOf(0)
+    val getitempriceState: MutableState<Int> = totalprice
 
     private val m11: MutableStateFlow<String> = MutableStateFlow("")
     val getitemcount11 = m11.asSharedFlow()
@@ -91,19 +94,28 @@ class HomeAllProductsViewModal @Inject constructor(
         dao.deleteAddress(id.toString())
 
     }
+    fun deleteCartItems()=viewModelScope.launch(Dispatchers.IO) {
+        dao.deleteAllFromTable()
+    }
+fun getCartItem(){
+    viewModelScope.launch() {
 
-    suspend fun getCartItem(context: Context) = withContext(Dispatchers.IO) {
+        var totalcount1: Int = 0
+        var totalPrice1: Int = 0
+        withContext(Dispatchers.IO) {
+            totalcount1 = dao.getTotalProductItems()?.first()?:0
+            totalPrice1 = dao.getTotalProductItemsPrice()?.first()?:0
+            Log.d("sjsjjsj",totalcount1.toString())
+        }
 
-            var totalcount: Int =
-                dao.getTotalProductItems()?.first()?:0
-            var totalPrice: Int =
-                dao.getTotalProductItemsPrice()?.first() ?:0
-            updatecount.value.totalcount = totalcount
-            updatecount.value.totalprice = totalPrice
-
+        Log.d("sjsjjsj",totalcount1.toString())
+        totalprice.value = totalPrice1
+        totalcount.value = totalcount1
 
 
     }
+}
+
 
 
     fun callingExcusiveProducts() = viewModelScope.launch {
@@ -121,6 +133,33 @@ class HomeAllProductsViewModal @Inject constructor(
                 }
             }
         }
+    }
+
+    fun insertCartItem(
+        productIdNumber: String,
+        thumb: String,
+        price: Int,
+        productname: String,
+        actualprice: String
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        val intger: Int = dao.getProductBasedIdCount(productIdNumber).first()?:0
+        if (intger == 0) {
+            dao
+                .insertCartItem(
+                    CartItems(
+                        productIdNumber,
+                        thumb, intger + 1,
+                        price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
+                    )
+
+                )
+
+        } else if (intger >= 1) {
+            dao.updateCartItem(intger + 1, productIdNumber)
+
+        }
+
+
     }
 
     fun gettingData(): LiveData<List<HomeAllProductsResponse.HomeResponse>> {

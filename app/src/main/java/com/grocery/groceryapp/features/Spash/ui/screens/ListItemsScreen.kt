@@ -521,7 +521,9 @@ private fun Body(
             viewModal.listState.value.list?.sortedWith(comparator = productnamecompare)
             Log.d("sjsjjsj", viewModal.listState.value!!.list?.get(0)!!.productName!!)}
 
-        "dsc" -> { viewModal.listState.value.list?.sortedByDescending { it?.productName ?.lowercase()}}
+        "dsc" -> {
+            viewModal.listState.value.list?.sortedByDescending { it?.productName ?.lowercase()}
+        }
         "high" -> { viewModal.listState.value.list?.sortedBy { it.price?.toInt() }}
         "low" -> {viewModal.listState.value.list?.sortedByDescending { it?.price?.toInt() }}
 

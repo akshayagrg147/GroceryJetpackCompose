@@ -1,6 +1,11 @@
 package com.grocery.groceryapp.features.Home.ui
 
 import android.content.Context
+import android.content.Context.VIBRATOR_SERVICE
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -40,7 +45,6 @@ import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
-import com.grocery.groceryapp.features.Home.domain.modal.PassProductIdCategory
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 
@@ -66,9 +70,9 @@ fun homescreen(
 
     var best = viewModal.bestsellingProductsResponse1.value
     val pager = rememberPagerState()
-    LaunchedEffect(key1 = 0, block ={
-        viewModal.getCartItem(context)
-    } )
+
+        viewModal.getCartItem()
+
 
 
     Box(modifier = Modifier.fillMaxSize()){
@@ -224,7 +228,7 @@ fun homescreen(
                         if (res.statusCode == 200) {
                             val list1 = res.list
                             items(list1!!) { data ->
-                                ExclusiveOffers(data, context,navcontroller)
+                                ExclusiveOffers(data, context,navcontroller,viewModal)
                             }
 
 
@@ -279,7 +283,7 @@ fun homescreen(
                             val list1 = best.list
                             items(list1!!) { data ->
                                 // Column(modifier = Modifier.padding(10.dp)) {
-                                BestOffers(navcontroller,data, context)
+                                BestOffers(navcontroller,data, context,viewModal)
                                 //}
 
 
@@ -343,7 +347,7 @@ fun homescreen(
                 )
                 {
                     repeat(list.itemCount ?:0) {
-                        AllItems(list.peek(it)!!, context,navcontroller)
+                        AllItems(list.peek(it)!!, context,navcontroller,viewModal)
                     }
                 }
             }
@@ -406,8 +410,12 @@ fun Banner(
 fun ExclusiveOffers(
     data: HomeAllProductsResponse.HomeResponse,
     context: Context,
-    navcontroller: NavHostController
+    navcontroller: NavHostController,
+    viewModal: HomeAllProductsViewModal
 ) {
+    var response by remember {
+        mutableStateOf("")
+    }
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
@@ -470,17 +478,37 @@ fun ExclusiveOffers(
 
 
             }
+            if(response.equals(""))
             CommonButton(
-                text = "   Add   ",
-                modifier = Modifier
-                    .width(50.dp)
-                    .align(Alignment.CenterHorizontally)
+                text = "Add ",
 
+                modifier = Modifier
+                    .width(150.dp).height(50.dp)
+                    .align(Alignment.CenterHorizontally)
             )
             {
+               // response="called"
+                viewModal.insertCartItem(data.ProductId?:"",data.productImage1?:"",data.price?.toInt()?:0,data.productName?:"",data.orignalprice?:"")
+                viewModal.getCartItem()
+                Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
 
+                vibrator(context)
+            }
+            if(response.equals("called")){
+                    CommonButton(
+                        text = "   Added to cart  ",
+                        backgroundColor= whiteColor,
+                        color=Color.Black,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
+
+
+                    )
+                    {}
 
             }
+
 
 
 
@@ -489,12 +517,27 @@ fun ExclusiveOffers(
     }
 }
 
+fun vibrator(context: Context) {
+    var vibration = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+    if (Build.VERSION.SDK_INT >= 26) {
+        vibration.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+    } else {
+        val vib  = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
+        vib.vibrate(200)
+    }
+
+}
+
 @Composable
 fun AllItems(
     data: HomeAllProductsResponse.HomeResponse,
     context: Context,
-    navcontroller: NavHostController
+    navcontroller: NavHostController,  viewModal: HomeAllProductsViewModal
 ) {
+    var response by remember {
+        mutableStateOf("")
+    }
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
@@ -548,7 +591,7 @@ fun AllItems(
                     Text13_700(
                         text = "₹ ${data.price}",
                         color = headingColor,
-                          modifier= Modifier
+                        modifier= Modifier
                     )
                     Text(text ="₹${data.orignalprice ?: "0.00"}", fontSize = 13.sp , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
 
@@ -560,32 +603,36 @@ fun AllItems(
 //                    tint = redColor
 //                )
                 }
-                var value= remember {
-                   mutableStateOf(false)
-                }
-                if(value.value)
-                CommonButton(
-                    text = "   Added to cart   ",
-                    modifier = Modifier
-                        .width(150.dp)
-                        .align(Alignment.CenterHorizontally)
-
-                )
-                {
-                    value.value=false
-
-
-                }
-                else
+                if(response.equals(""))
                     CommonButton(
-                    text = "   Add   ",
-                    modifier = Modifier
-                        .width(150.dp)
-                        .align(Alignment.CenterHorizontally)
+                        text = "  Add  ",
 
-                )
-                {
-                    value.value=true
+                        modifier = Modifier
+                            .width(150.dp).height(50.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    {
+                       // response="called"
+                        viewModal.insertCartItem(data.ProductId?:"",data.productImage1?:"",data.price?.toInt()?:0,data.productName?:"",data.orignalprice?:"")
+                        viewModal.getCartItem()
+                        Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
+                        vibrator(context)
+                    }
+                if(response.equals("called")){
+                        CommonButton(
+                            text = "   Added to cart  ",
+                            backgroundColor= whiteColor,
+                            color=Color.Black,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.CenterHorizontally)
+
+                        )
+                        {
+
+
+
+                        }
 
                 }
             }
@@ -597,7 +644,15 @@ fun AllItems(
 }
 
 @Composable
-fun BestOffers(navcontroller: NavHostController,data: HomeAllProductsResponse.HomeResponse, context: Context) {
+fun BestOffers(
+    navcontroller: NavHostController,
+    data: HomeAllProductsResponse.HomeResponse,
+    context: Context,
+    viewModal: HomeAllProductsViewModal
+) {
+    var response by remember {
+        mutableStateOf("")
+    }
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
@@ -659,15 +714,37 @@ fun BestOffers(navcontroller: NavHostController,data: HomeAllProductsResponse.Ho
                     tint = redColor
                 )
             }
-            CommonButton(
-                text = "   Add   ",
-                modifier = Modifier
-                    .width(50.dp)
-                    .align(Alignment.CenterHorizontally)
+            if(response.equals(""))
+                CommonButton(
+                    text = "   Add   ",
+                    modifier = Modifier
+                        .width(150.dp).height(50.dp)
+                        .align(Alignment.CenterHorizontally)
 
-            )
-            {
+                )
+                {
+                   // response="called"
+                    viewModal.insertCartItem(data.ProductId?:"",data.productImage1?:"",data.price?.toInt()?:0,data.productName?:"",data.orignalprice?:"")
+                    viewModal.getCartItem()
+                    Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
+                    vibrator(context)
+                }
+            if(response.equals("called")){
+                    CommonButton(
+                        text = "   Added to cart  ",
+                        backgroundColor= whiteColor,
+                        color=Color.Black,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
 
+
+                    )
+                    {
+
+
+
+                    }
 
             }
 
@@ -814,8 +891,8 @@ fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,navController: NavHost
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }) {
-                    Text14_400(text = "${viewmodal.getitemcount.value.totalcount.toString()} items", color = Color.White)
-                    Text14_400(text = "₹ ${viewmodal.getitemcount.value.totalprice.toString()}",color = Color.White)
+                    Text14_400(text = "${viewmodal.getitemcountState.value.toString()} items", color = Color.White)
+                    Text14_400(text = "₹ ${viewmodal.getitempriceState.value.toString()}",color = Color.White)
 
 
                 }

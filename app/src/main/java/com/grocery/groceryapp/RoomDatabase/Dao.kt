@@ -1,8 +1,9 @@
 package com.grocery.groceryapp.RoomDatabase
 
-import androidx.lifecycle.LiveData
-import androidx.room.*
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +17,9 @@ interface Dao {
 
     @Query("SELECT totalCount FROM CartItems where ProductIdNumber=:ProductIdNumber")
     fun getProductBasedIdCount( ProductIdNumber:String?): Flow<Int?>
+
+    @Query("SELECT totalCount FROM CartItems where ProductIdNumber=:ProductIdNumber")
+    fun getProductBasedIdCount1( ProductIdNumber:String?): Int?
 
     @Query("UPDATE CartItems SET totalCount=:count WHERE ProductIdNumber = :id")
     fun updateCartItem(count: Int,id:String?)
@@ -42,6 +46,9 @@ interface Dao {
     fun getAllAddress(): Flow<List<AddressItems>>
     @Query("DELETE  FROM AddressItems WHERE id = :id")
     fun deleteAddress(id:String?)
+
+    @Query("DELETE FROM CartItems")
+    fun deleteAllFromTable()
 
     @Query("UPDATE AddressItems SET customer_name=:customer_name, customer_PhoneNumber=:customer_PhoneNumber, PinCode=:PinCode, Address1=:Address1, Address2=:Address2,LandMark=:LandMark WHERE addressitems.id = :id")
     fun updateAddressItem(customer_name: String,customer_PhoneNumber: String,PinCode: Int,Address1: String,Address2: String,LandMark: String,id:Long?)

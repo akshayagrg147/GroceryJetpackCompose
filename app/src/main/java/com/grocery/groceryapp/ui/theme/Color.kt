@@ -7,7 +7,7 @@ val Purple500 = Color(0XFF2E445C)
 val Purple700 = Color(0XFF2E445C)
 val Teal200 = Color(0XFF2E445C)
 
-val titleColor = Color(0XFF2E445C)
+val titleColor = Color(0XFF22C965)
 val headingColor = Color(0XFF171725)
 val bodyTextColor = Color(0XFF696974)
 val seallcolor = Color(0XFF53B175)

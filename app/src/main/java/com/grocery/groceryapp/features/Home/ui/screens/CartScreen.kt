@@ -33,28 +33,26 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-
-import com.google.gson.Gson
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
-
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.CommonProgressBar
-import com.grocery.groceryapp.data.modal.FetchCart
 import com.grocery.groceryapp.data.modal.OrderIdCreateRequest
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
-import com.squareup.moshi.Json
-import com.wajahatkarim3.compose.books.ui.model.PassingAddress
-
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CartScreen(navController: NavHostController, context: Activity,sharedpreferenceCommon: sharedpreferenceCommon, viewModal: CartItemsViewModal = hiltViewModel()) {
+fun CartScreen(
+    navController: NavHostController,
+    context: Activity,
+    sharedpreferenceCommon: sharedpreferenceCommon,
+    viewModal: CartItemsViewModal = hiltViewModel()
+) {
 
     val scope = rememberCoroutineScope()
     val modalBottomSheetState =
@@ -62,8 +60,8 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
     var isDialog by remember { mutableStateOf(false) }
 
 
-    var choose:MutableState<Boolean> = remember { mutableStateOf(false)}
-    var order:ArrayList<OrderIdCreateRequest.Order> = ArrayList()
+    var choose: MutableState<Boolean> = remember { mutableStateOf(false) }
+    var order: ArrayList<OrderIdCreateRequest.Order> = ArrayList()
 
     viewModal.getCartPrice()
     viewModal.getSavingAmount()
@@ -124,25 +122,29 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                     Text14_400(
-                        text = "₹ ${viewModal.totalPriceState.value*0.1}",
+                        text = "₹ ${viewModal.totalPriceState.value * 0.1}",
                         color = blackColor,
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
 
                 }
-                if(choose.value)
-                {
-                    Text16_700(text = "Choose Address", color = Color.Black, modifier = Modifier.padding(start = 10.dp, top = 15.dp, bottom = 10.dp))}
+                if (choose.value) {
+                    Text16_700(
+                        text = "Choose Address",
+                        color = Color.Black,
+                        modifier = Modifier.padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
 
                         .padding(start = 10.dp),
 
-                ) {
+                    ) {
 
 
-                    AddressComponent(viewModal,navController){
+                    AddressComponent(viewModal, navController) {
 
                         when (it) {
 
@@ -150,28 +152,40 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
                                 choose.value = true
                             }
                             "ProceedButton" -> {
-                                val request=OrderIdCreateRequest(orderList=order,address="abc",paymentmode="COD",totalOrderValue="0",mobilenumber=sharedpreferenceCommon.getMobileNumber())
+                                val request = OrderIdCreateRequest(
+                                    orderList = order,
+                                    address = "abc",
+                                    paymentmode = "COD",
+                                    totalOrderValue = "0",
+                                    mobilenumber = sharedpreferenceCommon.getMobileNumber()
+                                )
                                 viewModal.calllingBookingOrder(request)
-                                isDialog=true
+                                isDialog = true
                                 when (viewModal.orderConfirmedStatusState.value.statusCode) {
                                     200 -> {
-                                        isDialog=false
+                                        isDialog = false
                                         scope.launch { modalBottomSheetState.hide() }
                                         viewModal.orderConfirmedStatusState.value.apply {
 
-                                            navController.currentBackStackEntry?.arguments?.putParcelable("orderstatus", viewModal.orderConfirmedStatusState.value)
+                                            navController.currentBackStackEntry?.arguments?.putParcelable(
+                                                "orderstatus",
+                                                viewModal.orderConfirmedStatusState.value
+                                            )
                                             navController.navigate(BottomNavItem.OrderSuccessful.screen_route)
                                         }
                                     }
                                     401 -> {
-                                        isDialog=false
+                                        isDialog = false
                                         scope.launch { modalBottomSheetState.hide() }
-                                        navController.currentBackStackEntry?.arguments?.putParcelable("orderstatus", viewModal.orderConfirmedStatusState.value)
+                                        navController.currentBackStackEntry?.arguments?.putParcelable(
+                                            "orderstatus",
+                                            viewModal.orderConfirmedStatusState.value
+                                        )
                                         navController.navigate(BottomNavItem.OrderSuccessful.screen_route)
                                     }
                                     else -> {
-                                        isDialog=false
-                                        Log.d("messagecoming","someting went wrong")
+                                        isDialog = false
+                                        Log.d("messagecoming", "someting went wrong")
                                     }
                                 }
                             }
@@ -186,9 +200,6 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
                 }
 
 
-
-
-
             }
         },
         sheetState = modalBottomSheetState,
@@ -199,162 +210,173 @@ fun CartScreen(navController: NavHostController, context: Activity,sharedprefere
 
     ) {
 
-Box(modifier = Modifier.fillMaxSize()){
-    ConstraintLayout(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxSize()
+            ) {
 
-        val (l1, l2,l3) = createRefs()
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .constrainAs(l1) {
-                top.linkTo(parent.top)
-                end.linkTo(parent.end)
-                start.linkTo(parent.start)
+                val (l1, l2, l3) = createRefs()
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(l1) {
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                        start.linkTo(parent.start)
 //                    bottom.linkTo(l2.top)
 
-            }) {
+                    }) {
 
-
-
-        }
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(l2) {
-                    top.linkTo(l1.bottom)
-                    bottom.linkTo(l3.top)
 
                 }
-        ) {
-            scope.launch{
 
-                viewModal.getcartItems()
-                viewModal.getAddress()
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(l2) {
+                            top.linkTo(l1.bottom)
+                            bottom.linkTo(l3.top)
+
+                        }
+                ) {
+
+                    item {
+
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 20.dp)
+                                .clickable {
+                                    navController.navigate(ScreenRoute.CartScreen.route)
+                                },
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text24_700(text = "Checkout", color = Color.Black)
+                        }
+
+
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Card(
+                            elevation = 4.dp,
+                            shape = RoundedCornerShape(10.dp),
+                            backgroundColor = titleColor, modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxWidth()
+                                .height(35.dp)
+                                .padding(horizontal = 10.dp)
+                                .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
+
+
+                        ) {
+                            Row(
+                                modifier = Modifier, Arrangement.SpaceBetween
+
+                            ) {
+                                Text14_400(
+                                    text = "Your total savings", whiteColor, modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(start = 10.dp)
+                                )
+                                Text14_400(
+                                    text = "₹ ${viewModal.SavingAmountState.value}",
+                                    color = whiteColor,
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(end = 20.dp)
+                                )
+
+
+                            }
+                        }
+                    }
+                    item {
+                        if (viewModal.allcartitemsState.value.isEmpty())
+                            noHistoryAvailable()
+                    }
+                    items(viewModal.allcartitemsState.value, key = { it.id }) { data ->
+                        ItemEachRow(data, viewModal)
+
+                    }
+                }
+
 
             }
-            item {
+            //  if(viewModal.responseLiveData.value.isNotEmpty())
+            Card(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                elevation = 0.dp,
+                shape = CutCornerShape(30.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .background(colorResource(id = R.color.green_700))
+                        .clickable { scope.launch { modalBottomSheetState.show() } },
+                    contentAlignment = Alignment.Center
+                ) {
 
-
-                    Row(
+                    Text24_700(
+                        text = "Go to Checkout(${viewModal.totalPriceState.value})",
+                        color = Color.White,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 20.dp).clickable {
-                                navController.navigate(ScreenRoute.CartScreen.route)
-                            },
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text24_700(text = "Checkout", color = Color.Black)
-                    }
+                            .padding(vertical = 15.dp)
+                    )
 
-
-                Spacer(modifier = Modifier.height(10.dp))
-                Card(
-                    elevation = 4.dp,
-                    shape = RoundedCornerShape(10.dp),
-                    backgroundColor = titleColor,modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxWidth()
-                        .height(35.dp)
-                        .padding(horizontal = 10.dp)
-                        .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
-
-
-                ){
-                    Row(modifier = Modifier,Arrangement.SpaceBetween
-
-                    ){
-                        Text14_400(text = "Your total savings", whiteColor, modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(start = 10.dp))
-                        Text14_400(text = "₹ ${viewModal.SavingAmountState.value}",color = whiteColor, modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(end = 20.dp))
-
-
-                    }
                 }
             }
-            item {
-                if(viewModal.allcartitemsState.value.isEmpty())
-                noHistoryAvailable() }
-            items(viewModal.allcartitemsState.value) { data ->
-                ItemEachRow(data, viewModal,order)
-
-            }
         }
 
 
-    }
-  //  if(viewModal.responseLiveData.value.isNotEmpty())
-        Card(modifier=Modifier.align(Alignment.BottomCenter),
-        elevation = 0.dp,
-        shape = CutCornerShape(30.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-                .background(colorResource(id = R.color.green_700))
-                .clickable { scope.launch { modalBottomSheetState.show() } },
-            contentAlignment = Alignment.Center
-        ) {
-
-            Text24_700(
-                text = "Go to Checkout(${viewModal.totalPriceState.value})",
-                color = Color.White,
-                modifier = Modifier
-                    .padding(vertical = 15.dp)
-            )
-
-        }
     }
 }
 
-
-
-
-    }}
-
 @Composable
-fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostController,call:(String)->Unit) {
-    var selectedIndex = remember{mutableStateOf(1)}
+fun AddressComponent(
+    viewModal: CartItemsViewModal,
+    navController: NavHostController,
+    call: (String) -> Unit
+) {
+    var selectedIndex = remember { mutableStateOf(1) }
     Column(modifier = Modifier.fillMaxSize()) {
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
             // .height(260.dp)
         ) {
-            if(viewModal.addresslistState.value.isNotEmpty())
-            {
+            if (viewModal.addresslistState.value.isNotEmpty()) {
                 call("containsData")
                 items(viewModal.addresslistState.value) { data ->
-                AddressFiled(data, selectedIndex)
-            }
+                    AddressFiled(data, selectedIndex)
                 }
-            else{
+            } else {
                 call("empty")
             }
 
         }
-           Spacer(modifier = Modifier.height((2.dp)))
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-                .clickable {
-                    navController.navigate(ScreenRoute.AddressScreen.route)
-                }) {
-                Text16_700(text = "Add Address", modifier = Modifier
+        Spacer(modifier = Modifier.height((2.dp)))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .align(Alignment.CenterHorizontally)
+            .clickable {
+                navController.navigate(ScreenRoute.AddressScreen.route)
+            }) {
+            Text16_700(
+                text = "Add Address", modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
-                    .align(Alignment.Center), color = navdrawerColor)
+                    .align(Alignment.Center), color = navdrawerColor
+            )
 
-            }
+        }
         Spacer(modifier = Modifier.height((20.dp)))
         CommonButton(
             text = "Proceed to payment",
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
         )
         {
 
@@ -365,10 +387,10 @@ fun AddressComponent(viewModal: CartItemsViewModal, navController: NavHostContro
     }
 
 
-
 }
+
 @Composable
-fun noHistoryAvailable(){
+fun noHistoryAvailable() {
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(250.dp))
         Text14_400(text = "No order available", modifier = Modifier.align(Alignment.Center))
@@ -383,8 +405,10 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>) {
 
     Card(
         elevation = 1.dp,
-        shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp,Color.Black),
-        backgroundColor = if(selectedIndex.value==data.id.toInt()) Color.LightGray else Color.White ,modifier = Modifier
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, Color.Black),
+        backgroundColor = if (selectedIndex.value == data.id.toInt()) Color.LightGray else Color.White,
+        modifier = Modifier
             .fillMaxWidth()
             .width(180.dp)
             .height(120.dp)
@@ -394,8 +418,9 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>) {
                 selectedIndex.value = data.id.toInt()
             }
 
-    ){
-        Box(modifier = Modifier
+    ) {
+        Box(
+            modifier = Modifier
 
         ) {
             Column(modifier = Modifier.padding(10.dp)) {
@@ -407,7 +432,6 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>) {
             }
         }
     }
-
 
 
 }
@@ -455,18 +479,16 @@ fun SimpleRadioButtonComponent() {
     }
 
 }
+
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun ItemEachRow(
     data: CartItems,
     viewModal: CartItemsViewModal,
-    order: ArrayList<OrderIdCreateRequest.Order>,
+
 
     ) {
-   // viewModal.getItemBaseOnProductId(data.ProductIdNumber)
-
-
-    order.add(OrderIdCreateRequest.Order(productId=data.ProductIdNumber, productName = data.strProductName, productprice = data.strProductPrice.toString(), quantity = viewModal.getItemBaseOnProductId(data.ProductIdNumber)))
+    //order.add(OrderIdCreateRequest.Order(productId=data.ProductIdNumber, productName = data.strProductName, productprice = data.strProductPrice.toString(), quantity = viewModal.productIdCountState.value.toString()))
 
     Column(
         modifier = Modifier
@@ -509,7 +531,12 @@ fun ItemEachRow(
                     text = "₹ ${data.strProductPrice}",
                     color = blackColor,
                 )
-                Text(text ="₹${data.actualprice ?: "0.00"}" , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                Text(
+                    text = "₹${data.actualprice ?: "0.00"}",
+                    color = bodyTextColor,
+                    modifier = Modifier.padding(start = 10.dp),
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
 
 //                Text14_400(text = data.strProductName.toString())
                 Spacer(modifier = Modifier.height(10.dp))
@@ -524,15 +551,20 @@ fun ItemEachRow(
 
                         }
                         Text14_400(
-                            text = viewModal.getItemBaseOnProductId(data.ProductIdNumber)
-                            ,
+                            text = data.totalCount.toString(),
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
                                 .padding(horizontal = 20.dp),
                             color = Color.Black
                         )
                         CommonMathButton(icon = R.drawable.add) {
-                            viewModal.insertCartItem(data.ProductIdNumber?:"",data.strCategoryThumb?:"",data.strProductPrice?:0,data.strProductName?:"",data.actualprice?:"")
+                            viewModal.insertCartItem(
+                                data.ProductIdNumber ?: "",
+                                data.strCategoryThumb ?: "",
+                                data.strProductPrice ?: 0,
+                                data.strProductName ?: "",
+                                data.actualprice ?: ""
+                            )
                             viewModal.getCartPrice()
 
                         }

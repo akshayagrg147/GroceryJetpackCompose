@@ -63,7 +63,7 @@ fun CartScreen(
     var choose: MutableState<Boolean> = remember { mutableStateOf(false) }
     var order: ArrayList<OrderIdCreateRequest.Order> = ArrayList()
 
-    viewModal.getCartPrice()
+    viewModal.getCartItem()
     viewModal.getSavingAmount()
     if (isDialog)
         CommonProgressBar()
@@ -547,7 +547,7 @@ fun ItemEachRow(
                     Row {
                         CommonMathButton(icon = R.drawable.minus) {
                             viewModal.deleteCartItems(data.ProductIdNumber)
-                            viewModal.getCartPrice()
+
 
                         }
                         Text14_400(
@@ -565,7 +565,7 @@ fun ItemEachRow(
                                 data.strProductName ?: "",
                                 data.actualprice ?: ""
                             )
-                            viewModal.getCartPrice()
+
 
                         }
                     }

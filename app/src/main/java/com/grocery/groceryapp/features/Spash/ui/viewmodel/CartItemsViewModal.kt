@@ -32,9 +32,6 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
 init {
     getAllCartAddressItems()
 }
-
-
-
     private val allcartitems: MutableState<List<CartItems>> = mutableStateOf(emptyList())
     val allcartitemsState: State<List<CartItems>> = allcartitems
 
@@ -45,27 +42,20 @@ init {
         mutableStateOf(ItemsCollectionsResponse(null, null, null))
     val itemcollections1: State<ItemsCollectionsResponse> = itemcollections
 
-    private val updatecount: MutableState<FetchCart> = mutableStateOf(FetchCart())
-    val getitemcount: MutableState<FetchCart> = updatecount
+
 
     private val totalcount: MutableState<Int> =
         mutableStateOf(0)
-    val totalcountState: State<Int> = totalcount
+    val totalCountState: State<Int> = totalcount
+
     private val totalPrice: MutableState<Int> =
         mutableStateOf(0)
     val totalPriceState: State<Int> = totalPrice
-
-
 
     private val orderConfirmedStatus: MutableState<OrderIdResponse> =
         mutableStateOf(OrderIdResponse())
     val orderConfirmedStatusState: State<OrderIdResponse> = orderConfirmedStatus
 
-    private val CartCountPrice: FetchCart = FetchCart()
-
-
-    private var productIdCountMutable: MutableState<Int> = mutableStateOf(-1)
-    val productIdCountState: State<Int> = productIdCountMutable
 
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val addresslistState: State<List<AddressItems>> = addresslist
@@ -81,72 +71,35 @@ init {
 
     }
 
-    fun deleteCartItems(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
+    fun deleteCartItems(productIdNumber: String?) = viewModelScope.launch {
+        repo.deleteCartItems(productIdNumber)
+    }
+     fun getCartItem() = viewModelScope.launch  {
 
-        var intger: Int =
-            dao.getProductBasedIdCount(productIdNumber).first()?:0
-        intger -= 1
+         getTotalProductItemsPrice()
+         getTotalProductItems()
 
-        if (intger >= 1) {
-            dao
-                .updateCartItem(intger, productIdNumber!!)
-        } else if (intger == 0) {
-            dao
-                .deleteCartItem(productIdNumber)
+
+
+    }
+    fun getTotalProductItemsPrice()= viewModelScope.launch {
+        repo.getTotalProductItemsPrice().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
+            totalPrice.value=it?:0
 
         }
     }
-    suspend fun getCartItem(context: Context) = withContext(Dispatchers.IO) {
+    fun getTotalProductItems()= viewModelScope.launch {
+        repo.getTotalProductItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
 
-        var totalcount: Int =
-            dao.getTotalProductItems()?.first()?:0
-        var totalPrice: Int =
-            dao.getTotalProductItemsPrice()?.first()?:0
-        updatecount.value.totalcount = totalcount
-        updatecount.value.totalprice = totalPrice
-
-
-
-    }
-     fun getSavingAmount()  {
-         viewModelScope.launch {
-             var totalcount1: Int =0
-             withContext(Dispatchers.IO){
-
-                 totalcount1=   dao.getTotalSavingAmount()?.first()?:0
-             }
-             SavingAmmountMutable.value = totalcount1
-         }
-
-
-
-
-
-    }
-    fun getItemBaseOnProductId(value: String?): String {
-        viewModelScope.launch() {
-
-            var intger: Int = 0
-
-            withContext(Dispatchers.IO) {
-                 intger = dao.getProductBasedIdCount(value).first() ?:0
-            }
-            productIdCountMutable.value = intger
+            totalcount.value=it?:0
 
         }
-        return  productIdCountMutable.value.toString()
 
     }
-
-     fun getAddress() {
-         viewModelScope.launch() {
-             var list= emptyList<AddressItems>()
-             withContext(Dispatchers.IO) {
-                 list= dao.getAllAddress().first()
-             }
-             addresslist.value = list
+     fun getSavingAmount()=viewModelScope.launch  {
+         repo.getTotalSavingAmount().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
+             SavingAmmountMutable.value=it?:0
          }
-
     }
 
     fun insertCartItem(
@@ -164,49 +117,17 @@ init {
                 price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
             )
             repo.insert(data)
-
-
-
         } else if (intger >= 1) {
             dao.updateCartItem(intger + 1, productIdNumber)
 
         }
 
-
     }
 
 
-    fun getCartPrice() {
-        viewModelScope.launch() {
-
-            var totalcount1: Int = 0
-            var totalPrice1: Int = 0
-            withContext(Dispatchers.IO) {
-                totalcount1 = dao.getTotalProductItems()?.first()?:0
-                totalPrice1 = dao.getTotalProductItemsPrice()?.first()?:0
-            }
-
-            totalcount.value = totalcount1
-            totalPrice.value=totalPrice1
-
-        }
 
 
-    }
 
-
-//     fun getcartItems() {
-//
-//         viewModelScope.launch() {
-//             var list  = emptyList<CartItems>()
-//             withContext(Dispatchers.IO) {
-//
-//                 list=  dao.getAllCartItems().first()
-//             }
-//             allcartitems.value = list
-//
-//         }
-//     }
 
     fun DeleteProduct(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteCartItem(productIdNumber)
@@ -217,7 +138,6 @@ init {
             when (it) {
                 is ApiState.Success -> {
                     itemcollections.value = it.data
-
                 }
                 is ApiState.Failure -> {
                     itemcollections.value = ItemsCollectionsResponse(null, it.msg.message, 401)
@@ -257,3 +177,19 @@ init {
 
 
 }
+
+
+//    fun getItemBaseOnProductId(value: String?): String {
+//        viewModelScope.launch() {
+//
+//            var intger: Int = 0
+//
+//            withContext(Dispatchers.IO) {
+//                 intger = dao.getProductBasedIdCount(value).first() ?:0
+//            }
+//            productIdCountMutable.value = intger
+//
+//        }
+//        return  productIdCountMutable.value.toString()
+//
+//    }

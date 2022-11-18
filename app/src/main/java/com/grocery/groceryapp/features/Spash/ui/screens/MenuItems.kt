@@ -117,8 +117,8 @@ fun cardviewAddtoCart(viewmodal: CartItemsViewModal, navController: NavHostContr
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }) {
-                    Text14_400(text = "${viewmodal.getitemcount.value.totalcount.toString()} items", color = Color.White)
-                    Text14_400(text = "₹ ${viewmodal.getitemcount.value.totalprice.toString()}",color = Color.White)
+                    Text14_400(text = "${viewmodal.totalCountState.value} items", color = Color.White)
+                    Text14_400(text = "₹ ${viewmodal.totalPriceState.value}",color = Color.White)
 
 
                 }
@@ -174,9 +174,9 @@ fun menuitems(
     val pager = rememberPagerState()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    LaunchedEffect(key1 = 0, block ={
-        viewModal.getCartItem(context)
-    })
+
+        viewModal.getCartItem()
+
 
     val ls: MutableList<MainProducts> = ArrayList()
     if (passingvalue.equals("vegetables")) {
@@ -455,21 +455,23 @@ fun MenuItemGrid(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-//                            viewModal.insertCartItem(
-//                                data.productId ?: "",
-//                                data.productImage1 ?: "",
-//                                data.price.toInt() ?: 0,
-//                                data.productName ?: "",
-//                                data.actualPrice ?: ""
-//                            )
-//
-//                            viewModal.getCartItem()
-                            Log.d("dnndndn","jjdjjd")
 
-                            Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
 
                         }
-                )
+                ){
+                    viewModal.insertCartItem(
+                        data.productId ?: "",
+                        data.productImage1 ?: "",
+                        data.price.toInt() ?: 0,
+                        data.productName ?: "",
+                        data.actualPrice ?: ""
+                    )
+
+                   // viewModal.getCartItem()
+                    Log.d("dnndndn","jjdjjd")
+
+                    Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
+                }
 
 //                if( viewModal.getItemBaseOnProductId(data.productId).toInt()==0){
 //                    CommonButton(

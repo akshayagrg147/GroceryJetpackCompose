@@ -42,6 +42,7 @@ import com.google.accompanist.pager.*
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.Utils.Companion.vibrator
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
@@ -64,8 +65,7 @@ fun homescreen(
 
    val list= viewModal.allresponse.collectAsLazyPagingItems()
 
-    viewModal.callingBestSelling()
-    viewModal.callingExcusiveProducts()
+
     var res = viewModal.exclusiveProductsResponse1.value
 
     var best = viewModal.bestsellingProductsResponse1.value
@@ -348,6 +348,8 @@ fun homescreen(
                 {
                     repeat(list.itemCount ?:0) {
                         AllItems(list.peek(it)!!, context,navcontroller,viewModal)
+                        if(it==list.itemCount-1)
+                            Spacer(modifier = Modifier.height(80.dp))
                     }
                 }
             }
@@ -483,7 +485,8 @@ fun ExclusiveOffers(
                 text = "Add ",
 
                 modifier = Modifier
-                    .width(150.dp).height(50.dp)
+                    .width(150.dp)
+                    .height(50.dp)
                     .align(Alignment.CenterHorizontally)
             )
             {
@@ -517,17 +520,7 @@ fun ExclusiveOffers(
     }
 }
 
-fun vibrator(context: Context) {
-    var vibration = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-    if (Build.VERSION.SDK_INT >= 26) {
-        vibration.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-    } else {
-        val vib  = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
-        vib.vibrate(200)
-    }
-
-}
 
 @Composable
 fun AllItems(
@@ -608,7 +601,8 @@ fun AllItems(
                         text = "  Add  ",
 
                         modifier = Modifier
-                            .width(150.dp).height(50.dp)
+                            .width(150.dp)
+                            .height(50.dp)
                             .align(Alignment.CenterHorizontally)
                     )
                     {
@@ -718,7 +712,8 @@ fun BestOffers(
                 CommonButton(
                     text = "   Add   ",
                     modifier = Modifier
-                        .width(150.dp).height(50.dp)
+                        .width(150.dp)
+                        .height(50.dp)
                         .align(Alignment.CenterHorizontally)
 
                 )

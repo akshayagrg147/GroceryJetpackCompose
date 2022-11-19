@@ -34,6 +34,10 @@ class HomeAllProductsViewModal @Inject constructor(
     private val pagingDataSource: PaginSoucrce, val repository: CommonRepository, val
     sharedPreferences: sharedpreferenceCommon, val dao: Dao, @ApplicationContext context: Context
 ) : ViewModel() {
+    init {
+       callingBestSelling()
+        callingExcusiveProducts()
+    }
 
     var passingdata: MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
     private val exclusiveProductsResponse: MutableState<HomeAllProductsResponse> =

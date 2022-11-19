@@ -23,6 +23,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModal @Inject constructor(val repository: CommonRepository, val dao: Dao,val shared: sharedpreferenceCommon):ViewModel() {
+    init {
+        callingUserDetails()
+
+    }
     private val live:MutableState<UserResponse> = mutableStateOf(UserResponse(null,null,null,null))
     val responseLiveData:MutableState<UserResponse> =live
 

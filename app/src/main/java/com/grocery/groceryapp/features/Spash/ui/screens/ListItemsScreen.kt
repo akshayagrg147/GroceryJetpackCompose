@@ -93,7 +93,7 @@ fun ListItems(
                 LazyColumn(
                     //  verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .padding(bottom = 15.dp)
+                        .padding(bottom = 1.dp)
                     // .verticalScroll(state = scrollState)
 
                 ) {

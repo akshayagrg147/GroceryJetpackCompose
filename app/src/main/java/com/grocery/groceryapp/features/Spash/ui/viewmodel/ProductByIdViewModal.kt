@@ -8,13 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.common.ApiState
-import com.grocery.groceryapp.data.modal.FetchCart
-import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
-import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
-import com.grocery.groceryapp.data.modal.ProductIdIdModal
+import com.grocery.groceryapp.data.modal.*
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -31,6 +29,12 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 
     private val getItemCount:MutableState<Int> =mutableStateOf(0)
     val productIdCount:MutableState<Int> =getItemCount
+
+    val _res: MutableSharedFlow<ProductIdIdModal> = MutableSharedFlow(1)
+
+    fun setData(data: ProductIdIdModal){
+        _res.tryEmit(data)
+    }
 
  fun deleteCartItems(value: ProductByIdResponseModal)=viewModelScope.launch(Dispatchers.IO){
 
@@ -90,8 +94,8 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 
 
     }
-    fun calllingAllProductById(productIdIdModal: ProductIdIdModal)=viewModelScope.launch {
-        repository.callPendingProductById(productIdIdModal).collectLatest {
+    fun calllingAllProductById()=viewModelScope.launch {
+        repository.callPendingProductById(_res.first()).collectLatest {
             when(it){
                is ApiState.Success->{
                    live.value=it.data
@@ -109,8 +113,8 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
         }
 
     }
-    fun calllingExclsuiveProductById(productIdIdModal: ProductIdIdModal)=viewModelScope.launch {
-        repository.callEclusiveById(productIdIdModal).collectLatest {
+    fun calllingExclsuiveProductById()=viewModelScope.launch {
+        repository.callEclusiveById(_res.first()).collectLatest {
             when(it){
                 is ApiState.Success->{
                     live.value=it.data
@@ -128,8 +132,8 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
         }
 
     }
-    fun calllingBestProductById(productIdIdModal: ProductIdIdModal)=viewModelScope.launch {
-        repository.callBestProductById(productIdIdModal).collectLatest {
+    fun calllingBestProductById()=viewModelScope.launch {
+        repository.callBestProductById(_res.first()).collectLatest {
             when(it){
                 is ApiState.Success->{
                     live.value=it.data

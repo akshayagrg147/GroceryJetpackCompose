@@ -42,7 +42,7 @@ fun profileScreen(
     spring(Spring.DampingRatioMediumBouncy)
     )
     Column() {
-        viewModal.callingUserDetails()
+
             Column(modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 20.dp, top = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {

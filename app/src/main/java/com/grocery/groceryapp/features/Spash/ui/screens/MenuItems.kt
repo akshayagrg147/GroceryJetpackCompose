@@ -34,6 +34,7 @@ import com.google.gson.Gson
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
@@ -471,6 +472,7 @@ fun MenuItemGrid(
                     Log.d("dnndndn","jjdjjd")
 
                     Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
+                    Utils.vibrator(context)
                 }
 
 //                if( viewModal.getItemBaseOnProductId(data.productId).toInt()==0){

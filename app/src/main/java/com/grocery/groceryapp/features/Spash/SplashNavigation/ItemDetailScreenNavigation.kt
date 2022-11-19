@@ -55,10 +55,16 @@ fun ItemScreenNavigation(
 
 
             when (category) {
-                "Best" -> viewModal.calllingBestProductById(ProductIdIdModal(productId = productId))
-                "exclusive" -> viewModal.calllingExclsuiveProductById(ProductIdIdModal(productId = productId))
+                "Best" ->{ viewModal.setData(ProductIdIdModal(productId = productId))
+                    viewModal.calllingBestProductById()}
+                "exclusive" -> {
+                    viewModal.setData(ProductIdIdModal(productId = productId))
+                    viewModal.calllingExclsuiveProductById()}
                 else -> {
-                    viewModal.calllingAllProductById(ProductIdIdModal(productId = productId))
+
+                    viewModal.setData(ProductIdIdModal(productId = productId))
+                    viewModal.calllingAllProductById()
+
                 }
             }
             var response = viewModal.responseLiveData

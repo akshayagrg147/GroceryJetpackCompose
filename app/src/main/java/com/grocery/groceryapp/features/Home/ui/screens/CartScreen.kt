@@ -159,7 +159,8 @@ fun CartScreen(
                                     totalOrderValue = "0",
                                     mobilenumber = sharedpreferenceCommon.getMobileNumber()
                                 )
-                                viewModal.calllingBookingOrder(request)
+                                viewModal.passingOrderIdGenerateRequest(request)
+                                viewModal.calllingBookingOrder()
                                 isDialog = true
                                 when (viewModal.orderConfirmedStatusState.value.statusCode) {
                                     200 -> {
@@ -185,6 +186,7 @@ fun CartScreen(
                                     }
                                     else -> {
                                         isDialog = false
+                                        scope.launch { modalBottomSheetState.hide() }
                                         Log.d("messagecoming", "someting went wrong")
                                     }
                                 }
@@ -215,6 +217,7 @@ fun CartScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxSize()
+                    .padding(bottom = 40.dp)
             ) {
 
                 val (l1, l2, l3) = createRefs()
@@ -230,10 +233,61 @@ fun CartScreen(
 
 
                 }
+Column(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
+            .clickable {
+                navController.navigate(ScreenRoute.CartScreen.route)
+            },
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text24_700(text = "Checkout", color = Color.Black)
+    }
+
+
+    Spacer(modifier = Modifier.height(5.dp))
+    Card(
+        elevation = 4.dp,
+        shape = RoundedCornerShape(10.dp),
+        backgroundColor = titleColor, modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxWidth()
+            .height(35.dp)
+            .padding(horizontal = 10.dp)
+            .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
+
+
+    ) {
+        Row(
+            modifier = Modifier, Arrangement.SpaceBetween
+
+        ) {
+            Text14_400(
+                text = "Your total savings", whiteColor, modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 10.dp)
+            )
+            Text14_400(
+                text = "₹ ${viewModal.SavingAmountState.value}",
+                color = whiteColor,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 20.dp)
+            )
+
+
+        }
+    }
+}
+
+
 
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = 90.dp)
                         .constrainAs(l2) {
                             top.linkTo(l1.bottom)
                             bottom.linkTo(l3.top)
@@ -241,56 +295,7 @@ fun CartScreen(
                         }
                 ) {
 
-                    item {
 
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 20.dp)
-                                .clickable {
-                                    navController.navigate(ScreenRoute.CartScreen.route)
-                                },
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text24_700(text = "Checkout", color = Color.Black)
-                        }
-
-
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Card(
-                            elevation = 4.dp,
-                            shape = RoundedCornerShape(10.dp),
-                            backgroundColor = titleColor, modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxWidth()
-                                .height(35.dp)
-                                .padding(horizontal = 10.dp)
-                                .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
-
-
-                        ) {
-                            Row(
-                                modifier = Modifier, Arrangement.SpaceBetween
-
-                            ) {
-                                Text14_400(
-                                    text = "Your total savings", whiteColor, modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(start = 10.dp)
-                                )
-                                Text14_400(
-                                    text = "₹ ${viewModal.SavingAmountState.value}",
-                                    color = whiteColor,
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .padding(end = 20.dp)
-                                )
-
-
-                            }
-                        }
-                    }
                     item {
                         if (viewModal.allcartitemsState.value.isEmpty())
                             noHistoryAvailable()
@@ -319,7 +324,7 @@ fun CartScreen(
                 ) {
 
                     Text24_700(
-                        text = "Go to Checkout(${viewModal.totalPriceState.value})",
+                        text = "Go to Checkout(₹ ${viewModal.totalPriceState.value})",
                         color = Color.White,
                         modifier = Modifier
                             .padding(vertical = 15.dp)

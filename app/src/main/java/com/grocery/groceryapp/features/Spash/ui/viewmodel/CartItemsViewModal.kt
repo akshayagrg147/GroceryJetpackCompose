@@ -17,6 +17,7 @@ import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
@@ -41,6 +42,9 @@ init {
     private val itemcollections: MutableState<ItemsCollectionsResponse> =
         mutableStateOf(ItemsCollectionsResponse(null, null, null))
     val itemcollections1: State<ItemsCollectionsResponse> = itemcollections
+    val _res: MutableSharedFlow<OrderIdCreateRequest> = MutableSharedFlow(1)
+
+
 
 
 
@@ -152,15 +156,17 @@ init {
 
     }
 
-    fun calllingBookingOrder(productIdIdModal: OrderIdCreateRequest) = viewModelScope.launch {
-        repository.OrderIdRequest(productIdIdModal).collectLatest {
+    fun calllingBookingOrder() = viewModelScope.launch {
+        repository.OrderIdRequest(_res.first()).collectLatest {
             when (it) {
                 is ApiState.Success -> {
+                    Log.d("djjdjdj","djjd success")
                     orderConfirmedStatus.value = it.data
 
 
                 }
                 is ApiState.Failure -> {
+                    Log.d("djjdjdj","djjd failed")
                     orderConfirmedStatus.value =
                         OrderIdResponse(message = it.msg.message?:"Order Failed", statusCode = 401)
 
@@ -173,6 +179,10 @@ init {
             }
         }
 
+    }
+
+    fun passingOrderIdGenerateRequest(request: OrderIdCreateRequest) {
+        _res.tryEmit(request)
     }
 
 

@@ -1,8 +1,13 @@
 package com.grocery.groceryapp.features.Home.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,50 +15,58 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.ApiState
+import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
-import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor
-import com.grocery.groceryapp.features.Home.ui.ui.theme.greycolor
-import com.grocery.groceryapp.features.Home.ui.ui.theme.headingColor
-import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
+import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 
 @Composable
 fun SearchResult(
-    data: HomeAllProductsResponse.HomeResponse
+    data: HomeAllProductsResponse.HomeResponse,
+    viewModal: HomeAllProductsViewModal,
+    context: Context,navcontroller: NavHostController
 ) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
-        backgroundColor = Color.White,
+        modifier = Modifier
+            .padding( horizontal = 4.dp)
 
-        ) {
+            .width(150.dp)
+            .clickable {
+                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+            }
+
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(5.dp)
+                .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
-            val offpercentage = data.orignalprice?.toInt()?.minus((data.price?.toInt() ?: 0))
+            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.orignalprice?.toFloat()?:0.0f))*100)).toString()
             Text(
                 text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
                     Alignment.End
@@ -61,52 +74,81 @@ fun SearchResult(
             )
 
             Image(
+
                 painter = rememberImagePainter(data.productImage1),
-
-                contentDescription = "",
+                contentDescription = "splash image",
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(100.dp)
-                    .align(alignment = Alignment.CenterHorizontally),
+                    .width(100.dp)
+                    .height(70.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
 
 
-                )
-            Text13_700(
-                text = data.productName ?: "", color = headingColor,
+            )
+
+            Text20_700(
+                text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
+            Text12Sp_600(
+                text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    .padding(end = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                modifier = Modifier.padding(start = 10.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text(
-                    text = "₹${data.orignalprice ?: "0.00"}",
-                    color = bodyTextColor,fontSize = 11.sp,
-                    modifier = Modifier.padding(start = 10.dp),
-                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                )
                 Text12Sp_600(
-                    text = "₹${data.price ?: "0.00"}", color = headingColor,
-                    modifier = Modifier.width(IntrinsicSize.Min)
+                    text = "₹ ${data.price}",
+                    color = headingColor,
+                    //  modifier= Modifier.weight(0.5F)
                 )
-            }
-            Spacer(modifier = Modifier.height(5.dp))
+                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                Card( border = BorderStroke(1.dp, titleColor),
+                    modifier = Modifier
 
+                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp)).padding(start=20.dp)
+
+                        .background(color = whiteColor)
+                        .clickable {
+                            // response="called"
+                            viewModal.insertCartItem(
+                                data.ProductId ?: "",
+                                data.productImage1 ?: "",
+                                data.price?.toInt() ?: 0,
+                                data.productName ?: "",
+                                data.orignalprice ?: ""
+                            )
+                            viewModal.getCartItem()
+                            Toast
+                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
+                                .show()
+
+                            Utils.vibrator(context)
+
+                        },
+
+                    ) {
+                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
+                }
+
+
+
+            }
 
         }
     }
+
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun SearchScreenProducts(viewModal: HomeAllProductsViewModal = hiltViewModel()) {
+fun SearchScreenProducts(navHostController: NavHostController,context: Context,viewModal: HomeAllProductsViewModal = hiltViewModel()) {
     var search = rememberSaveable {
         mutableStateOf("")
     }
@@ -130,7 +172,11 @@ fun SearchScreenProducts(viewModal: HomeAllProductsViewModal = hiltViewModel()) 
         }
     }
     Column(modifier = Modifier.fillMaxSize()) {
-
+        val focusRequester = FocusRequester()
+        DisposableEffect(Unit) {
+            focusRequester.requestFocus()
+            onDispose { }
+        }
 
         TextField(
             value = search.value,
@@ -142,7 +188,7 @@ fun SearchScreenProducts(viewModal: HomeAllProductsViewModal = hiltViewModel()) 
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-                .padding(start = 10.dp, end = 10.dp),
+                .padding(start = 10.dp, end = 10.dp,top=10.dp).focusRequester(focusRequester = focusRequester),
             placeholder = {
                 Text14_400(
                     text = "Search Store",
@@ -158,11 +204,12 @@ fun SearchScreenProducts(viewModal: HomeAllProductsViewModal = hiltViewModel()) 
                 backgroundColor = greycolor,
                 disabledIndicatorColor = Color.Transparent
             ),
-
             trailingIcon = {
                 if (search.value != "") {
                     IconButton(onClick = {
                         search.value = ""
+
+                        responseData.value= HomeAllProductsResponse()
                     }) {
                         Icon(
                             Icons.Default.Close, contentDescription = "",
@@ -171,7 +218,7 @@ fun SearchScreenProducts(viewModal: HomeAllProductsViewModal = hiltViewModel()) 
                 }
             },
             leadingIcon = {
-                IconButton(onClick = {responseData.value}) {
+                IconButton(onClick = {responseData.value=HomeAllProductsResponse()}) {
                     Icon(
                         Icons.Default.Search, contentDescription = "",
                     )
@@ -198,7 +245,7 @@ fun SearchScreenProducts(viewModal: HomeAllProductsViewModal = hiltViewModel()) 
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(horizontal = 1.dp)
             ) { itemData ->
-                SearchResult(itemData)
+                SearchResult(itemData,viewModal,context,navHostController)
             }
 
 

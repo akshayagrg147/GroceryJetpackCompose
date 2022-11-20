@@ -23,6 +23,7 @@ import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import retrofit2.HttpException
@@ -59,8 +60,13 @@ class HomeAllProductsViewModal @Inject constructor(
 
     private val m11: MutableStateFlow<String> = MutableStateFlow("")
     val getitemcount11 = m11.asSharedFlow()
+    private val live:MutableState<String> = mutableStateOf("")
+    val responseLiveData:MutableState<String> =live
 
-
+    private var listMutable:MutableState< HomeAllProductsResponse> = mutableStateOf(
+        HomeAllProductsResponse()
+    )
+    val listState:State<HomeAllProductsResponse> =listMutable
 
 
 
@@ -76,7 +82,17 @@ class HomeAllProductsViewModal @Inject constructor(
         }
 
 
+    fun setList(response: @RawValue HomeAllProductsResponse){
+        listMutable.value=response
 
+    }
+
+    fun setvalue(str:String){
+        live.value=str
+        listMutable.value=   listMutable.value
+
+
+    }
     fun setupFlow(query: String){
         m11.value=query
 

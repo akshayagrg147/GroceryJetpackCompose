@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/add.xml" value="0.1" />
+        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/minus.xml" value="0.1" />
         <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/layout/FilterDialog.xml" value="0.1921875" />
         <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/layout/map_layout.xml" value="0.1921875" />
       </map>

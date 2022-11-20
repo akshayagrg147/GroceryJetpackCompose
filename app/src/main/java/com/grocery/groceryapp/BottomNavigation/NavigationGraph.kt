@@ -9,7 +9,6 @@ import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
 import com.grocery.groceryapp.data.modal.OrderIdResponse
 import com.grocery.groceryapp.features.Home.Modal.profileScreen
-import com.grocery.groceryapp.features.Home.domain.modal.PassProductIdCategory
 import com.grocery.groceryapp.features.Home.ui.*
 import com.grocery.groceryapp.features.Home.ui.screens.*
 import com.grocery.groceryapp.features.Spash.ProfileScreenNavigation
@@ -33,7 +32,7 @@ fun NavigationGraph(
             homescreen(navController,context)
         }
         composable(BottomNavItem.SearchProductItems.screen_route){
-            SearchScreenProducts()
+            SearchScreenProducts(navController,context)
         }
         composable(BottomNavItem.MyNetwork.screen_route) {
             SearchScreen()

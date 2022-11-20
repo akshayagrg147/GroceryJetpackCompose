@@ -51,7 +51,7 @@ fun PrivacyPolicyScreen() {
                     .padding(20.dp),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = 15.sp
             )
         }
     }

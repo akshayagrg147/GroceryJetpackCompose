@@ -31,21 +31,21 @@ fun Text14_400(text: String, color: Color = bodyTextColor, modifier: Modifier = 
 
 @Composable
 fun Text24_700(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 18.sp)
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 16.sp)
 }
 
 @Composable
 fun Text20_700(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,fontSize = 16.sp)
+    Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,fontSize = 14.sp)
 }
 
 @Composable
 fun Text16_700(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 12.sp)
+    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 14.sp)
 }
 @Composable
 fun Text13_700(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 13.sp)
+    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 11.sp)
 }
 @Composable
 fun Text16_700Error(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
@@ -55,11 +55,11 @@ fun Text16_700Error(text: String, color: Color = blackColor, modifier: Modifier 
 
 @Composable
 fun Text18_600(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 16.sp)
+    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 14.sp)
 }
 @Composable
 fun Text12Sp_600(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 12.sp)
+    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 10.sp)
 }
 @Composable
 fun CommonButton(
@@ -120,7 +120,7 @@ fun CommonMathButton(
 
     Card(
         elevation = 0.dp,
-        shape = RoundedCornerShape(13.dp),
+        shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, strokeColor), modifier = Modifier.clickable { call.invoke() }
     ) {
         Box(modifier = Modifier.background(Color.White), contentAlignment = Alignment.Center) {
@@ -128,7 +128,7 @@ fun CommonMathButton(
                 painter = painterResource(id = icon),
                 contentDescription = "",
                 tint = Color.Unspecified,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(5.dp)
             )
         }
     }

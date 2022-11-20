@@ -59,7 +59,7 @@ fun SearchScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-                .padding(start = 10.dp, end = 10.dp),
+                .padding(start = 10.dp, end = 10.dp,top=10.dp),
             placeholder = {
                 Text14_400(
                     text = "Search Store",

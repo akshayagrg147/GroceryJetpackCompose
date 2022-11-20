@@ -135,7 +135,7 @@ if(data.list?.isNotEmpty()==true)
 
                     Text(
                         text = "  ₹ 30",
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         color = bodyTextColor,
                         modifier = Modifier.padding(start = 10.dp),
                         style = TextStyle(textDecoration = TextDecoration.LineThrough)

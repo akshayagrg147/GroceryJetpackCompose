@@ -5,6 +5,8 @@ import android.content.Context.VIBRATOR_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
+import android.widget.Space
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -48,6 +51,7 @@ import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import java.text.DecimalFormat
 
 
 @OptIn(ExperimentalPagerApi::class)
@@ -189,18 +193,17 @@ fun homescreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp)
+                            .padding(top = 10.dp),Arrangement.SpaceBetween
                     ) {
                         Text16_700(
                             text = "Exclusive Offers", color = Color.Black,
                             modifier = Modifier
-                                .weight(3f)
                                 .padding(start = 10.dp),
                         )
                         Text14_400(
                             "See all", color = seallcolor, modifier = Modifier
-                                .weight(1f)
-                                .padding(top = 5.dp, start = 20.dp)
+
+                                .padding(top = 5.dp, end = 20.dp)
                                 .clickable {
                                     if (res.statusCode == 200) {
                                         val list1 = res.list
@@ -221,6 +224,7 @@ fun homescreen(
                     }
                     LazyRow(
                         modifier = Modifier
+                            .padding(top = 15.dp)
                             .fillMaxWidth()
                         // .height(260.dp)
                     ) {
@@ -246,18 +250,17 @@ fun homescreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp)
+                            .padding(top = 10.dp),Arrangement.SpaceBetween
                     ) {
                         Text16_700(
                             text = "Best Selling", color = Color.Black,
                             modifier = Modifier
-                                .weight(3f)
+
                                 .padding(start = 10.dp),
                         )
                         Text14_400(
                             "See all", color = seallcolor, modifier = Modifier
-                                .weight(1f)
-                                .padding(top = 5.dp, start = 20.dp)
+                                .padding(top = 5.dp, end = 20.dp)
                                 .clickable {
                                     if (best.statusCode == 200) {
                                         val list1 = best.list
@@ -276,6 +279,7 @@ fun homescreen(
                     LazyRow(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(top = 10.dp)
                         // .height(260.dp)
                     ) {
 
@@ -325,11 +329,11 @@ fun homescreen(
             }
 
                 val ls: MutableList<MainProducts> = ArrayList()
-                ls.add(MainProducts("vegetables", R.drawable.vegetables, Purple700, null))
+                ls.add(MainProducts("vegetables", R.drawable.nonveg, Purple700, null))
                 ls.add(MainProducts("diary", R.drawable.diary, borderColor, null))
                 ls.add(MainProducts("grocery", R.drawable.grocery, disableColor, null))
-                ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor, null))
-            ls.add(MainProducts("Oils", R.drawable.oils, darkFadedColor, null))
+                ls.add(MainProducts("Oils", R.drawable.bell_peeper, darkFadedColor, null))
+            ls.add(MainProducts("Oils", R.drawable.ginger, darkFadedColor, null))
             gridItems(
                 data = ls,
                 columnCount = 3,
@@ -415,14 +419,14 @@ fun ExclusiveOffers(
     navcontroller: NavHostController,
     viewModal: HomeAllProductsViewModal
 ) {
-    var response by remember {
-        mutableStateOf("")
-    }
+
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 4.dp)
+
+            .width(150.dp)
             .clickable {
                 navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
@@ -431,90 +435,84 @@ fun ExclusiveOffers(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(5.dp)
+                .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
 
+            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.orignalprice?.toFloat()?:0.0f))*100)).toString()
+            Text(
+                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
+                    Alignment.End
+                ),fontSize = 10.sp,
+            )
 
             Image(
 
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(150.dp)
+                    .width(100.dp)
+                    .height(70.dp)
                     .align(alignment = Alignment.CenterHorizontally)
 
 
             )
 
-            Text24_700(
+            Text20_700(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
             Text12Sp_600(
-                text = "${data.quantity} pcs,Price", color = headingColor,
+                text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
+            Spacer(modifier = Modifier.height(20.dp))
             Row(
                 modifier = Modifier.padding(start = 10.dp),
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text13_700(
+                Text12Sp_600(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
-                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 13.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                Card( border = BorderStroke(1.dp, titleColor),
+                    modifier = Modifier
 
-                Icon(
-                    painter = painterResource(id = R.drawable.heart_icon),
-                    contentDescription = "",
-                    modifier = Modifier.padding(start = 100.dp),
-                    tint = redColor
-                )
+                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                        .padding(start = 20.dp)
+
+                        .background(color = whiteColor)
+                        .clickable {
+                            // response="called"
+                            viewModal.insertCartItem(
+                                data.ProductId ?: "",
+                                data.productImage1 ?: "",
+                                data.price?.toInt() ?: 0,
+                                data.productName ?: "",
+                                data.orignalprice ?: ""
+                            )
+                            viewModal.getCartItem()
+                            Toast
+                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
+                                .show()
+
+                            vibrator(context)
+
+                        },
+
+                ) {
+                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
+                }
+
 
 
             }
-            if(response.equals(""))
-            CommonButton(
-                text = "Add ",
-
-                modifier = Modifier
-                    .width(150.dp)
-                    .height(50.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            {
-               // response="called"
-                viewModal.insertCartItem(data.ProductId?:"",data.productImage1?:"",data.price?.toInt()?:0,data.productName?:"",data.orignalprice?:"")
-                viewModal.getCartItem()
-                Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
-
-                vibrator(context)
-            }
-            if(response.equals("called")){
-                    CommonButton(
-                        text = "   Added to cart  ",
-                        backgroundColor= whiteColor,
-                        color=Color.Black,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally)
-
-
-                    )
-                    {}
-
-            }
-
-
-
-
 
         }
     }
@@ -528,9 +526,7 @@ fun AllItems(
     context: Context,
     navcontroller: NavHostController,  viewModal: HomeAllProductsViewModal
 ) {
-    var response by remember {
-        mutableStateOf("")
-    }
+
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
@@ -539,7 +535,7 @@ fun AllItems(
             .background(whiteColor)
             .clickable {
                 navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} all"))
-
+                println()
 
             }
 
@@ -547,7 +543,7 @@ fun AllItems(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(5.dp)
+                .padding(horizontal = 10.dp, vertical = 5.dp),Arrangement.SpaceBetween
         ) {
             Image(
 
@@ -560,6 +556,10 @@ fun AllItems(
 
 
             )
+
+
+
+
             Column() {
                 Text18_600(
                     text = data.productName!!, color = headingColor,
@@ -567,15 +567,16 @@ fun AllItems(
                         .padding(top = 10.dp)
                         .align(Alignment.CenterHorizontally)
                 )
+
                 Text12Sp_600(
-                    text = "${data.quantity} pcs,Price", color = headingColor,
+                    text = "${data.quantity} pcs,Price", color = availColor,
                     modifier = Modifier
                         .padding(end = 10.dp)
                         .align(Alignment.CenterHorizontally)
                 )
+                Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                        ,
                     horizontalArrangement = Arrangement.Center
@@ -586,50 +587,43 @@ fun AllItems(
                         color = headingColor,
                         modifier= Modifier
                     )
-                    Text(text ="₹${data.orignalprice ?: "0.00"}", fontSize = 13.sp , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                    Text(text ="₹${data.orignalprice ?: "0.00"}", fontSize = 11.sp , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
 
 
-//                Icon(
-//                    painter = painterResource(id = R.drawable.heart_icon),
-//                    contentDescription = "",
-//                    modifier = Modifier,
-//                    tint = redColor
-//                )
-                }
-                if(response.equals(""))
-                    CommonButton(
-                        text = "  Add  ",
-
-                        modifier = Modifier
-                            .width(150.dp)
-                            .height(50.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    {
-                       // response="called"
-                        viewModal.insertCartItem(data.ProductId?:"",data.productImage1?:"",data.price?.toInt()?:0,data.productName?:"",data.orignalprice?:"")
-                        viewModal.getCartItem()
-                        Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
-                        vibrator(context)
-                    }
-                if(response.equals("called")){
-                        CommonButton(
-                            text = "   Added to cart  ",
-                            backgroundColor= whiteColor,
-                            color=Color.Black,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally)
-
-                        )
-                        {
-
-
-
-                        }
 
                 }
             }
+            Card( border = BorderStroke(1.dp, titleColor),
+                modifier = Modifier
+
+                    .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+
+                    .background(color = whiteColor)
+                    .clickable {
+                        // response="called"
+                        viewModal.insertCartItem(
+                            data.ProductId ?: "",
+                            data.productImage1 ?: "",
+                            data.price?.toInt() ?: 0,
+                            data.productName ?: "",
+                            data.orignalprice ?: ""
+                        )
+                        viewModal.getCartItem()
+                        Toast
+                            .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
+                            .show()
+
+                        vibrator(context)
+
+                    },
+
+
+                ) {
+                Text13_700(text = "ADD", availColor, modifier = Modifier
+                    .padding(vertical = 5.dp, horizontal = 10.dp)
+                    .align(Alignment.CenterVertically))
+            }
+
 
 
 
@@ -644,108 +638,102 @@ fun BestOffers(
     context: Context,
     viewModal: HomeAllProductsViewModal
 ) {
-    var response by remember {
-        mutableStateOf("")
-    }
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .padding(4.dp)
+            .padding(horizontal = 4.dp)
+
+            .width(150.dp)
             .clickable {
-
-                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} Best"))
-
-
+                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(5.dp)
+                .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
+            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.orignalprice?.toFloat()?:0.0f))*100)).toString()
+            Text(
+                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
+                    Alignment.End
+                ),fontSize = 10.sp,
+            )
+
             Image(
+
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(150.dp)
+                    .width(100.dp)
+                    .height(70.dp)
                     .align(alignment = Alignment.CenterHorizontally)
 
+
             )
-            Text24_700(
+
+            Text20_700(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-
-
             Text12Sp_600(
-                text = "${data.quantity} pcs,Price", color = headingColor,
+                text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
+            Spacer(modifier = Modifier.height(20.dp))
             Row(
                 modifier = Modifier.padding(start = 10.dp),
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text13_700(
+                Text12Sp_600(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
-                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 13.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
-
-
-                Icon(
-                    painter = painterResource(id = R.drawable.heart_icon),
-                    contentDescription = "",
-                    modifier = Modifier.padding(start = 100.dp),
-                    tint = redColor
-                )
-            }
-            if(response.equals(""))
-                CommonButton(
-                    text = "   Add   ",
+                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                Card( border = BorderStroke(1.dp, titleColor),
                     modifier = Modifier
-                        .width(150.dp)
-                        .height(50.dp)
-                        .align(Alignment.CenterHorizontally)
 
-                )
-                {
-                   // response="called"
-                    viewModal.insertCartItem(data.ProductId?:"",data.productImage1?:"",data.price?.toInt()?:0,data.productName?:"",data.orignalprice?:"")
-                    viewModal.getCartItem()
-                    Toast.makeText(context, "Added to cart", Toast.LENGTH_SHORT).show()
-                    vibrator(context)
+                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                        .padding(start = 20.dp)
+
+                        .background(color = whiteColor)
+                        .clickable {
+                            // response="called"
+                            viewModal.insertCartItem(
+                                data.ProductId ?: "",
+                                data.productImage1 ?: "",
+                                data.price?.toInt() ?: 0,
+                                data.productName ?: "",
+                                data.orignalprice ?: ""
+                            )
+                            viewModal.getCartItem()
+                            Toast
+                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
+                                .show()
+
+                            vibrator(context)
+
+                        },
+
+                    ) {
+                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
                 }
-            if(response.equals("called")){
-                    CommonButton(
-                        text = "   Added to cart  ",
-                        backgroundColor= whiteColor,
-                        color=Color.Black,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally)
 
 
-                    )
-                    {
-
-
-
-                    }
 
             }
-
 
         }
     }
+
 }
 
 @Composable
@@ -760,9 +748,9 @@ fun GroceriesItems(
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
-        backgroundColor = color, modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
+
+        backgroundColor = whiteColor, modifier = Modifier
+            .fillMaxWidth().padding(10.dp)
             .clickable {
                 navController.navigate(BottomNavItem.MenuItems.senddata(item))
 
@@ -770,21 +758,22 @@ fun GroceriesItems(
             }
 
     ) {
-        Box(
+        Column(
 
         ) {
+
+            Text12Sp_600(
+                text = item, color = blackColor,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+
+            )
             Image(
                 painter = painterResource(id = drawable),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(248.dp)
-                    .height(105.dp)
-            )
-            Text14_400(
-                text = item, color = whiteColor,
-                modifier = Modifier
-                    .padding(top = 10.dp, end = 10.dp)
-                    .align(Alignment.Center)
+                    .width(200.dp)
+                    .height(100.dp)
             )
 
 

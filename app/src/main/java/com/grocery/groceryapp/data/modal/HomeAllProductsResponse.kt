@@ -10,7 +10,7 @@ import kotlinx.android.parcel.RawValue
 @JsonClass(generateAdapter = true)
 data class HomeAllProductsResponse(
     @Json(name = "list")
-    val list: @RawValue List<HomeResponse>?= emptyList(),
+    var list: @RawValue List<HomeResponse>?= emptyList(),
     @Json(name = "message")
     val message: String?=null,
     @Json(name = "statusCode")

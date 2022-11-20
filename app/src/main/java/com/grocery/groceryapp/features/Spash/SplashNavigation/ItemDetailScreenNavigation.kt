@@ -3,7 +3,7 @@ package com.grocery.groceryapp.features.Spash
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
-
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,29 +19,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-
 import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
 import com.grocery.groceryapp.BottomNavigation.BottomNavItem
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
-import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
-import com.grocery.groceryapp.features.Home.ui.ui.theme.greyLightColor
-import com.grocery.groceryapp.features.Home.ui.ui.theme.redColor
-import com.grocery.groceryapp.features.Home.ui.ui.theme.seallcolor
+import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProductByIdViewModal
 import kotlinx.coroutines.launch
+import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor as bodyTextColor1
 
 @Composable
 fun ItemScreenNavigation(
@@ -53,28 +50,29 @@ fun ItemScreenNavigation(
 ) {
 
 
+    when (category) {
+        "Best" -> {
+            viewModal.setData(ProductIdIdModal(productId = productId))
+            viewModal.calllingBestProductById()
+        }
+        "exclusive" -> {
+            viewModal.setData(ProductIdIdModal(productId = productId))
+            viewModal.calllingExclsuiveProductById()
+        }
+        else -> {
 
-            when (category) {
-                "Best" ->{ viewModal.setData(ProductIdIdModal(productId = productId))
-                    viewModal.calllingBestProductById()}
-                "exclusive" -> {
-                    viewModal.setData(ProductIdIdModal(productId = productId))
-                    viewModal.calllingExclsuiveProductById()}
-                else -> {
+            viewModal.setData(ProductIdIdModal(productId = productId))
+            viewModal.calllingAllProductById()
 
-                    viewModal.setData(ProductIdIdModal(productId = productId))
-                    viewModal.calllingAllProductById()
-
-                }
-            }
-            var response = viewModal.responseLiveData
-            if (response.value.statusCode == 200) {
-                ItemDetailsScreen(response.value,navController, context, viewModal)
-            }
-
-
+        }
+    }
+    var response = viewModal.responseLiveData
+    if (response.value.statusCode == 200) {
+        ItemDetailsScreen(response.value, navController, context, viewModal)
     }
 
+
+}
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -90,8 +88,8 @@ fun ItemDetailsScreen(
 
     val pager = rememberPagerState()
     viewModal.getItemBaseOnProductId(value)
-    cartcount.value= viewModal.productIdCount.value
-    Box(modifier = Modifier.fillMaxSize()){
+    cartcount.value = viewModal.productIdCount.value
+    Box(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (l1, l2) = createRefs()
             Box(modifier = Modifier
@@ -100,126 +98,167 @@ fun ItemDetailsScreen(
                     bottom.linkTo(parent.bottom)
 
                 }
-            ) { Column(
-                //  verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxSize().padding(bottom = 10.dp)
+            ) {
+                Column(
+                    //  verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 10.dp)
 //            .padding(bottom = 50.dp)
-                // .verticalScroll(state = scrollState)
+                    // .verticalScroll(state = scrollState)
 
-            ){
-               Column(modifier = Modifier.fillMaxWidth()) {
-                    Card(
-                        elevation = 1.dp,
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Card(
+                            elevation = 1.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
 
-                    ) {
-                        HorizontalPager(count = 3, state = pager) { index ->
-                            if (index == 0)
-                                Banner(pagerState = pager, value.homeproducts?.productImage1 ?: "")
-                            if (index == 1)
-                                Banner(pagerState = pager, value.homeproducts?.productImage2 ?: "")
-                            if (index == 2)
-                                Banner(pagerState = pager, value.homeproducts?.productImage3 ?: "")
+                        ) {
+                            HorizontalPager(count = 3, state = pager) { index ->
+                                if (index == 0)
+                                    Banner(
+                                        pagerState = pager,
+                                        value.homeproducts?.productImage1 ?: ""
+                                    )
+                                if (index == 1)
+                                    Banner(
+                                        pagerState = pager,
+                                        value.homeproducts?.productImage2 ?: ""
+                                    )
+                                if (index == 2)
+                                    Banner(
+                                        pagerState = pager,
+                                        value.homeproducts?.productImage3 ?: ""
+                                    )
+                            }
+
                         }
 
-                    }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = value.homeproducts?.productName ?: "", color = titleColor, style = loginTypography.h1, fontSize = 18.sp,
+                            )
+                            Text14_400(
+                                text = value.homeproducts?.quantity ?: "", modifier = Modifier
+                                    .padding(top = 5.dp)
+                            )
+
+                        }
+                        Spacer(modifier = Modifier.height(2.dp))
 
 
-                    val itemcart: MutableState<Int> = remember { mutableStateOf(1) }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text20_700(
-                            text = value.homeproducts?.productName ?: "",
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                        IconButton(onClick = {
+                        Row(
+                            modifier = Modifier.padding(start = 20.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
 
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.heart_icon),
-                                contentDescription = "",
-                                tint = redColor
+                            Text14_400(
+                                text = "₹ ${value.homeproducts?.price}",
+                                color = headingColor,
+                                //  modifier= Modifier.weight(0.5F)
+                            )
+                            Text(
+                                text = "₹${value.homeproducts?.orignalprice ?: "0.00"}",
+                                fontSize = 12.sp,
+                                color = bodyTextColor1,
+                                modifier = Modifier.padding(start = 5.dp),
+                                style = TextStyle(textDecoration = TextDecoration.LineThrough)
                             )
                         }
-                    }
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text14_400(
-                        text = value.homeproducts?.quantity ?: "", modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 20.dp)
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
 
 
-                        viewModal.getCartItem()
+
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
 
 
-                        Row {
-                            CommonButton(icon = R.drawable.minus) {
+                            viewModal.getCartItem()
 
-                                if(cartcount.value>1) {
-                                    cartcount.value -= 1
-                                    viewModal.deleteCartItems(value)
-                                    viewModal.getCartItem()
+                            if (cartcount.value > 0)
+                                Row {
+                                    CommonMathButton(icon = R.drawable.minus) {
+                                        viewModal.deleteCartItems(value)
+                                    }
+
+                                    Text14_400(
+                                        text = cartcount.value.toString(),
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(horizontal = 20.dp),
+                                        color = Color.Black
+                                    )
+                                    CommonMathButton(icon = R.drawable.add) {
+                                        viewModal.insertCartItem(value)
+
+
+                                    }
                                 }
-                                else
-                                    Toast.makeText(context, "can not be negative", Toast.LENGTH_SHORT).show()
+                            else {
+                                Card(
+                                    border = BorderStroke(1.dp, titleColor),
+                                    modifier = Modifier
+
+                                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                                        .padding(start = 20.dp)
+
+                                        .background(color = whiteColor)
+                                        .clickable {
+                                            // response="called"
+                                            viewModal.insertCartItem(value)
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "Added to cart",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+
+                                            Utils.vibrator(context)
+
+                                        },
+
+                                    ) {
+                                    Text13_700(
+                                        text = "ADD",
+                                        availColor,
+                                        modifier = Modifier.padding(
+                                            vertical = 5.dp,
+                                            horizontal = 10.dp
+                                        )
+                                    )
+                                }
                             }
 
-                            Text16_700(
-                                text =  if(cartcount.value==0) "1" else cartcount.value.toString(),
-                                modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .padding(horizontal = 20.dp),
-                                color = Color.Black
-                            )
-                            CommonButton(icon = R.drawable.add) {
-                                viewModal.insertCartItem(value)
-                                viewModal.getCartItem()
-                                cartcount.value += 1
 
-
-                            }
                         }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        TabLayout(value)
+                        Spacer(modifier = Modifier.height(45.dp))
 
-                        Text16_700(
-                            text = if(cartcount.value==0) "₹ ${(Integer.parseInt(value.homeproducts?.price))}" else "₹ ${(java.lang.Integer.parseInt(value.homeproducts?.price)*cartcount.value)} ",
-                            color = blackColor,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
 
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
-                    TabLayout(value)
-                    Spacer(modifier = Modifier.height(45.dp))
-
-
-                } }
-
-
-
-
-
+                }
 
 
             }
 
 
         }
-        cardviewAddtoCart(viewModal,navController,
+        cardviewAddtoCart(
+            viewModal, navController,
             context,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -228,28 +267,36 @@ fun ItemDetailsScreen(
 
 
 }
+
 @Composable
-fun cardviewAddtoCart(viewModal: ProductByIdViewModal,navController:NavHostController, context: Context, modifier: Modifier){
+fun cardviewAddtoCart(
+    viewModal: ProductByIdViewModal,
+    navController: NavHostController,
+    context: Context,
+    modifier: Modifier
+) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(10.dp),
-        backgroundColor = seallcolor,modifier = modifier
-            .fillMaxWidth().height(65.dp)
+        backgroundColor = seallcolor, modifier = modifier
+            .fillMaxWidth()
+            .height(65.dp)
             .padding(5.dp)
             .clickable { navController.navigate(BottomNavItem.CartScreen.screen_route) }
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 
 
-    ){
-        Box(modifier = Modifier
+    ) {
+        Box(
+            modifier = Modifier
 
-        ){
+        ) {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(2.dp)
             ) {
-                var (l0,l1,l2) = createRefs()
+                var (l0, l1, l2) = createRefs()
 
                 Image(
                     painter = painterResource(id = R.drawable.cart_icon),
@@ -259,7 +306,7 @@ fun cardviewAddtoCart(viewModal: ProductByIdViewModal,navController:NavHostContr
 
 
                         .width(40.dp)
-                        .padding(top=10.dp)
+                        .padding(top = 10.dp)
                         .height(40.dp)
                         .constrainAs(l0) {
                             start.linkTo(parent.start)
@@ -268,27 +315,36 @@ fun cardviewAddtoCart(viewModal: ProductByIdViewModal,navController:NavHostContr
                         }
 
                 )
-                Column(Modifier.constrainAs(l1){
+                Column(Modifier.constrainAs(l1) {
                     start.linkTo(l0.end)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }) {
-                    Text14_400(text = "${viewModal.getitemcount.value.totalcount.toString()} items", color = Color.White)
-                    Text14_400(text = "₹ ${viewModal.getitemcount.value.totalprice.toString()}",color = Color.White)
-
+                    Text14_400(
+                        text = "${viewModal.getitemcount.value.totalcount.toString()} items",
+                        color = Color.White
+                    )
+                    Text14_400(
+                        text = "₹ ${viewModal.getitemcount.value.totalprice.toString()}",
+                        color = Color.White
+                    )
 
 
                 }
-                Text16_700(text = "view cart >",color = Color.White, modifier = Modifier.constrainAs(l2){
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                    top.linkTo(parent.top)
-                })
+                Text16_700(
+                    text = "view cart >",
+                    color = Color.White,
+                    modifier = Modifier.constrainAs(l2) {
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                        top.linkTo(parent.top)
+                    })
 
             }
 
         }
-    }}
+    }
+}
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -380,7 +436,8 @@ fun Tabs(pagerState: PagerState) {
                 text = {
                     Text(
                         list[index],
-                        color = if (pagerState.currentPage == index) Color.Black else Color.DarkGray, fontSize = 11.sp
+                        color = if (pagerState.currentPage == index) Color.Black else Color.DarkGray,
+                        fontSize = 11.sp
                     )
                 },
                 selected = pagerState.currentPage == index,
@@ -399,7 +456,7 @@ fun Tabs(pagerState: PagerState) {
 fun TabsContent(pagerState: PagerState, value: ProductByIdResponseModal) {
     // on below line we are creating
     // horizontal pager for our tab layout.
-    HorizontalPager(state = pagerState, count = 3) {
+    HorizontalPager(state = pagerState, count = 2) {
         // on below line we are specifying
         // the different pages.
             page ->

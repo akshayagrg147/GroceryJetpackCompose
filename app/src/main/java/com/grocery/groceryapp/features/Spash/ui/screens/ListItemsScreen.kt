@@ -2,6 +2,7 @@ package com.grocery.groceryapp.features.Spash.ui.screens
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -28,7 +29,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
@@ -37,11 +37,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.domain.modal.FilterOptions
-import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.LoginViewModel
-import kotlinx.android.parcel.RawValue
+import com.grocery.groceryapp.features.Home.ui.ui.theme.*
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 
@@ -61,7 +61,7 @@ private const val titleFontScaleEnd = 0.66f
 fun ListItems(
     context: Context,
     ls: HomeAllProductsResponse,
-    viewModal: LoginViewModel = hiltViewModel()
+    viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
     viewModal.setList(ls)
 
@@ -136,7 +136,7 @@ fun ListItems(
                                 )
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
-                                Text(text = "Rs. 200 and below", modifier = Modifier.padding(16.dp), fontSize = 14.sp)
+                                Text(text = "Rs. 200 and below", modifier = Modifier.padding(16.dp), fontSize = 12.sp)
                             }
 
                             Row {
@@ -148,7 +148,7 @@ fun ListItems(
                                 )
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
-                                Text(text = "Rs. 201 and 300", modifier = Modifier.padding(16.dp), fontSize = 14.sp)
+                                Text(text = "Rs. 201 and 300", modifier = Modifier.padding(16.dp), fontSize = 12.sp)
                             }
 
                             Row {
@@ -160,7 +160,7 @@ fun ListItems(
                                 )
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
-                                Text(text = "Rs. 301 and 499", modifier = Modifier.padding(16.dp), fontSize = 14.sp)
+                                Text(text = "Rs. 301 and 499", modifier = Modifier.padding(16.dp), fontSize = 12.sp)
                             }
                             Row {
                                 Checkbox(
@@ -171,7 +171,7 @@ fun ListItems(
                                 )
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
-                                Text(text = "Rs. 500 and above", modifier = Modifier.padding(16.dp), fontSize = 14.sp)
+                                Text(text = "Rs. 500 and above", modifier = Modifier.padding(16.dp), fontSize = 12.sp)
                             }
 
                         }
@@ -274,7 +274,7 @@ fun ListItems(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Header(scroll, headerHeightPx)
-                    Body(scroll,viewModal)
+                    Body(scroll,viewModal,context)
                     Toolbar(scroll, headerHeightPx, toolbarHeightPx)
                     Title(ls?.message?:"none",scroll, headerHeightPx, toolbarHeightPx)
                 }
@@ -362,74 +362,113 @@ fun srt(sortTyoe:String,lss:List<HomeAllProductsResponse.HomeResponse>){
 }
 
 @Composable
-fun SubItems(data: HomeAllProductsResponse.HomeResponse,call:()->Unit) {
+fun SubItems(
+    data: HomeAllProductsResponse.HomeResponse,
+    viewModal: HomeAllProductsViewModal,
+    context: Context,
+    call: () -> Unit
+) {
 
-    Column(
-        modifier = Modifier
-            .background(Color.White)
-            .border(
-                border = ButtonDefaults.outlinedBorder,
-                shape = RoundedCornerShape(4.dp)
-            )
-            .clickable { call() }
-            .padding(top = 30.dp)
-            .fillMaxSize()
+
+
+
+    Card(
+        elevation = 4.dp,
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier.
+            padding(top = 30.dp)
+            .background(whiteColor)
+            .clickable {
+                println()
+
+            }
+
     ) {
-        ConstraintLayout(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(2.dp)
+                .padding(horizontal = 10.dp, vertical = 5.dp),Arrangement.SpaceBetween
         ) {
-            val (l0, l1, l2) = createRefs()
-            Spacer(modifier = Modifier
-                .width(100.dp)
-                .constrainAs(l0) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(l1.start)
-                })
             Image(
+
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(50.dp)
                     .height(50.dp)
+                    .align(alignment = Alignment.CenterVertically)
 
-                    .constrainAs(l1) {
-                        top.linkTo(parent.top)
-                        start.linkTo(l0.end)
-                        end.linkTo(l2.start)
-                    }, alignment = Alignment.CenterStart
+
             )
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 10.dp)
-                .constrainAs(l2) {
-                    start.linkTo(l1.end)
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                }) {
-                Text18_600(text = data.productName!!)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text14_400(text = data.quantity!!)
-                Row() {
-                    val offamount = data.orignalprice?.toInt()!! - data.price?.toInt()!!
-                    Text(text = "₹ ${data.price}")
-                    Text(
-                        text = "₹ ${data.orignalprice}",
-                        color = bodyTextColor,
-                        modifier = Modifier.padding(start = 10.dp),
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+
+
+
+
+            Column() {
+                Text18_600(
+                    text = data.productName!!, color = headingColor,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+
+                Text12Sp_600(
+                    text = "${data.quantity} pcs,Price", color = availColor,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                    ,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+
+                    Text13_700(
+                        text = "₹ ${data.price}",
+                        color = headingColor,
+                        modifier= Modifier
                     )
-                    Text14_400(
-                        text = "$offamount% OFF",
-                        modifier = Modifier.padding(start = 10.dp),
-                        color = Color.LightGray
-                    )
+                    Text(text ="₹${data.orignalprice ?: "0.00"}", fontSize = 11.sp , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+
+
+
                 }
-
-
             }
+            Card( border = BorderStroke(1.dp, titleColor),
+                modifier = Modifier
+
+                    .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+
+                    .background(color = whiteColor)
+                    .clickable {
+                        // response="called"
+                        viewModal.insertCartItem(
+                            data.ProductId ?: "",
+                            data.productImage1 ?: "",
+                            data.price?.toInt() ?: 0,
+                            data.productName ?: "",
+                            data.orignalprice ?: ""
+                        )
+                        viewModal.getCartItem()
+                        Toast
+                            .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
+                            .show()
+
+                        Utils.vibrator(context)
+
+                    },
+
+
+                ) {
+                Text13_700(text = "ADD", availColor, modifier = Modifier
+                    .padding(vertical = 5.dp, horizontal = 10.dp)
+                    .align(Alignment.CenterVertically))
+            }
+
+
 
 
         }
@@ -513,7 +552,8 @@ private fun Header(
 private fun Body(
 
     scroll: ScrollState,
-    viewModal: LoginViewModel
+    viewModal: HomeAllProductsViewModal,
+    context: Context
 ) {
     when (viewModal.responseLiveData.value){
         "asc" -> {
@@ -537,7 +577,7 @@ private fun Body(
 
         Spacer(Modifier.height(headerHeight))
                 repeat(viewModal.listState.value.list?.sortedWith(comparator = productnamecompare)?.size?:0) {
-                    SubItems(viewModal.listState.value.list?.get(it)!!){
+                    SubItems(viewModal.listState.value.list?.get(it)!!,viewModal,context){
                     }
         }
         Spacer(modifier = Modifier.height(70.dp))

@@ -301,7 +301,7 @@ Column(modifier = Modifier.fillMaxWidth()) {
                             noHistoryAvailable()
                     }
                     items(viewModal.allcartitemsState.value, key = { it.id }) { data ->
-                        ItemEachRow(data, viewModal)
+                        ItemEachRow(data, viewModal,context)
 
                     }
                 }
@@ -490,6 +490,7 @@ fun SimpleRadioButtonComponent() {
 fun ItemEachRow(
     data: CartItems,
     viewModal: CartItemsViewModal,
+    context: Activity,
 
 
     ) {
@@ -498,7 +499,7 @@ fun ItemEachRow(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(horizontal = 20.dp, vertical = 10.dp)
     ) {
 
         Row(
@@ -523,8 +524,11 @@ fun ItemEachRow(
                         text = "${data.strProductName}",
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
-                    IconButton(onClick = {
+                    IconButton(modifier = Modifier
+                        .height(20.dp)
+                        .width(20.dp), onClick = {
                         viewModal.DeleteProduct(data.ProductIdNumber)
+                        Toast.makeText(context, "1 item deleted", Toast.LENGTH_SHORT).show()
 
                     }) {
                         Icon(Icons.Default.Close, contentDescription = "")
@@ -544,7 +548,7 @@ fun ItemEachRow(
                 )
 
 //                Text14_400(text = data.strProductName.toString())
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -580,7 +584,7 @@ fun ItemEachRow(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Box(
             modifier = Modifier

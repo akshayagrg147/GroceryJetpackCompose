@@ -30,15 +30,6 @@ class LoginViewModel @Inject constructor(
     )
     val resp=response
 
-    private val live:MutableState<String> = mutableStateOf("")
-    val responseLiveData:MutableState<String> =live
-
-    private var listMutable:MutableState< HomeAllProductsResponse> = mutableStateOf(
-        HomeAllProductsResponse()
-    )
-    val listState:State<HomeAllProductsResponse> =listMutable
-
-
     fun createUserWithPhone(
         mobile:String,
         activity: Activity
@@ -66,17 +57,6 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
-    fun setList(response: @RawValue HomeAllProductsResponse){
-        Log.d("callingmsgak", Gson().toJson(response))
-        listMutable.value=response
 
-    }
-
-    fun setvalue(str:String){
-        live.value=str
-        listMutable.value=   listMutable.value
-
-
-    }
     fun gettingJwtToken()=commonRepository.gettingJwt()
 }

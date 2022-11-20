@@ -32,7 +32,7 @@ fun SplashScreen(navController: NavHostController, context: Context,sharedprefer
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.white_carrot),
+            painter = painterResource(id = R.drawable.icon),
 
             contentDescription = "splash image",
             modifier = Modifier

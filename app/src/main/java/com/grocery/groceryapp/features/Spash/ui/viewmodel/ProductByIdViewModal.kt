@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,val dao: Dao):ViewModel() {
+
     private val live:MutableState<ProductByIdResponseModal> = mutableStateOf(ProductByIdResponseModal(null,null,null))
     val responseLiveData:MutableState<ProductByIdResponseModal> =live
 

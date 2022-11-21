@@ -34,17 +34,13 @@ fun NavigationGraph(
         composable(BottomNavItem.SearchProductItems.screen_route){
             SearchScreenProducts(navController,context)
         }
-        composable(BottomNavItem.MyNetwork.screen_route) {
-            SearchScreen()
-        }
+
         composable(BottomNavItem.ProductDetail.screen_route) {
             val data=it.arguments?.getString("data")?:""
 
             OrderDetailsScreen(data,context,navController)
         }
-        composable(BottomNavItem.Notification.screen_route) {
-            SearchScreen()
-        }
+
         composable(BottomNavItem.PrivacyPolicyScreen.screen_route) {
             PrivacyPolicyScreen()
         }

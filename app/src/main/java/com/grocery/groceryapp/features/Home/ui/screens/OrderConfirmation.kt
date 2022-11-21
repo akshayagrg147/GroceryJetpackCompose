@@ -1,8 +1,6 @@
 package com.grocery.groceryapp.features.Home.ui.screens
 
 import android.os.Build
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,31 +11,22 @@ import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import coil.ImageLoader
 import coil.compose.rememberImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.Utils.Text20_700
-import com.grocery.groceryapp.Utils.Text24_700
 import com.grocery.groceryapp.data.modal.OrderIdResponse
 import com.grocery.groceryapp.features.Home.ui.ui.theme.whiteColor
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.AddressViewModal
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -58,7 +47,7 @@ fun OrderConfirmation(
     BackHandler {
 
 
-        navController.popBackStack(BottomNavItem.Home.screen_route,false)
+        navController.popBackStack(DashBoardNavRoute.Home.screen_route,false)
      //   navController.popBackStack(0, false)
 
     }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
@@ -232,7 +231,7 @@ fun addressScreen(
                                 )
                             )
                             if (response.isCompleted) {
-                                navController.navigate(BottomNavItem.AddressScreen.screen_route)
+                                navController.navigate(DashBoardNavRoute.AddressScreen.screen_route)
                             }
                         } else
                             viewModal.saveAddress(
@@ -247,7 +246,7 @@ fun addressScreen(
                                 )
                             )
                         if (name.value.isNotEmpty()) {
-                            navController.navigate(BottomNavItem.AddressScreen.screen_route)
+                            navController.navigate(DashBoardNavRoute    .AddressScreen.screen_route)
                         } else {
                             navController.navigate(ScreenRoute.CartScreen.route)
                         }

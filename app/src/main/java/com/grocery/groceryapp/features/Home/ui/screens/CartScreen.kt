@@ -33,7 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
@@ -172,7 +172,7 @@ fun CartScreen(
                                                 "orderstatus",
                                                 viewModal.orderConfirmedStatusState.value
                                             )
-                                            navController.navigate(BottomNavItem.OrderSuccessful.screen_route)
+                                            navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route)
                                         }
                                     }
                                     401 -> {
@@ -182,7 +182,7 @@ fun CartScreen(
                                             "orderstatus",
                                             viewModal.orderConfirmedStatusState.value
                                         )
-                                        navController.navigate(BottomNavItem.OrderSuccessful.screen_route)
+                                        navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route)
                                     }
                                     else -> {
                                         isDialog = false

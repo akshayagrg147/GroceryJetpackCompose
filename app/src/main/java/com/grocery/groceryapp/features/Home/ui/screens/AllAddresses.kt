@@ -1,35 +1,23 @@
 package com.grocery.groceryapp.features.Home.ui.screens
 
 import android.content.Context
-import android.widget.SeekBar
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,11 +25,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
-import com.grocery.groceryapp.features.Home.ui.noHistoryAvailable
 import com.grocery.groceryapp.features.Home.ui.ui.theme.navdrawerColor
 
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
@@ -112,7 +99,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
             Text16_700(text = "Add Address", modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    navHostController.navigate(BottomNavItem.AddnewAddressScreen.screen_route)
+                    navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
                  //   viewModal.list.value.sortedBy { it.customer_name }
 
                 }
@@ -150,7 +137,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                     val passing=PassingAddress(item.id,item.customer_name,"ak@gmail.com",item.customer_PhoneNumber,item.PinCode.toString(),item.LandMark,item.Address1,item.Address2)
 
                     navHostController.currentBackStackEntry?.arguments?.putParcelable("address", passing)
-                    navHostController.navigate(BottomNavItem.AddnewAddressScreen.screen_route)
+                    navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
                 }
 
                 SwipeToDismiss(
@@ -234,7 +221,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                                 val passing=PassingAddress(it.id,it.customer_name,"ak@gmail.com",it.customer_PhoneNumber,it.PinCode.toString(),it.LandMark,it.Address1,it.Address2)
 
                                 navHostController.currentBackStackEntry?.arguments?.putParcelable("address", passing)
-                                navHostController.navigate(BottomNavItem.AddnewAddressScreen.screen_route)
+                                navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
 
 
                             })

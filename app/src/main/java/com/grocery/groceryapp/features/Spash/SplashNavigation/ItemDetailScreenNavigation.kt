@@ -29,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.Utils
@@ -282,7 +282,7 @@ fun cardviewAddtoCart(
             .fillMaxWidth()
             .height(65.dp)
             .padding(5.dp)
-            .clickable { navController.navigate(BottomNavItem.CartScreen.screen_route) }
+            .clickable { navController.navigate(DashBoardNavRoute.CartScreen.screen_route) }
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 
 

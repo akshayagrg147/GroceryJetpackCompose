@@ -1,7 +1,5 @@
 package com.grocery.groceryapp.features.Home.Modal
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,8 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
@@ -95,7 +92,7 @@ fun profileScreen(
             .clickable {
 
 
-               navController.navigate(BottomNavItem.AllOrderHistory.screen_route)
+               navController.navigate(DashBoardNavRoute.AllOrderHistory.screen_route)
 
             }, Arrangement.SpaceBetween
         ) {
@@ -147,7 +144,7 @@ fun profileScreen(
                 Text16_700(text = "Add Address", modifier = Modifier
                     .padding(start = 15.dp, top = 5.dp)
                     .clickable {
-                        navController.navigate(BottomNavItem.AddressScreen.screen_route)
+                        navController.navigate(DashBoardNavRoute.AddressScreen.screen_route)
                     })
             }
             Icon(
@@ -212,7 +209,7 @@ fun profileScreen(
                 .fillMaxWidth()
                 .padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween
         ) {
-            Row(modifier = Modifier.clickable { navController.navigate(BottomNavItem.PrivacyPolicyScreen.screen_route) }) {
+            Row(modifier = Modifier.clickable { navController.navigate(DashBoardNavRoute.PrivacyPolicyScreen.screen_route) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_promocode),
                     contentDescription = "",

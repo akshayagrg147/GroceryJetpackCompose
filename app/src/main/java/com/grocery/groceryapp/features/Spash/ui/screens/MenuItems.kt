@@ -1,7 +1,6 @@
 package com.grocery.groceryapp.features.Spash.ui.screens
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
@@ -22,8 +21,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -31,8 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
-import com.google.gson.Gson
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
+
+
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.Utils
@@ -40,11 +38,9 @@ import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
-import com.grocery.groceryapp.features.Home.ui.AddressComponent
 
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
@@ -82,7 +78,7 @@ fun cardviewAddtoCart(viewmodal: CartItemsViewModal, navController: NavHostContr
             .height(65.dp)
             .padding(5.dp)
             .clickable {
-                navController.navigate(BottomNavItem.CartScreen.screen_route)
+                navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
             }
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 

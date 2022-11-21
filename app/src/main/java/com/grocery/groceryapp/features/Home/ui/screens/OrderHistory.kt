@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,13 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
-import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
-import com.grocery.groceryapp.features.Home.ui.ui.theme.greyLightColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProfileViewModal
 
 @Composable
@@ -81,7 +77,7 @@ fun OrderHistoryScreen(
                 {items(viewModal.orderhistorydata.value.list!!){data->
                     OrderHistoryRow(data){
                         navController.currentBackStackEntry?.arguments?.putParcelable("orderDetail", viewModal.orderhistorydata.value)
-                        navController.navigate(BottomNavItem.OrderDetail.screen_route)
+                        navController.navigate(DashBoardNavRoute.OrderDetail.screen_route)
                     }
                 }}
 

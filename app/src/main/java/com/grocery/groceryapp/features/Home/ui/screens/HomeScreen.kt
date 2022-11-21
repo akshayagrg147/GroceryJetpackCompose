@@ -1,12 +1,6 @@
 package com.grocery.groceryapp.features.Home.ui
 
 import android.content.Context
-import android.content.Context.VIBRATOR_SERVICE
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.util.Log
-import android.widget.Space
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -14,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -42,7 +35,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberImagePainter
 
 import com.google.accompanist.pager.*
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.Utils.Companion.vibrator
@@ -105,7 +98,7 @@ fun homescreen(
                             modifier = Modifier
                                 .padding(start = 5.dp)
                                 .width(200.dp)
-                                .clickable { navcontroller.navigate(BottomNavItem.MapScreen.screen_route) }
+                                .clickable { navcontroller.navigate(DashBoardNavRoute.MapScreen.screen_route) }
                         )
                     }
 
@@ -123,7 +116,7 @@ fun homescreen(
                         .width(45.dp)
                         .height(45.dp)
                         .clickable {
-                            navcontroller.navigate(BottomNavItem.Profile.screen_route)
+                            navcontroller.navigate(DashBoardNavRoute.Profile.screen_route)
                         }
                 )
             }
@@ -155,7 +148,7 @@ fun homescreen(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(24.dp))
                             .clickable {
-                                navcontroller.navigate(BottomNavItem.SearchProductItems.screen_route)
+                                navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
                             }
                             .padding(start = 10.dp, end = 10.dp),
                         placeholder = {
@@ -428,7 +421,7 @@ fun ExclusiveOffers(
 
             .width(150.dp)
             .clickable {
-                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {
@@ -534,7 +527,7 @@ fun AllItems(
             .padding(5.dp)
             .background(whiteColor)
             .clickable {
-                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} all"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} all"))
                 println()
 
             }
@@ -646,7 +639,7 @@ fun BestOffers(
 
             .width(150.dp)
             .clickable {
-                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {
@@ -752,7 +745,7 @@ fun GroceriesItems(
         backgroundColor = whiteColor, modifier = Modifier
             .fillMaxWidth().padding(10.dp)
             .clickable {
-                navController.navigate(BottomNavItem.MenuItems.senddata(item))
+                navController.navigate(DashBoardNavRoute.MenuItems.senddata(item))
 
 
             }
@@ -837,7 +830,7 @@ fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,navController: NavHost
             .height(65.dp)
             .padding(5.dp)
             .clickable {
-                navController.navigate(BottomNavItem.CartScreen.screen_route)
+                navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
             }
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 

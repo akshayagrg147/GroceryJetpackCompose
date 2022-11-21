@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-import com.grocery.groceryapp.BottomNavigation.BottomNavItem
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.common.Utils
@@ -57,7 +57,7 @@ fun SearchResult(
 
             .width(150.dp)
             .clickable {
-                navcontroller.navigate(BottomNavItem.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {

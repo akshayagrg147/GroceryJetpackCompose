@@ -32,7 +32,16 @@ class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: Commo
 
 init {
     getAllCartAddressItems()
+
 }
+
+     fun getAllAddressItems()=viewModelScope.launch  {
+        repo. getAddressItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
+            addresslist.value=it
+        }
+
+    }
+
     private val allcartitems: MutableState<List<CartItems>> = mutableStateOf(emptyList())
     val allcartitemsState: State<List<CartItems>> = allcartitems
 
@@ -69,9 +78,7 @@ init {
         repo.getCartItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
             allcartitems.value=it
         }
-        repo. getAddressItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
-            addresslist.value=it
-        }
+
 
     }
 

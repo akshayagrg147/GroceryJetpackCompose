@@ -319,7 +319,10 @@ Column(modifier = Modifier.fillMaxWidth()) {
                         .fillMaxWidth()
                         .padding(10.dp)
                         .background(colorResource(id = R.color.green_700))
-                        .clickable { scope.launch { modalBottomSheetState.show() } },
+                        .clickable {
+                          viewModal.getAllAddressItems()
+
+                            scope.launch { modalBottomSheetState.show() } },
                     contentAlignment = Alignment.Center
                 ) {
 
@@ -352,7 +355,7 @@ fun AddressComponent(
             // .height(260.dp)
         ) {
             if (viewModal.addresslistState.value.isNotEmpty()) {
-                call("containsData")
+               call("containsData")
                 items(viewModal.addresslistState.value) { data ->
                     AddressFiled(data, selectedIndex)
                 }
@@ -369,7 +372,7 @@ fun AddressComponent(
                 navController.navigate(ScreenRoute.AddressScreen.route)
             }) {
             Text16_700(
-                text = "Add Address", modifier = Modifier
+                text = "Add Address+", modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
                     .align(Alignment.Center), color = navdrawerColor
@@ -411,8 +414,8 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>) {
     Card(
         elevation = 1.dp,
         shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, Color.Black),
-        backgroundColor = if (selectedIndex.value == data.id.toInt()) Color.LightGray else Color.White,
+        border = BorderStroke(1.dp, Color.White),
+        backgroundColor = if (selectedIndex.value == data.id.toInt()) greycolor else Color.White,
         modifier = Modifier
             .fillMaxWidth()
             .width(180.dp)

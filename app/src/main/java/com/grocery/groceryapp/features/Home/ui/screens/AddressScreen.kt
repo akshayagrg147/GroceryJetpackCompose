@@ -39,10 +39,8 @@ fun addressScreen(
     val address1 = remember { mutableStateOf("") }
     val address2 = remember { mutableStateOf("") }
     val landmark = remember { mutableStateOf("") }
-    name.value=address.name?:""
-    var editcalled = false
-    if (name.value.isNotEmpty())
-        editcalled = true
+
+    val editcalled = !address.name.isNullOrEmpty()
 
     phonenumber.value = address.phone_number ?: ""
     pincode.value = address.pincode ?: ""

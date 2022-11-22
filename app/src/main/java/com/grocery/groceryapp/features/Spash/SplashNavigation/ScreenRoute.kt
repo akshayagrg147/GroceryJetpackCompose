@@ -1,15 +1,15 @@
-package com.grocery.groceryapp.Utils
+package com.grocery.groceryapp.features.Spash.SplashNavigation
 
 sealed class ScreenRoute(val route: String) {
     object SplashScreen : ScreenRoute("splashscreen")
     object SignUpScreen : ScreenRoute("signupscreen")
     object LoginScreen : ScreenRoute("loginscreen")
-    object LocateMeScreen:ScreenRoute("locateMeScreen")
-    object MapScreen:ScreenRoute("mapscreen")
+    object LocateMeScreen: ScreenRoute("locateMeScreen")
+    object MapScreen: ScreenRoute("mapscreen")
 
-    object HomeScreen:ScreenRoute("homescreen")
-    object OrderHistory:ScreenRoute("OrderHistory")
-    object ItemDetailScreen:ScreenRoute("ItemDetailScreen")
+    object HomeScreen: ScreenRoute("homescreen")
+    object OrderHistory: ScreenRoute("OrderHistory")
+    object ItemDetailScreen: ScreenRoute("ItemDetailScreen")
 
     //cart screen
     object CartScreen : ScreenRoute("CartScreen")

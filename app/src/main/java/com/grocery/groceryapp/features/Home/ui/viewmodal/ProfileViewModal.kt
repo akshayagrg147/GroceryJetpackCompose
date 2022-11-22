@@ -1,4 +1,4 @@
-package com.grocery.groceryapp.features.Spash.ui.viewmodel
+package com.grocery.groceryapp.features.Home.ui.viewmodal
 
 import android.util.Log
 import androidx.compose.runtime.MutableState

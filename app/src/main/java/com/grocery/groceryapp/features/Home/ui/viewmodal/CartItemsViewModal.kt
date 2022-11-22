@@ -1,13 +1,11 @@
-package com.grocery.groceryapp.features.Spash.ui.viewmodel
+package com.grocery.groceryapp.features.Home.ui.viewmodal
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.RoomDatabase.TodoRepository
@@ -22,8 +20,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel

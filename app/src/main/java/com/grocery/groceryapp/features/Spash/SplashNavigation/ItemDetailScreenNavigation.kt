@@ -36,7 +36,7 @@ import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProductByIdViewModal
+import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductByIdViewModal
 import kotlinx.coroutines.launch
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor as bodyTextColor1
 

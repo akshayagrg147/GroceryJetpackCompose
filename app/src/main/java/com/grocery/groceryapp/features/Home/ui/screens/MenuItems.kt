@@ -40,7 +40,7 @@ import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.CartItemsViewModal
+import com.grocery.groceryapp.features.Home.ui.viewmodal.CartItemsViewModal
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
@@ -388,7 +388,7 @@ fun ItemEachRow(
 
 @Composable
 fun MenuItemGrid(
-    data: ItemsCollectionsResponse.SubItems,context:Context,
+    data: ItemsCollectionsResponse.SubItems, context:Context,
     viewModal: CartItemsViewModal,
     passItem:(productdetail:ItemsCollectionsResponse.SubItems)->Unit
 ) {

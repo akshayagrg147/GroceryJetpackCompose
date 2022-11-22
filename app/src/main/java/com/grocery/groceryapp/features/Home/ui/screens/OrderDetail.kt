@@ -26,7 +26,7 @@ import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.greycolor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.whiteColor
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProfileViewModal
+import com.grocery.groceryapp.features.Home.ui.viewmodal.ProfileViewModal
 
 @Composable
 fun orderDetil(

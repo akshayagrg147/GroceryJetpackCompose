@@ -36,7 +36,7 @@ import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.CommonButton
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text24_700
-import com.grocery.groceryapp.features.Home.ui.HomeActivity
+import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterLoginViewModal
 import dagger.hilt.android.qualifiers.ApplicationContext
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils

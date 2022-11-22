@@ -1,10 +1,7 @@
 package com.grocery.groceryapp.features.Spash
 
 import android.app.Activity
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
@@ -26,10 +23,10 @@ import com.grocery.groceryapp.common.OtpView
 import com.grocery.groceryapp.features.Home.ui.ui.theme.fadedTextColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.headingColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
+import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @OptIn(ExperimentalMaterialApi::class)

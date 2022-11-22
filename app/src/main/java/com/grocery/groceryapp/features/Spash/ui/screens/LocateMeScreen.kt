@@ -10,10 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.grocery.groceryapp.features.Home.ui.HomeActivity
+
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.CommonButton
 import com.grocery.groceryapp.Utils.Text24_700
+import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 
 @Composable
 fun locateMeScreen(navController: NavHostController, context: Context) {

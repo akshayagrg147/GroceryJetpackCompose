@@ -5,7 +5,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.grocery.groceryapp.features.Home.domain.modal.PassProductIdCategory
-import com.grocery.groceryapp.features.Home.ui.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme
 import com.grocery.groceryapp.features.Spash.ItemScreenNavigation
 @Composable

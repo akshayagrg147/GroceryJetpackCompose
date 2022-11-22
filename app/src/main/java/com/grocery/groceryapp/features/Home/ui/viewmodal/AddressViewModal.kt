@@ -1,4 +1,4 @@
-package com.grocery.groceryapp.features.Spash.ui.viewmodel
+package com.grocery.groceryapp.features.Home.ui.viewmodal
 
 import android.location.Address
 import android.util.Log

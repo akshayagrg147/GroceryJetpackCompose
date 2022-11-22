@@ -18,9 +18,9 @@ import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
-import com.grocery.groceryapp.features.Home.ui.HomeActivity
+import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProfileViewModal
+import com.grocery.groceryapp.features.Home.ui.viewmodal.ProfileViewModal
 
 @Composable
 fun profileScreen(

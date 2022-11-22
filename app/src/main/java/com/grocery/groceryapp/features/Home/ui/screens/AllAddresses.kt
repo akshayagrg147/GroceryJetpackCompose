@@ -32,7 +32,7 @@ import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Home.ui.ui.theme.navdrawerColor
 
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
-import com.wajahatkarim3.compose.books.ui.model.PassingAddress
+import com.grocery.groceryapp.data.modal.PassingAddress
 import kotlinx.coroutines.launch
 @Composable
 fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>,call:(AddressItems)->Unit) {
@@ -134,7 +134,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                     viewModal.deleteAddress(item.id.toInt())
                 }
                 else if (dismissState.isDismissed(DismissDirection.StartToEnd)) {
-                    val passing=PassingAddress(item.id,item.customer_name,"ak@gmail.com",item.customer_PhoneNumber,item.PinCode.toString(),item.LandMark,item.Address1,item.Address2)
+                    val passing= PassingAddress(item.id,item.customer_name,"ak@gmail.com",item.customer_PhoneNumber,item.PinCode.toString(),item.LandMark,item.Address1,item.Address2)
 
                     navHostController.currentBackStackEntry?.arguments?.putParcelable("address", passing)
                     navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
@@ -218,7 +218,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                                 .align(alignment = Alignment.CenterVertically).animateItemPlacement(animationSpec = tween(durationMillis = 600))
                         ) {
                             AddressFiled(item, selectedIndex, call = {
-                                val passing=PassingAddress(it.id,it.customer_name,"ak@gmail.com",it.customer_PhoneNumber,it.PinCode.toString(),it.LandMark,it.Address1,it.Address2)
+                                val passing= PassingAddress(it.id,it.customer_name,"ak@gmail.com",it.customer_PhoneNumber,it.PinCode.toString(),it.LandMark,it.Address1,it.Address2)
 
                                 navHostController.currentBackStackEntry?.arguments?.putParcelable("address", passing)
                                 navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)

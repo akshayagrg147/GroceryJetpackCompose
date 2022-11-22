@@ -1,4 +1,4 @@
-package com.wajahatkarim3.compose.books.ui.model
+package com.grocery.groceryapp.data.modal
 
 import android.os.Parcelable
 import com.squareup.moshi.Json

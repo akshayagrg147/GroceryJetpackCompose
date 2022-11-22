@@ -1,22 +1,13 @@
 package com.grocery.groceryapp.features.Spash
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,13 +22,9 @@ import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterLoginViewModal
 import com.grocery.groceryapp.features.Spash.domain.Modal.Country
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.CommonProgressBar
-import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor
-import com.grocery.groceryapp.features.Home.ui.ui.theme.fadedTextColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.headingColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.LoginViewModel
-import kotlinx.coroutines.launch
-import java.util.*
+import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

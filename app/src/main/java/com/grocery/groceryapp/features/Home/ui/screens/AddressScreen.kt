@@ -21,8 +21,9 @@ import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Home.ui.ui.theme.disableColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.redColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.seallcolor
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.AddressViewModal
-import com.wajahatkarim3.compose.books.ui.model.PassingAddress
+import com.grocery.groceryapp.features.Home.ui.viewmodal.AddressViewModal
+import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
+import com.grocery.groceryapp.data.modal.PassingAddress
 
 @Composable
 fun addressScreen(

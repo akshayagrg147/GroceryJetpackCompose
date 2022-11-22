@@ -10,14 +10,13 @@ import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
 import com.grocery.groceryapp.data.modal.OrderIdResponse
 import com.grocery.groceryapp.features.Home.Modal.profileScreen
 import com.grocery.groceryapp.features.Home.ui.CartScreen
-import com.grocery.groceryapp.features.Home.ui.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.PrivacyPolicyScreen
 import com.grocery.groceryapp.features.Home.ui.homescreen
 import com.grocery.groceryapp.features.Home.ui.screens.*
 import com.grocery.groceryapp.features.Spash.ProfileScreenNavigation
 import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 import com.grocery.groceryapp.features.Spash.ui.screens.menuitems
-import com.wajahatkarim3.compose.books.ui.model.PassingAddress
+import com.grocery.groceryapp.data.modal.PassingAddress
 
 
 @OptIn(ExperimentalPagerApi::class)

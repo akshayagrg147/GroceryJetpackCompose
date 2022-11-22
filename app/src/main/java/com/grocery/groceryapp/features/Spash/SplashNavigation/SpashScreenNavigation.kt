@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
-import com.grocery.groceryapp.Utils.ScreenRoute
+import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
 import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 
 @Composable

@@ -24,7 +24,7 @@ import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.ProfileViewModal
+import com.grocery.groceryapp.features.Home.ui.viewmodal.ProfileViewModal
 
 @Composable
 fun ProfileScreenNavigation(navController: NavHostController, context: Activity) {
@@ -38,7 +38,7 @@ fun ProfileScreenNavigation(navController: NavHostController, context: Activity)
 @Composable
 fun OrderHistoryScreen(
 
-    context: Activity,navController: NavHostController,viewModal: ProfileViewModal= hiltViewModel()
+    context: Activity,navController: NavHostController,viewModal: ProfileViewModal = hiltViewModel()
 ) {
 
     Column(

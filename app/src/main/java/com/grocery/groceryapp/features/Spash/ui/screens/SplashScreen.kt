@@ -16,12 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
-import com.grocery.groceryapp.Utils.ScreenRoute
+import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text24_700
-import com.grocery.groceryapp.features.Home.ui.HomeActivity
+import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.availColor
-import javax.inject.Inject
 
 @Composable
 fun SplashScreen(navController: NavHostController, context: Context,sharedpreferenceCommon: sharedpreferenceCommon){

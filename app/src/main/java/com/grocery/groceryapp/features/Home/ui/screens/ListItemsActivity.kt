@@ -1,4 +1,4 @@
-package com.grocery.groceryapp.features.Home.ui
+package com.grocery.groceryapp.features.Home.ui.screens
 
 import android.os.Bundle
 import android.util.Log

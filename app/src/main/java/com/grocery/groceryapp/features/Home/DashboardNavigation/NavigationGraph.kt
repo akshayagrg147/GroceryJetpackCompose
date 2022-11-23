@@ -28,10 +28,9 @@ fun NavigationGraph(
 
 ) {
 
-
     NavHost(navController, startDestination = DashBoardNavRoute.Home.screen_route) {
         composable(DashBoardNavRoute.Home.screen_route) {
-            homescreen(navController, context)
+            homescreen(navController,sharedPreferences)
         }
         composable(DashBoardNavRoute.SearchProductItems.screen_route) {
             SearchScreenProducts(navController, context)
@@ -80,9 +79,9 @@ fun NavigationGraph(
             var addressmodal =
                 navController.previousBackStackEntry?.arguments?.getParcelable<PassingAddress>("address")
             if (addressmodal != null) {
-                addressScreen(address = addressmodal, navController = navController, context)
+                addressScreen(address = addressmodal, navController = navController)
             } else {
-                addressScreen(address = PassingAddress(), navController = navController, context)
+                addressScreen(address = PassingAddress(), navController = navController)
             }
 
 

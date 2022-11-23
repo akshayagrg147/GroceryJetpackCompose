@@ -475,7 +475,7 @@ fun SimpleRadioButtonComponent() {
                         onClick = {
 
                             onOptionSelected(text)
-                            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+                            context.showMsg(text)
                         }
                     )
                     Text(
@@ -532,7 +532,7 @@ fun ItemEachRow(
                         .height(20.dp)
                         .width(20.dp), onClick = {
                         viewModal.DeleteProduct(data.ProductIdNumber)
-                        Toast.makeText(context, "1 item deleted", Toast.LENGTH_SHORT).show()
+                        context.showMsg("1 item deleted")
 
                     }) {
                         Icon(Icons.Default.Close, contentDescription = "")

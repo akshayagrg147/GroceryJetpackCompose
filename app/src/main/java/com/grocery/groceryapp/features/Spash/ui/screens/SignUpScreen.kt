@@ -138,13 +138,14 @@ fun SignUpScreen(
                             viewModal.getRegistration()
                             if(res.statusCode == 200)
                             {  isDialog=false
-                                Toast.makeText(context, res.message, Toast.LENGTH_SHORT).show()
+                                context.showMsg(res.message.toString())
                                 sharedPreferences.setJwtToken(res.token!!)
                                 navController.navigate(ScreenRoute.LocateMeScreen.route)
                             }
                             else{
                                 isDialog=false
-                                Toast.makeText(context, res.message, Toast.LENGTH_SHORT).show()
+                                context.showMsg(res.message.toString())
+
                             }
 
 

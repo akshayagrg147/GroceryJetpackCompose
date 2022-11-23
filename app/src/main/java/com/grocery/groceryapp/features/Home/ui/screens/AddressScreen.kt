@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,10 +30,10 @@ import com.grocery.groceryapp.data.modal.PassingAddress
 fun addressScreen(
     address: PassingAddress,
     navController: NavHostController,
-    context: Activity,
+
     viewModal: AddressViewModal = hiltViewModel()
 ) {
-
+val context= LocalContext.current.getActivity()
     val name = remember { mutableStateOf("") }
     val phonenumber = remember { mutableStateOf("") }
     val pincode = remember { mutableStateOf("") }
@@ -254,8 +255,8 @@ fun addressScreen(
                         // navController.navigate(ScreenRoute.CartScreen.route)}
 
                     } else
-                        Toast.makeText(context, "Please provide all details", Toast.LENGTH_LONG)
-                            .show()
+                        context?.showMsg("Please provide all details")
+
 
                 }
             }

@@ -66,11 +66,7 @@ fun profileScreen(
                     Text16_700(text = "Akshay Garg")
                     Text14_400(text = "Valueable Customer")
 
-//                    Toast.makeText(
-//                        context,
-//                        "${viewModal.responseLiveData.value.message}",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
+
                 }
 
 

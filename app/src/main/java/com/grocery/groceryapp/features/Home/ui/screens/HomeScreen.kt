@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.features.Home.ui
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,8 +37,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberImagePainter
 
 import com.google.accompanist.pager.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
+import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.Utils.Companion.vibrator
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
@@ -45,31 +50,26 @@ import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.screens.ListItemsActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
+import vtsen.hashnode.dev.simplegooglemapapp.ui.screens.LocationPermissionsAndSettingDialogs
 import java.text.DecimalFormat
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun homescreen(
-    navcontroller: NavHostController,
-    context: Context,
+    navcontroller: NavHostController,sharedpreferenceCommon: sharedpreferenceCommon,
     viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
-    var search = rememberSaveable {
-        mutableStateOf("")
-    }
-    val scope = rememberCoroutineScope()
-    //calling api
-
-   val list= viewModal.allresponse.collectAsLazyPagingItems()
-
-
+    val context= LocalContext.current.getActivity()
+    val list= viewModal.allresponse.collectAsLazyPagingItems()
     var res = viewModal.exclusiveProductsResponse1.value
-
+    var mFusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
     var best = viewModal.bestsellingProductsResponse1.value
+    var currentLocation by remember { mutableStateOf(LocationUtils.getDefaultLocation()) }
+    var requestLocationUpdate by remember { mutableStateOf(true) }
     val pager = rememberPagerState()
-
-        viewModal.getCartItem()
+    viewModal.getCartItem()
 
 
 
@@ -201,7 +201,7 @@ fun homescreen(
                                 .clickable {
                                     if (res.statusCode == 200) {
                                         val list1 = res.list
-                                        context.launchActivity<ListItemsActivity>() {
+                                        context?.launchActivity<ListItemsActivity>() {
                                             putExtra(
                                                 "parced",
                                                 HomeAllProductsResponse(
@@ -226,7 +226,7 @@ fun homescreen(
                         if (res.statusCode == 200) {
                             val list1 = res.list
                             items(list1!!) { data ->
-                                ExclusiveOffers(data, context,navcontroller,viewModal)
+                                ExclusiveOffers(data, context!!,navcontroller,viewModal)
                             }
 
 
@@ -258,7 +258,7 @@ fun homescreen(
                                 .clickable {
                                     if (best.statusCode == 200) {
                                         val list1 = best.list
-                                        context.launchActivity<ListItemsActivity>() {
+                                        context?.launchActivity<ListItemsActivity>() {
                                             putExtra(
                                                 "parced",
                                                 HomeAllProductsResponse(list1, "Best Selling", 200)
@@ -281,7 +281,7 @@ fun homescreen(
                             val list1 = best.list
                             items(list1!!) { data ->
                                 // Column(modifier = Modifier.padding(10.dp)) {
-                                BestOffers(navcontroller,data, context,viewModal)
+                                BestOffers(navcontroller,data, context!!,viewModal)
                                 //}
 
 
@@ -345,7 +345,7 @@ fun homescreen(
                 )
                 {
                     repeat(list.itemCount ?:0) {
-                        AllItems(list.peek(it)!!, context,navcontroller,viewModal)
+                        AllItems(list.peek(it)!!, context!!,navcontroller,viewModal)
                         if(it==list.itemCount-1)
                             Spacer(modifier = Modifier.height(80.dp))
                     }
@@ -366,10 +366,23 @@ fun homescreen(
         }
 
 
-        cardviewAddtoCart(viewModal,navcontroller,context,modifier=Modifier.align(Alignment.BottomCenter))
+        cardviewAddtoCart(viewModal,navcontroller,context!!,modifier=Modifier.align(Alignment.BottomCenter))
     }
 
+if(sharedpreferenceCommon.getCombinedAddress().equals("null"))
+    if(requestLocationUpdate)
+    LocationPermissionsAndSettingDialogs(
+        updateCurrentLocation = {
+            requestLocationUpdate=false
+            LocationUtils.requestLocationResultCallback(mFusedLocationClient) { locationResult ->
+                locationResult.lastLocation?.let { location ->
+                    currentLocation=location
+                    sharedpreferenceCommon.setCombineAddress("${location.latitude}, ${location.longitude}")
+                }
 
+            }
+        }
+    )
 
 
 }

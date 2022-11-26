@@ -817,11 +817,11 @@ fun ShimmerAnimation(
 fun ShimmerItem(
     brush: Brush
 ) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(10.dp)) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(200.dp)
+                .size(150.dp)
                 .background(brush = brush)
         )
         Spacer(

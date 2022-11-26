@@ -80,6 +80,12 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     fun setMobileNumber(number: String){
         return mPrefs.edit().putString(AppConstant.mobilenumber, number).apply()
     }
+    fun getImageUri():String{
+        return mPrefs.getString(AppConstant.imageuri,"").toString()
+    }
+    fun setImageUri(image: String){
+        return mPrefs.edit().putString(AppConstant.imageuri, image).apply()
+    }
 
 
 }

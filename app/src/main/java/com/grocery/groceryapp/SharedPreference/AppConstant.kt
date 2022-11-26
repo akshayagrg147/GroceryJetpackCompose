@@ -12,6 +12,7 @@ class AppConstant {
         const val jwttoken = "jwttoken"
         const val combine = "CombinedAddress"
         const val mobilenumber = "mobilenumber"
+        const val imageuri = "imageuri"
 
 
     }

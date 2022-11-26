@@ -46,7 +46,7 @@ fun NavigationGraph(
             PrivacyPolicyScreen()
         }
         composable(DashBoardNavRoute.Profile.screen_route) {
-            profileScreen(navController, context)
+            profileScreen(navController, context,sharedPreferences)
         }
         composable(DashBoardNavRoute.OrderDetail.screen_route) {
             var model =

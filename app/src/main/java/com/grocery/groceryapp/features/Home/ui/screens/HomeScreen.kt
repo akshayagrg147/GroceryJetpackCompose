@@ -1,10 +1,12 @@
 package com.grocery.groceryapp.features.Home.ui
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,9 +14,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,20 +25,23 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberImagePainter
-
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.SizeMode
 import com.google.accompanist.pager.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -43,9 +49,10 @@ import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.common.Utils.Companion.vibrator
+import com.grocery.groceryapp.data.modal.CategoryWiseDashboardResponse
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
-import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.ui.screens.ListItemsActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
@@ -58,22 +65,23 @@ import java.text.DecimalFormat
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun homescreen(
-    navcontroller: NavHostController,sharedpreferenceCommon: sharedpreferenceCommon,
+    navcontroller: NavHostController, sharedpreferenceCommon: sharedpreferenceCommon,
     viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
-    val context= LocalContext.current.getActivity()
-    val list= viewModal.allresponse.collectAsLazyPagingItems()
+    val context = LocalContext.current.getActivity()
+
     var res = viewModal.exclusiveProductsResponse1.value
-    var mFusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
+    var mFusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context!!)
     var best = viewModal.bestsellingProductsResponse1.value
-    var currentLocation by remember { mutableStateOf(LocationUtils.getDefaultLocation()) }
     var requestLocationUpdate by remember { mutableStateOf(true) }
     val pager = rememberPagerState()
     viewModal.getCartItem()
+    viewModal.callingDashboardCategoryWiseList()
 
 
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
         Column() {
             Spacer(modifier = Modifier.width(10.dp))
 
@@ -86,7 +94,10 @@ fun homescreen(
                     Text18_600(text = "Delivery in 10 minutes")
                     Spacer(modifier = Modifier.height(4.dp))
                     Row() {
-                        Image(painter = painterResource(id = R.drawable.home_icon) , contentDescription ="" )
+                        Image(
+                            painter = painterResource(id = R.drawable.home_icon),
+                            contentDescription = ""
+                        )
                         Text(
                             text = viewModal.gettingAddres(),
                             fontWeight = FontWeight.Bold,
@@ -95,7 +106,7 @@ fun homescreen(
 
                             textAlign = TextAlign.Start,
 
-                            maxLines=1,
+                            maxLines = 1,
                             modifier = Modifier
                                 .padding(start = 5.dp)
                                 .width(200.dp)
@@ -136,10 +147,10 @@ fun homescreen(
             item {
 
 
-               Column(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.fillMaxSize()) {
 
                     TextField(
-                        value ="",
+                        value = "",
                         shape = RoundedCornerShape(8.dp),
                         enabled = false,
                         onValueChange = {
@@ -187,7 +198,7 @@ fun homescreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp),Arrangement.SpaceBetween
+                            .padding(top = 10.dp), Arrangement.SpaceBetween
                     ) {
                         Text16_700(
                             text = "Exclusive Offers", color = Color.Black,
@@ -226,7 +237,7 @@ fun homescreen(
                         if (res.statusCode == 200) {
                             val list1 = res.list
                             items(list1!!) { data ->
-                                ExclusiveOffers(data, context!!,navcontroller,viewModal)
+                                ExclusiveOffers(data, context!!, navcontroller, viewModal)
                             }
 
 
@@ -244,12 +255,11 @@ fun homescreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp),Arrangement.SpaceBetween
+                            .padding(top = 10.dp), Arrangement.SpaceBetween
                     ) {
                         Text16_700(
                             text = "Best Selling", color = Color.Black,
                             modifier = Modifier
-
                                 .padding(start = 10.dp),
                         )
                         Text14_400(
@@ -281,14 +291,13 @@ fun homescreen(
                             val list1 = best.list
                             items(list1!!) { data ->
                                 // Column(modifier = Modifier.padding(10.dp)) {
-                                BestOffers(navcontroller,data, context!!,viewModal)
+                                BestOffers(navcontroller, data, context!!, viewModal)
                                 //}
 
 
                             }
 
-                        }
-                        else{
+                        } else {
                             repeat(5) {
                                 item {
                                     ShimmerAnimation()
@@ -316,78 +325,166 @@ fun homescreen(
                     }
 
 
+                    val ls: MutableList<MainProducts> = ArrayList()
+                    ls.add(MainProducts("vegetables", R.drawable.nonveg, Purple700, null))
+                    ls.add(MainProducts("diary", R.drawable.diary, borderColor, null))
+                    ls.add(MainProducts("grocery", R.drawable.grocery, disableColor, null))
+                    ls.add(MainProducts("Oils", R.drawable.bell_peeper, darkFadedColor, null))
+                    ls.add(MainProducts("Oils", R.drawable.ginger, darkFadedColor, null))
+                    val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 4)
+                    FlowRow(
+                        mainAxisSize = SizeMode.Expand,
+                        mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
+                    ) {
+                        for (i in 0 until ls.size) {
+                            GroceriesItems(
+                                ls[i].color,
+                                ls[i].image,
+                                ls[i].name,
+                                navcontroller,
+                                viewModal,
+                                itemSize
+                            )
 
+
+                        }
+
+                    }
 
 
                 }
             }
 
-                val ls: MutableList<MainProducts> = ArrayList()
-                ls.add(MainProducts("vegetables", R.drawable.nonveg, Purple700, null))
-                ls.add(MainProducts("diary", R.drawable.diary, borderColor, null))
-                ls.add(MainProducts("grocery", R.drawable.grocery, disableColor, null))
-                ls.add(MainProducts("Oils", R.drawable.bell_peeper, darkFadedColor, null))
-            ls.add(MainProducts("Oils", R.drawable.ginger, darkFadedColor, null))
-            gridItems(
-                data = ls,
-                columnCount = 3,
-                horizontalArrangement = Arrangement.spacedBy(3.dp),
-                modifier = Modifier.padding(horizontal = 3.dp)
-            ) { data ->
-                GroceriesItems(data.color, data.image, data.name, navcontroller, viewModal)
-            }
-            list.snapshot().items
-            item{
+
+            //list.snapshot().items
+            item {
 
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 )
                 {
-                    repeat(list.itemCount ?:0) {
-                        AllItems(list.peek(it)!!, context!!,navcontroller,viewModal)
-                        if(it==list.itemCount-1)
-                            Spacer(modifier = Modifier.height(80.dp))
+                    repeat(viewModal.CategoryWiseDashboardRespon.value.list?.size ?: 0) {
+
+                        Card(
+                            elevation = 1.dp,
+                            shape = RoundedCornerShape(2.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp, vertical = 10.dp)
+
+
+                        ) {
+                            Column() {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 10.dp),
+                                        Arrangement.spacedBy(10.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Home,
+                                            contentDescription = null,
+                                            tint = Color.LightGray,
+
+
+                                            )
+                                        Column() {
+                                            Text24_700(
+                                                text = viewModal.CategoryWiseDashboardRespon.value.list?.get(
+                                                    it
+                                                )?.categoryTitle ?: "", color = headingColor,
+                                                modifier = Modifier
+
+
+                                            )
+                                            Text16_700(
+                                                text = viewModal.CategoryWiseDashboardRespon.value.list?.get(
+                                                    it
+                                                )?.category ?: "", color = greyLightColor,
+                                                modifier = Modifier
+
+
+                                            )
+                                        }
+                                    }
+
+
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowForward,
+                                        contentDescription = null,
+                                        tint = Color.LightGray,
+                                        modifier = Modifier.clickable {
+                                            viewModal.setcategory(
+                                                viewModal.CategoryWiseDashboardRespon.value.list?.get(
+                                                    it
+                                                )?.category ?: ""
+                                            )
+                                            navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
+                                        }
+                                    )
+
+                                }
+
+                                Spacer(modifier = Modifier.height(10.dp))
+                                val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2)
+                                FlowRow(
+                                    mainAxisSize = SizeMode.Expand,
+                                    mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
+                                ) {
+                                    for (i in 0 until viewModal.CategoryWiseDashboardRespon.value.list?.get(
+                                        it
+                                    )!!.ls?.size!!) {
+                                        AllItems(
+                                            viewModal.CategoryWiseDashboardRespon.value.list?.get(it)!!.ls?.get(
+                                                i
+                                            )!!,
+                                            context, navcontroller, viewModal, itemSize
+                                        )
+                                    }
+
+                                }
+                            }
+
+
+                        }
+
+
                     }
+                    Spacer(modifier = Modifier.height(30.dp))
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
 
         }
 
 
-        cardviewAddtoCart(viewModal,navcontroller,context!!,modifier=Modifier.align(Alignment.BottomCenter))
+        cardviewAddtoCart(
+            viewModal,
+            navcontroller,
+            context!!,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 
-if(sharedpreferenceCommon.getCombinedAddress().equals("null"))
-    if(requestLocationUpdate)
-    LocationPermissionsAndSettingDialogs(
-        updateCurrentLocation = {
-            requestLocationUpdate=false
-            LocationUtils.requestLocationResultCallback(mFusedLocationClient) { locationResult ->
-                locationResult.lastLocation?.let { location ->
-                    currentLocation=location
-                    sharedpreferenceCommon.setCombineAddress("${location.latitude}, ${location.longitude}")
-                }
+    if (sharedpreferenceCommon.getCombinedAddress().equals("null"))
+        if (requestLocationUpdate)
+            LocationPermissionsAndSettingDialogs(
+                updateCurrentLocation = {
+                    requestLocationUpdate = false
+                    LocationUtils.requestLocationResultCallback(mFusedLocationClient) { locationResult ->
+                        locationResult.lastLocation?.let { location ->
+                            //   currentLocation=location
+                            sharedpreferenceCommon.setCombineAddress("${location.latitude}, ${location.longitude}")
+                        }
 
-            }
-        }
-    )
+                    }
+                }
+            )
 
 
 }
-
-
 
 
 @OptIn(ExperimentalPagerApi::class)
@@ -445,11 +542,16 @@ fun ExclusiveOffers(
                 .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
 
-            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.orignalprice?.toFloat()?:0.0f))*100)).toString()
+            val offpercentage: String = (DecimalFormat("#.##").format(
+                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.orignalprice?.toFloat()
+                    ?: 0.0f)) * 100
+            )).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
+                text = "${offpercentage}% off", color = titleColor,
+                modifier = Modifier.align(
                     Alignment.End
-                ),fontSize = 10.sp,
+                ),
+                fontSize = 10.sp,
             )
 
             Image(
@@ -487,8 +589,15 @@ fun ExclusiveOffers(
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
-                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
-                Card( border = BorderStroke(1.dp, titleColor),
+                Text(
+                    text = "₹${data.orignalprice ?: "0.00"}",
+                    fontSize = 11.sp,
+                    color = bodyTextColor,
+                    modifier = Modifier.padding(start = 5.dp),
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
+                Card(
+                    border = BorderStroke(1.dp, titleColor),
                     modifier = Modifier
 
                         .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
@@ -513,10 +622,13 @@ fun ExclusiveOffers(
 
                         },
 
-                ) {
-                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
+                    ) {
+                    Text13_700(
+                        text = "ADD",
+                        availColor,
+                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                    )
                 }
-
 
 
             }
@@ -526,113 +638,122 @@ fun ExclusiveOffers(
 }
 
 
-
 @Composable
 fun AllItems(
-    data: HomeAllProductsResponse.HomeResponse,
+    data: CategoryWiseDashboardResponse.cat.L,
     context: Context,
-    navcontroller: NavHostController,  viewModal: HomeAllProductsViewModal
+    navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp
 ) {
+
 
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .padding(5.dp)
-            .background(whiteColor)
+            .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+            .size(itemSize)
             .clickable {
-                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} all"))
-                println()
-
+//                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 5.dp),Arrangement.SpaceBetween
+
+                .padding(horizontal = 5.dp, vertical = 2.dp)
         ) {
+
+            val offpercentage: String = (DecimalFormat("#.##").format(
+                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.actualPrice?.toFloat()
+                    ?: 0.0f)) * 100
+            )).toString()
+            Text(
+                text = "${offpercentage}% off", color = titleColor,
+                modifier = Modifier.align(
+                    Alignment.End
+                ),
+                fontSize = 10.sp,
+            )
+
             Image(
 
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(50.dp)
-                    .height(50.dp)
-                    .align(alignment = Alignment.CenterVertically)
+                    .width(100.dp)
+                    .height(70.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
 
 
             )
 
-
-
-
-            Column() {
-                Text18_600(
-                    text = data.productName!!, color = headingColor,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
+            Text20_700(
+                text = data.productName!!, color = headingColor,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Text12Sp_600(
+                text = "${data.quantity} pcs,Price", color = availColor,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier.padding(start = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
                 Text12Sp_600(
-                    text = "${data.quantity} pcs,Price", color = availColor,
-                    modifier = Modifier
-                        .padding(end = 10.dp)
-                        .align(Alignment.CenterHorizontally)
+                    text = "₹ ${data.price}",
+                    color = headingColor,
+                    //  modifier= Modifier.weight(0.5F)
                 )
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(
+                Text(
+                    text = "₹${data.actualPrice ?: "0.00"}",
+                    fontSize = 11.sp,
+                    color = bodyTextColor,
+                    modifier = Modifier.padding(start = 5.dp),
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
+                Card(
+                    border = BorderStroke(1.dp, titleColor),
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                       ,
-                    horizontalArrangement = Arrangement.Center
-                ) {
 
+                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                        .padding(start = 20.dp)
+
+                        .background(color = whiteColor)
+                        .clickable {
+                            // response="called"
+                            viewModal.insertCartItem(
+                                data.productId ?: "",
+                                data.productImage1 ?: "",
+                                data.price?.toInt() ?: 0,
+                                data.productName ?: "",
+                                data.actualPrice ?: ""
+                            )
+                            viewModal.getCartItem()
+                            Toast
+                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
+                                .show()
+
+                            Utils.vibrator(context)
+
+
+                        },
+
+                    ) {
                     Text13_700(
-                        text = "₹ ${data.price}",
-                        color = headingColor,
-                        modifier= Modifier
+                        text = "ADD",
+                        availColor,
+                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
                     )
-                    Text(text ="₹${data.orignalprice ?: "0.00"}", fontSize = 11.sp , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
-
-
-
                 }
+
+
             }
-            Card( border = BorderStroke(1.dp, titleColor),
-                modifier = Modifier
-
-                    .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-
-                    .background(color = whiteColor)
-                    .clickable {
-                        // response="called"
-                        viewModal.insertCartItem(
-                            data.ProductId ?: "",
-                            data.productImage1 ?: "",
-                            data.price?.toInt() ?: 0,
-                            data.productName ?: "",
-                            data.orignalprice ?: ""
-                        )
-                        viewModal.getCartItem()
-                        Toast
-                            .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
-                            .show()
-
-                        vibrator(context)
-
-                    },
-
-
-                ) {
-                Text13_700(text = "ADD", availColor, modifier = Modifier
-                    .padding(vertical = 5.dp, horizontal = 10.dp)
-                    .align(Alignment.CenterVertically))
-            }
-
-
-
 
         }
     }
@@ -662,11 +783,16 @@ fun BestOffers(
                 .fillMaxWidth()
                 .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
-            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.orignalprice?.toFloat()?:0.0f))*100)).toString()
+            val offpercentage: String = (DecimalFormat("#.##").format(
+                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.orignalprice?.toFloat()
+                    ?: 0.0f)) * 100
+            )).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
+                text = "${offpercentage}% off", color = titleColor,
+                modifier = Modifier.align(
                     Alignment.End
-                ),fontSize = 10.sp,
+                ),
+                fontSize = 10.sp,
             )
 
             Image(
@@ -704,8 +830,15 @@ fun BestOffers(
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
-                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
-                Card( border = BorderStroke(1.dp, titleColor),
+                Text(
+                    text = "₹${data.orignalprice ?: "0.00"}",
+                    fontSize = 11.sp,
+                    color = bodyTextColor,
+                    modifier = Modifier.padding(start = 5.dp),
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
+                Card(
+                    border = BorderStroke(1.dp, titleColor),
                     modifier = Modifier
 
                         .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
@@ -731,9 +864,12 @@ fun BestOffers(
                         },
 
                     ) {
-                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
+                    Text13_700(
+                        text = "ADD",
+                        availColor,
+                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                    )
                 }
-
 
 
             }
@@ -749,7 +885,8 @@ fun GroceriesItems(
     drawable: Int,
     item: String,
     navController: NavHostController,
-    viewModal: HomeAllProductsViewModal
+    viewModal: HomeAllProductsViewModal,
+    itemSize: Dp
 ) {
 
     Card(
@@ -757,7 +894,8 @@ fun GroceriesItems(
         shape = RoundedCornerShape(20.dp),
 
         backgroundColor = whiteColor, modifier = Modifier
-            .fillMaxWidth().padding(10.dp)
+            .size(itemSize)
+            .padding(10.dp)
             .clickable {
                 navController.navigate(DashBoardNavRoute.MenuItems.senddata(item))
 
@@ -835,11 +973,16 @@ fun ShimmerItem(
 }
 
 @Composable
-fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,navController: NavHostController,context:Context,modifier: Modifier){
+fun cardviewAddtoCart(
+    viewmodal: HomeAllProductsViewModal,
+    navController: NavHostController,
+    context: Context,
+    modifier: Modifier
+) {
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(10.dp),
-        backgroundColor = seallcolor,modifier = modifier
+        backgroundColor = seallcolor, modifier = modifier
             .fillMaxWidth()
             .height(65.dp)
             .padding(5.dp)
@@ -849,16 +992,17 @@ fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,navController: NavHost
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 
 
-    ){
-        Box(modifier = Modifier
+    ) {
+        Box(
+            modifier = Modifier
 
-        ){
+        ) {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(2.dp)
             ) {
-                var (l0,l1,l2) = createRefs()
+                var (l0, l1, l2) = createRefs()
 
                 Image(
                     painter = painterResource(id = R.drawable.cart_icon),
@@ -877,24 +1021,34 @@ fun cardviewAddtoCart(viewmodal: HomeAllProductsViewModal,navController: NavHost
                         }
 
                 )
-                Column(Modifier.constrainAs(l1){
+                Column(Modifier.constrainAs(l1) {
                     start.linkTo(l0.end)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }) {
-                    Text14_400(text = "${viewmodal.getitemcountState.value.toString()} items", color = Color.White)
-                    Text14_400(text = "₹ ${viewmodal.getitempriceState.value.toString()}",color = Color.White)
+                    Text14_400(
+                        text = "${viewmodal.getitemcountState.value.toString()} items",
+                        color = Color.White
+                    )
+                    Text14_400(
+                        text = "₹ ${viewmodal.getitempriceState.value.toString()}",
+                        color = Color.White
+                    )
 
 
                 }
 
-                Text16_700(text = "view cart >",color = Color.White, modifier = Modifier.constrainAs(l2){
-                  end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                    top.linkTo(parent.top)
-                })
+                Text16_700(
+                    text = "view cart >",
+                    color = Color.White,
+                    modifier = Modifier.constrainAs(l2) {
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                        top.linkTo(parent.top)
+                    })
 
             }
 
         }
-}}
+    }
+}

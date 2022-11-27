@@ -22,7 +22,8 @@ interface ApiService {
     @GET(Constants.HomeAllProducts)
     suspend fun getHomeAllProducts(
         @Query("skip") skip: Int,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
+        @Query("category") gettingData: String
     ): Response<HomeAllProductsResponse>
 
     @GET(Constants.SearchAllProductsSearch)
@@ -33,6 +34,10 @@ interface ApiService {
     @POST(Constants.BestSelling_collectionProducts)
     suspend fun getBestSellingProducts(
     ): Response<HomeAllProductsResponse>
+
+    @GET(Constants.categorywise_collectionProducts)
+    suspend fun categorywise_collectionProducts(
+    ): Response<CategoryWiseDashboardResponse>
 
     @POST(Constants.GetPendingProductById)
     suspend fun GetPendingProductById(@Body productIdIdModal: ProductIdIdModal):Response<ProductByIdResponseModal>
@@ -64,4 +69,13 @@ interface ApiService {
 
 
 
+}
+ class CallingCategoryWiseData{
+     var data=""
+     fun settingData( ss:String){
+         data=ss
+     }
+    fun gettingData():String{
+        return data
+    }
 }

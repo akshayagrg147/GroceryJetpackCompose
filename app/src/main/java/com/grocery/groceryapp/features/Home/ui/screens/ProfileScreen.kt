@@ -26,10 +26,12 @@ import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.HiltApplication
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
+import com.grocery.groceryapp.Utils.Text13_700
 import com.grocery.groceryapp.Utils.Text14_400
 import com.grocery.groceryapp.Utils.Text16_700
 import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.blackColor
+import com.grocery.groceryapp.features.Home.ui.ui.theme.headingColor
 import com.grocery.groceryapp.features.Home.ui.viewmodal.ProfileViewModal
 import java.io.File
 
@@ -124,20 +126,13 @@ fun profileScreen(
                     painter = painterResource(id = R.drawable.ic_orders_icon),
                     contentDescription = "",
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(20.dp)
                         .padding(start = 10.dp, top = 5.dp),
                     tint = blackColor
                 )
-                Text16_700(text = "Orders", modifier = Modifier.padding(start = 15.dp, top = 5.dp))
+                Text14_400(text = "Your Orders",color= headingColor, modifier = Modifier.padding(start = 15.dp, top = 5.dp))
             }
-            Icon(
-                painter = painterResource(id = R.drawable.ic_rightarrow),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(25.dp)
-                    .padding(top = 5.dp),
-                tint = blackColor
-            )
+
 
 
         }
@@ -160,24 +155,17 @@ fun profileScreen(
                     painter = painterResource(id = R.drawable.ic_delicery_address),
                     contentDescription = "",
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(20.dp)
                         .padding(start = 10.dp, top = 5.dp),
                     tint = blackColor
                 )
-                Text16_700(text = "Add Address", modifier = Modifier
+                Text14_400(text = "Address Book",color= headingColor, modifier = Modifier
                     .padding(start = 15.dp, top = 5.dp)
                     .clickable {
                         navController.navigate(DashBoardNavRoute.AddressScreen.screen_route)
                     })
             }
-            Icon(
-                painter = painterResource(id = R.drawable.ic_rightarrow),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(25.dp)
-                    .padding(top = 5.dp),
-                tint = blackColor
-            )
+
 
 
         }
@@ -199,23 +187,16 @@ fun profileScreen(
                     painter = painterResource(id = R.drawable.ic_paymentmethod),
                     contentDescription = "",
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(20.dp)
                         .padding(start = 10.dp, top = 5.dp),
                     tint = blackColor
                 )
-                Text16_700(
-                    text = "Payment Methods",
+                Text14_400(
+                    text = "Payment Methods",color= headingColor,
                     modifier = Modifier.padding(start = 15.dp, top = 5.dp)
                 )
             }
-            Icon(
-                painter = painterResource(id = R.drawable.ic_rightarrow),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(25.dp)
-                    .padding(top = 5.dp),
-                tint = blackColor
-            )
+
 
 
         }
@@ -237,23 +218,15 @@ fun profileScreen(
                     painter = painterResource(id = R.drawable.ic_promocode),
                     contentDescription = "",
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(20.dp)
                         .padding(start = 10.dp, top = 5.dp),
                     tint = blackColor
                 )
-                Text16_700(
-                    text = "Privacy Policy",
+                Text14_400(
+                    text = "Privacy Policy",color= headingColor,
                     modifier = Modifier.padding(start = 15.dp, top = 5.dp)
                 )
             }
-            Icon(
-                painter = painterResource(id = R.drawable.ic_rightarrow),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(25.dp)
-                    .padding(top = 5.dp),
-                tint = blackColor
-            )
 
 
         }

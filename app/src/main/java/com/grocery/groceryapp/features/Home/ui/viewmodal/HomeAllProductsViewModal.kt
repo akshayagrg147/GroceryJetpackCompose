@@ -10,15 +10,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.Constants.Companion.NETWORK_PAGE_SIZE
 import com.grocery.groceryapp.common.ApiState
-import com.grocery.groceryapp.data.modal.FetchCart
+import com.grocery.groceryapp.data.modal.CategoryWiseDashboardResponse
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.network.ApiService
+import com.grocery.groceryapp.data.network.CallingCategoryWiseData
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeAllProductsViewModal @Inject constructor(
     private val pagingDataSource: PaginSoucrce, val repository: CommonRepository, val
-    sharedPreferences: sharedpreferenceCommon, val dao: Dao, @ApplicationContext context: Context
+    sharedPreferences: sharedpreferenceCommon, val dao: Dao, @ApplicationContext context: Context,val cat:CallingCategoryWiseData
 ) : ViewModel() {
     init {
        callingBestSelling()
@@ -43,6 +43,11 @@ class HomeAllProductsViewModal @Inject constructor(
     var passingdata: MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
     private val exclusiveProductsResponse: MutableState<HomeAllProductsResponse> =
         mutableStateOf(HomeAllProductsResponse(null, null, null))
+
+    private val CategoryWiseDashboardResponse: MutableState<CategoryWiseDashboardResponse> =
+        mutableStateOf(CategoryWiseDashboardResponse(null, null, null))
+    val CategoryWiseDashboardRespon: State<CategoryWiseDashboardResponse> = CategoryWiseDashboardResponse
+
 
     private val bestsellingProductsResponse: MutableState<HomeAllProductsResponse> =
         mutableStateOf(HomeAllProductsResponse(null, null, null))
@@ -181,6 +186,15 @@ fun getCartItem(){
 
 
     }
+    fun setcategory(ss:String){
+        cat.settingData(ss)
+
+    }
+    fun getcategory():String{
+       return cat.gettingData()
+
+    }
+
 
     fun gettingData(): LiveData<List<HomeAllProductsResponse.HomeResponse>> {
         return passingdata
@@ -209,6 +223,23 @@ fun getCartItem(){
         }
     }
 
+    fun callingDashboardCategoryWiseList() = viewModelScope.launch {
+        repository.callingDasboardProducts().collectLatest {
+            when (it) {
+                is ApiState.Success -> {
+                    CategoryWiseDashboardResponse.value = it.data
+                }
+                is ApiState.Failure -> {
+                    CategoryWiseDashboardResponse.value =
+                        CategoryWiseDashboardResponse(null, "Something went wrong", 401)
+                }
+                is ApiState.Loading -> {
+
+                }
+            }
+        }
+    }
+
     val allresponse: Flow<PagingData<HomeAllProductsResponse.HomeResponse>> =
         Pager(PagingConfig(pageSize = NETWORK_PAGE_SIZE)) {
             pagingDataSource
@@ -216,7 +247,7 @@ fun getCartItem(){
 
 }
 
-class PaginSoucrce @Inject constructor(private val apiService: ApiService) :
+class PaginSoucrce @Inject constructor(private val apiService: ApiService,val calling: CallingCategoryWiseData) :
     PagingSource<Int, HomeAllProductsResponse.HomeResponse>() {
 
     val INITIAL_LOAD_SIZE = 0
@@ -232,7 +263,7 @@ class PaginSoucrce @Inject constructor(private val apiService: ApiService) :
                 if (params.key != null) ((position - 1) * NETWORK_PAGE_SIZE) + 1 else INITIAL_LOAD_SIZE
             return try {
                 // val jsonResponse = service.getCryptoList(start = offset, limit = params.loadSize).data
-                val homeproduts = apiService.getHomeAllProducts(offset, params.loadSize)
+                val homeproduts = apiService.getHomeAllProducts(offset, params.loadSize,calling.gettingData())
 
                 val nextKey = if (homeproduts.body()?.list?.isEmpty() == true) {
                     null

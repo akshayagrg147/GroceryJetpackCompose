@@ -24,17 +24,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.SizeMode
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.Utils
@@ -43,7 +48,7 @@ import com.grocery.groceryapp.features.Home.domain.modal.FilterOptions
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import kotlinx.coroutines.launch
-import kotlin.collections.ArrayList
+import java.text.DecimalFormat
 
 private val headerHeight = 210.dp
 private val toolbarHeight = 56.dp
@@ -56,6 +61,7 @@ private var sortType by mutableStateOf("")
 
 private const val titleFontScaleStart = 1f
 private const val titleFontScaleEnd = 0.66f
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ListItems(
@@ -70,8 +76,6 @@ fun ListItems(
     val scope = rememberCoroutineScope()
 
 
-
-
     var filterclicked by remember { mutableStateOf(false) }
     var minimum by remember { mutableStateOf("") }
     var maximum by remember { mutableStateOf("") }
@@ -81,52 +85,55 @@ fun ListItems(
         sheetContent = {
 
             if (filterclicked)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(500.dp)
-                    .padding(top = 10.dp), Arrangement.SpaceEvenly
-            ) {
-                val ls: MutableList<FilterOptions> = ArrayList()
-                ls.add(FilterOptions("By Budget", "1"))
-                ls.add(FilterOptions("Change Sort", "2"))
-                LazyColumn(
-                    //  verticalArrangement = Arrangement.SpaceBetween,
+                Row(
                     modifier = Modifier
-                        .padding(bottom = 1.dp)
-                    // .verticalScroll(state = scrollState)
-
+                        .fillMaxWidth()
+                        .height(500.dp)
+                        .padding(top = 10.dp), Arrangement.SpaceEvenly
                 ) {
-                    items(ls) { item ->
+                    val ls: MutableList<FilterOptions> = ArrayList()
+                    ls.add(FilterOptions("By Budget", "1"))
+                    ls.add(FilterOptions("Change Sort", "2"))
+                    LazyColumn(
+                        //  verticalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .padding(bottom = 1.dp)
+                        // .verticalScroll(state = scrollState)
 
-                        ItemEachRow(item, selectedIndex) { productid, selectedvalue ->
-                            selectedIndex.value = selectedvalue
+                    ) {
+                        items(ls) { item ->
 
+                            ItemEachRow(item, selectedIndex) { productid, selectedvalue ->
+                                selectedIndex.value = selectedvalue
+
+                            }
                         }
                     }
-                }
 
-                Divider(
-                    color = Color.Blue, modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(start = 5.dp)
-                        .width(1.dp)
-                )
-
-                Column(modifier = Modifier.fillMaxSize()) {
-
-
-                    val hundredone = remember { mutableStateOf(true) }
-                    val twohundredone = remember { mutableStateOf(false) }
-                    val threehundredone = remember { mutableStateOf(false) }
-                    val fuvehundredone = remember { mutableStateOf(false) }
-                    Text20_700(
-                        text = "FILTER & SORT",
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    Divider(
+                        color = Color.Blue, modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(start = 5.dp)
+                            .width(1.dp)
                     )
 
+                    Column(modifier = Modifier.fillMaxSize()) {
+
+
+                        val hundredone = remember { mutableStateOf(true) }
+                        val twohundredone = remember { mutableStateOf(false) }
+                        val threehundredone = remember { mutableStateOf(false) }
+                        val fuvehundredone = remember { mutableStateOf(false) }
+                        Text20_700(
+                            text = "FILTER & SORT",
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+
                         Column(modifier = Modifier.padding(start = 10.dp)) {
-                            Text14_400(text = "Choose a range below", modifier = Modifier.align(Alignment.CenterHorizontally))
+                            Text14_400(
+                                text = "Choose a range below",
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
                             Row {
                                 Checkbox(
 
@@ -136,7 +143,11 @@ fun ListItems(
                                 )
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
-                                Text(text = "Rs. 200 and below", modifier = Modifier.padding(16.dp), fontSize = 12.sp)
+                                Text(
+                                    text = "Rs. 200 and below",
+                                    modifier = Modifier.padding(16.dp),
+                                    fontSize = 12.sp
+                                )
                             }
 
                             Row {
@@ -148,7 +159,11 @@ fun ListItems(
                                 )
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
-                                Text(text = "Rs. 201 and 300", modifier = Modifier.padding(16.dp), fontSize = 12.sp)
+                                Text(
+                                    text = "Rs. 201 and 300",
+                                    modifier = Modifier.padding(16.dp),
+                                    fontSize = 12.sp
+                                )
                             }
 
                             Row {
@@ -160,7 +175,11 @@ fun ListItems(
                                 )
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
-                                Text(text = "Rs. 301 and 499", modifier = Modifier.padding(16.dp), fontSize = 12.sp)
+                                Text(
+                                    text = "Rs. 301 and 499",
+                                    modifier = Modifier.padding(16.dp),
+                                    fontSize = 12.sp
+                                )
                             }
                             Row {
                                 Checkbox(
@@ -171,21 +190,26 @@ fun ListItems(
                                 )
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
-                                Text(text = "Rs. 500 and above", modifier = Modifier.padding(16.dp), fontSize = 12.sp)
+                                Text(
+                                    text = "Rs. 500 and above",
+                                    modifier = Modifier.padding(16.dp),
+                                    fontSize = 12.sp
+                                )
                             }
 
                         }
 
 
 
-                    Spacer(modifier = Modifier.height(25.dp))
+                        Spacer(modifier = Modifier.height(25.dp))
 
-                    CommonButton(
-                        text = "Apply",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 15.dp).clickable {
-                                scope.launch { modalBottomSheetState.hide() }
+                        CommonButton(
+                            text = "Apply",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 15.dp)
+                                .clickable {
+                                    scope.launch { modalBottomSheetState.hide() }
 //                                lss?.map {
 //                                    if(hundredone.value)
 //                                    it.price!!.toInt() <= 10
@@ -197,25 +221,26 @@ fun ListItems(
 //                                        it.price!!.toInt() > 50
 //                                }
 
-                            }
-                    )
-                    {
+                                }
+                        )
+                        {
 
 
+                        }
                     }
                 }
-            }
             else
-            Column(modifier = Modifier
-                .padding(start = 10.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)) {
-                Text16_700(text = "Asending(A-Z)", modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 5.dp)
-                    .clickable {
-                        viewModal.setvalue("asc")
-
+                Column(
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text16_700(text = "Asending(A-Z)", modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 5.dp)
+                        .clickable {
+                            viewModal.setvalue("asc")
 
 
 //                       lss?.sortedBy { it.productName?.lowercase() }
@@ -224,33 +249,33 @@ fun ListItems(
 //                            list.add(it)
 //                        }
 //                        var dou=list.sortBy { it.price?.toInt() }
-                        sortType = "asc"
+                            sortType = "asc"
 
-                        scope.launch { modalBottomSheetState.hide() }
+                            scope.launch { modalBottomSheetState.hide() }
 //                        srt(sortType,lss!!)
 
-                    })
-                Text16_700(text = "Desending(Z-A)", modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 5.dp)
-                    .clickable {
+                        })
+                    Text16_700(text = "Desending(Z-A)", modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 5.dp)
+                        .clickable {
 
-                        scope.launch { modalBottomSheetState.hide() }
-                    })
-                Text16_700(text = "High to low", modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 5.dp)
-                    .clickable {
-                        scope.launch { modalBottomSheetState.hide() }
-                    })
-                Text16_700(text = "Low to high", modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(vertical = 5.dp)
-                    .clickable {
-                        scope.launch { modalBottomSheetState.hide() }
-                    })
+                            scope.launch { modalBottomSheetState.hide() }
+                        })
+                    Text16_700(text = "High to low", modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 5.dp)
+                        .clickable {
+                            scope.launch { modalBottomSheetState.hide() }
+                        })
+                    Text16_700(text = "Low to high", modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 5.dp)
+                        .clickable {
+                            scope.launch { modalBottomSheetState.hide() }
+                        })
 
-            }
+                }
 
         },
         sheetState = modalBottomSheetState,
@@ -262,9 +287,11 @@ fun ListItems(
             val (l3) = createRefs()
             var createguidlinefromtop = createGuidelineFromBottom(70.dp)
 
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+            ) {
                 val scroll: ScrollState = rememberScrollState(0)
 
                 val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
@@ -274,9 +301,9 @@ fun ListItems(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Header(scroll, headerHeightPx)
-                    Body(scroll,viewModal,context)
+                    Body(scroll, viewModal, context)
                     Toolbar(scroll, headerHeightPx, toolbarHeightPx)
-                    Title(ls?.message?:"none",scroll, headerHeightPx, toolbarHeightPx)
+                    Title(ls?.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
                 }
 
 //                item{
@@ -312,13 +339,14 @@ fun ListItems(
 
 
             }
-            Card(modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .constrainAs(l3) {
-                    this.top.linkTo(createguidlinefromtop)
-                    this.bottom.linkTo(parent.bottom)
-                }, backgroundColor = Color.White
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .constrainAs(l3) {
+                        this.top.linkTo(createguidlinefromtop)
+                        this.bottom.linkTo(parent.bottom)
+                    }, backgroundColor = Color.White
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 50.dp),
@@ -326,7 +354,7 @@ fun ListItems(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text24_700(text = "Sort", modifier = Modifier.clickable {
-                        filterclicked=false
+                        filterclicked = false
                         scope.launch { modalBottomSheetState.show() }
 
                     })
@@ -336,7 +364,7 @@ fun ListItems(
                             .width(1.dp)
                     )
                     Text24_700(text = "Filter", modifier = Modifier.clickable {
-                        filterclicked=true
+                        filterclicked = true
                         scope.launch { modalBottomSheetState.show() }
                     })
                 }
@@ -348,14 +376,22 @@ fun ListItems(
     }
 
 
-
 }
-fun srt(sortTyoe:String,lss:List<HomeAllProductsResponse.HomeResponse>){
-    when (sortTyoe){
-        "asc" -> { lss?.sortedBy { it.productName }}
-        "dsc" -> { lss?.sortedByDescending { it.productName }}
-        "high" -> { lss?.sortedBy { it.price?.toInt() }}
-        "low" -> {lss?.sortedByDescending { it.price?.toInt() }}
+
+fun srt(sortTyoe: String, lss: List<HomeAllProductsResponse.HomeResponse>) {
+    when (sortTyoe) {
+        "asc" -> {
+            lss?.sortedBy { it.productName }
+        }
+        "dsc" -> {
+            lss?.sortedByDescending { it.productName }
+        }
+        "high" -> {
+            lss?.sortedBy { it.price?.toInt() }
+        }
+        "low" -> {
+            lss?.sortedByDescending { it.price?.toInt() }
+        }
 
     }
 
@@ -366,113 +402,109 @@ fun SubItems(
     data: HomeAllProductsResponse.HomeResponse,
     viewModal: HomeAllProductsViewModal,
     context: Context,
+    itemSize: Dp,
     call: () -> Unit
 ) {
-
-
-
 
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.
-            padding(top = 30.dp)
-            .background(whiteColor)
-            .clickable {
-                println()
+        modifier = Modifier
+            .padding(horizontal = 10.dp, vertical = 10.dp)
 
+            .width(160.dp)
+            .clickable {
+//                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical = 5.dp),Arrangement.SpaceBetween
+
+                .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
+
+            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.orignalprice?.toFloat()?:0.0f))*100)).toString()
+            Text(
+                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
+                    Alignment.End
+                ),fontSize = 10.sp,
+            )
+
             Image(
 
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(50.dp)
-                    .height(50.dp)
-                    .align(alignment = Alignment.CenterVertically)
+                    .width(100.dp)
+                    .height(70.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
 
 
             )
 
-
-
-
-            Column() {
-                Text18_600(
-                    text = data.productName!!, color = headingColor,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
+            Text20_700(
+                text = data.productName!!, color = headingColor,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Text12Sp_600(
+                text = "${data.quantity} pcs,Price", color = availColor,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                modifier = Modifier.padding(start = 10.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
 
                 Text12Sp_600(
-                    text = "${data.quantity} pcs,Price", color = availColor,
-                    modifier = Modifier
-                        .padding(end = 10.dp)
-                        .align(Alignment.CenterHorizontally)
+                    text = "₹ ${data.price}",
+                    color = headingColor,
+                    //  modifier= Modifier.weight(0.5F)
                 )
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(
+                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                Card( border = BorderStroke(1.dp, titleColor),
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                    ,
-                    horizontalArrangement = Arrangement.Center
-                ) {
 
-                    Text13_700(
-                        text = "₹ ${data.price}",
-                        color = headingColor,
-                        modifier= Modifier
-                    )
-                    Text(text ="₹${data.orignalprice ?: "0.00"}", fontSize = 11.sp , color = bodyTextColor, modifier = Modifier.padding(start = 10.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                        .padding(start = 20.dp)
+
+                        .background(color = whiteColor)
+                        .clickable {
+                            // response="called"
+                            viewModal.insertCartItem(
+                                data.ProductId ?: "",
+                                data.productImage1 ?: "",
+                                data.price?.toInt() ?: 0,
+                                data.productName ?: "",
+                                data.orignalprice ?: ""
+                            )
+                            viewModal.getCartItem()
+                            Toast
+                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
+                                .show()
+
+                            Utils.vibrator(context)
 
 
+                        },
 
+                    ) {
+                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
                 }
+
+
+
             }
-            Card( border = BorderStroke(1.dp, titleColor),
-                modifier = Modifier
-
-                    .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-
-                    .background(color = whiteColor)
-                    .clickable {
-                        // response="called"
-                        viewModal.insertCartItem(
-                            data.ProductId ?: "",
-                            data.productImage1 ?: "",
-                            data.price?.toInt() ?: 0,
-                            data.productName ?: "",
-                            data.orignalprice ?: ""
-                        )
-                        viewModal.getCartItem()
-                        Toast
-                            .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
-                            .show()
-
-                        Utils.vibrator(context)
-
-                    },
-
-
-                ) {
-                Text13_700(text = "ADD", availColor, modifier = Modifier
-                    .padding(vertical = 5.dp, horizontal = 10.dp)
-                    .align(Alignment.CenterVertically))
-            }
-
-
-
 
         }
     }
+
+
 }
 
 @Composable
@@ -517,8 +549,8 @@ fun ItemEachRow(
 private fun Header(
     scroll: ScrollState,
     headerHeightPx: Float,
-   
-) {
+
+    ) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .height(headerHeight)
@@ -555,20 +587,25 @@ private fun Body(
     viewModal: HomeAllProductsViewModal,
     context: Context
 ) {
-    when (viewModal.responseLiveData.value){
+    when (viewModal.responseLiveData.value) {
         "asc" -> {
             Log.d("sjsjjsj", viewModal.listState.value.list?.get(0)!!.productName!!)
             viewModal.listState.value.list?.sortedWith(comparator = productnamecompare)
-            Log.d("sjsjjsj", viewModal.listState.value!!.list?.get(0)!!.productName!!)}
+            Log.d("sjsjjsj", viewModal.listState.value!!.list?.get(0)!!.productName!!)
+        }
 
         "dsc" -> {
-            viewModal.listState.value.list?.sortedByDescending { it?.productName ?.lowercase()}
+            viewModal.listState.value.list?.sortedByDescending { it?.productName?.lowercase() }
         }
-        "high" -> { viewModal.listState.value.list?.sortedBy { it.price?.toInt() }}
-        "low" -> {viewModal.listState.value.list?.sortedByDescending { it?.price?.toInt() }}
+        "high" -> {
+            viewModal.listState.value.list?.sortedBy { it.price?.toInt() }
+        }
+        "low" -> {
+            viewModal.listState.value.list?.sortedByDescending { it?.price?.toInt() }
+        }
 
     }
-       Column(
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
                .verticalScroll(scroll)
@@ -576,10 +613,20 @@ private fun Body(
     ) {
 
         Spacer(Modifier.height(headerHeight))
-                repeat(viewModal.listState.value.list?.sortedWith(comparator = productnamecompare)?.size?:0) {
-                    SubItems(viewModal.listState.value.list?.get(it)!!,viewModal,context){
-                    }
+        val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2)
+        FlowRow(
+            mainAxisSize = SizeMode.Expand,
+            mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
+        ){
+            for(i in 0 until viewModal.listState.value.list!!.size){
+                SubItems(viewModal.listState.value.list!![i], viewModal, context,itemSize){
+
+                }
+            }
+
         }
+
+
         Spacer(modifier = Modifier.height(70.dp))
 
     }
@@ -627,7 +674,8 @@ private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx:
 }
 
 @Composable
-private fun Title(str:String,
+private fun Title(
+    str: String,
     scroll: ScrollState,
     headerHeightPx: Float,
     toolbarHeightPx: Float
@@ -699,6 +747,7 @@ private fun Title(str:String,
             }
     )
 }
+
 private val productnamecompare = Comparator<HomeAllProductsResponse.HomeResponse> { left, right ->
     left.productName?.lowercase()!!.compareTo(right.productName?.lowercase()!!)
 }

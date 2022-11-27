@@ -7,6 +7,7 @@ sealed class DashBoardNavRoute( var screen_route:String=""){
     object SearchProductItems : DashBoardNavRoute("Search")
 
 
+    object DashBoardCategoryWisePagination: DashBoardNavRoute("DashBoardCategoryWisePagination")
     object Profile: DashBoardNavRoute("Account")
     object AddressScreen : DashBoardNavRoute("AddressScreen")
     object AllOrderHistory : DashBoardNavRoute("AllOrderHistory")

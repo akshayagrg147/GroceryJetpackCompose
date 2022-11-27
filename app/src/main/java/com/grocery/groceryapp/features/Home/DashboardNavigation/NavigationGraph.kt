@@ -17,6 +17,7 @@ import com.grocery.groceryapp.features.Spash.ProfileScreenNavigation
 import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 import com.grocery.groceryapp.features.Spash.ui.screens.menuitems
 import com.grocery.groceryapp.data.modal.PassingAddress
+import com.grocery.groceryapp.features.Spash.CategoryWiseDashboardAllData
 
 
 @OptIn(ExperimentalPagerApi::class)
@@ -32,6 +33,10 @@ fun NavigationGraph(
         composable(DashBoardNavRoute.Home.screen_route) {
             homescreen(navController,sharedPreferences)
         }
+        composable(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route) {
+            CategoryWiseDashboardAllData(context,navController)
+        }
+
         composable(DashBoardNavRoute.SearchProductItems.screen_route) {
             SearchScreenProducts(navController, context)
         }

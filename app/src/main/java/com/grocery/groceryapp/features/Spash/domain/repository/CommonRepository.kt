@@ -33,6 +33,10 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.getBestSellingProducts()
     }
+    fun callingDasboardProducts(
+    ) = toResultFlow {
+        apiService.categorywise_collectionProducts()
+    }
     fun getUserResponse( mobileNumber:String) = toResultFlow { apiService.getuserdetails(RegisterLoginRequest(null,null,mobileNumber)) }
     fun callPendingProductById(productIdIdModal: ProductIdIdModal
     ) = toResultFlow {

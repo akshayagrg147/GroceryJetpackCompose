@@ -7,6 +7,7 @@ import com.grocery.groceryapp.RoomDatabase.AppDatabase
 import com.grocery.groceryapp.Utils.Constants
 import com.grocery.groceryapp.data.network.ApiService
 import com.grocery.groceryapp.RoomDatabase.Dao
+import com.grocery.groceryapp.data.network.CallingCategoryWiseData
 import com.grocery.groceryapp.data.network.OAuthInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -49,6 +50,9 @@ object NetworkModule {
         fun provideChannelDao(appDatabase: AppDatabase): Dao {
             return appDatabase.channelDao()
         }
+    @Provides
+    @Singleton
+    fun provideCallingCategoryWiseData(): CallingCategoryWiseData =CallingCategoryWiseData()
 
 
     @Provides

@@ -2,12 +2,13 @@ package com.grocery.groceryapp.Utils
 
 class Constants {
     companion object{
-     const val AppUrl = "   https://9bf7-49-249-44-114.in.ngrok.io/"
+     const val AppUrl = "https://e124-103-129-0-91.in.ngrok.io/"
      const val ApiEnd_register ="Customers/register"
        const val NETWORK_PAGE_SIZE = 50
         const val HomeAllProducts ="Customers/HomeAllProducts"
         const val SearchAllProductsSearch ="Customers/SearchAllProducts"
         const val BestSelling_collectionProducts ="Customers/BestSelling"
+        const val categorywise_collectionProducts ="Customers/HomeCategoryWiseProducts"
         const val GetPendingProductById="Customers/GetPendingProductById"
         const val GetExclusiveProductById="Customers/GetExclusiveProductById"
         const val GetBestProductById="Customers/GetBestProductById"

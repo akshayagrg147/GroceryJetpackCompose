@@ -3,12 +3,10 @@ package com.grocery.groceryapp.features.Spash
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -28,16 +26,20 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.*
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.Utils
+import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
+import com.grocery.groceryapp.features.Home.ui.ShimmerAnimation
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductByIdViewModal
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor as bodyTextColor1
 
 @Composable
@@ -72,11 +74,118 @@ fun ItemScreenNavigation(
     }
 
 
+
+
+
+}
+@Composable
+fun RelatedSearchItem(
+    data: HomeAllProductsResponse.HomeResponse,
+    context: Context,
+    navcontroller: NavHostController,
+    viewModal: ProductByIdViewModal
+) {
+
+    Card(
+        elevation = 4.dp,
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier
+            .padding(horizontal = 4.dp)
+
+            .width(150.dp)
+            .clickable {
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+            }
+
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 5.dp, vertical = 15.dp)
+        ) {
+
+            val offpercentage: String = (DecimalFormat("#.##").format(
+                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.orignalprice?.toFloat()
+                    ?: 0.0f)) * 100
+            )).toString()
+            Text(
+                text = "${offpercentage}% off", color = titleColor,
+                modifier = Modifier.align(
+                    Alignment.End
+                ),
+                fontSize = 10.sp,
+            )
+
+            Image(
+
+                painter = rememberImagePainter(data.productImage1),
+                contentDescription = "splash image",
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(70.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
+
+
+            )
+
+            Text20_700(
+                text = data.productName!!, color = headingColor,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Text12Sp_600(
+                text = "${data.quantity} pcs,Price", color = availColor,
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                modifier = Modifier.padding(start = 10.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+
+                Text12Sp_600(
+                    text = "₹ ${data.price}",
+                    color = headingColor,
+                    //  modifier= Modifier.weight(0.5F)
+                )
+                Text(
+                    text = "₹${data.orignalprice ?: "0.00"}",
+                    fontSize = 11.sp,
+                    color = com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor,
+                    modifier = Modifier.padding(start = 5.dp),
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
+                Card(
+                    border = BorderStroke(1.dp, titleColor),
+                    modifier = Modifier
+
+                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                        .padding(start = 20.dp)
+
+                        .background(color = whiteColor)
+                     ,
+
+                    ) {
+                    Text13_700(
+                        text = "ADD",
+                        availColor,
+                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                    )
+                }
+
+
+            }
+
+        }
+    }
 }
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ItemDetailsScreen(
     value: ProductByIdResponseModal,
@@ -88,7 +197,12 @@ fun ItemDetailsScreen(
 
     val pager = rememberPagerState()
     viewModal.getItemBaseOnProductId(value)
+    viewModal.calllingRelatedSearch()
     cartcount.value = viewModal.productIdCount.value
+    val tabList = listOf(  "Description",
+        "Reviews")
+    val pagerState: PagerState = rememberPagerState(initialPage = 0)
+    val coroutineScope = rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (l1, l2) = createRefs()
@@ -99,7 +213,7 @@ fun ItemDetailsScreen(
 
                 }
             ) {
-                Column(
+                LazyColumn(
                     //  verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxSize()
@@ -108,7 +222,7 @@ fun ItemDetailsScreen(
                     // .verticalScroll(state = scrollState)
 
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
+                    item {  Column(modifier = Modifier.fillMaxWidth()) {
                         Card(
                             elevation = 1.dp,
                             shape = RoundedCornerShape(20.dp),
@@ -245,25 +359,109 @@ fun ItemDetailsScreen(
 
                         }
                         Spacer(modifier = Modifier.height(10.dp))
-                        TabLayout(value)
-                        Spacer(modifier = Modifier.height(45.dp))
 
 
+                    //    TabLayout(value)
+
+
+
+                    } }
+
+                    stickyHeader {
+                        TabRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            backgroundColor = Color.White,
+                            contentColor = Color.Black,
+                            selectedTabIndex = pagerState.currentPage,
+                            // Override the indicator, using the provided pagerTabIndicatorOffset modifier
+                            indicator = { tabPositions ->
+                                TabRowDefaults.Indicator(
+                                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                                )
+                            }
+                        ) {
+                            tabList.forEachIndexed { index, title ->
+                                Tab(
+                                    text = { Text(title) },
+                                    selected = pagerState.currentPage == index,
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
+                                    },
+                                )
+                            }
+                        }
                     }
+
+                    item {
+                        HorizontalPager(
+                            state = pagerState,
+                            count = tabList.size
+                        ) { page: Int ->
+                            when (page) {
+                                0 -> TabContentScreen(data = value.homeproducts?.ProductDescription ?: "null")
+                                1 ->ReviewsCollection(value)
+                            }
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp), Arrangement.SpaceBetween
+                        ) {
+                            Text16_700(
+                                text = "Related Search", color = Color.Black,
+                                modifier = Modifier
+                                    .padding(start = 10.dp),
+                            )
+
+                        }
+                        LazyRow(
+                            modifier = Modifier
+                                .padding(top = 15.dp)
+                                .fillMaxWidth()
+                            // .height(260.dp)
+                        ) {
+                            var relatedresponse = viewModal.relatedsearch1
+
+                            if (relatedresponse.value.statusCode == 200) {
+                                val list1 = relatedresponse.value.list
+                                items(list1!!) { data ->
+                                    RelatedSearchItem(data, context!!, navController, viewModal)
+                                }
+
+
+                            } else {
+                                repeat(5) {
+                                    item {
+                                        ShimmerAnimation()
+
+                                    }
+                                }
+                            }
+
+                        }
+                        Spacer(modifier = Modifier.height(45.dp))
+                    }
+                }
+
                 }
 
 
             }
 
 
-        }
+
         cardviewAddtoCart(
             viewModal, navController,
             context,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
-
     }
+
+
 
 
 }
@@ -379,110 +577,12 @@ fun Banner(
 
 }
 
-// on below line we are creating a
-// composable function for our tab layout
-@OptIn(ExperimentalUnitApi::class)
-@ExperimentalPagerApi
-@Composable
-fun TabLayout(value: ProductByIdResponseModal) {
-
-    // on below line we are creating variable for pager state.
-    val pagerState = rememberPagerState()
-
-    // on below line we are creating a column for our widgets.
-    Column(
-        // for column we are specifying modifier on below line.
-        modifier = Modifier.background(Color.White)
-    ) {
-        Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState, value)
-    }
-}
-
-// on below line we are
-// creating a function for tabs
-@ExperimentalPagerApi
-@Composable
-fun Tabs(pagerState: PagerState) {
-    // in this function we are creating a list
-    // in this list we are specifying data as
-    // name of the tab and the icon for it.
 
 
-    val list = listOf(
-        "Description",
-        "Reviews"
-    )
-
-    val scope = rememberCoroutineScope()
-    TabRow(
-        selectedTabIndex = pagerState.currentPage,
-        backgroundColor = Color.White,
-        contentColor = Color.Black,
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
-                height = 2.dp,
-                color = Color.Black
-            )
-        }
-    ) {
-        list.forEachIndexed { index, _ ->
-            Tab(
-//                icon = {
-//                    Icon(imageVector = list[index].second, contentDescription = null)
-//                }
-
-                text = {
-                    Text(
-                        list[index],
-                        color = if (pagerState.currentPage == index) Color.Black else Color.DarkGray,
-                        fontSize = 11.sp
-                    )
-                },
-                selected = pagerState.currentPage == index,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                }
-            )
-        }
-    }
-}
-
-@ExperimentalPagerApi
-@Composable
-fun TabsContent(pagerState: PagerState, value: ProductByIdResponseModal) {
-    // on below line we are creating
-    // horizontal pager for our tab layout.
-    HorizontalPager(state = pagerState, count = 2) {
-        // on below line we are specifying
-        // the different pages.
-            page ->
-        when (page) {
-            // on below line we are calling tab content screen
-            // and specifying data as Home Screen.
-            0 -> TabContentScreen(data = value.homeproducts?.ProductDescription ?: "null")
-            // on below line we are calling tab content screen
-            // and specifying data as Shopping Screen.
-
-            1 -> ReviewsCollection(value)
-//            // on below line we are calling tab content screen
-//            // and specifying data as Settings Screen.
-//            2 -> TabContentScreen(data = value.homeproducts?.productName ?: "null")
-        }
-    }
-}
-
-// on below line we are creating a Tab Content
-// Screen for displaying a simple text message.
 @Composable
 fun TabContentScreen(data: String) {
-    // on below line we are creating a column
     Column(
-        // in this column we are specifying modifier
-        // and aligning it center of the screen on below lines.
+
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -495,8 +595,8 @@ fun TabContentScreen(data: String) {
 @Composable
 fun ReviewsCollection(value: ProductByIdResponseModal) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.height(120.dp)
+
     ) {
         items(value.homeproducts?.rating!!) { data ->
             // Column(modifier = Modifier.padding(10.dp)) {
@@ -530,4 +630,6 @@ fun ReviewsCollection(value: ProductByIdResponseModal) {
     }
 
 }
+
+
 

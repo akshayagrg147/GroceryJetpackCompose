@@ -66,6 +66,8 @@ interface ApiService {
     suspend fun CreateOrderId(@Body registerLoginRequest: OrderIdCreateRequest):Response<OrderIdResponse>
     @POST(Constants.AllOrders)
     suspend fun AllOrders():Response<AllOrdersHistoryList>
+    @POST(Constants.GetRelatedSearch)
+    suspend fun GetRelatedSearch(@Body obj:RelatedSearchRequest):Response<HomeAllProductsResponse>
 
 
 

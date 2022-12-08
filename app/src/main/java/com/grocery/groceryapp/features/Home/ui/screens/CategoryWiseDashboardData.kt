@@ -113,7 +113,7 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, call:(HomeAllProd
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 4.dp, vertical = 4.dp)
 
             .width(150.dp)
             .clickable {

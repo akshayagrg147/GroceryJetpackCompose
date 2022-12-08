@@ -31,17 +31,17 @@ fun Text14_400(text: String, color: Color = bodyTextColor, modifier: Modifier = 
 
 @Composable
 fun Text24_700(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 16.sp)
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp)
 }
 
 @Composable
 fun Text20_700(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,fontSize = 14.sp)
+    Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,fontSize = 12.sp)
 }
 
 @Composable
 fun Text16_700(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 14.sp)
+    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 13.sp)
 }
 @Composable
 fun Text13_700(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {

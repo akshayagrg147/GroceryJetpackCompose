@@ -326,15 +326,20 @@ fun homescreen(
 
 
                     val ls: MutableList<MainProducts> = ArrayList()
-                    ls.add(MainProducts("vegetables", R.drawable.nonveg, Purple700, null))
+                    ls.add(MainProducts("vegetables", R.drawable.vegetable, borderColor, null))
                     ls.add(MainProducts("diary", R.drawable.diary, borderColor, null))
-                    ls.add(MainProducts("grocery", R.drawable.grocery, disableColor, null))
-                    ls.add(MainProducts("Oils", R.drawable.bell_peeper, darkFadedColor, null))
-                    ls.add(MainProducts("Oils", R.drawable.ginger, darkFadedColor, null))
+                    ls.add(MainProducts("drink", R.drawable.cold_drink, disableColor, null))
+                    ls.add(MainProducts("personal care", R.drawable.personal_care, borderColor, null))
+                    ls.add(MainProducts("Pet Care", R.drawable.pet_care, lightBlueColor, null))
+                    ls.add(MainProducts("cleaning essentials", R.drawable.cleaning, borderColor, null))
+                    ls.add(MainProducts("Baby care", R.drawable.ginger, lightBlueColor, null))
+                    ls.add(MainProducts("Sauces", R.drawable.saucesspreads, darkFadedColor, null))
+
                     val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 4)
                     FlowRow(
                         mainAxisSize = SizeMode.Expand,
                         mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
+
                     ) {
                         for (i in 0 until ls.size) {
                             GroceriesItems(
@@ -428,8 +433,8 @@ fun homescreen(
 
                                 }
 
-                                Spacer(modifier = Modifier.height(10.dp))
-                                val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2)
+                                Spacer(modifier = Modifier.height(5.dp))
+                                val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2.1f)
                                 FlowRow(
                                     mainAxisSize = SizeMode.Expand,
                                     mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
@@ -446,6 +451,7 @@ fun homescreen(
                                     }
 
                                 }
+                                Spacer(modifier = Modifier.height(20.dp))
                             }
 
 
@@ -648,9 +654,9 @@ fun AllItems(
 
     Card(
         elevation = 4.dp,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(10.dp),
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+            .padding(start = 1.dp, end = 1.dp, bottom = 1.dp)
             .size(itemSize)
             .clickable {
 //                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
@@ -891,11 +897,11 @@ fun GroceriesItems(
 
     Card(
         elevation = 4.dp,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(10.dp),
 
-        backgroundColor = whiteColor, modifier = Modifier
+        backgroundColor = color, modifier = Modifier
             .size(itemSize)
-            .padding(10.dp)
+            .padding(5.dp)
             .clickable {
                 navController.navigate(DashBoardNavRoute.MenuItems.senddata(item))
 
@@ -904,11 +910,12 @@ fun GroceriesItems(
 
     ) {
         Column(
-
+            modifier = Modifier
+                .padding(10.dp)
         ) {
 
             Text12Sp_600(
-                text = item, color = blackColor,
+                text = item, color = whiteColor,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
 
@@ -918,7 +925,7 @@ fun GroceriesItems(
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(200.dp)
-                    .height(100.dp)
+                    .height(100.dp).padding(top=2.dp)
             )
 
 

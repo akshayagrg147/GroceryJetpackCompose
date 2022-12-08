@@ -1,5 +1,6 @@
 package com.grocery.groceryapp.features.Home.ui.viewmodal
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,9 @@ class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,
 
     private val live:MutableState<ProductByIdResponseModal> = mutableStateOf(ProductByIdResponseModal(null,null,null))
     val responseLiveData:MutableState<ProductByIdResponseModal> =live
+
+    private val relatedsearch:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
+    val relatedsearch1:MutableState<HomeAllProductsResponse> =relatedsearch
 
 var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = null, message = "", statusCode = 101)
     private val updatecount:MutableState<FetchCart> =mutableStateOf(FetchCart())
@@ -151,6 +155,27 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
         }
 
     }
+    fun calllingRelatedSearch()=viewModelScope.launch {
+        repository.GetRelatedSearch(RelatedSearchRequest(Price = "50", category = "grocery")).collectLatest {
+            when(it){
+                is ApiState.Success->{
+                    relatedsearch.value=it.data
+
+                }
+                is ApiState.Failure->{
+                    Log.d("responsemessage",it.msg.toString())
+                    relatedsearch.value= HomeAllProductsResponse(null,it.msg.message,401)
+
+                }
+                is ApiState.Loading->{
+
+                }
+
+            }
+        }
+
+    }
+
 
 
 

@@ -178,21 +178,65 @@ fun menuitems(
 
     val ls: MutableList<MainProducts> = ArrayList()
     if (passingvalue.equals("vegetables")) {
-        ls.add(MainProducts("vegetable", R.drawable.fruitbasket, Purple700, "1001"))
-        ls.add(MainProducts("Fruits", R.drawable.snacks, borderColor, "1002"))
-        ls.add(MainProducts("Exotics", R.drawable.nonveg, disableColor, "1003"))
-        ls.add(MainProducts("Orgain", R.drawable.oils, darkFadedColor, "1004"))
-        ls.add(MainProducts("Recepies", R.drawable.oils, darkFadedColor, "1005"))
-        ls.add(MainProducts("Flowers", R.drawable.oils, darkFadedColor, "1006"))
+        ls.add(MainProducts("vegetable", R.drawable.vegetable, Purple700, "10"))
+        ls.add(MainProducts("Fruits", R.drawable.fruitbasket, borderColor, "30"))
+
+        ls.add(MainProducts("garbage", R.drawable.garbage, darkFadedColor, "70"))
+        ls.add(MainProducts("electrical", R.drawable.electrical, darkFadedColor, "90"))
+        ls.add(MainProducts("pipes", R.drawable.oils, darkFadedColor, "110"))
     } else if (passingvalue.equals("diary")) {
-        ls.add(MainProducts("Milk", R.drawable.fruitbasket, Purple700, "2001"))
-        ls.add(MainProducts("Breads", R.drawable.snacks, borderColor, "2002"))
-        ls.add(MainProducts("Eggs", R.drawable.nonveg, disableColor, "2003"))
-        ls.add(MainProducts("Poha", R.drawable.oils, darkFadedColor, "2004"))
-        ls.add(MainProducts("Panner", R.drawable.oils, darkFadedColor, "2005"))
-        ls.add(MainProducts("Curd", R.drawable.oils, darkFadedColor, "2006"))
-    } else {
-        ls.add(MainProducts("Drinks", R.drawable.fruitbasket, Purple700, "3001"))
+        ls.add(MainProducts("milk", R.drawable.milk, disableColor, "50"))
+        ls.add(MainProducts("Breads", R.drawable.bread, borderColor, "650"))
+        ls.add(MainProducts("Eggs", R.drawable.eggs, disableColor, "670"))
+        ls.add(MainProducts("Poha", R.drawable.poha, darkFadedColor, "690"))
+        ls.add(MainProducts("Panner", R.drawable.panner, darkFadedColor, "710"))
+        ls.add(MainProducts("Curd", R.drawable.curd, darkFadedColor, "730"))
+    }
+    else if (passingvalue.equals("drink")) {
+        ls.add(MainProducts("cold drink", R.drawable.cold_drink, Purple700, "130"))
+        ls.add(MainProducts("juices", R.drawable.juices, borderColor, "150"))
+        ls.add(MainProducts("wine", R.drawable.wine, disableColor, "170"))
+        ls.add(MainProducts("water", R.drawable.water, disableColor, "190"))
+
+    }
+
+
+    else if (passingvalue.equals("personal care")) {
+        ls.add(MainProducts("Body Mosturizers", R.drawable.body_mosture, Purple700, "210"))
+        ls.add(MainProducts("Soaps", R.drawable.soaps, borderColor, "230"))
+        ls.add(MainProducts("oral care", R.drawable.oral_care, disableColor, "250"))
+        ls.add(MainProducts("facial care", R.drawable.facial_care, darkFadedColor, "270"))
+        ls.add(MainProducts("handwash", R.drawable.hand_wash, darkFadedColor, "290"))
+        ls.add(MainProducts("cosmetics", R.drawable.cosmetic, darkFadedColor, "310"))
+    }
+    else if (passingvalue.equals("cleaning essentials")) {
+        ls.add(MainProducts("Detrgent", R.drawable.tide, Purple700, "330"))
+        ls.add(MainProducts("Floor Cleaner", R.drawable.floor_cleaner, borderColor, "350"))
+        ls.add(MainProducts("Toilet Cleaner", R.drawable.toilet_cleaner, disableColor, "370"))
+        ls.add(MainProducts("Cleaning Tools", R.drawable.cleaning_tools, darkFadedColor, "390"))
+        ls.add(MainProducts("shoe Polish", R.drawable.shoe_polish, darkFadedColor, "410"))
+
+    }
+    else if (passingvalue.equals("Pet care")) {
+        ls.add(MainProducts("Dog food", R.drawable.dog_food, Purple700, "430"))
+        ls.add(MainProducts("cat food", R.drawable.cat_food, borderColor, "450"))
+        ls.add(MainProducts("Pet Grooming", R.drawable.pet_grooming, disableColor, "470"))
+
+
+    }
+    else if (passingvalue.equals("Baby care")) {
+        ls.add(MainProducts("Diapers", R.drawable.diaper, Purple700, "530"))
+        ls.add(MainProducts("Baby Food", R.drawable.baby_food, borderColor, "550"))
+        ls.add(MainProducts("Baby Skin Care", R.drawable.baby_care, disableColor, "570"))
+        ls.add(MainProducts("Baby gift set", R.drawable.baby_gift, darkFadedColor, "590"))
+        ls.add(MainProducts("toys", R.drawable.toys, darkFadedColor, "610"))
+
+    }
+
+
+    else {
+        //random data
+        ls.add(MainProducts("Drinks", R.drawable.fruitbasket, Purple700, "101"))
         ls.add(MainProducts("Juics", R.drawable.snacks, borderColor, "3002"))
         ls.add(MainProducts("Coldpress", R.drawable.nonveg, disableColor, "3003"))
         ls.add(MainProducts("Drinks", R.drawable.oils, darkFadedColor, "3004"))
@@ -346,13 +390,12 @@ fun ItemEachRow(
     call: (item: String, selectedvalue: Int) -> Unit
 ) {
     Card(elevation = 1.dp,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, Color.Black),
         backgroundColor = if (selectedIndex.value == item.productId?.toInt()) Color.LightGray else Color.White,
         modifier = Modifier
 
-            .width(120.dp)
-            .height(120.dp)
+
 
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
             .padding(5.dp)
@@ -361,7 +404,7 @@ fun ItemEachRow(
                 call(item.productId ?: "", item.productId?.toInt()!!)
             }) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(10.dp),
             verticalArrangement = Arrangement.Center
 
 

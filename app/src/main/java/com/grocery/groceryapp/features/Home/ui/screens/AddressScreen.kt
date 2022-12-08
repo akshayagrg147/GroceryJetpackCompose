@@ -80,7 +80,7 @@ val context= LocalContext.current.getActivity()
                 ) {
                     Column() {
                         val state = remember {
-                            mutableStateOf(false)
+                            mutableStateOf(true)
                         }
                         CommonTextField(
                             text = name,
@@ -103,7 +103,7 @@ val context= LocalContext.current.getActivity()
                 ) {
                     Column() {
                         val state = remember {
-                            mutableStateOf(false)
+                            mutableStateOf(true)
                         }
                         CommonNumberField(
                             text = phonenumber,
@@ -125,7 +125,7 @@ val context= LocalContext.current.getActivity()
                 ) {
                     Column() {
                         val state = remember {
-                            mutableStateOf(false)
+                            mutableStateOf(true)
                         }
                         CommonNumberField(
                             text = pincode,
@@ -149,7 +149,7 @@ val context= LocalContext.current.getActivity()
                 ) {
                     Column() {
                         val state = remember {
-                            mutableStateOf(false)
+                            mutableStateOf(true)
                         }
 
 
@@ -173,7 +173,7 @@ val context= LocalContext.current.getActivity()
                 ) {
                     Column() {
                         val state = remember {
-                            mutableStateOf(false)
+                            mutableStateOf(true)
                         }
                         CommonTextField(
                             text = address2,
@@ -196,7 +196,7 @@ val context= LocalContext.current.getActivity()
                 ) {
                     Column() {
                         val state = remember {
-                            mutableStateOf(false)
+                            mutableStateOf(true)
                         }
                         CommonTextField(
                             text = landmark,

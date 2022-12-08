@@ -1,5 +1,7 @@
 package com.grocery.groceryapp
 
+import android.util.Log
+import com.google.gson.Gson
 import com.grocery.groceryapp.common.ApiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +20,7 @@ fun <T> toResultFlow(call: suspend () -> Response<T>): Flow<ApiState<T>> = flow 
 
         if (response.isSuccessful) {
             response.body()?.let {
+
                 emit(ApiState.Success(it))
             }
         } else {

@@ -26,13 +26,11 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.getHomeAllProductsSearch(ss)
     }
-    fun ExclusiveProducts(
-    ) = toResultFlow {
-        apiService.getExclusiveProducts()
+    fun ExclusiveProducts(city: String) = toResultFlow {
+        apiService.getExclusiveProducts(city)
     }
-    fun BestSellingProducts(
-    ) = toResultFlow {
-        apiService.getBestSellingProducts()
+    fun BestSellingProducts(city: String) = toResultFlow {
+        apiService.getBestSellingProducts(city)
     }
     fun callingDasboardProducts(
     ) = toResultFlow {

@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class TodoRepository
+class RoomRepository
 @Inject
 constructor(private val dao: Dao) {
 

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
-import com.grocery.groceryapp.RoomDatabase.TodoRepository
+import com.grocery.groceryapp.RoomDatabase.RoomRepository
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.*
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: CommonRepository,val repo:TodoRepository) :
+class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: CommonRepository,val repo:RoomRepository) :
     ViewModel() {
 
 init {

@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
+import com.grocery.groceryapp.RoomDatabase.RoomRepository
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.Constants.Companion.NETWORK_PAGE_SIZE
 import com.grocery.groceryapp.common.ApiState
@@ -32,12 +33,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeAllProductsViewModal @Inject constructor(
-    private val pagingDataSource: PaginSoucrce, val repository: CommonRepository, val
-    sharedPreferences: sharedpreferenceCommon, val dao: Dao, @ApplicationContext context: Context,val cat:CallingCategoryWiseData
+    private val pagingDataSource: PaginSoucrce,val roomrespo: RoomRepository,
+    val repository: CommonRepository, val
+    sharedPreferences: sharedpreferenceCommon, val dao: Dao, @ApplicationContext context: Context, val cat:CallingCategoryWiseData
 ) : ViewModel() {
     init {
-       callingBestSelling()
-        callingExcusiveProducts()
+       callingBestSelling(sharedPreferences.getCity())
+        callingExcusiveProducts(sharedPreferences.getCity())
     }
 
     var passingdata: MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
@@ -73,7 +75,7 @@ class HomeAllProductsViewModal @Inject constructor(
     )
     val listState:State<HomeAllProductsResponse> =listMutable
 
-
+var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
 
 
     val repo = getitemcount11
@@ -88,6 +90,7 @@ class HomeAllProductsViewModal @Inject constructor(
 
 
     fun setList(response: @RawValue HomeAllProductsResponse){
+
         listMutable.value=response
 
     }
@@ -127,13 +130,14 @@ fun getCartItem(){
 
         var totalcount1: Int = 0
         var totalPrice1: Int = 0
+
         withContext(Dispatchers.IO) {
-            totalcount1 = dao.getTotalProductItems()?.first()?:0
+
             totalPrice1 = dao.getTotalProductItemsPrice()?.first()?:0
-            Log.d("sjsjjsj",totalcount1.toString())
+            totalcount1 = dao.getTotalProductItems()?.first()?:0
         }
 
-        Log.d("sjsjjsj",totalcount1.toString())
+
         totalprice.value = totalPrice1
         totalcount.value = totalcount1
 
@@ -143,8 +147,8 @@ fun getCartItem(){
 
 
 
-    fun callingExcusiveProducts() = viewModelScope.launch {
-        repository.ExclusiveProducts().collectLatest {
+    fun callingExcusiveProducts(city: String) = viewModelScope.launch {
+        repository.ExclusiveProducts(city).collectLatest {
             when (it) {
                 is ApiState.Success -> {
                     exclusiveProductsResponse.value = it.data
@@ -167,7 +171,9 @@ fun getCartItem(){
         productname: String,
         actualprice: String
     ) = viewModelScope.launch(Dispatchers.IO) {
+       // roomrespo.insert()
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first()?:0
+
         if (intger == 0) {
             dao
                 .insertCartItem(
@@ -183,6 +189,7 @@ fun getCartItem(){
             dao.updateCartItem(intger + 1, productIdNumber)
 
         }
+        Log.d("printvalue",(intger+1).toString())
 
 
     }
@@ -206,8 +213,8 @@ fun getCartItem(){
 
     }
 
-    fun callingBestSelling() = viewModelScope.launch {
-        repository.BestSellingProducts().collectLatest {
+    fun callingBestSelling(city: String) = viewModelScope.launch {
+        repository.BestSellingProducts(city).collectLatest {
             when (it) {
                 is ApiState.Success -> {
                     bestsellingProductsResponse.value = it.data
@@ -238,6 +245,13 @@ fun getCartItem(){
                 }
             }
         }
+    }
+
+    fun setFilterList(filterlist: List<HomeAllProductsResponse.HomeResponse>?) {
+      this.filterlist=filterlist
+    }
+    fun getfilterlist(): List<HomeAllProductsResponse.HomeResponse>?{
+        return filterlist
     }
 
     val allresponse: Flow<PagingData<HomeAllProductsResponse.HomeResponse>> =

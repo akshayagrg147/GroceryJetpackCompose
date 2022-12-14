@@ -6,21 +6,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.NavigationGraph
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.showMsg
 import com.grocery.groceryapp.connectionState.ConnectionState
 import com.grocery.groceryapp.connectionState.currentConnectivityState
 import com.grocery.groceryapp.connectionState.observeConnectivityAsFlow
+import com.grocery.groceryapp.connectionState.ui.onlineconnection
 import com.grocery.groceryapp.features.Home.ui.ui.theme.GroceryAppTheme
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,11 +31,14 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity() : ComponentActivity() {
+
     private val viewModal: HomeAllProductsViewModal by viewModels()
+
     @Inject
-    lateinit var sharedpreferenceCommon:sharedpreferenceCommon
-     @OptIn(ExperimentalCoroutinesApi::class)
-     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+    lateinit var sharedpreferenceCommon: sharedpreferenceCommon
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -42,10 +47,14 @@ class HomeActivity() : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                //    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
+                    //    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
                 ) {
                     ConnectivityStatus()
-                    NavigationGraph(navController = navController,this@HomeActivity,sharedpreferenceCommon)
+                    NavigationGraph(
+                        navController = navController,
+                        this@HomeActivity,
+                        sharedpreferenceCommon
+                    )
 
 
                 }
@@ -54,10 +63,7 @@ class HomeActivity() : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting2(name: String) {
-    Text(text = "Hello $name!")
-}
+
 @Composable
 fun connectivityState(): State<ConnectionState> {
     val context = LocalContext.current
@@ -67,17 +73,47 @@ fun connectivityState(): State<ConnectionState> {
     }
 }
 
-@ExperimentalCoroutinesApi
+
 @Composable
 fun ConnectivityStatus() {
+   var internetconnectvity by remember { mutableStateOf(false) }
     val connection by connectivityState()
 
     val isConnected = connection === ConnectionState.Available
 
     if (isConnected) {
-        LocalContext.current.showMsg("connected")
+        internetconnectvity = true
+
+     //   navController.navigate(DashBoardNavRoute.Home.screen_route)
+
     } else {
-        LocalContext.current.showMsg("Disconnected")
+        internetconnectvity = false
+
     }
+    if(!internetconnectvity)
+    CustomDialog(){
+        internetconnectvity=true
+    }
+
+
+    
+
+
+}
+
+@Composable
+fun CustomDialog(call:(Boolean)->Unit) {
+    Dialog(onDismissRequest = {},
+        properties = DialogProperties(dismissOnBackPress = false)
+    ) {
+
+        onlineconnection(){
+              if(it)
+                  call(true)
+            }
+
+
+    }
+    
 }
 

@@ -12,12 +12,16 @@ interface ApiService {
         @Body addUser: RegisterLoginRequest,
     ): Response<RegisterLoginResponse>
 
-//    @POST(Constants.getuserdetails)
+    //    @POST(Constants.getuserdetails)
 //    suspend fun getUserDetails():Response<>
-
+    @FormUrlEncoded
     @POST(Constants.exclusive_collectionProducts)
-    suspend fun getExclusiveProducts(
-    ): Response<HomeAllProductsResponse>
+    suspend fun getExclusiveProducts(@Field("city") city: String): Response<HomeAllProductsResponse>
+
+    @FormUrlEncoded
+    @POST(Constants.BestSelling_collectionProducts)
+    suspend fun getBestSellingProducts(@Field("city") city: String): Response<HomeAllProductsResponse>
+
 
     @GET(Constants.HomeAllProducts)
     suspend fun getHomeAllProducts(
@@ -31,53 +35,57 @@ interface ApiService {
         @Query("query") character: String,
     ): Response<HomeAllProductsResponse>
 
-    @POST(Constants.BestSelling_collectionProducts)
-    suspend fun getBestSellingProducts(
-    ): Response<HomeAllProductsResponse>
 
     @GET(Constants.categorywise_collectionProducts)
     suspend fun categorywise_collectionProducts(
     ): Response<CategoryWiseDashboardResponse>
 
     @POST(Constants.GetPendingProductById)
-    suspend fun GetPendingProductById(@Body productIdIdModal: ProductIdIdModal):Response<ProductByIdResponseModal>
+    suspend fun GetPendingProductById(@Body productIdIdModal: ProductIdIdModal): Response<ProductByIdResponseModal>
 
     @POST(Constants.GetBestProductById)
-    suspend fun getBestProductById(@Body productIdIdModal: ProductIdIdModal):Response<ProductByIdResponseModal>
+    suspend fun getBestProductById(@Body productIdIdModal: ProductIdIdModal): Response<ProductByIdResponseModal>
+
     @POST(Constants.GetExclusiveProductById)
-    suspend fun getExclusiveProductById(@Body productIdIdModal: ProductIdIdModal):Response<ProductByIdResponseModal>
+    suspend fun getExclusiveProductById(@Body productIdIdModal: ProductIdIdModal): Response<ProductByIdResponseModal>
 
     @POST(Constants.ApiEnd_login)
     suspend fun LoginUser(
         @Body addUser: String,
     ): Response<String>
+
     @POST(Constants.getuserdetails)
-    suspend fun getuserdetails(@Body user:RegisterLoginRequest):Response<UserResponse>
+    suspend fun getuserdetails(@Body user: RegisterLoginRequest): Response<UserResponse>
 
     @POST(Constants.gettingjwt)
     suspend fun gettingJwtToken(
     ): Response<String>
 
     @POST(Constants.ItemsCollections)
-    suspend fun getItemsCollections(@Body productIdIdModal: ProductIdIdModal):Response<ItemsCollectionsResponse>
-@POST(Constants.checkMobileNumberExist)
-    suspend fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest):Response<CheckNumberExistResponse>
-    @POST(Constants.CreateOrderId)
-    suspend fun CreateOrderId(@Body registerLoginRequest: OrderIdCreateRequest):Response<OrderIdResponse>
-    @POST(Constants.AllOrders)
-    suspend fun AllOrders():Response<AllOrdersHistoryList>
-    @POST(Constants.GetRelatedSearch)
-    suspend fun GetRelatedSearch(@Body obj:RelatedSearchRequest):Response<HomeAllProductsResponse>
+    suspend fun getItemsCollections(@Body productIdIdModal: ProductIdIdModal): Response<ItemsCollectionsResponse>
 
+    @POST(Constants.checkMobileNumberExist)
+    suspend fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest): Response<CheckNumberExistResponse>
+
+    @POST(Constants.CreateOrderId)
+    suspend fun CreateOrderId(@Body registerLoginRequest: OrderIdCreateRequest): Response<OrderIdResponse>
+
+    @POST(Constants.AllOrders)
+    suspend fun AllOrders(): Response<AllOrdersHistoryList>
+
+    @POST(Constants.GetRelatedSearch)
+    suspend fun GetRelatedSearch(@Body obj: RelatedSearchRequest): Response<HomeAllProductsResponse>
 
 
 }
- class CallingCategoryWiseData{
-     var data=""
-     fun settingData( ss:String){
-         data=ss
-     }
-    fun gettingData():String{
+
+class CallingCategoryWiseData {
+    var data = ""
+    fun settingData(ss: String) {
+        data = ss
+    }
+
+    fun gettingData(): String {
         return data
     }
 }

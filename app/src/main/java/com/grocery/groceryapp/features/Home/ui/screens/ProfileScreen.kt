@@ -55,11 +55,11 @@ fun profileScreen(
 
 
 
-    val size by animateDpAsState(
-       targetValue = viewModal.orderstate.value,
-//        tween(durationMillis = 3000, delayMillis = 200, easing = LinearOutSlowInEasing)
-    spring(Spring.DampingRatioMediumBouncy)
-    )
+//    val size by animateDpAsState(
+//       targetValue = viewModal.orderstate.value,
+////        tween(durationMillis = 3000, delayMillis = 200, easing = LinearOutSlowInEasing)
+//    spring(Spring.DampingRatioMediumBouncy)
+//    )
     Column() {
         Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
             Image(
@@ -67,9 +67,9 @@ fun profileScreen(
 
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(if (size < 80.dp) size else 80.dp)
-                    .height(if (size < 80.dp) size else 80.dp)
-                    .size(64.dp)
+//                    .width(if (size < 80.dp) size else 80.dp)
+//                    .height(if (size < 80.dp) size else 80.dp)
+                  .size(64.dp)
                     .clip(CircleShape)                       // clip to the circle shape
                     .border(1.dp, Color.Gray, CircleShape)
                     .clickable {

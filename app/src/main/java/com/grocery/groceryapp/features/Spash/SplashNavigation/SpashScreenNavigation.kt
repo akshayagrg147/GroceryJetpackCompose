@@ -18,7 +18,7 @@ fun splashScreenNavigation(
 
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = ScreenRoute.SplashScreen.route) {
+    NavHost(navController = navController, startDestination = ScreenRoute.LocateMeScreen.route) {
         composable(ScreenRoute.SplashScreen.route) {
             SplashScreen(navController, context,sharedPreferences)
         }

@@ -82,7 +82,8 @@ fun CategoryWiseDashboardAllData(
                             data.productName ?: "",
                             data.orignalprice ?: ""
                         )
-                        viewModal.getCartItem()
+                        viewModal.getItemCount()
+                        viewModal.getItemPrice()
                         Toast
                             .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
                             .show()

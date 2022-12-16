@@ -84,7 +84,8 @@ fun homescreen(
 
     var requestLocationUpdate by remember { mutableStateOf(true) }
     val pager = rememberPagerState()
-    viewModal.getCartItem()
+    viewModal.getItemCount()
+    viewModal.getItemPrice()
     viewModal.callingDashboardCategoryWiseList()
 
     val scroll: ScrollState = rememberScrollState(0)
@@ -316,10 +317,11 @@ fun BodyDashboard(
                 if (best.statusCode == 200) {
                     val list1 = best.list
                     if (list1?.isNotEmpty() == true)
-                        items(list1!!) { data ->
+                        items(list1) { data ->
                             // Column(modifier = Modifier.padding(10.dp)) {
 
                             BestOffers(navcontroller, data, context!!, viewModal)
+                            avalibiltycheck=true
                             //}
 
 
@@ -794,7 +796,7 @@ fun ExclusiveOffers(
                                 data.productName ?: "",
                                 data.orignalprice ?: ""
                             )
-                            viewModal.getCartItem()
+                        //    viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
                                 .show()
@@ -915,7 +917,7 @@ fun AllItems(
                                 data.productName ?: "",
                                 data.actualPrice ?: ""
                             )
-                            viewModal.getCartItem()
+                        //    viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
                                 .show()
@@ -1035,7 +1037,7 @@ fun BestOffers(
                                 data.productName ?: "",
                                 data.orignalprice ?: ""
                             )
-                            viewModal.getCartItem()
+                       //     viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
                                 .show()

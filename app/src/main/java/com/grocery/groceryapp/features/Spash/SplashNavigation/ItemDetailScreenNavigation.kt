@@ -196,7 +196,7 @@ fun ItemDetailsScreen(
     val cartcount = remember { mutableStateOf(0) }
 
     val pager = rememberPagerState()
-    viewModal.getItemBaseOnProductId(value)
+    viewModal.getItemBaseOnProductId(value.homeproducts?.productId?:"")
     viewModal.calllingRelatedSearch()
     cartcount.value = viewModal.productIdCount.value
     val tabList = listOf(  "Description",
@@ -299,7 +299,8 @@ fun ItemDetailsScreen(
                         ) {
 
 
-                            viewModal.getCartItem()
+                            viewModal.getTotalProductItemsPrice()
+                            viewModal.getTotalProductItems()
 
                             if (cartcount.value > 0)
                                 Row {
@@ -519,11 +520,11 @@ fun cardviewAddtoCart(
                     bottom.linkTo(parent.bottom)
                 }) {
                     Text14_400(
-                        text = "${viewModal.getitemcount.value.totalcount.toString()} items",
+                        text = "${viewModal.totalCountState.value} items",
                         color = Color.White
                     )
                     Text14_400(
-                        text = "₹ ${viewModal.getitemcount.value.totalprice.toString()}",
+                        text = "₹ ${viewModal.totalPriceState.value}",
                         color = Color.White
                     )
 

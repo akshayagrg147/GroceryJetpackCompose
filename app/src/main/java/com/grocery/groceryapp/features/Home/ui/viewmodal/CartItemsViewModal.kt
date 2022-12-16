@@ -81,10 +81,10 @@ init {
     fun deleteCartItems(productIdNumber: String?) = viewModelScope.launch {
         repo.deleteCartItems(productIdNumber)
     }
-     fun getCartItem() = viewModelScope.launch  {
-
-         getTotalProductItemsPrice()
+     fun getCartItem() {
          getTotalProductItems()
+         getTotalProductItemsPrice()
+
 
 
 
@@ -97,7 +97,6 @@ init {
     }
     fun getTotalProductItems()= viewModelScope.launch {
         repo.getTotalProductItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
-
             totalcount.value=it?:0
 
         }
@@ -125,7 +124,7 @@ init {
             )
             repo.insert(data)
         } else if (intger >= 1) {
-            dao.updateCartItem(intger + 1, productIdNumber)
+            repo.updateCartItem(intger + 1, productIdNumber)
 
         }
 

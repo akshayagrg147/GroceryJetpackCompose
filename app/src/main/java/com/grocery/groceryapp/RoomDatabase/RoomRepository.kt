@@ -35,7 +35,7 @@ constructor(private val dao: Dao) {
 
         }
     }
-    fun getTotalProductItems(): Flow<Int?> = dao.getTotalProductItems()!!
+    fun getTotalProductItems(): Flow<Int?> = dao.getTotalProductItems()
     fun getTotalProductItemsPrice(): Flow<Int?> = dao.getTotalProductItemsPrice()
     fun getTotalSavingAmount(): Flow<Int?> = dao.getTotalSavingAmount()!!
     fun getProductBasedIdCount( productIdNumber: String): Flow<Int?> = dao.getProductBasedIdCount(productIdNumber)

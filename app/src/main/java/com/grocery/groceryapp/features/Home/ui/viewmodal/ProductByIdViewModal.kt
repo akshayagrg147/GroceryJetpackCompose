@@ -2,24 +2,27 @@ package com.grocery.groceryapp.features.Home.ui.viewmodal
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
+import com.grocery.groceryapp.RoomDatabase.RoomRepository
 import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.data.modal.*
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,val dao: Dao):ViewModel() {
+class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,val dao: Dao,val repo: RoomRepository):ViewModel() {
 
     private val live:MutableState<ProductByIdResponseModal> = mutableStateOf(ProductByIdResponseModal(null,null,null))
     val responseLiveData:MutableState<ProductByIdResponseModal> =live
@@ -27,9 +30,16 @@ class ProductByIdViewModal @Inject constructor(val repository: CommonRepository,
     private val relatedsearch:MutableState<HomeAllProductsResponse> = mutableStateOf(HomeAllProductsResponse(null,null,null))
     val relatedsearch1:MutableState<HomeAllProductsResponse> =relatedsearch
 
-var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = null, message = "", statusCode = 101)
-    private val updatecount:MutableState<FetchCart> =mutableStateOf(FetchCart())
-    val getitemcount:MutableState<FetchCart> =updatecount
+
+
+
+    private val totalcount: MutableState<Int> =
+        mutableStateOf(0)
+    val totalCountState: State<Int> = totalcount
+
+    private val totalPrice: MutableState<Int> =
+        mutableStateOf(0)
+    val totalPriceState: State<Int> = totalPrice
 
     private val getItemCount:MutableState<Int> =mutableStateOf(0)
     val productIdCount:MutableState<Int> =getItemCount
@@ -42,60 +52,45 @@ var valueCart:ProductByIdResponseModal=ProductByIdResponseModal(homeproducts = n
 
  fun deleteCartItems(value: ProductByIdResponseModal)=viewModelScope.launch(Dispatchers.IO){
 
-     var intger: Int =
-         dao.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
-     intger -= 1
-
-     if (intger >= 1) {
-         dao
-             .updateCartItem(intger, value.homeproducts.productId!!)
-     } else if (intger == 0) {
-         dao
-             .deleteCartItem(value.homeproducts.productId)
-
-     }
-     getItemBaseOnProductId(value)
+     repo.deleteCartItems(value.homeproducts?.productId!!)
+     getItemBaseOnProductId( value.homeproducts.productId)
 }
 
-    fun getItemBaseOnProductId(value: ProductByIdResponseModal)=viewModelScope.launch(Dispatchers.IO){
-        val intger: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
+    fun getItemBaseOnProductId(value: String)=viewModelScope.launch(Dispatchers.IO){
+        val intger: Int = repo.getProductBasedIdCount(value).first()?:0
         getItemCount.value=intger
     }
     fun insertCartItem(value: ProductByIdResponseModal)=viewModelScope.launch (Dispatchers.IO){
-       val intger: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
-        valueCart=value
-       if (intger == 0) {
-           dao
-               .insertCartItem(
-                   CartItems(
-                       value.homeproducts.productId,
-                       value.homeproducts.productImage1,intger + 1,
-                       Integer.parseInt(value.homeproducts.price?:"0"), value.homeproducts.productName!!,value.homeproducts.orignalprice,savingAmount = (value.homeproducts.orignalprice?.toInt()!!-value.homeproducts.price?.toInt()!!).toString())
 
-               )
 
-       } else if (intger >= 1) {
-           dao.updateCartItem(intger + 1,  value.homeproducts.productId)
-           val intger1: Int = dao.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
-       }
-        getItemBaseOnProductId(value)
+        val intger: Int = repo.getProductBasedIdCount(value.homeproducts?.productId!!).first()?:0
+        if (intger == 0) {
+            val data= CartItems(
+                value.homeproducts.productId,
+                value.homeproducts.productImage1, intger + 1,
+                Integer.parseInt(value.homeproducts.price?:"0"), value.homeproducts.productName!!, value.homeproducts.orignalprice, savingAmount = (value.homeproducts.orignalprice?.toInt()!!-value.homeproducts.price?.toInt()!!).toString()
+            )
+            repo.insert(data)
+        } else if (intger >= 1) {
+            repo.updateCartItem(intger + 1, value.homeproducts.productId)
 
+        }
+        getItemBaseOnProductId( value.homeproducts.productId)
 
 
 
     }
-    fun getCartItem()= viewModelScope.launch(Dispatchers.IO){
-        if( dao.getTotalProductItems()!=null){
-            var totalcount: Int =
-                dao.getTotalProductItems()?.first()?:0
-            var totalPrice: Int =
-                dao.getTotalProductItemsPrice()?.first()?:0
+    fun getTotalProductItemsPrice()= viewModelScope.launch {
+        repo.getTotalProductItemsPrice().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
+            totalPrice.value=it?:0
 
-            updatecount.value.totalcount=totalcount
-            updatecount.value.totalprice=totalPrice
         }
+    }
+    fun getTotalProductItems()= viewModelScope.launch {
+        repo.getTotalProductItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
+            totalcount.value=it?:0
 
-
+        }
 
     }
     fun calllingAllProductById()=viewModelScope.launch {

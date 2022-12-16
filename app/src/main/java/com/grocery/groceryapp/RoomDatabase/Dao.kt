@@ -25,13 +25,13 @@ interface Dao {
     fun updateCartItem(count: Int,id:String?)
 
     @Query("SELECT SUM(totalCount) FROM CartItems")
-    fun getTotalProductItems():Flow< Int?>?
+    fun getTotalProductItems():Flow< Int>
 
     @Query("SELECT SUM(SavingAmount * totalCount) FROM CartItems")
     fun getTotalSavingAmount():Flow< Int?>?
 
     @Query("SELECT SUM(productPrice*totalCount) FROM CartItems")
-    fun getTotalProductItemsPrice(): Flow<Int>
+     fun getTotalProductItemsPrice(): Flow<Int>
 
     @Query("DELETE  FROM CartItems WHERE ProductIdNumber = :id" )
     fun deleteCartItem(id:String?)

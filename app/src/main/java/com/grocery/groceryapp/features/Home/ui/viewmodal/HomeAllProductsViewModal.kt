@@ -125,25 +125,7 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
     fun deleteCartItems()=viewModelScope.launch(Dispatchers.IO) {
         dao.deleteAllFromTable()
     }
-fun getCartItem(){
-    viewModelScope.launch() {
 
-        var totalcount1: Int = 0
-        var totalPrice1: Int = 0
-
-        withContext(Dispatchers.IO) {
-
-            totalPrice1 = dao.getTotalProductItemsPrice()?.first()?:0
-            totalcount1 = dao.getTotalProductItems()?.first()?:0
-        }
-
-
-        totalprice.value = totalPrice1
-        totalcount.value = totalcount1
-
-
-    }
-}
 
 
 
@@ -163,6 +145,20 @@ fun getCartItem(){
             }
         }
     }
+    fun getItemCount()=viewModelScope.launch {
+
+        roomrespo.getTotalProductItems().catch { e->  Log.d("dmdndnd", "Exception: ${e.message} ") }.collect{
+            totalcount.value=it?:0
+            Log.d("dmdndnd",totalcount.value.toString())
+        }
+
+    }
+    fun getItemPrice()=viewModelScope.launch {
+        roomrespo.getTotalProductItemsPrice().catch { e->  Log.d("dmdndnd", "Exception: ${e.message} ") }.collect{
+            totalprice.value=it?:0
+            Log.d("dmdndnd",totalprice.value.toString())
+        }
+    }
 
     fun insertCartItem(
         productIdNumber: String,
@@ -171,25 +167,18 @@ fun getCartItem(){
         productname: String,
         actualprice: String
     ) = viewModelScope.launch(Dispatchers.IO) {
-       // roomrespo.insert()
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first()?:0
-
         if (intger == 0) {
-            dao
-                .insertCartItem(
-                    CartItems(
-                        productIdNumber,
-                        thumb, intger + 1,
-                        price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
-                    )
-
-                )
-
+            val data= CartItems(
+                productIdNumber,
+                thumb, intger + 1,
+                price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
+            )
+            roomrespo.insert(data)
         } else if (intger >= 1) {
-            dao.updateCartItem(intger + 1, productIdNumber)
+            roomrespo.updateCartItem(intger + 1, productIdNumber)
 
         }
-        Log.d("printvalue",(intger+1).toString())
 
 
     }

@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
+import com.google.gson.Gson
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.RoomDatabase.RoomRepository
@@ -130,9 +131,11 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
 
 
     fun callingExcusiveProducts(city: String) = viewModelScope.launch {
-        repository.ExclusiveProducts(city).collectLatest {
+        Log.d("suceessmsg","sucess ${Gson().toJson(city)}")
+        repository.ExclusiveProducts("kaithal").collectLatest {
             when (it) {
                 is ApiState.Success -> {
+                    Log.d("suceessmsg","sucess ${Gson().toJson(it)}")
                     exclusiveProductsResponse.value = it.data
                 }
                 is ApiState.Failure -> {
@@ -203,7 +206,7 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
     }
 
     fun callingBestSelling(city: String) = viewModelScope.launch {
-        repository.BestSellingProducts(city).collectLatest {
+        repository.BestSellingProducts().collectLatest {
             when (it) {
                 is ApiState.Success -> {
                     bestsellingProductsResponse.value = it.data

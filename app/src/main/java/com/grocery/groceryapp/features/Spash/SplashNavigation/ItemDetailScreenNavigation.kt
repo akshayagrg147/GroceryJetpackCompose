@@ -19,25 +19,27 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.*
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
+import com.grocery.groceryapp.data.modal.RelatedSearchRequest
 import com.grocery.groceryapp.features.Home.ui.ShimmerAnimation
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductByIdViewModal
+import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductEvents
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor as bodyTextColor1
@@ -74,10 +76,8 @@ fun ItemScreenNavigation(
     }
 
 
-
-
-
 }
+
 @Composable
 fun RelatedSearchItem(
     data: HomeAllProductsResponse.HomeResponse,
@@ -87,7 +87,7 @@ fun RelatedSearchItem(
 ) {
 
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 4.dp)
@@ -121,8 +121,8 @@ fun RelatedSearchItem(
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(70.dp)
+                    .width(150.dp)
+                    .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
 
 
@@ -165,8 +165,7 @@ fun RelatedSearchItem(
                         .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
                         .padding(start = 20.dp)
 
-                        .background(color = whiteColor)
-                     ,
+                        .background(color = whiteColor),
 
                     ) {
                     Text13_700(
@@ -196,13 +195,45 @@ fun ItemDetailsScreen(
     val cartcount = remember { mutableStateOf(0) }
 
     val pager = rememberPagerState()
-    viewModal.getItemBaseOnProductId(value.homeproducts?.productId?:"")
+    viewModal.getItemBaseOnProductId(value.homeproducts?.productId ?: "")
+
     viewModal.calllingRelatedSearch()
     cartcount.value = viewModal.productIdCount.value
-    val tabList = listOf(  "Description",
-        "Reviews")
+    val tabList = listOf(
+        "Description",
+        "Reviews"
+    )
     val pagerState: PagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
+
+
+//    LaunchedEffect(key1 = true) {
+//        viewModal.onEvents(
+//            ProductEvents.RelatedSearchEvents(
+//                RelatedSearchRequest(
+//                    "100",
+//                    "Snacks"
+//                )
+//            )
+//        )
+//    }
+
+    LaunchedEffect(key1 = true ){
+        viewModal.eventRelatedSearchFlow.collectLatest {
+            when(it){
+                is ApiState.Success -> {
+
+                }
+                is ApiState.Failure -> {
+
+                }
+                ApiState.Loading -> {
+
+                }
+            }
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (l1, l2) = createRefs()
@@ -222,151 +253,155 @@ fun ItemDetailsScreen(
                     // .verticalScroll(state = scrollState)
 
                 ) {
-                    item {  Column(modifier = Modifier.fillMaxWidth()) {
-                        Card(
-                            elevation = 1.dp,
-                            shape = RoundedCornerShape(20.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
+                    item {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Card(
+                                elevation = 1.dp,
+                                shape = RoundedCornerShape(20.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
 
-                        ) {
-                            HorizontalPager(count = 3, state = pager) { index ->
-                                if (index == 0)
-                                    Banner(
-                                        pagerState = pager,
-                                        value.homeproducts?.productImage1 ?: ""
-                                    )
-                                if (index == 1)
-                                    Banner(
-                                        pagerState = pager,
-                                        value.homeproducts?.productImage2 ?: ""
-                                    )
-                                if (index == 2)
-                                    Banner(
-                                        pagerState = pager,
-                                        value.homeproducts?.productImage3 ?: ""
-                                    )
-                            }
-
-                        }
-
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = value.homeproducts?.productName ?: "", color = titleColor, style = loginTypography.h1, fontSize = 18.sp,
-                            )
-                            Text14_400(
-                                text = value.homeproducts?.quantity ?: "", modifier = Modifier
-                                    .padding(top = 5.dp)
-                            )
-
-                        }
-                        Spacer(modifier = Modifier.height(2.dp))
-
-
-                        Row(
-                            modifier = Modifier.padding(start = 20.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-
-                            Text14_400(
-                                text = "₹ ${value.homeproducts?.price}",
-                                color = headingColor,
-                                //  modifier= Modifier.weight(0.5F)
-                            )
-                            Text(
-                                text = "₹${value.homeproducts?.orignalprice ?: "0.00"}",
-                                fontSize = 12.sp,
-                                color = bodyTextColor1,
-                                modifier = Modifier.padding(start = 5.dp),
-                                style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                            )
-                        }
-
-
-
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-
-
-                            viewModal.getTotalProductItemsPrice()
-                            viewModal.getTotalProductItems()
-
-                            if (cartcount.value > 0)
-                                Row {
-                                    CommonMathButton(icon = R.drawable.minus) {
-                                        viewModal.deleteCartItems(value)
-                                    }
-
-                                    Text14_400(
-                                        text = cartcount.value.toString(),
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .padding(horizontal = 20.dp),
-                                        color = Color.Black
-                                    )
-                                    CommonMathButton(icon = R.drawable.add) {
-                                        viewModal.insertCartItem(value)
-
-
-                                    }
-                                }
-                            else {
-                                Card(
-                                    border = BorderStroke(1.dp, titleColor),
-                                    modifier = Modifier
-
-                                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-                                        .padding(start = 20.dp)
-
-                                        .background(color = whiteColor)
-                                        .clickable {
-                                            // response="called"
-                                            viewModal.insertCartItem(value)
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    "Added to cart",
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
-
-                                            Utils.vibrator(context)
-
-                                        },
-
-                                    ) {
-                                    Text13_700(
-                                        text = "ADD",
-                                        availColor,
-                                        modifier = Modifier.padding(
-                                            vertical = 5.dp,
-                                            horizontal = 10.dp
+                            ) {
+                                HorizontalPager(count = 3, state = pager) { index ->
+                                    if (index == 0)
+                                        Banner(
+                                            pagerState = pager,
+                                            value.homeproducts?.productImage1 ?: ""
                                         )
-                                    )
+                                    if (index == 1)
+                                        Banner(
+                                            pagerState = pager,
+                                            value.homeproducts?.productImage2 ?: ""
+                                        )
+                                    if (index == 2)
+                                        Banner(
+                                            pagerState = pager,
+                                            value.homeproducts?.productImage3 ?: ""
+                                        )
                                 }
+
                             }
 
 
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = value.homeproducts?.productName ?: "",
+                                    color = titleColor,
+                                    style = loginTypography.h1,
+                                    fontSize = 18.sp,
+                                )
+                                Text14_400(
+                                    text = value.homeproducts?.quantity ?: "", modifier = Modifier
+                                        .padding(top = 5.dp)
+                                )
+
+                            }
+                            Spacer(modifier = Modifier.height(2.dp))
+
+
+                            Row(
+                                modifier = Modifier.padding(start = 20.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+
+                                Text14_400(
+                                    text = "₹ ${value.homeproducts?.price}",
+                                    color = headingColor,
+                                    //  modifier= Modifier.weight(0.5F)
+                                )
+                                Text(
+                                    text = "₹${value.homeproducts?.orignalprice ?: "0.00"}",
+                                    fontSize = 12.sp,
+                                    color = bodyTextColor1,
+                                    modifier = Modifier.padding(start = 5.dp),
+                                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                                )
+                            }
+
+
+
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+
+                                viewModal.getTotalProductItemsPrice()
+                                viewModal.getTotalProductItems()
+
+                                if (cartcount.value > 0)
+                                    Row {
+                                        CommonMathButton(icon = R.drawable.minus) {
+                                            viewModal.deleteCartItems(value)
+                                        }
+
+                                        Text14_400(
+                                            text = cartcount.value.toString(),
+                                            modifier = Modifier
+                                                .align(Alignment.CenterVertically)
+                                                .padding(horizontal = 20.dp),
+                                            color = Color.Black
+                                        )
+                                        CommonMathButton(icon = R.drawable.add) {
+                                            viewModal.insertCartItem(value)
+
+
+                                        }
+                                    }
+                                else {
+                                    Card(
+                                        border = BorderStroke(1.dp, titleColor),
+                                        modifier = Modifier
+
+                                            .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                                            .padding(start = 20.dp)
+
+                                            .background(color = whiteColor)
+                                            .clickable {
+                                                // response="called"
+                                                viewModal.insertCartItem(value)
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Added to cart",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+
+                                                Utils.vibrator(context)
+
+                                            },
+
+                                        ) {
+                                        Text13_700(
+                                            text = "ADD",
+                                            availColor,
+                                            modifier = Modifier.padding(
+                                                vertical = 5.dp,
+                                                horizontal = 10.dp
+                                            )
+                                        )
+                                    }
+                                }
+
+
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+
+
+                            //    TabLayout(value)
+
+
                         }
-                        Spacer(modifier = Modifier.height(10.dp))
-
-
-                    //    TabLayout(value)
-
-
-
-                    } }
+                    }
 
                     stickyHeader {
                         TabRow(
@@ -401,8 +436,10 @@ fun ItemDetailsScreen(
                             count = tabList.size
                         ) { page: Int ->
                             when (page) {
-                                0 -> TabContentScreen(data = value.homeproducts?.ProductDescription ?: "null")
-                                1 ->ReviewsCollection(value)
+                                0 -> TabContentScreen(
+                                    data = value.homeproducts?.ProductDescription ?: "null"
+                                )
+                                1 -> ReviewsCollection(value)
                             }
                         }
                     }
@@ -448,10 +485,10 @@ fun ItemDetailsScreen(
                     }
                 }
 
-                }
-
-
             }
+
+
+        }
 
 
 
@@ -461,8 +498,6 @@ fun ItemDetailsScreen(
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
-
-
 
 
 }
@@ -475,7 +510,7 @@ fun cardviewAddtoCart(
     modifier: Modifier
 ) {
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
         backgroundColor = seallcolor, modifier = modifier
             .fillMaxWidth()
@@ -577,7 +612,6 @@ fun Banner(
     }
 
 }
-
 
 
 @Composable

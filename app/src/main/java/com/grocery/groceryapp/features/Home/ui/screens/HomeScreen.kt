@@ -89,8 +89,9 @@ fun homescreen(
     viewModal.callingDashboardCategoryWiseList()
 
     val scroll: ScrollState = rememberScrollState(0)
-    var searchvisibility by remember { mutableStateOf(false) }
+    var searchAnimationFloat by remember { mutableStateOf(0.00) }
     var serviceavalibilitycheck by remember { mutableStateOf(true) }
+    var searchvisibility by remember { mutableStateOf(true) }
 
     val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
     val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
@@ -98,13 +99,22 @@ fun homescreen(
     Box(modifier = Modifier.fillMaxSize()) {
 
         HeaderDeliveryTime(viewModal, navcontroller, scroll, headerHeightPx) {
-            searchvisibility = it
+            searchAnimationFloat = it
+            Log.d("alphavalue", searchAnimationFloat.toString())
 
         }
         if (serviceavalibilitycheck) {
-            BodyDashboard(scroll, pager, viewModal, navcontroller, context, serviceavalibilitycheck)
-            if (searchvisibility)
-                SearchBar(navcontroller, headerHeightPx, toolbarHeightPx, scroll)
+            BodyDashboard(scroll, pager, viewModal, navcontroller, context){
+                serviceavalibilitycheck= false
+            }
+            if(searchvisibility)
+            SearchBar( headerHeightPx, toolbarHeightPx, scroll){
+                    if(searchAnimationFloat<=0.5){
+                        navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
+                    }
+
+
+                }
             cardviewAddtoCart(
                 viewModal,
                 navcontroller,
@@ -156,10 +166,9 @@ fun BodyDashboard(
     pager: PagerState,
     viewModal: HomeAllProductsViewModal,
     navcontroller: NavHostController,
-    context: Activity,
-    serviceavalibilitycheck: Boolean
+    context: Activity,availibilty:(Boolean)->Unit
 ) {
-    var avalibiltycheck = serviceavalibilitycheck
+
     var best = viewModal.bestsellingProductsResponse1.value
     var res = viewModal.exclusiveProductsResponse1.value
     Column(
@@ -232,7 +241,7 @@ fun BodyDashboard(
                     modifier = Modifier
                         .padding(start = 10.dp),
                 )
-                Text14_400(
+                Text16_700(
                     "See all", color = seallcolor, modifier = Modifier
 
                         .padding(top = 5.dp, end = 20.dp)
@@ -263,6 +272,10 @@ fun BodyDashboard(
 
                 if (res.statusCode == 200) {
                     val list1 = res.list
+                    if(list1?.isEmpty() == true){
+                        availibilty(true)
+                        return@LazyRow
+                    }
                     items(list1!!) { data ->
                         ExclusiveOffers(data, context!!, navcontroller, viewModal)
                     }
@@ -289,7 +302,7 @@ fun BodyDashboard(
                     modifier = Modifier
                         .padding(start = 10.dp),
                 )
-                Text14_400(
+                Text16_700(
                     "See all", color = seallcolor, modifier = Modifier
                         .padding(top = 5.dp, end = 20.dp)
                         .clickable {
@@ -321,14 +334,12 @@ fun BodyDashboard(
                             // Column(modifier = Modifier.padding(10.dp)) {
 
                             BestOffers(navcontroller, data, context!!, viewModal)
-                            avalibiltycheck=true
+
                             //}
 
 
                         }
-                    else {
-                        avalibiltycheck = false
-                    }
+
 
                 } else {
                     repeat(5) {
@@ -495,8 +506,8 @@ fun BodyDashboard(
 
 @Composable
 fun SearchBar(
-    navcontroller: NavHostController, headerHeightPx: Float,
-    toolbarHeightPx: Float, scroll: ScrollState
+     headerHeightPx: Float,
+    toolbarHeightPx: Float, scroll: ScrollState,searchclick:()->Unit
 ) {
     var titleHeightPx by remember { mutableStateOf(0f) }
     var titleWidthPx by remember { mutableStateOf(0f) }
@@ -507,12 +518,11 @@ fun SearchBar(
         onValueChange = {
 
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
+        modifier = Modifier.fillMaxWidth()
 
+            .clip(RoundedCornerShape(24.dp))
             .clickable {
-                navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
+                searchclick()
             }
             .padding(start = 0.dp, end = 2.dp)
             .graphicsLayer {
@@ -606,17 +616,15 @@ fun HeaderDeliveryTime(
     navcontroller: NavHostController,
     scroll: ScrollState,
     headerHeightPx: Float,
-    call: (Boolean) -> Unit
+    call: (Double) -> Unit
 ) {
     Column(modifier = Modifier.graphicsLayer {
         translationY = -scroll.value.toFloat() / 2f // Parallax effect
         alpha = (-1f / headerHeightPx) * scroll.value + 1
-        if (alpha >= 0.95f)
-            call(false)
-        else
-            call(true)
+        call(alpha.toDouble())
 
-        Log.d("alphavalue", alpha.toString())
+
+
     }) {
         Spacer(modifier = Modifier.width(10.dp))
 
@@ -708,7 +716,7 @@ fun ExclusiveOffers(
 ) {
 
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 4.dp)
@@ -742,8 +750,8 @@ fun ExclusiveOffers(
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(70.dp)
+                    .width(150.dp)
+                    .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
 
 
@@ -830,7 +838,7 @@ fun AllItems(
 
 
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(start = 1.dp, end = 1.dp, bottom = 1.dp)
@@ -863,8 +871,8 @@ fun AllItems(
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(70.dp)
+                    .width(150.dp)
+                    .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
 
 
@@ -950,7 +958,7 @@ fun BestOffers(
     viewModal: HomeAllProductsViewModal
 ) {
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 4.dp)
@@ -983,8 +991,8 @@ fun BestOffers(
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(70.dp)
+                    .width(150.dp)
+                    .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
 
 
@@ -1073,7 +1081,7 @@ fun GroceriesItems(
 ) {
 
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
 
         backgroundColor = color, modifier = Modifier
@@ -1165,7 +1173,7 @@ fun cardviewAddtoCart(
     modifier: Modifier
 ) {
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
         backgroundColor = seallcolor, modifier = modifier
             .fillMaxWidth()

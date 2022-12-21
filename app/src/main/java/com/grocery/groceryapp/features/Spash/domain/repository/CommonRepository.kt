@@ -1,9 +1,6 @@
 package com.grocery.groceryapp.features.Spash.domain.repository
 
-import com.grocery.groceryapp.data.modal.OrderIdCreateRequest
-import com.grocery.groceryapp.data.modal.ProductIdIdModal
-import com.grocery.groceryapp.data.modal.RegisterLoginRequest
-import com.grocery.groceryapp.data.modal.RelatedSearchRequest
+import com.grocery.groceryapp.data.modal.*
 import com.grocery.groceryapp.data.network.ApiService
 import com.grocery.groceryapp.toResultFlow
 import javax.inject.Inject
@@ -27,10 +24,10 @@ class CommonRepository @Inject constructor(
         apiService.getHomeAllProductsSearch(ss)
     }
     fun ExclusiveProducts(city: String) = toResultFlow {
-        apiService.getExclusiveProducts(city)
+        apiService.getExclusiveProducts(ExclusiveOfferRequest(city))
     }
-    fun BestSellingProducts(city: String) = toResultFlow {
-        apiService.getBestSellingProducts(city)
+    fun BestSellingProducts() = toResultFlow {
+        apiService.getBestSellingProducts()
     }
     fun callingDasboardProducts(
     ) = toResultFlow {

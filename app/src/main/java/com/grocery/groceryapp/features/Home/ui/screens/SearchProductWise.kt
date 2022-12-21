@@ -50,7 +50,7 @@ fun SearchResult(
     context: Context,navcontroller: NavHostController
 ) {
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding( horizontal = 4.dp, vertical = 4.dp)
@@ -78,8 +78,8 @@ fun SearchResult(
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(70.dp)
+                    .width(150.dp)
+                    .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
 
 

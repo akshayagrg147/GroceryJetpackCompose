@@ -33,6 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.google.gson.Gson
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.RoomDatabase.CartItems
@@ -69,7 +70,34 @@ fun CartScreen(
     if (isDialog)
         CommonProgressBar()
 
+    when (viewModal.orderConfirmedStatusState.value.statusCode) {
+        200 -> {
+            isDialog = false
+          //  scope.launch { modalBottomSheetState.hide() }
+            viewModal.orderConfirmedStatusState.value.apply {
 
+                navController.currentBackStackEntry?.arguments?.putParcelable(
+                    "orderstatus",
+                    viewModal.orderConfirmedStatusState.value
+                )
+                navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route)
+            }
+        }
+        401 -> {
+            isDialog = false
+          //  scope.launch { modalBottomSheetState.hide() }
+            navController.currentBackStackEntry?.arguments?.putParcelable(
+                "orderstatus",
+                viewModal.orderConfirmedStatusState.value
+            )
+            navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route)
+        }
+        else -> {
+            isDialog = false
+           // scope.launch { modalBottomSheetState.hide() }
+            Log.d("messagecoming", "someting went wrong")
+        }
+    }
     ModalBottomSheetLayout(
         sheetContent = {
 
@@ -153,6 +181,7 @@ fun CartScreen(
                                 choose.value = true
                             }
                             "ProceedButton" -> {
+                                isDialog = true
                                 val request = OrderIdCreateRequest(
                                     orderList = order,
                                     address = "abc",
@@ -160,37 +189,11 @@ fun CartScreen(
                                     totalOrderValue = "0",
                                     mobilenumber = sharedpreferenceCommon.getMobileNumber()
                                 )
+                                Log.d("messagepassing","${Gson().toJson(request)}")
                                 viewModal.passingOrderIdGenerateRequest(request)
                                 viewModal.calllingBookingOrder()
-                                isDialog = true
-                                when (viewModal.orderConfirmedStatusState.value.statusCode) {
-                                    200 -> {
-                                        isDialog = false
-                                        scope.launch { modalBottomSheetState.hide() }
-                                        viewModal.orderConfirmedStatusState.value.apply {
 
-                                            navController.currentBackStackEntry?.arguments?.putParcelable(
-                                                "orderstatus",
-                                                viewModal.orderConfirmedStatusState.value
-                                            )
-                                            navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route)
-                                        }
-                                    }
-                                    401 -> {
-                                        isDialog = false
-                                        scope.launch { modalBottomSheetState.hide() }
-                                        navController.currentBackStackEntry?.arguments?.putParcelable(
-                                            "orderstatus",
-                                            viewModal.orderConfirmedStatusState.value
-                                        )
-                                        navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route)
-                                    }
-                                    else -> {
-                                        isDialog = false
-                                        scope.launch { modalBottomSheetState.hide() }
-                                        Log.d("messagecoming", "someting went wrong")
-                                    }
-                                }
+
                             }
                             else -> {
 
@@ -250,7 +253,7 @@ Column(modifier = Modifier.fillMaxWidth()) {
 
     Spacer(modifier = Modifier.height(5.dp))
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
         backgroundColor = titleColor, modifier = Modifier
             .fillMaxWidth()

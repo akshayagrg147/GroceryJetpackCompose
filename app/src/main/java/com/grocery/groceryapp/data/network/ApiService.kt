@@ -14,13 +14,13 @@ interface ApiService {
 
     //    @POST(Constants.getuserdetails)
 //    suspend fun getUserDetails():Response<>
-    @FormUrlEncoded
-    @POST(Constants.exclusive_collectionProducts)
-    suspend fun getExclusiveProducts(@Field("city") city: String): Response<HomeAllProductsResponse>
 
-    @FormUrlEncoded
+    @POST(Constants.exclusive_collectionProducts)
+    suspend fun getExclusiveProducts(@Body red:ExclusiveOfferRequest): Response<HomeAllProductsResponse>
+
+
     @POST(Constants.BestSelling_collectionProducts)
-    suspend fun getBestSellingProducts(@Field("city") city: String): Response<HomeAllProductsResponse>
+    suspend fun getBestSellingProducts(): Response<HomeAllProductsResponse>
 
 
     @GET(Constants.HomeAllProducts)

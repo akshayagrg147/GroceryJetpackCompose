@@ -71,7 +71,7 @@ fun ShimmerItem(
 @Composable
 fun cardviewAddtoCart(viewmodal: CartItemsViewModal, navController: NavHostController, context: Context, modifier: Modifier){
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
         backgroundColor = seallcolor,modifier = modifier
             .fillMaxWidth()
@@ -162,9 +162,9 @@ fun menuitems(
     value: String,
     viewModal: CartItemsViewModal = hiltViewModel()
 ) {
-    var selectedIndex = remember { mutableStateOf(1) }
+    val selectedIndex = remember { mutableStateOf(1) }
     val passingvalue = value
-    var productdetail= remember {
+    val productdetail= remember {
         mutableStateOf(ItemsCollectionsResponse.SubItems())
     }
 
@@ -257,7 +257,7 @@ fun menuitems(
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Card(
-                            elevation = 4.dp,
+                            elevation = 2.dp,
                             shape = RoundedCornerShape(20.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -318,7 +318,7 @@ fun menuitems(
 
         Box(modifier = Modifier.fillMaxSize()){
             Column(modifier = Modifier.fillMaxSize()) {
-                Text20_700(text = "Sub cart menus", modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text24_700(text = "Sub cart menus", modifier = Modifier.align(Alignment.CenterHorizontally))
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
@@ -389,15 +389,16 @@ fun ItemEachRow(
     viewModal: CartItemsViewModal,
     call: (item: String, selectedvalue: Int) -> Unit
 ) {
-    Card(elevation = 1.dp,
+    Card(elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp, Color.Black),
+
         backgroundColor = if (selectedIndex.value == item.productId?.toInt()) Color.LightGray else Color.White,
         modifier = Modifier
 
 
 
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
+            .width(90.dp)
             .padding(5.dp)
             .clickable {
 
@@ -438,7 +439,7 @@ fun MenuItemGrid(
 
 
     Card(
-        elevation = 4.dp,
+        elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding( horizontal = 4.dp)
@@ -467,8 +468,8 @@ fun MenuItemGrid(
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(70.dp)
+                    .width(150.dp)
+                    .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
 
 

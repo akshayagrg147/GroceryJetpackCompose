@@ -46,7 +46,7 @@ fun orderDetil(
                 .align(Alignment.CenterHorizontally)
         )
         Card(
-            elevation = 4.dp,
+            elevation = 2.dp,
             shape = RoundedCornerShape(10.dp),
             backgroundColor = whiteColor, modifier = Modifier
                 .fillMaxWidth()
@@ -100,7 +100,7 @@ if(data.list?.isNotEmpty()==true)
 
         )
         Card(
-            elevation = 4.dp,
+            elevation = 2.dp,
             shape = RoundedCornerShape(10.dp),
             backgroundColor = whiteColor, modifier = Modifier
                 .fillMaxWidth()
@@ -166,7 +166,7 @@ if(data.list?.isNotEmpty()==true)
 
         )
         Card(
-            elevation = 4.dp,
+            elevation = 2.dp,
             shape = RoundedCornerShape(10.dp),
             backgroundColor = whiteColor, modifier = Modifier
                 .fillMaxWidth()

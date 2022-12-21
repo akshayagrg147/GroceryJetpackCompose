@@ -13,3 +13,9 @@ data class RegisterLoginRequest(
     @Json(name = "phone")
     val phone: String?=null
 )
+@JsonClass(generateAdapter = true)
+data class ExclusiveOfferRequest(
+    @Json(name = "city")
+    val city: String?=null,
+
+)

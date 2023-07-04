@@ -20,7 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class ListItemsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             ConnectivityStatus()
             val data = intent.getParcelableExtra<HomeAllProductsResponse>("parced")
@@ -34,15 +33,4 @@ class ListItemsActivity : ComponentActivity() {
 }
 
 
-@Composable
-fun Greeting5(name: String) {
-    Text(text = "Hello $name!")
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview4() {
-    GroceryAppTheme {
-        Greeting5("Android")
-    }
-}

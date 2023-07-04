@@ -10,7 +10,10 @@ import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.RoomDatabase.Dao
 import com.grocery.groceryapp.RoomDatabase.RoomRepository
 import com.grocery.groceryapp.common.ApiState
-import com.grocery.groceryapp.data.modal.*
+import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
+import com.grocery.groceryapp.data.modal.OrderIdCreateRequest
+import com.grocery.groceryapp.data.modal.OrderIdResponse
+import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,17 +26,27 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CartItemsViewModal @Inject constructor(val dao: Dao, val repository: CommonRepository,val repo:RoomRepository) :
+class CartItemsViewModal @Inject constructor(
+    val dao: Dao,
+    val repository: CommonRepository,
+    val repo: RoomRepository
+) :
     ViewModel() {
+    val emitProductId: MutableSharedFlow<ProductIdIdModal> = MutableSharedFlow(1)
 
-init {
-    getAllCartAddressItems()
+    init {
+        getAllCartAddressItems()
+        calllingItemsCollectionsId(emitProductId)
+    }
 
-}
+    fun setProductId(product_id: ProductIdIdModal) {
+        emitProductId.tryEmit(product_id)
+        calllingItemsCollectionsId(emitProductId)
+    }
 
-     fun getAllAddressItems()=viewModelScope.launch  {
-        repo. getAddressItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
-            addresslist.value=it
+    fun getAllAddressItems() = viewModelScope.launch {
+        repo.getAddressItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }.collect {
+            addresslist.value = it
         }
 
     }
@@ -49,10 +62,6 @@ init {
     val itemcollections1: State<ItemsCollectionsResponse> = itemcollections
     val _res: MutableSharedFlow<OrderIdCreateRequest> = MutableSharedFlow(1)
 
-
-
-
-
     private val totalcount: MutableState<Int> =
         mutableStateOf(0)
     val totalCountState: State<Int> = totalcount
@@ -61,7 +70,7 @@ init {
         mutableStateOf(0)
     val totalPriceState: State<Int> = totalPrice
 
-    private val orderConfirmedStatus: MutableState<OrderIdResponse> =
+    val orderConfirmedStatus: MutableState<OrderIdResponse> =
         mutableStateOf(OrderIdResponse())
     val orderConfirmedStatusState: State<OrderIdResponse> = orderConfirmedStatus
 
@@ -71,8 +80,8 @@ init {
 
     private fun getAllCartAddressItems() = viewModelScope.launch {
 
-        repo.getCartItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
-            allcartitems.value=it
+        repo.getCartItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }.collect {
+            allcartitems.value = it
         }
 
 
@@ -81,31 +90,36 @@ init {
     fun deleteCartItems(productIdNumber: String?) = viewModelScope.launch {
         repo.deleteCartItems(productIdNumber)
     }
-     fun getCartItem() {
-         getTotalProductItems()
-         getTotalProductItemsPrice()
 
-
+    fun getCartItem() {
+        getTotalProductItems()
+        getTotalProductItemsPrice()
 
 
     }
-    fun getTotalProductItemsPrice()= viewModelScope.launch {
-        repo.getTotalProductItemsPrice().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
-            totalPrice.value=it?:0
 
-        }
+    fun getTotalProductItemsPrice() = viewModelScope.launch {
+        repo.getTotalProductItemsPrice().catch { e -> Log.d("main", "Exception: ${e.message} ") }
+            .collect {
+                totalPrice.value = it ?: 0
+
+            }
     }
-    fun getTotalProductItems()= viewModelScope.launch {
-        repo.getTotalProductItems().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
-            totalcount.value=it?:0
 
-        }
+    fun getTotalProductItems() = viewModelScope.launch {
+        repo.getTotalProductItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }
+            .collect {
+                totalcount.value = it ?: 0
+
+            }
 
     }
-     fun getSavingAmount()=viewModelScope.launch  {
-         repo.getTotalSavingAmount().catch { e->  Log.d("main", "Exception: ${e.message} ") }.collect{
-             SavingAmmountMutable.value=it?:0
-         }
+
+    fun getSavingAmount() = viewModelScope.launch {
+        repo.getTotalSavingAmount().catch { e -> Log.d("main", "Exception: ${e.message} ") }
+            .collect {
+                SavingAmmountMutable.value = it ?: 0
+            }
     }
 
     fun insertCartItem(
@@ -115,12 +129,16 @@ init {
         productname: String,
         actualprice: String
     ) = viewModelScope.launch(Dispatchers.IO) {
-        val intger: Int = dao.getProductBasedIdCount(productIdNumber).first()?:0
+        val intger: Int = dao.getProductBasedIdCount(productIdNumber).first() ?: 0
         if (intger == 0) {
-            val data= CartItems(
+            val data = CartItems(
                 productIdNumber,
-                thumb, intger + 1,
-                price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
+                thumb,
+                intger + 1,
+                price,
+                productname,
+                actualprice,
+                savingAmount = (actualprice.toInt() - price.toInt()).toString()
             )
             repo.insert(data)
         } else if (intger >= 1) {
@@ -130,47 +148,48 @@ init {
 
     }
 
-
-
-
-
-
     fun DeleteProduct(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteCartItem(productIdNumber)
     }
 
-    fun calllingItemsCollectionsId(productIdIdModal: ProductIdIdModal) = viewModelScope.launch {
-        repository.ItemsCollections(productIdIdModal).collectLatest {
-            when (it) {
-                is ApiState.Success -> {
-                    itemcollections.value = it.data
-                }
-                is ApiState.Failure -> {
-                    itemcollections.value = ItemsCollectionsResponse(null, it.msg.message, 401)
+    fun calllingItemsCollectionsId(productIdIdModal: MutableSharedFlow<ProductIdIdModal>) =
+        viewModelScope.launch {
+            repository.ItemsCollections(productIdIdModal.first()).collectLatest {
+                when (it) {
+                    is ApiState.Success -> {
+                        itemcollections.value = it.data
+                    }
+                    is ApiState.Failure -> {
+                        itemcollections.value = ItemsCollectionsResponse(null, it.msg.message, 401)
+
+                    }
+                    is ApiState.Loading -> {
+
+                    }
 
                 }
-                is ApiState.Loading -> {
-
-                }
-
             }
+
         }
-
+    fun passingOrderIdGenerateRequest(request: OrderIdCreateRequest) {
+        _res.tryEmit(request)
     }
-
     fun calllingBookingOrder() = viewModelScope.launch {
         repository.OrderIdRequest(_res.first()).collectLatest {
             when (it) {
                 is ApiState.Success -> {
-                    Log.d("djjdjdj","djjd success")
+                    Log.d("djjdjdj", "djjd success")
                     orderConfirmedStatus.value = it.data
 
 
                 }
                 is ApiState.Failure -> {
-                    Log.d("djjdjdj","djjd failed")
+                    Log.d("djjdjdj", "djjd failed")
                     orderConfirmedStatus.value =
-                        OrderIdResponse(message = it.msg.message?:"Order Failed", statusCode = 401)
+                        OrderIdResponse(
+                            message = it.msg.message ?: "Order Failed",
+                            statusCode = 401
+                        )
 
 
                 }
@@ -181,27 +200,10 @@ init {
             }
         }
 
+
+
+
+
+
     }
-
-    fun passingOrderIdGenerateRequest(request: OrderIdCreateRequest) {
-        _res.tryEmit(request)
-    }
-
-
 }
-
-
-//    fun getItemBaseOnProductId(value: String?): String {
-//        viewModelScope.launch() {
-//
-//            var intger: Int = 0
-//
-//            withContext(Dispatchers.IO) {
-//                 intger = dao.getProductBasedIdCount(value).first() ?:0
-//            }
-//            productIdCountMutable.value = intger
-//
-//        }
-//        return  productIdCountMutable.value.toString()
-//
-//    }

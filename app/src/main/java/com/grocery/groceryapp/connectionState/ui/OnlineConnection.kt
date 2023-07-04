@@ -6,17 +6,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.CommonButton
-import com.grocery.groceryapp.Utils.Text12Sp_600
-import com.grocery.groceryapp.Utils.Text14_400
+import com.grocery.groceryapp.Utils.Text10_h2
 import com.grocery.groceryapp.features.Home.ui.ui.theme.seallcolor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.whiteColor
 
@@ -56,7 +53,7 @@ fun onlineconnection(call:(Boolean)->Unit) {
                 call(true)
             }
 
-            Text12Sp_600(
+            Text10_h2(
                 text = "Please check your internet connection",
                 modifier = Modifier.padding(top = 20.dp).align(CenterHorizontally)
             )

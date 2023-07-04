@@ -50,8 +50,8 @@ import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewMod
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
-private val headerHeight = 210.dp
-private val toolbarHeight = 56.dp
+private val headerHeight = 160.dp
+private val toolbarHeight = 16.dp
 
 private val paddingMedium = 16.dp
 
@@ -125,13 +125,13 @@ fun ListItems(
                         val twohundredone = remember { mutableStateOf(false) }
                         val threehundredone = remember { mutableStateOf(false) }
                         val fivehundredone = remember { mutableStateOf(false) }
-                        Text20_700(
+                        Text12_h1(
                             text = "FILTER & SORT",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
 
                         Column(modifier = Modifier.padding(start = 10.dp)) {
-                            Text14_400(
+                            Text12_body1(
                                 text = "Choose a range below",
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
@@ -145,7 +145,7 @@ fun ListItems(
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
                                 Text(
-                                    text = "Rs. 200 and below",
+                                    text = "Rs. 49 and below",
                                     modifier = Modifier.padding(16.dp),
                                     fontSize = 12.sp
                                 )
@@ -161,7 +161,7 @@ fun ListItems(
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
                                 Text(
-                                    text = "Rs. 201 and 300",
+                                    text = "Rs. 11 and 30",
                                     modifier = Modifier.padding(16.dp),
                                     fontSize = 12.sp
                                 )
@@ -177,7 +177,7 @@ fun ListItems(
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
                                 Text(
-                                    text = "Rs. 301 and 499",
+                                    text = "Rs. 41 and 50",
                                     modifier = Modifier.padding(16.dp),
                                     fontSize = 12.sp
                                 )
@@ -192,7 +192,7 @@ fun ListItems(
                                 // below line is use to add text to our check box and we are
                                 // adding padding to our text of checkbox
                                 Text(
-                                    text = "Rs. 500 and above",
+                                    text = "Rs. 50 and above",
                                     modifier = Modifier.padding(16.dp),
                                     fontSize = 12.sp
                                 )
@@ -213,26 +213,31 @@ fun ListItems(
                         )
                         {
                             scope.launch { modalBottomSheetState.hide() }
-                            var filterlist: List<HomeAllProductsResponse.HomeResponse>? = null
+                            var filterlist: List<HomeAllProductsResponse.HomeResponse>? = viewModal.globalmutablelist1.value.list
+                            var filterlist1: List<HomeAllProductsResponse.HomeResponse>? = null
                             if (hundredone.value)
-                                filterlist = viewModal.listState.value.list?.filter {
-                                    it.price?.toInt()!! <= 30
+                                filterlist1 = filterlist?.filter {
+                                    it.price?.toInt()!! <= 49
                                 }
                              if (twohundredone.value)
-                                filterlist = viewModal.listState.value.list?.filter {
-                                    it.price?.toInt()!! > 30 && it.price?.toInt()!! <= 40
+                                 filterlist1 = filterlist?.filter {
+                                    it.price?.toInt()!! in 11..30
                                 }
                              if (threehundredone.value)
-                                filterlist = viewModal.listState.value.list?.filter {
-                                    it.price?.toInt()!! >= 41 && it.price?.toInt()!! <= 50
+                                 filterlist1 =filterlist?.filter {
+                                    it.price?.toInt()!! in 41..50
+                                }
+                            if (fivehundredone.value)
+                                filterlist1 =filterlist?.filter {
+                                    it.price?.toInt()!! >=51
                                 }
                             else{
-
+                               //  filterlist1=filterlist
                             }
-                            viewModal.setFilterList(filterlist)
+                            viewModal.setFilterList(filterlist1)
 
                             viewModal.setvalue("filter")
-                            context.showMsg(filterlist?.size.toString())
+
 
 
                         }
@@ -245,7 +250,7 @@ fun ListItems(
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally)
                 ) {
-                    Text16_700(text = "Asending(A-Z)", modifier = Modifier
+                    Text13_body1(text = "Asending(A-Z)", modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(vertical = 5.dp)
                         .clickable {
@@ -264,21 +269,21 @@ fun ListItems(
 //                        srt(sortType,lss!!)
 
                         })
-                    Text16_700(text = "Desending(Z-A)", modifier = Modifier
+                    Text13_body1(text = "Desending(Z-A)", modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(vertical = 5.dp)
                         .clickable {
                             viewModal.setvalue("dsc")
                             scope.launch { modalBottomSheetState.hide() }
                         })
-                    Text16_700(text = "High to low", modifier = Modifier
+                    Text13_body1(text = "High to low", modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(vertical = 5.dp)
                         .clickable {
                             viewModal.setvalue("hightolow")
                             scope.launch { modalBottomSheetState.hide() }
                         })
-                    Text16_700(text = "Low to high", modifier = Modifier
+                    Text13_body1(text = "Low to high", modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(vertical = 5.dp)
                         .clickable {
@@ -364,7 +369,7 @@ fun ListItems(
                     Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text24_700(text = "Sort", modifier = Modifier.clickable {
+                    Text14_h1(text = "Sort", modifier = Modifier.clickable {
                         filterclicked = false
                         scope.launch { modalBottomSheetState.show() }
 
@@ -374,7 +379,7 @@ fun ListItems(
                             .height(20.dp)
                             .width(1.dp)
                     )
-                    Text24_700(text = "Filter", modifier = Modifier.clickable {
+                    Text14_h1(text = "Filter", modifier = Modifier.clickable {
                         filterclicked = true
                         scope.launch { modalBottomSheetState.show() }
                     })
@@ -459,13 +464,13 @@ fun SubItems(
 
             )
 
-            Text20_700(
+            Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text12Sp_600(
+            Text10_h2(
                 text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -477,7 +482,7 @@ fun SubItems(
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text12Sp_600(
+                Text10_h2(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
@@ -518,7 +523,7 @@ fun SubItems(
                         },
 
                     ) {
-                    Text13_700(
+                    Text11_body2(
                         text = "ADD",
                         availColor,
                         modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
@@ -562,7 +567,7 @@ fun ItemEachRow(
 
         ) {
 
-            Text14_400(text = item.name, modifier = Modifier.align(Alignment.CenterHorizontally))
+            Text12_body1(text = item.name, modifier = Modifier.align(Alignment.CenterHorizontally))
 
 
         }
@@ -619,27 +624,31 @@ private fun Body(
     when (viewModal.responseLiveData.value) {
 
         "asc" -> {
+            context.showMsg("asc")
             Log.d("sjsjjsj", viewModal.listState.value.list?.get(0)!!.productName!!)
-            ls = viewModal.listState.value.list?.sortedBy { it?.productName?.lowercase() }
+            ls = viewModal.globalmutablelist1.value.list?.sortedBy { it?.productName?.lowercase() }
 
             Log.d("sjsjjsj", viewModal.listState.value!!.list?.get(0)!!.productName!!)
         }
 
         "dsc" -> {
-            ls = viewModal.listState.value.list?.sortedByDescending { it?.productName?.lowercase() }
+            context.showMsg("dsc")
+            ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it?.productName?.lowercase() }
         }
         "high" -> {
-            ls = viewModal.listState.value.list?.sortedBy { it.price?.toInt() }
+            context.showMsg("high")
+            ls = viewModal.globalmutablelist1.value.list?.sortedBy { it.price?.toInt() }
         }
         "low" -> {
-            ls = viewModal.listState.value.list?.sortedByDescending { it?.price?.toInt() }
+            context.showMsg("low")
+            ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it?.price?.toInt() }
         }
         "filter" -> {
-            context.showMsg("filter")
-            ls = viewModal.getfilterlist()
+
+            ls = viewModal.listState.value.list
         }
         else -> {
-            ls = viewModal.listState.value.list
+            ls = viewModal.globalmutablelist1.value.list
         }
 
     }

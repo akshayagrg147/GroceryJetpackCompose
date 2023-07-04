@@ -39,8 +39,6 @@ class ProductByIdViewModal @Inject constructor(
     private val relatedsearch: MutableState<HomeAllProductsResponse> =
         mutableStateOf(HomeAllProductsResponse(null, null, null))
     val relatedsearch1: MutableState<HomeAllProductsResponse> = relatedsearch
-
-
     private val totalcount: MutableState<Int> =
         mutableStateOf(0)
     val totalCountState: State<Int> = totalcount
@@ -60,7 +58,7 @@ class ProductByIdViewModal @Inject constructor(
 
     fun deleteCartItems(value: ProductByIdResponseModal) = viewModelScope.launch(Dispatchers.IO) {
 
-        repo.deleteCartItems(value.homeproducts?.productId!!)
+        repo.deleteCartItems(value. homeproducts?.productId!!)
         getItemBaseOnProductId(value.homeproducts.productId)
     }
 
@@ -176,7 +174,6 @@ class ProductByIdViewModal @Inject constructor(
                 when (it) {
                     is ApiState.Success -> {
                         relatedsearch.value = it.data
-
                     }
                     is ApiState.Failure -> {
                         Log.d("responsemessage", it.msg.toString())

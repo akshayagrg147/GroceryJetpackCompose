@@ -1,4 +1,4 @@
-package com.grocery.groceryapp.features.Home.ui
+package com.grocery.groceryapp.features.Home.ui.screens
 
 import android.app.Activity
 import android.content.Context
@@ -7,8 +7,10 @@ import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -23,11 +25,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -55,20 +54,12 @@ import com.grocery.groceryapp.common.Utils.Companion.vibrator
 import com.grocery.groceryapp.data.modal.CategoryWiseDashboardResponse
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
-import com.grocery.groceryapp.features.Home.ui.screens.ListItemsActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
 import vtsen.hashnode.dev.simplegooglemapapp.ui.screens.LocationPermissionsAndSettingDialogs
 import java.text.DecimalFormat
 
-private val headerHeight = 154.dp
-private val toolbarHeight = 56.dp
-private const val titleFontScaleStart = 0.0f
-private const val titleFontScaleEnd = 1.25f
-private val titlePaddingStart = 1.dp
-private val titlePaddingEnd = 7.dp
-private val paddingMedium = 16.dp
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -76,44 +67,24 @@ fun homescreen(
     navcontroller: NavHostController, sharedpreferenceCommon: sharedpreferenceCommon,
     viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
+    val lazyListState = rememberLazyListState()
+    Log.d("mdmmdmd", lazyListState.isScrolled.toString())
     val context = LocalContext.current.getActivity()
-
-
     var mFusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context!!)
-
     var requestLocationUpdate by remember { mutableStateOf(true) }
     val pager = rememberPagerState()
-    viewModal.getItemCount()
-    viewModal.getItemPrice()
-    viewModal.callingDashboardCategoryWiseList()
-
     val scroll: ScrollState = rememberScrollState(0)
-    var searchAnimationFloat by remember { mutableStateOf(0.00) }
-    var serviceavalibilitycheck by remember { mutableStateOf(true) }
-    var searchvisibility by remember { mutableStateOf(true) }
 
-    val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
-    val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
-
+    var searchvisibility by remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
+        HeaderDeliveryTime(viewModal, navcontroller, scroll, lazyListState)
+            BodyDashboard(scroll, pager, viewModal, navcontroller, lazyListState, context) {
 
-        HeaderDeliveryTime(viewModal, navcontroller, scroll, headerHeightPx) {
-            searchAnimationFloat = it
-            Log.d("alphavalue", searchAnimationFloat.toString())
-
-        }
-        if (serviceavalibilitycheck) {
-            BodyDashboard(scroll, pager, viewModal, navcontroller, context){
-                serviceavalibilitycheck= false
             }
-            if(searchvisibility)
-            SearchBar( headerHeightPx, toolbarHeightPx, scroll){
-                    if(searchAnimationFloat<=0.5){
-                        navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
-                    }
-
-
+            if (searchvisibility)
+                SearchBar() {
+                    navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
                 }
             cardviewAddtoCart(
                 viewModal,
@@ -121,12 +92,8 @@ fun homescreen(
                 context!!,
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
-        } else {
-            NoAvaibiltyScreen()
-        }
 
     }
-
     if (sharedpreferenceCommon.getCombinedAddress() == "null")
         if (requestLocationUpdate)
             LocationPermissionsAndSettingDialogs(
@@ -165,21 +132,21 @@ fun BodyDashboard(
     scroll: ScrollState,
     pager: PagerState,
     viewModal: HomeAllProductsViewModal,
-    navcontroller: NavHostController,
-    context: Activity,availibilty:(Boolean)->Unit
+    navcontroller: NavHostController, lazyListState: LazyListState,
+    context: Activity, availibilty: (Boolean) -> Unit
 ) {
-
-    var best = viewModal.bestsellingProductsResponse1.value
-    var res = viewModal.exclusiveProductsResponse1.value
+   val padding by animateDpAsState(
+        targetValue = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT,
+        animationSpec = tween(durationMillis = 300)
+    )
+    val best = viewModal.bestsellingProductsResponse1.value
+    val res = viewModal.exclusiveProductsResponse1.value
     Column(
         //  verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 80.dp)
+            .padding(top = padding)
             .verticalScroll(scroll)
-//            .padding(bottom = 50.dp)
-        // .verticalScroll(state = scrollState)
-
     ) {
         TextField(
             value = "",
@@ -191,18 +158,16 @@ fun BodyDashboard(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-
                 .clickable {
                     navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
                 }
                 .padding(start = 10.dp, end = 10.dp),
             placeholder = {
-                Text14_400(
+                Text12_body1(
                     text = "Search Store",
                     color = bodyTextColor,
                 )
             },
-
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
@@ -211,8 +176,6 @@ fun BodyDashboard(
                 backgroundColor = greycolor,
                 disabledIndicatorColor = Color.Transparent
             ),
-
-
             leadingIcon = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -224,8 +187,6 @@ fun BodyDashboard(
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
-
-
             HorizontalPager(count = 3, state = pager) { index ->
                 Banner(pagerState = pager)
             }
@@ -236,19 +197,18 @@ fun BodyDashboard(
                     .fillMaxWidth()
                     .padding(top = 10.dp), Arrangement.SpaceBetween
             ) {
-                Text16_700(
+                Text13_body1(
                     text = "Exclusive Offers", color = Color.Black,
                     modifier = Modifier
                         .padding(start = 10.dp),
                 )
-                Text16_700(
+                Text13_body1(
                     "See all", color = seallcolor, modifier = Modifier
-
                         .padding(top = 5.dp, end = 20.dp)
                         .clickable {
                             if (res.statusCode == 200) {
                                 val list1 = res.list
-                                context?.launchActivity<ListItemsActivity>() {
+                                context.launchActivity<ListItemsActivity>() {
                                     putExtra(
                                         "parced",
                                         HomeAllProductsResponse(
@@ -272,15 +232,13 @@ fun BodyDashboard(
 
                 if (res.statusCode == 200) {
                     val list1 = res.list
-                    if(list1?.isEmpty() == true){
+                    if (list1?.isEmpty() == true) {
                         availibilty(true)
                         return@LazyRow
                     }
                     items(list1!!) { data ->
                         ExclusiveOffers(data, context!!, navcontroller, viewModal)
                     }
-
-
                 } else {
                     repeat(5) {
                         item {
@@ -289,7 +247,6 @@ fun BodyDashboard(
                         }
                     }
                 }
-
             }
 //Best selling
             Row(
@@ -297,23 +254,22 @@ fun BodyDashboard(
                     .fillMaxWidth()
                     .padding(top = 10.dp), Arrangement.SpaceBetween
             ) {
-                Text16_700(
+                Text13_body1(
                     text = "Best Selling", color = Color.Black,
                     modifier = Modifier
                         .padding(start = 10.dp),
                 )
-                Text16_700(
+                Text13_body1(
                     "See all", color = seallcolor, modifier = Modifier
                         .padding(top = 5.dp, end = 20.dp)
                         .clickable {
                             if (best.statusCode == 200) {
                                 val list1 = best.list
-                                context?.launchActivity<ListItemsActivity>() {
+                                context.launchActivity<ListItemsActivity>() {
                                     putExtra(
                                         "parced",
                                         HomeAllProductsResponse(list1, "Best Selling", 200)
                                     )
-
                                 }
                             }
 
@@ -331,16 +287,8 @@ fun BodyDashboard(
                     val list1 = best.list
                     if (list1?.isNotEmpty() == true)
                         items(list1) { data ->
-                            // Column(modifier = Modifier.padding(10.dp)) {
-
-                            BestOffers(navcontroller, data, context!!, viewModal)
-
-                            //}
-
-
+                            BestOffers(navcontroller, data, context, viewModal)
                         }
-
-
                 } else {
                     repeat(5) {
                         item {
@@ -349,8 +297,6 @@ fun BodyDashboard(
                         }
                     }
                 }
-
-
             }
 
             //groceries
@@ -359,7 +305,7 @@ fun BodyDashboard(
                     .fillMaxWidth()
                     .padding(top = 10.dp)
             ) {
-                Text16_700(
+                Text13_body1(
                     text = "Groceries", color = Color.Black,
                     modifier = Modifier
                         .weight(3f)
@@ -367,7 +313,6 @@ fun BodyDashboard(
                 )
 
             }
-
 
             val ls: MutableList<MainProducts> = ArrayList()
             ls.add(MainProducts("vegetables", R.drawable.vegetable, borderColor, null))
@@ -394,14 +339,10 @@ fun BodyDashboard(
                         viewModal,
                         itemSize
                     )
-
-
                 }
-
             }
-
-
         }
+        //last list items
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         )
@@ -413,7 +354,6 @@ fun BodyDashboard(
                     shape = RoundedCornerShape(2.dp),
                     modifier = Modifier
                         .padding(horizontal = 4.dp, vertical = 10.dp)
-
 
                 ) {
                     Column() {
@@ -430,30 +370,23 @@ fun BodyDashboard(
                                     imageVector = Icons.Default.Home,
                                     contentDescription = null,
                                     tint = Color.LightGray,
-
-
-                                    )
+                                )
                                 Column() {
-                                    Text24_700(
+                                    Text14_h1(
                                         text = viewModal.CategoryWiseDashboardRespon.value.list?.get(
                                             it
                                         )?.categoryTitle ?: "", color = headingColor,
                                         modifier = Modifier
 
-
                                     )
-                                    Text16_700(
+                                    Text13_body1(
                                         text = viewModal.CategoryWiseDashboardRespon.value.list?.get(
                                             it
                                         )?.category ?: "", color = greyLightColor,
                                         modifier = Modifier
-
-
                                     )
                                 }
                             }
-
-
                             Icon(
                                 imageVector = Icons.Default.ArrowForward,
                                 contentDescription = null,
@@ -493,8 +426,6 @@ fun BodyDashboard(
 
 
                 }
-
-
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
@@ -506,84 +437,25 @@ fun BodyDashboard(
 
 @Composable
 fun SearchBar(
-     headerHeightPx: Float,
-    toolbarHeightPx: Float, scroll: ScrollState,searchclick:()->Unit
+    searchclick: () -> Unit
 ) {
-    var titleHeightPx by remember { mutableStateOf(0f) }
-    var titleWidthPx by remember { mutableStateOf(0f) }
+    Log.d("repetationcall", "call20")
     TextField(
         value = "",
         shape = RoundedCornerShape(8.dp),
         enabled = false,
         onValueChange = {
-
         },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
 
             .clip(RoundedCornerShape(24.dp))
             .clickable {
                 searchclick()
             }
-            .padding(start = 0.dp, end = 2.dp)
-            .graphicsLayer {
-                val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
-                val collapseFraction: Float = (scroll.value / collapseRange).coerceIn(0f, 1f)
-
-                val scaleXY = androidx.compose.ui.unit.lerp(
-                    titleFontScaleStart.dp,
-                    titleFontScaleEnd.dp,
-                    collapseFraction
-                )
-
-                val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 2f
-
-                val titleYFirstInterpolatedPoint = androidx.compose.ui.unit.lerp(
-                    headerHeight - titleHeightPx.toDp() - paddingMedium,
-                    headerHeight / 2,
-                    collapseFraction
-                )
-
-                val titleXFirstInterpolatedPoint = androidx.compose.ui.unit.lerp(
-                    titlePaddingStart,
-                    (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
-                    collapseFraction
-                )
-
-                val titleYSecondInterpolatedPoint = androidx.compose.ui.unit.lerp(
-                    headerHeight / 2,
-                    toolbarHeight / 2 - titleHeightPx.toDp() / 2,
-                    collapseFraction
-                )
-
-                val titleXSecondInterpolatedPoint = androidx.compose.ui.unit.lerp(
-                    (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
-                    titlePaddingEnd - titleExtraStartPadding,
-                    collapseFraction
-                )
-
-                val titleY = androidx.compose.ui.unit.lerp(
-                    titleYFirstInterpolatedPoint,
-                    titleYSecondInterpolatedPoint,
-                    collapseFraction
-                )
-
-                val titleX = androidx.compose.ui.unit.lerp(
-                    titleXFirstInterpolatedPoint,
-                    titleXSecondInterpolatedPoint,
-                    collapseFraction
-                )
-
-                translationY = titleY.toPx()
-                translationX = titleX.toPx()
-                scaleX = scaleXY.value
-                scaleY = scaleXY.value
-            }
-            .onGloballyPositioned {
-                titleHeightPx = it.size.height.toFloat()
-                titleWidthPx = it.size.width.toFloat()
-            },
+            .padding(start = 0.dp, end = 2.dp),
         placeholder = {
-            Text12Sp_600(
+            Text10_h2(
                 text = "Search Store",
                 color = bodyTextColor,
             )
@@ -614,27 +486,17 @@ fun SearchBar(
 fun HeaderDeliveryTime(
     viewModal: HomeAllProductsViewModal,
     navcontroller: NavHostController,
-    scroll: ScrollState,
-    headerHeightPx: Float,
-    call: (Double) -> Unit
+    scroll: ScrollState, lazyListState: LazyListState
 ) {
-    Column(modifier = Modifier.graphicsLayer {
-        translationY = -scroll.value.toFloat() / 2f // Parallax effect
-        alpha = (-1f / headerHeightPx) * scroll.value + 1
-        call(alpha.toDouble())
-
-
-
-    }) {
+    Column(modifier = Modifier.height(height = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT)) {
         Spacer(modifier = Modifier.width(10.dp))
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp), Arrangement.SpaceBetween
         ) {
             Column {
-                Text18_600(text = "Delivery in 10 minutes")
+                Text14_h2(text = "Delivery in 10 minutes")
                 Spacer(modifier = Modifier.height(4.dp))
                 Row() {
                     Image(
@@ -683,7 +545,6 @@ fun HeaderDeliveryTime(
 fun Banner(
     pagerState: PagerState
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -694,7 +555,6 @@ fun Banner(
             modifier = Modifier
                 .fillMaxWidth()
         )
-
         HorizontalPagerIndicator(
             pagerState = pagerState, pageCount = 3,
             modifier = Modifier
@@ -720,7 +580,6 @@ fun ExclusiveOffers(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 4.dp)
-
             .width(150.dp)
             .clickable {
                 navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
@@ -753,17 +612,15 @@ fun ExclusiveOffers(
                     .width(150.dp)
                     .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
-
-
             )
 
-            Text20_700(
+            Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text12Sp_600(
+            Text10_h2(
                 text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -775,7 +632,7 @@ fun ExclusiveOffers(
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text12Sp_600(
+                Text10_h2(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
@@ -793,7 +650,6 @@ fun ExclusiveOffers(
 
                         .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
                         .padding(start = 20.dp)
-
                         .background(color = whiteColor)
                         .clickable {
                             // response="called"
@@ -804,7 +660,7 @@ fun ExclusiveOffers(
                                 data.productName ?: "",
                                 data.orignalprice ?: ""
                             )
-                        //    viewModal.getCartItem()
+                            //    viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
                                 .show()
@@ -814,7 +670,7 @@ fun ExclusiveOffers(
                         },
 
                     ) {
-                    Text13_700(
+                    Text11_body2(
                         text = "ADD",
                         availColor,
                         modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
@@ -836,22 +692,20 @@ fun AllItems(
     navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp
 ) {
 
-
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(start = 1.dp, end = 1.dp, bottom = 1.dp)
-            .size(itemSize)
+            .width(itemSize)
             .clickable {
-//                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+               navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.productId!!} exclusive"))
             }
 
     ) {
         Column(
             modifier = Modifier
-
-                .padding(horizontal = 5.dp, vertical = 2.dp)
+                .padding(horizontal = 5.dp, vertical = 10.dp)
         ) {
 
             val offpercentage: String = (DecimalFormat("#.##").format(
@@ -865,26 +719,22 @@ fun AllItems(
                 ),
                 fontSize = 10.sp,
             )
-
             Image(
-
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(150.dp)
+
                     .height(100.dp)
                     .align(alignment = Alignment.CenterHorizontally)
-
-
             )
-
-            Text20_700(
+            Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text12Sp_600(
+            Text10_h2(
                 text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -896,7 +746,7 @@ fun AllItems(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Text12Sp_600(
+                Text10_h2(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
@@ -925,7 +775,7 @@ fun AllItems(
                                 data.productName ?: "",
                                 data.actualPrice ?: ""
                             )
-                        //    viewModal.getCartItem()
+                            //    viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
                                 .show()
@@ -936,7 +786,7 @@ fun AllItems(
                         },
 
                     ) {
-                    Text13_700(
+                    Text11_body2(
                         text = "ADD",
                         availColor,
                         modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
@@ -957,6 +807,7 @@ fun BestOffers(
     context: Context,
     viewModal: HomeAllProductsViewModal
 ) {
+    Log.d("repetationcall", "call15")
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
@@ -998,13 +849,13 @@ fun BestOffers(
 
             )
 
-            Text20_700(
+            Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text12Sp_600(
+            Text10_h2(
                 text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -1016,7 +867,7 @@ fun BestOffers(
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text12Sp_600(
+                Text10_h2(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
@@ -1045,7 +896,7 @@ fun BestOffers(
                                 data.productName ?: "",
                                 data.orignalprice ?: ""
                             )
-                       //     viewModal.getCartItem()
+                            //     viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
                                 .show()
@@ -1055,7 +906,7 @@ fun BestOffers(
                         },
 
                     ) {
-                    Text13_700(
+                    Text11_body2(
                         text = "ADD",
                         availColor,
                         modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
@@ -1079,7 +930,6 @@ fun GroceriesItems(
     viewModal: HomeAllProductsViewModal,
     itemSize: Dp
 ) {
-
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
@@ -1099,7 +949,7 @@ fun GroceriesItems(
                 .padding(10.dp)
         ) {
 
-            Text12Sp_600(
+            Text10_h2(
                 text = item, color = whiteColor,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -1172,6 +1022,7 @@ fun cardviewAddtoCart(
     context: Context,
     modifier: Modifier
 ) {
+    Log.d("repetationcall", "call11")
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
@@ -1183,8 +1034,6 @@ fun cardviewAddtoCart(
                 navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
             }
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
-
-
     ) {
         Box(
             modifier = Modifier
@@ -1196,14 +1045,11 @@ fun cardviewAddtoCart(
                     .padding(2.dp)
             ) {
                 var (l0, l1, l2) = createRefs()
-
                 Image(
                     painter = painterResource(id = R.drawable.cart_icon),
                     contentDescription = "Carrot Icon",
                     alignment = Alignment.Center,
                     modifier = Modifier
-
-
                         .width(40.dp)
                         .padding(top = 10.dp)
                         .height(40.dp)
@@ -1219,11 +1065,11 @@ fun cardviewAddtoCart(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }) {
-                    Text14_400(
+                    Text12_body1(
                         text = "${viewmodal.getitemcountState.value.toString()} items",
                         color = Color.White
                     )
-                    Text14_400(
+                    Text12_body1(
                         text = "₹ ${viewmodal.getitempriceState.value.toString()}",
                         color = Color.White
                     )
@@ -1231,7 +1077,7 @@ fun cardviewAddtoCart(
 
                 }
 
-                Text16_700(
+                Text13_body1(
                     text = "view cart >",
                     color = Color.White,
                     modifier = Modifier.constrainAs(l2) {
@@ -1245,3 +1091,7 @@ fun cardviewAddtoCart(
         }
     }
 }
+
+val TOP_BAR_HEIGHT = 76.dp
+val LazyListState.isScrolled: Boolean
+    get() = firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0

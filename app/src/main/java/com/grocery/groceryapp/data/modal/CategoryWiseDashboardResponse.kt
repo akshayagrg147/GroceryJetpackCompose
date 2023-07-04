@@ -5,8 +5,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CategoryWiseDashboardResponse(
-    @Json(name = "list")
+data class  CategoryWiseDashboardResponse(
+    @Json(name = "itemData")
     val list: List<cat>?,
     @Json(name = "message")
     val message: String?,

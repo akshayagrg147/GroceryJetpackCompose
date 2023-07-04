@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.Utils.Text14_400
-import com.grocery.groceryapp.Utils.Text16_700
-import com.grocery.groceryapp.Utils.Text20_700
-import com.grocery.groceryapp.Utils.Text24_700
+import com.grocery.groceryapp.Utils.Text12_body1
+import com.grocery.groceryapp.Utils.Text12_h1
+import com.grocery.groceryapp.Utils.Text13_body1
+import com.grocery.groceryapp.Utils.Text14_h1
 import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.greycolor
@@ -40,7 +40,7 @@ fun orderDetil(
             .background(greycolor)
             .padding(start = 2.dp)
     ) {
-        Text24_700(
+        Text14_h1(
             text = "Order Details", modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
@@ -67,27 +67,31 @@ fun orderDetil(
                         .fillMaxWidth()
                         .height(10.dp)
                 )
-                Text14_400(text = " item with this order")
-if(data.list?.isNotEmpty()==true)
-                for (i in 0 until data.list[0].orderList?.size!!) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(5.dp), Arrangement.spacedBy(10.dp)) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_orders_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding()
-                                .width(20.dp)
-                                .height(20.dp)
-                        )
-                        if(data.list.isNotEmpty()) {
-                        Text16_700(text = data.list[0].orderList?.get(i)?.productName ?: "")
-                        Text16_700(text = "  ₹ ${data.list[0].orderList?.get(i)?.productprice}")
+                Text12_body1(text = " item with this order")
+                if (data.list?.isNotEmpty() == true)
+                    for (i in 0 until data.list[0].orderList?.size!!) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp), Arrangement.spacedBy(10.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_orders_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .padding()
+                                    .width(20.dp)
+                                    .height(20.dp)
+                            )
+                            if (data.list.isNotEmpty()) {
+                                Text13_body1(
+                                    text = data.list[0].orderList?.get(i)?.productName ?: ""
+                                )
+                                Text13_body1(text = "  ₹ ${data.list[0].orderList?.get(i)?.productprice}")
 
-                    } }
-                }
+                            }
+                        }
+                    }
 
             }
 
@@ -115,21 +119,21 @@ if(data.list?.isNotEmpty()==true)
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
-                Text20_700(
+                Text12_h1(
                     text = "Bill Details", modifier = Modifier
                         .fillMaxWidth()
                 )
                 Row(modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                    Text14_400(
+                    Text12_body1(
                         text = "Total", modifier = Modifier
                     )
-                    if(data.list?.isNotEmpty()==true)
-                    Text16_700(text = "  ₹ ${data.list[0].totalOrderValue}")
+                    if (data.list?.isNotEmpty() == true)
+                        Text13_body1(text = "  ₹ ${data.list[0].totalOrderValue}")
 
 
                 }
                 Row(modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                    Text14_400(
+                    Text12_body1(
                         text = "Delivery Charge", modifier = Modifier
                     )
 
@@ -144,13 +148,13 @@ if(data.list?.isNotEmpty()==true)
 
                 }
                 Row(modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                    Text14_400(
+                    Text12_body1(
                         text = "Grand Total", modifier = Modifier
                     )
-                    if(data.list?.isNotEmpty()==true)
-                    Text16_700(
-                        text = "  ₹ ${data.list[0].totalOrderValue}", modifier = Modifier
-                    )
+                    if (data.list?.isNotEmpty() == true)
+                        Text13_body1(
+                            text = "  ₹ ${data.list[0].totalOrderValue}", modifier = Modifier
+                        )
 
 
                 }
@@ -181,23 +185,23 @@ if(data.list?.isNotEmpty()==true)
                     .fillMaxWidth()
                     .padding(20.dp)
             ) {
-                Text20_700(text = "Order Details")
+                Text12_h1(text = "Order Details")
 
-                Text14_400(text = "Order Id")
-                if(data.list?.isNotEmpty()==true)
-                Text16_700(text = "#${data.list[0].orderId}")
+                Text12_body1(text = "Order Id")
+                if (data.list?.isNotEmpty() == true)
+                    Text13_body1(text = "#${data.list[0].orderId}")
 
-                Text14_400(text = "Payment")
-                if(data.list?.isNotEmpty()==true)
-                    Text16_700(text = "${data.list[0].paymentmode}")
+                Text12_body1(text = "Payment")
+                if (data.list?.isNotEmpty() == true)
+                    Text13_body1(text = "${data.list[0].paymentmode}")
 
-                Text14_400(text = "Delivery Address")
-                if(data.list?.isNotEmpty()==true)
-                Text16_700(text = "${data.list[0].address}")
+                Text12_body1(text = "Delivery Address")
+                if (data.list?.isNotEmpty() == true)
+                    Text13_body1(text = "${data.list[0].address}")
 
-                Text14_400(text = "Order Placed")
-                if(data.list?.isNotEmpty()==true)
-                Text16_700(text = "${data.list[0].createdDate}")
+                Text12_body1(text = "Order Placed")
+                if (data.list?.isNotEmpty() == true)
+                    Text13_body1(text = "${data.list[0].createdDate}")
             }
 
 

@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.features.Spash.ui.screens
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
@@ -48,7 +49,6 @@ import java.text.DecimalFormat
 fun ShimmerItem(
     brush: Brush
 ) {
-
     Column(modifier = Modifier.padding(16.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Spacer(
@@ -58,7 +58,6 @@ fun ShimmerItem(
             )
             Spacer(
                 modifier = Modifier
-
                     .size(200.dp)
                     .padding(start = 8.dp)
                     .background(brush = brush)
@@ -68,12 +67,18 @@ fun ShimmerItem(
 
     }
 }
+
 @Composable
-fun cardviewAddtoCart(viewmodal: CartItemsViewModal, navController: NavHostController, context: Context, modifier: Modifier){
+fun cardviewAddtoCart(
+    viewmodal: CartItemsViewModal,
+    navController: NavHostController,
+    context: Context,
+    modifier: Modifier
+) {
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
-        backgroundColor = seallcolor,modifier = modifier
+        backgroundColor = seallcolor, modifier = modifier
             .fillMaxWidth()
             .height(65.dp)
             .padding(5.dp)
@@ -83,16 +88,17 @@ fun cardviewAddtoCart(viewmodal: CartItemsViewModal, navController: NavHostContr
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
 
 
-    ){
-        Box(modifier = Modifier
+    ) {
+        Box(
+            modifier = Modifier
 
-        ){
+        ) {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(2.dp)
             ) {
-                var (l0,l1,l2) = createRefs()
+                var (l0, l1, l2) = createRefs()
 
                 Image(
                     painter = painterResource(id = R.drawable.cart_icon),
@@ -111,27 +117,35 @@ fun cardviewAddtoCart(viewmodal: CartItemsViewModal, navController: NavHostContr
                         }
 
                 )
-                Column(Modifier.constrainAs(l1){
+                Column(Modifier.constrainAs(l1) {
                     start.linkTo(l0.end)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }) {
-                    Text14_400(text = "${viewmodal.totalCountState.value} items", color = Color.White)
-                    Text14_400(text = "₹ ${viewmodal.totalPriceState.value}",color = Color.White)
+                    Text12_body1(
+                        text = "${viewmodal.totalCountState.value} items",
+                        color = Color.White
+                    )
+                    Text12_body1(text = "₹ ${viewmodal.totalPriceState.value}", color = Color.White)
 
 
                 }
 
-                Text16_700(text = "view cart >",color = Color.White, modifier = Modifier.constrainAs(l2){
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                    top.linkTo(parent.top)
-                })
+                Text13_body1(
+                    text = "view cart >",
+                    color = Color.White,
+                    modifier = Modifier.constrainAs(l2) {
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                        top.linkTo(parent.top)
+                    })
 
             }
 
         }
-    }}
+    }
+}
+
 @Composable
 fun ShimmerAnimation(
 ) {
@@ -154,17 +168,18 @@ fun ShimmerAnimation(
     ShimmerItem(brush = brush)
 
 }
+
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 @Composable
-fun menuitems(
+fun     menuitems(
     navController: NavHostController,
-    context:Context,
+    context: Context,
     value: String,
     viewModal: CartItemsViewModal = hiltViewModel()
 ) {
     val selectedIndex = remember { mutableStateOf(1) }
     val passingvalue = value
-    val productdetail= remember {
+    val productdetail = remember {
         mutableStateOf(ItemsCollectionsResponse.SubItems())
     }
 
@@ -173,7 +188,7 @@ fun menuitems(
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-        viewModal.getCartItem()
+    viewModal.getCartItem()
 
 
     val ls: MutableList<MainProducts> = ArrayList()
@@ -191,50 +206,40 @@ fun menuitems(
         ls.add(MainProducts("Poha", R.drawable.poha, darkFadedColor, "690"))
         ls.add(MainProducts("Panner", R.drawable.panner, darkFadedColor, "710"))
         ls.add(MainProducts("Curd", R.drawable.curd, darkFadedColor, "730"))
-    }
-    else if (passingvalue.equals("drink")) {
+    } else if (passingvalue.equals("drink")) {
         ls.add(MainProducts("cold drink", R.drawable.cold_drink, Purple700, "130"))
         ls.add(MainProducts("juices", R.drawable.juices, borderColor, "150"))
         ls.add(MainProducts("wine", R.drawable.wine, disableColor, "170"))
         ls.add(MainProducts("water", R.drawable.water, disableColor, "190"))
 
-    }
-
-
-    else if (passingvalue.equals("personal care")) {
+    } else if (passingvalue.equals("personal care")) {
         ls.add(MainProducts("Body Mosturizers", R.drawable.body_mosture, Purple700, "210"))
         ls.add(MainProducts("Soaps", R.drawable.soaps, borderColor, "230"))
         ls.add(MainProducts("oral care", R.drawable.oral_care, disableColor, "250"))
         ls.add(MainProducts("facial care", R.drawable.facial_care, darkFadedColor, "270"))
         ls.add(MainProducts("handwash", R.drawable.hand_wash, darkFadedColor, "290"))
         ls.add(MainProducts("cosmetics", R.drawable.cosmetic, darkFadedColor, "310"))
-    }
-    else if (passingvalue.equals("cleaning essentials")) {
+    } else if (passingvalue.equals("cleaning essentials")) {
         ls.add(MainProducts("Detrgent", R.drawable.tide, Purple700, "330"))
         ls.add(MainProducts("Floor Cleaner", R.drawable.floor_cleaner, borderColor, "350"))
         ls.add(MainProducts("Toilet Cleaner", R.drawable.toilet_cleaner, disableColor, "370"))
         ls.add(MainProducts("Cleaning Tools", R.drawable.cleaning_tools, darkFadedColor, "390"))
         ls.add(MainProducts("shoe Polish", R.drawable.shoe_polish, darkFadedColor, "410"))
 
-    }
-    else if (passingvalue.equals("Pet care")) {
+    } else if (passingvalue.equals("Pet care")) {
         ls.add(MainProducts("Dog food", R.drawable.dog_food, Purple700, "430"))
         ls.add(MainProducts("cat food", R.drawable.cat_food, borderColor, "450"))
         ls.add(MainProducts("Pet Grooming", R.drawable.pet_grooming, disableColor, "470"))
 
 
-    }
-    else if (passingvalue.equals("Baby care")) {
+    } else if (passingvalue.equals("Baby care")) {
         ls.add(MainProducts("Diapers", R.drawable.diaper, Purple700, "530"))
         ls.add(MainProducts("Baby Food", R.drawable.baby_food, borderColor, "550"))
         ls.add(MainProducts("Baby Skin Care", R.drawable.baby_care, disableColor, "570"))
         ls.add(MainProducts("Baby gift set", R.drawable.baby_gift, darkFadedColor, "590"))
         ls.add(MainProducts("toys", R.drawable.toys, darkFadedColor, "610"))
 
-    }
-
-
-    else {
+    } else {
         //random data
         ls.add(MainProducts("Drinks", R.drawable.fruitbasket, Purple700, "101"))
         ls.add(MainProducts("Juics", R.drawable.snacks, borderColor, "3002"))
@@ -265,11 +270,20 @@ fun menuitems(
                         ) {
                             HorizontalPager(count = 3, state = pager) { index ->
                                 if (index == 0)
-                                    Banner(pagerState = pager, productdetail.value.productImage1?: "")
+                                    Banner(
+                                        pagerState = pager,
+                                        productdetail.value.productImage1 ?: ""
+                                    )
                                 if (index == 1)
-                                    Banner(pagerState = pager, productdetail.value.productImage2 ?: "")
+                                    Banner(
+                                        pagerState = pager,
+                                        productdetail.value.productImage2 ?: ""
+                                    )
                                 if (index == 2)
-                                    Banner(pagerState = pager, productdetail.value.productImage3 ?: "")
+                                    Banner(
+                                        pagerState = pager,
+                                        productdetail.value.productImage3 ?: ""
+                                    )
                             }
 
                         }
@@ -281,7 +295,7 @@ fun menuitems(
                                 .padding(horizontal = 20.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text20_700(
+                            Text12_h1(
                                 text = productdetail.value.productName ?: "",
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
@@ -292,16 +306,15 @@ fun menuitems(
                             }
                         }
                         Spacer(modifier = Modifier.height(5.dp))
-                        Text16_700(text = "Product Detail", modifier = Modifier.fillMaxWidth(),)
+                        Text13_body1(text = "Product Detail", modifier = Modifier.fillMaxWidth())
                         Spacer(modifier = Modifier.height(5.dp))
-                        Text14_400(text = productdetail.value.productDescription?:"", modifier = Modifier.fillMaxWidth(),)
-
-
-
+                        Text12_body1(
+                            text = productdetail.value.productDescription ?: "",
+                            modifier = Modifier.fillMaxWidth(),
+                        )
 
 
                     }
-
 
 
                 }
@@ -314,11 +327,14 @@ fun menuitems(
         sheetShape = RoundedCornerShape(
             topStart = 20.dp, topEnd = 20.dp
         )
-    ){
+    ) {
 
-        Box(modifier = Modifier.fillMaxSize()){
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
-                Text24_700(text = "Sub cart menus", modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text14_h1(
+                    text = "Sub cart menus",
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
@@ -329,12 +345,19 @@ fun menuitems(
                         modifier = Modifier
                             .padding(bottom = 15.dp)
                     ) {
-                        selectedIndex.value = ls[0].productId?.toInt()?:0
-                        viewModal.calllingItemsCollectionsId(ProductIdIdModal(ls[0].productId))
+                        selectedIndex.value = ls[0].productId?.toInt() ?: 0
+                        viewModal.setProductId(ProductIdIdModal(ls[0].productId))
+
                         items(ls) { item ->
 
-                            ItemEachRow(item, selectedIndex, viewModal) { productid, selectedvalue ->
-                                viewModal.calllingItemsCollectionsId(ProductIdIdModal(productid))
+                            ItemEachRow(
+                                item,
+                                selectedIndex,
+                                viewModal
+                            ) { productid, selectedvalue ->
+                                Log.d("productidgetting", "${productid}")
+                                viewModal.setProductId(ProductIdIdModal(productid))
+
                                 selectedIndex.value = selectedvalue
 
                             }
@@ -354,8 +377,8 @@ fun menuitems(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 modifier = Modifier.padding(horizontal = 1.dp)
                             ) { itemData ->
-                                MenuItemGrid(itemData,context, viewModal){passvalue->
-                                   productdetail.value=passvalue
+                                MenuItemGrid(itemData, context, viewModal) { passvalue ->
+                                    productdetail.value = passvalue
                                     scope.launch { modalBottomSheetState.show() }
                                 }
                             }
@@ -372,11 +395,15 @@ fun menuitems(
 
                 }
             }
-            cardviewAddtoCart(viewModal,navController,context,modifier=Modifier.align(Alignment.BottomCenter))
+            cardviewAddtoCart(
+                viewModal,
+                navController,
+                context,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
         }
 
     }
-
 
 
 }
@@ -394,7 +421,6 @@ fun ItemEachRow(
 
         backgroundColor = if (selectedIndex.value == item.productId?.toInt()) Color.LightGray else Color.White,
         modifier = Modifier
-
 
 
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
@@ -419,7 +445,7 @@ fun ItemEachRow(
                     .align(Alignment.CenterHorizontally)
 
             )
-            Text13_700(text = item.name, modifier = Modifier.align(Alignment.CenterHorizontally))
+            Text11_body2(text = item.name, modifier = Modifier.align(Alignment.CenterHorizontally))
 
 
         }
@@ -432,9 +458,9 @@ fun ItemEachRow(
 
 @Composable
 fun MenuItemGrid(
-    data: ItemsCollectionsResponse.SubItems, context:Context,
+    data: ItemsCollectionsResponse.SubItems, context: Context,
     viewModal: CartItemsViewModal,
-    passItem:(productdetail:ItemsCollectionsResponse.SubItems)->Unit
+    passItem: (productdetail: ItemsCollectionsResponse.SubItems) -> Unit
 ) {
 
 
@@ -442,7 +468,7 @@ fun MenuItemGrid(
         elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .padding( horizontal = 4.dp)
+            .padding(horizontal = 4.dp)
 
             .width(150.dp)
             .clickable {
@@ -455,12 +481,17 @@ fun MenuItemGrid(
                 .fillMaxWidth()
                 .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
-            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.actualPrice?.toFloat()?:0.0f))*100)).toString()
+            val offpercentage: String = (DecimalFormat("#.##").format(
+                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.actualPrice?.toFloat()
+                    ?: 0.0f)) * 100
+            )).toString()
 
             Text(
-                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
+                text = "${offpercentage}% off", color = titleColor,
+                modifier = Modifier.align(
                     Alignment.End
-                ),fontSize = 10.sp,
+                ),
+                fontSize = 10.sp,
             )
 
             Image(
@@ -475,13 +506,13 @@ fun MenuItemGrid(
 
             )
 
-            Text20_700(
+            Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text12Sp_600(
+            Text10_h2(
                 text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -493,15 +524,17 @@ fun MenuItemGrid(
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text12Sp_600(
+                Text10_h2(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
-                Card( border = BorderStroke(1.dp, titleColor),
+                Card(
+                    border = BorderStroke(1.dp, titleColor),
                     modifier = Modifier
 
-                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp)).padding(start=10.dp)
+                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                        .padding(start = 10.dp)
 
                         .background(color = whiteColor)
                         .clickable {
@@ -523,9 +556,12 @@ fun MenuItemGrid(
                         },
 
                     ) {
-                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 3.dp, horizontal = 8.dp))
+                    Text11_body2(
+                        text = "ADD",
+                        availColor,
+                        modifier = Modifier.padding(vertical = 3.dp, horizontal = 8.dp)
+                    )
                 }
-
 
 
             }
@@ -533,6 +569,7 @@ fun MenuItemGrid(
         }
     }
 }
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Banner(

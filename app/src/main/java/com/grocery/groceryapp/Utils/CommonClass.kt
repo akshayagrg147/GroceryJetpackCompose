@@ -25,26 +25,30 @@ import com.grocery.groceryapp.R
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 
 @Composable
-fun Text14_400(text: String, color: Color = bodyTextColor, modifier: Modifier = Modifier) {
+fun Text12_body1(text: String, color: Color = bodyTextColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.body1, color = color, modifier = modifier,fontSize = 12.sp)
 }
 
 @Composable
-fun Text24_700(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
+fun Text14_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp)
+}
+@Composable
+fun Text16_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 16.sp)
 }
 
 @Composable
-fun Text20_700(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
+fun Text12_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,fontSize = 12.sp)
 }
 
 @Composable
-fun Text16_700(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
+fun Text13_body1(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 13.sp)
 }
 @Composable
-fun Text13_700(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
+fun Text11_body2(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 11.sp)
 }
 @Composable
@@ -54,11 +58,11 @@ fun Text16_700Error(text: String, color: Color = blackColor, modifier: Modifier 
 
 
 @Composable
-fun Text18_600(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
+fun Text14_h2(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 14.sp)
 }
 @Composable
-fun Text12Sp_600(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
+fun Text10_h2(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 10.sp)
 }
 @Composable
@@ -79,7 +83,7 @@ fun CommonButton(
                 .background(backgroundColor)
                 .clickable { onClick() }
         ) {
-            Text16_700(
+            Text13_body1(
                 text = text,
                 color = color,
                 modifier = Modifier
@@ -145,7 +149,7 @@ fun CommonHeader(text: String, onClick: () -> Unit = {}) {
                 contentDescription = "",
             )
         }
-        Text24_700(
+        Text14_h1(
             text = text,
             modifier = Modifier
                 .padding(horizontal = 10.dp)
@@ -209,6 +213,53 @@ fun CommonTextField(
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     size: Dp = 25.dp,
     enable: Boolean = true,
+    onClick: (String) -> Unit = {}
+
+) {
+    TextField(
+        value = text.value,
+        onValueChange = { text.value = it
+            onClick(it)},
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            focusedLabelColor = fadedTextColor,
+            textColor = headingColor,
+            unfocusedLabelColor = fadedTextColor,
+            unfocusedIndicatorColor = borderColor,
+            focusedIndicatorColor = headingColor,
+            disabledIndicatorColor = fadedTextColor
+        ),
+        label = { Text(text = placeholder) },
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = trailingIcon),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(size),
+                tint = iconColor,
+            )
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick(text.value) },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        enabled = enable,
+        textStyle = TextStyle(
+            color = Color.Black
+        )
+    )
+}
+
+@Composable
+fun CommonTextFieldNonEditable(
+    text: MutableState<String>,
+    placeholder: String,
+    trailingIcon: Int=R.drawable.eye,
+    iconColor: Color = Color.Transparent,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    size: Dp = 25.dp,
+    enable: Boolean = false,
     onClick: (String) -> Unit = {}
 
 ) {

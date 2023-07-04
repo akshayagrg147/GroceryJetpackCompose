@@ -34,11 +34,9 @@ import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
-import com.grocery.groceryapp.data.modal.RelatedSearchRequest
-import com.grocery.groceryapp.features.Home.ui.ShimmerAnimation
+import com.grocery.groceryapp.features.Home.ui.screens.ShimmerAnimation
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductByIdViewModal
-import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductEvents
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -128,13 +126,13 @@ fun RelatedSearchItem(
 
             )
 
-            Text20_700(
+            Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text12Sp_600(
+            Text10_h2(
                 text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -146,7 +144,7 @@ fun RelatedSearchItem(
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text12Sp_600(
+                Text10_h2(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
@@ -168,7 +166,7 @@ fun RelatedSearchItem(
                         .background(color = whiteColor),
 
                     ) {
-                    Text13_700(
+                    Text11_body2(
                         text = "ADD",
                         availColor,
                         modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
@@ -295,7 +293,7 @@ fun ItemDetailsScreen(
                                     style = loginTypography.h1,
                                     fontSize = 18.sp,
                                 )
-                                Text14_400(
+                                Text12_body1(
                                     text = value.homeproducts?.quantity ?: "", modifier = Modifier
                                         .padding(top = 5.dp)
                                 )
@@ -309,7 +307,7 @@ fun ItemDetailsScreen(
 //                horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
 
-                                Text14_400(
+                                Text12_body1(
                                     text = "₹ ${value.homeproducts?.price}",
                                     color = headingColor,
                                     //  modifier= Modifier.weight(0.5F)
@@ -343,7 +341,7 @@ fun ItemDetailsScreen(
                                             viewModal.deleteCartItems(value)
                                         }
 
-                                        Text14_400(
+                                        Text12_body1(
                                             text = cartcount.value.toString(),
                                             modifier = Modifier
                                                 .align(Alignment.CenterVertically)
@@ -381,7 +379,7 @@ fun ItemDetailsScreen(
                                             },
 
                                         ) {
-                                        Text13_700(
+                                        Text11_body2(
                                             text = "ADD",
                                             availColor,
                                             modifier = Modifier.padding(
@@ -449,7 +447,7 @@ fun ItemDetailsScreen(
                                 .fillMaxWidth()
                                 .padding(top = 10.dp), Arrangement.SpaceBetween
                         ) {
-                            Text16_700(
+                            Text13_body1(
                                 text = "Related Search", color = Color.Black,
                                 modifier = Modifier
                                     .padding(start = 10.dp),
@@ -554,18 +552,18 @@ fun cardviewAddtoCart(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 }) {
-                    Text14_400(
+                    Text12_body1(
                         text = "${viewModal.totalCountState.value} items",
                         color = Color.White
                     )
-                    Text14_400(
+                    Text12_body1(
                         text = "₹ ${viewModal.totalPriceState.value}",
                         color = Color.White
                     )
 
 
                 }
-                Text16_700(
+                Text13_body1(
                     text = "view cart >",
                     color = Color.White,
                     modifier = Modifier.constrainAs(l2) {
@@ -622,7 +620,7 @@ fun TabContentScreen(data: String) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text16_700(text = data, color = greyLightColor)
+        Text13_body1(text = data, color = greyLightColor)
 
     }
 }
@@ -649,11 +647,11 @@ fun ReviewsCollection(value: ProductByIdResponseModal) {
                         .height(40.dp)
                 )
                 Column() {
-                    Text16_700(text = data?.name ?: "", modifier = Modifier.width(200.dp))
-                    Text14_400(text = data?.remark ?: "", modifier = Modifier.width(200.dp))
+                    Text13_body1(text = data?.name ?: "", modifier = Modifier.width(200.dp))
+                    Text12_body1(text = data?.remark ?: "", modifier = Modifier.width(200.dp))
 
                 }
-                Text14_400(text = "21 April 2020")
+                Text12_body1(text = "21 April 2020")
 
 
             }

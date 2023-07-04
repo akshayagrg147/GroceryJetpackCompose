@@ -18,9 +18,6 @@ fun PrivacyPolicyScreen() {
     var search = remember {
         mutableStateOf("")
     }
-
-
-
     LazyColumn(
         modifier = Modifier.background(MaterialTheme.colors.background),
         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),

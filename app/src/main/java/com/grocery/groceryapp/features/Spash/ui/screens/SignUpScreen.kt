@@ -1,7 +1,6 @@
 package com.grocery.groceryapp.features.Spash
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -77,7 +76,7 @@ fun SignUpScreen(
                     .align(alignment = Alignment.CenterHorizontally)
 
             )
-            Text24_700(
+            Text14_h1(
                 text = "Sign Up", color = headingColor,
                 modifier = Modifier.padding(bottom = 10.dp, top = 25.dp)
             )
@@ -117,7 +116,6 @@ fun SignUpScreen(
                     )
                 }
                 Column(Modifier.fillMaxWidth()) {
-
                     Row {
                         CommonButton(
                             text = "Sign Up",
@@ -128,8 +126,6 @@ fun SignUpScreen(
                         ) {
                             isDialog=true
                             val res = viewModal.registrationGetResponse.value
-
-
                             viewModal.setData(
                                 RegisterLoginRequest(
                                 email.value,name.value,contactNum.value
@@ -151,8 +147,6 @@ fun SignUpScreen(
 
                         }
                     }
-
-
                 }
 
             }

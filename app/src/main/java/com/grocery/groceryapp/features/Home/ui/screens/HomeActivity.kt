@@ -31,9 +31,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity() : ComponentActivity() {
-
     private val viewModal: HomeAllProductsViewModal by viewModels()
-
     @Inject
     lateinit var sharedpreferenceCommon: sharedpreferenceCommon
 
@@ -55,8 +53,6 @@ class HomeActivity() : ComponentActivity() {
                         this@HomeActivity,
                         sharedpreferenceCommon
                     )
-
-
                 }
             }
         }
@@ -88,7 +84,6 @@ fun ConnectivityStatus() {
 
     } else {
         internetconnectvity = false
-
     }
     if(!internetconnectvity)
     CustomDialog(){

@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ItemsCollectionsResponse(
-    @Json(name = "list")
+    @Json(name = "itemData")
     val list: List<SubItems>?= emptyList(),
     @Json(name = "message")
     val message: String?,
@@ -17,7 +17,7 @@ data class ItemsCollectionsResponse(
     data class SubItems (
         @Json(name = "actual_price")
         val actualPrice: String="",
-        @Json(name = "itemCategoryId")
+            @Json(name = "itemCategoryId")
         val itemCategoryId: String="",
         @Json(name = "price")
         val price: String="",

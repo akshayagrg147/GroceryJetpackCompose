@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ProductIdIdModal(
     @Json(name = "ProductId")
-    val productId: String?
+    val productId: String?=null
 )

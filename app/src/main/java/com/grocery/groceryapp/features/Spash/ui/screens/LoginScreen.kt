@@ -74,7 +74,7 @@ fun loginScreen(
 
                 )
 
-                Text24_700(
+                Text14_h1(
                     text = "Log In", color = headingColor,
                     modifier = Modifier.padding(bottom = 10.dp, top = 25.dp)
                 )
@@ -131,7 +131,7 @@ fun loginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text14_400(
+                Text12_body1(
                     text = "Please Enter 6 digit code sent on +91${mobile}", color = fadedTextColor,
                 )
                 Spacer(modifier = Modifier.height(10.dp))

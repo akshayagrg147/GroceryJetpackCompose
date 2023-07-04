@@ -15,5 +15,4 @@ fun OrderDetailsScreen(
 ) {
 
     ItemScreenNavigation(context, model?.split(" ")?.get(0), model?.split(" ")?.get(1),navController)
-
-    }
+}

@@ -6,12 +6,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
+@HiltViewModel
 class MapScreenViewModal @Inject constructor(val sharedpreference: sharedpreferenceCommon) : ViewModel() {
 
     fun ConvertLatLngToAddress(latitude: Double, longitude: Double, gcd: Geocoder,address:(List<Address>)->Unit) {

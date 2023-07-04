@@ -26,21 +26,31 @@ import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.android.parcel.RawValue
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeAllProductsViewModal @Inject constructor(
-    private val pagingDataSource: PaginSoucrce,val roomrespo: RoomRepository,
-    val repository: CommonRepository, val
-    sharedPreferences: sharedpreferenceCommon, val dao: Dao, @ApplicationContext context: Context, val cat:CallingCategoryWiseData
+    private val pagingDataSource: PaginSoucrce,
+    val roomrespo: RoomRepository,
+    val repository: CommonRepository,
+    val
+    sharedPreferences: sharedpreferenceCommon,
+    val dao: Dao,
+    @ApplicationContext context: Context,
+    val cat: CallingCategoryWiseData
 ) : ViewModel() {
     init {
-       callingBestSelling(sharedPreferences.getCity())
+        callingBestSelling(sharedPreferences.getCity())
         callingExcusiveProducts(sharedPreferences.getCity())
+        getItemCount()
+        getItemPrice()
+        callingDashboardCategoryWiseList()
     }
 
     var passingdata: MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
@@ -49,7 +59,8 @@ class HomeAllProductsViewModal @Inject constructor(
 
     private val CategoryWiseDashboardResponse: MutableState<CategoryWiseDashboardResponse> =
         mutableStateOf(CategoryWiseDashboardResponse(null, null, null))
-    val CategoryWiseDashboardRespon: State<CategoryWiseDashboardResponse> = CategoryWiseDashboardResponse
+    val CategoryWiseDashboardRespon: State<CategoryWiseDashboardResponse> =
+        CategoryWiseDashboardResponse
 
 
     private val bestsellingProductsResponse: MutableState<HomeAllProductsResponse> =
@@ -68,15 +79,20 @@ class HomeAllProductsViewModal @Inject constructor(
 
     private val m11: MutableStateFlow<String> = MutableStateFlow("")
     val getitemcount11 = m11.asSharedFlow()
-    private val live:MutableState<String> = mutableStateOf("")
-    val responseLiveData:MutableState<String> =live
+    private val live: MutableState<String> = mutableStateOf("")
+    val responseLiveData: MutableState<String> = live
 
-    private var listMutable:MutableState< HomeAllProductsResponse> = mutableStateOf(
+    private var listMutable: MutableState<HomeAllProductsResponse> = mutableStateOf(
         HomeAllProductsResponse()
     )
-    val listState:State<HomeAllProductsResponse> =listMutable
+    private var globalmutablelist: MutableState<HomeAllProductsResponse> = mutableStateOf(
+        HomeAllProductsResponse()
+    )
+    val globalmutablelist1: State<HomeAllProductsResponse> = globalmutablelist
+    val listState: State<HomeAllProductsResponse> = listMutable
 
-var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
+
+    var filterlist: List<HomeAllProductsResponse.HomeResponse>? = null
 
 
     val repo = getitemcount11
@@ -90,20 +106,22 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
         }
 
 
-    fun setList(response: @RawValue HomeAllProductsResponse){
+    fun setList(response: @RawValue HomeAllProductsResponse) {
 
-        listMutable.value=response
+        listMutable.value = response
+        globalmutablelist.value = response
+
+    }
+
+    fun setvalue(str: String) {
+        live.value = str
+        listMutable.value = listMutable.value
+
 
     }
 
-    fun setvalue(str:String){
-        live.value=str
-        listMutable.value=   listMutable.value
-
-
-    }
-    fun setupFlow(query: String){
-        m11.value=query
+    fun setupFlow(query: String) {
+        m11.value = query
 
     }
 
@@ -123,19 +141,18 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
         dao.deleteAddress(id.toString())
 
     }
-    fun deleteCartItems()=viewModelScope.launch(Dispatchers.IO) {
+
+    fun deleteCartItems() = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteAllFromTable()
     }
 
 
-
-
     fun callingExcusiveProducts(city: String) = viewModelScope.launch {
-        Log.d("suceessmsg","sucess ${Gson().toJson(city)}")
+        Log.d("suceessmsg", "sucess ${Gson().toJson(city)}")
         repository.ExclusiveProducts("kaithal").collectLatest {
             when (it) {
                 is ApiState.Success -> {
-                    Log.d("suceessmsg","sucess ${Gson().toJson(it)}")
+                    Log.d("suceessmsg", "sucess exlusive ${Gson().toJson(it)}")
                     exclusiveProductsResponse.value = it.data
                 }
                 is ApiState.Failure -> {
@@ -148,18 +165,22 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
             }
         }
     }
-    fun getItemCount()=viewModelScope.launch {
 
-        roomrespo.getTotalProductItems().catch { e->  Log.d("dmdndnd", "Exception: ${e.message} ") }.collect{
-            totalcount.value=it?:0
-            Log.d("dmdndnd",totalcount.value.toString())
-        }
+    fun getItemCount() = viewModelScope.launch {
+
+        roomrespo.getTotalProductItems().catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }
+            .collect {
+                totalcount.value = it ?: 0
+                Log.d("dmdndnd", totalcount.value.toString())
+            }
 
     }
-    fun getItemPrice()=viewModelScope.launch {
-        roomrespo.getTotalProductItemsPrice().catch { e->  Log.d("dmdndnd", "Exception: ${e.message} ") }.collect{
-            totalprice.value=it?:0
-            Log.d("dmdndnd",totalprice.value.toString())
+
+    fun getItemPrice() = viewModelScope.launch {
+        roomrespo.getTotalProductItemsPrice()
+            .catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }.collect {
+            totalprice.value = it ?: 0
+            Log.d("dmdndnd", totalprice.value.toString())
         }
     }
 
@@ -170,12 +191,16 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
         productname: String,
         actualprice: String
     ) = viewModelScope.launch(Dispatchers.IO) {
-        val intger: Int = dao.getProductBasedIdCount(productIdNumber).first()?:0
+        val intger: Int = dao.getProductBasedIdCount(productIdNumber).first() ?: 0
         if (intger == 0) {
-            val data= CartItems(
+            val data = CartItems(
                 productIdNumber,
-                thumb, intger + 1,
-                price, productname, actualprice, savingAmount = (actualprice.toInt()-price.toInt()).toString()
+                thumb,
+                intger + 1,
+                price,
+                productname,
+                actualprice,
+                savingAmount = (actualprice.toInt() - price.toInt()).toString()
             )
             roomrespo.insert(data)
         } else if (intger >= 1) {
@@ -185,12 +210,14 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
 
 
     }
-    fun setcategory(ss:String){
+
+    fun setcategory(ss: String) {
         cat.settingData(ss)
 
     }
-    fun getcategory():String{
-       return cat.gettingData()
+
+    fun getcategory(): String {
+        return cat.gettingData()
 
     }
 
@@ -240,9 +267,11 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
     }
 
     fun setFilterList(filterlist: List<HomeAllProductsResponse.HomeResponse>?) {
-      this.filterlist=filterlist
+        Log.d("kdkkdk", "skksk ${Gson().toJson(filterlist)}")
+        listMutable.value = HomeAllProductsResponse(filterlist)
     }
-    fun getfilterlist(): List<HomeAllProductsResponse.HomeResponse>?{
+
+    fun getfilterlist(): List<HomeAllProductsResponse.HomeResponse>? {
         return filterlist
     }
 
@@ -253,7 +282,10 @@ var filterlist:List<HomeAllProductsResponse.HomeResponse>?=null
 
 }
 
-class PaginSoucrce @Inject constructor(private val apiService: ApiService,val calling: CallingCategoryWiseData) :
+class PaginSoucrce @Inject constructor(
+    private val apiService: ApiService,
+    val calling: CallingCategoryWiseData
+) :
     PagingSource<Int, HomeAllProductsResponse.HomeResponse>() {
 
     val INITIAL_LOAD_SIZE = 0
@@ -269,7 +301,8 @@ class PaginSoucrce @Inject constructor(private val apiService: ApiService,val ca
                 if (params.key != null) ((position - 1) * NETWORK_PAGE_SIZE) + 1 else INITIAL_LOAD_SIZE
             return try {
                 // val jsonResponse = service.getCryptoList(start = offset, limit = params.loadSize).data
-                val homeproduts = apiService.getHomeAllProducts(offset, params.loadSize,calling.gettingData())
+                val homeproduts =
+                    apiService.getHomeAllProducts(offset, params.loadSize, calling.gettingData())
 
                 val nextKey = if (homeproduts.body()?.list?.isEmpty() == true) {
                     null

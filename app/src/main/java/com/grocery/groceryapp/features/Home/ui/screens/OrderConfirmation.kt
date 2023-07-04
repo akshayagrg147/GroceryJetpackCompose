@@ -21,9 +21,9 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.Utils.Text14_400
-import com.grocery.groceryapp.Utils.Text16_700
-import com.grocery.groceryapp.Utils.Text20_700
+import com.grocery.groceryapp.Utils.Text12_body1
+import com.grocery.groceryapp.Utils.Text12_h1
+import com.grocery.groceryapp.Utils.Text13_body1
 import com.grocery.groceryapp.data.modal.OrderIdResponse
 import com.grocery.groceryapp.features.Home.ui.ui.theme.whiteColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
@@ -32,9 +32,8 @@ import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewMod
 @Composable
 fun OrderConfirmation(
     data: OrderIdResponse,
-    navController: NavHostController,viewModal: HomeAllProductsViewModal = hiltViewModel()
+    navController: NavHostController, viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
-
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .componentRegistry {
             if (Build.VERSION.SDK_INT >= 28) {
@@ -44,243 +43,254 @@ fun OrderConfirmation(
             }
         }
         .build()
+
     BackHandler {
-
-
-        navController.popBackStack(DashBoardNavRoute.Home.screen_route,false)
-     //   navController.popBackStack(0, false)
+        navController.popBackStack(DashBoardNavRoute.Home.screen_route, false)
+        //   navController.popBackStack(0, false)
 
     }
-    if(data.statusCode==200)
-    Column(modifier = Modifier.fillMaxSize()) {
+    if (data.statusCode == 200)
+        Column(modifier = Modifier.fillMaxSize()) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize(), verticalArrangement = Arrangement.Center
-
-        ) {
-            viewModal.deleteCartItems()
-
-
-            Card(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(20.dp),
-                shape = RoundedCornerShape(8.dp), elevation = 10.dp
+                    .fillMaxSize(), verticalArrangement = Arrangement.Center
+
             ) {
-                Column(
+                viewModal.deleteCartItems()
+                Card(
                     modifier = Modifier
-                        .background(whiteColor).padding(20.dp)
-                        .clickable { }
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .padding(20.dp),
+                    shape = RoundedCornerShape(8.dp), elevation = 10.dp
                 ) {
-                    Box(modifier = Modifier.fillMaxWidth(),  Alignment.Center) {
-                        Image(
-                            painter = rememberImagePainter(
-                                imageLoader = imageLoader,
-                                data = R.drawable. success,
-                                builder = {
-                                },
-                            ),
-                            alignment = Alignment.TopCenter,
-                            contentDescription = null,
-                            modifier = Modifier.size(60.dp)
-                        )
-                    }
-                    Text20_700(text = "Order Placed!",
+                    Column(
                         modifier = Modifier
-                            .padding(top = 30.dp)
-                            .align(Alignment.CenterHorizontally))
-                    Text14_400(
-                        text = "Your will receive a confirmation email with order details",
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(vertical = 10.dp)
-
-                    )
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
-                        Text16_700(
-                            text = "Order Id:",
+                            .background(whiteColor)
+                            .padding(20.dp)
+                            .clickable { }
+                    ) {
+                        Box(modifier = Modifier.fillMaxWidth(), Alignment.Center) {
+                            Image(
+                                painter = rememberImagePainter(
+                                    imageLoader = imageLoader,
+                                    data = R.drawable.success,
+                                    builder = {
+                                    },
+                                ),
+                                alignment = Alignment.TopCenter,
+                                contentDescription = null,
+                                modifier = Modifier.size(60.dp)
+                            )
+                        }
+                        Text12_h1(
+                            text = "Order Placed!",
                             modifier = Modifier
-                                .padding(vertical = 5.dp)
+                                .padding(top = 30.dp)
+                                .align(Alignment.CenterHorizontally)
                         )
-                        Text14_400(
-                            text = "${data.productResponse?.orderId}",
+                        Text12_body1(
+                            text = "Your will receive a confirmation email with order details",
                             modifier = Modifier
-                                .padding(vertical = 5.dp)
+                                .align(Alignment.CenterHorizontally)
+                                .padding(vertical = 10.dp)
+
                         )
-
-                    }
-
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
-                        Text16_700(
-                            text = "Order value",
+                        Row(
                             modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
-                        Text14_400(
-                            text = "${data.productResponse?.totalOrderValue}",
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                        ) {
+                            Text13_body1(
+                                text = "Order Id:",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+                            Text12_body1(
+                                text = "${data.productResponse?.orderId}",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+
+                        }
+
+                        Row(
                             modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                        ) {
+                            Text13_body1(
+                                text = "Order value",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+                            Text12_body1(
+                                text = "${data.productResponse?.totalOrderValue}",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
 
-                    }
-
-
+                        }
 
 
                     }
                 }
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp).padding(20.dp),
-                shape = RoundedCornerShape(8.dp), elevation = 10.dp
-            ){
-                Column(
+                Card(
                     modifier = Modifier
-                        .background(whiteColor).padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-
-                ){
-                    Text16_700(
-                        text = "Delivery by Wed,Sept 7th 22",
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .padding(20.dp),
+                    shape = RoundedCornerShape(8.dp), elevation = 10.dp
+                ) {
+                    Column(
                         modifier = Modifier
-                            .padding(vertical = 5.dp)
-                    )
+                            .background(whiteColor)
+                            .padding(20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
 
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
-                        Text16_700(
-                            text = "Deliver Address:",
+                    ) {
+                        Text13_body1(
+                            text = "Delivery by Wed,Sept 7th 22",
                             modifier = Modifier
                                 .padding(vertical = 5.dp)
                         )
-                        Text14_400(
-                            text = "${data.productResponse?.address}",
+
+                        Row(
                             modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                        ) {
+                            Text13_body1(
+                                text = "Deliver Address:",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+                            Text12_body1(
+                                text = "${data.productResponse?.address}",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                        ) {
+                            Text13_body1(
+                                text = "Contact Number:",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+                            Text12_body1(
+                                text = "${data.productResponse?.mobilenumber}",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                        ) {
+                            Text13_body1(
+                                text = "Order Date:",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+                            Text12_body1(
+                                text = "${data.productResponse?.createdDate}",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+
+                        }
+
 
                     }
-
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
-                        Text16_700(
-                            text = "Contact Number:",
-                            modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
-                        Text14_400(
-                            text = "${data.productResponse?.mobilenumber}",
-                            modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
-
-                    }
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
-                        Text16_700(
-                            text = "Order Date:",
-                            modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
-                        Text14_400(
-                            text = "${data.productResponse?.createdDate}",
-                            modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
-
-                    }
-
-
                 }
+
             }
 
+
         }
-
-
-}
     else
-    Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize(), verticalArrangement = Arrangement.Center
-
-        ) {
-
-
-            Card(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(20.dp),
-                shape = RoundedCornerShape(8.dp), elevation = 10.dp
+                    .fillMaxSize(), verticalArrangement = Arrangement.Center
+
             ) {
-                Column(
+
+
+                Card(
                     modifier = Modifier
-                        .background(whiteColor)
-                        .clickable { }
-                ) {
-                    Box(modifier = Modifier.fillMaxWidth(),  Alignment.Center) {
-                        Image(
-                            painter = rememberImagePainter(
-                                imageLoader = imageLoader,
-                                data = R.drawable. failed,
-                                builder = {
-                                },
-                            ),
-                            alignment = Alignment.TopCenter,
-                            contentDescription = null,
-                            modifier = Modifier.size(60.dp)
-                        )
-                    }
-
-                    Text20_700(text = "Order Failed!",
-                        modifier = Modifier
-                            .padding(top = 30.dp)
-                            .align(Alignment.CenterHorizontally))
-                    Text14_400(
-                        text = "Some missing information",
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(vertical = 10.dp)
-
-                    )
-                    Row(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp),Arrangement.SpaceBetween) {
-                        Text16_700(
-                            text = "Order Id:",
-                            modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
-                        Text14_400(
-                            text = "Bk12H1121",
-                            modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
+                        .height(300.dp)
+                        .padding(20.dp),
+                    shape = RoundedCornerShape(8.dp), elevation = 10.dp
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .background(whiteColor)
+                            .clickable { }
+                    ) {
+                        Box(modifier = Modifier.fillMaxWidth(), Alignment.Center) {
+                            Image(
+                                painter = rememberImagePainter(
+                                    imageLoader = imageLoader,
+                                    data = R.drawable.failed,
+                                    builder = {
+                                    },
+                                ),
+                                alignment = Alignment.TopCenter,
+                                contentDescription = null,
+                                modifier = Modifier.size(60.dp)
+                            )
+                        }
 
+                        Text12_h1(
+                            text = "Order Failed!",
+                            modifier = Modifier
+                                .padding(top = 30.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+                        Text12_body1(
+                            text = "Some missing information",
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(vertical = 10.dp)
+
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                        ) {
+                            Text13_body1(
+                                text = "Order Id:",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+                            Text12_body1(
+                                text = "Bk12H1121",
+                                modifier = Modifier
+                                    .padding(vertical = 5.dp)
+                            )
+
+                        }
                     }
                 }
+
             }
 
+
         }
-
-
-
-
-
-    }
 
 
 }

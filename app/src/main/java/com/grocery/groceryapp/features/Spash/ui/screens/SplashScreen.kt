@@ -17,8 +17,8 @@ import androidx.navigation.NavHostController
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
-import com.grocery.groceryapp.Utils.Text14_400
-import com.grocery.groceryapp.Utils.Text24_700
+import com.grocery.groceryapp.Utils.Text12_body1
+import com.grocery.groceryapp.Utils.Text14_h1
 import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.availColor
 
@@ -41,8 +41,8 @@ fun SplashScreen(navController: NavHostController, context: Context,sharedprefer
         )
 
         Column(verticalArrangement = Arrangement.SpaceBetween) {
-            Text24_700(text = "nectar", modifier = Modifier.padding(top = 5.dp),color = Color.White)
-            Text14_400(text = "Online Groceries", modifier = Modifier.padding(), color = Color.White)
+            Text14_h1(text = "nectar", modifier = Modifier.padding(top = 5.dp),color = Color.White)
+            Text12_body1(text = "Online Groceries", modifier = Modifier.padding(), color = Color.White)
 
         }
 

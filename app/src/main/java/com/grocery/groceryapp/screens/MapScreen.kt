@@ -34,8 +34,8 @@ import com.google.maps.android.compose.*
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.CommonButton
-import com.grocery.groceryapp.Utils.Text14_400
-import com.grocery.groceryapp.Utils.Text24_700
+import com.grocery.groceryapp.Utils.Text12_body1
+import com.grocery.groceryapp.Utils.Text14_h1
 import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterLoginViewModal
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -63,6 +63,10 @@ fun MapScreen1(fusedLocationProviderClient: FusedLocationProviderClient,@Applica
         cameraPositionState, context = context
     ) {
         requestLocationUpdate = true
+    }
+    DebugOverlay(cameraPositionState){
+        Log.d("callingmap","callingmap")
+       // address= getAddress(context,it)
     }
 
     if (requestLocationUpdate) {
@@ -117,7 +121,7 @@ private fun MyGoogleMap(
   //  placesApi(cameraPositionState,address)
 
     Column(modifier = Modifier.fillMaxSize(),Arrangement.SpaceBetween) {
-        Text14_400(text = add, modifier = Modifier
+        Text12_body1(text = add, modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
 
@@ -178,7 +182,7 @@ fun placesApi( cameraPositionState: CameraPositionState, address: String,viewMod
 
         }
     Column(modifier = Modifier.fillMaxSize(),Arrangement.SpaceBetween) {
-        Text24_700(text = addr, modifier = Modifier
+        Text14_h1(text = addr, modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
 
@@ -276,27 +280,16 @@ private fun GpsIconButton(onIconClick: () -> Unit) {
     }
 }
 
-@Composable
+
 private fun DebugOverlay(
-    cameraPositionState: CameraPositionState,
+    cameraPositionState: CameraPositionState,call:(LatLng)->Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
-    ) {
-        val moving =
-            if (cameraPositionState.isMoving) "moving" else "not moving"
-        Text(
-            text = "Camera is $moving",
-            fontWeight = FontWeight.Bold,
-            color = Color.DarkGray
-        )
-        Text(
-            text = "Camera position is ${cameraPositionState.position}",
-            fontWeight = FontWeight.Bold,
-            color = Color.DarkGray
-        )
-    }
+    if (cameraPositionState.isMoving) {
+                call(cameraPositionState.position.target)
+            }
+
+
+
 }
 
 

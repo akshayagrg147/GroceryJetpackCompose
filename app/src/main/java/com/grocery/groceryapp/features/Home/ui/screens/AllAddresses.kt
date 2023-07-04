@@ -56,7 +56,7 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>,call:(Addr
         ) {
             Column(modifier = Modifier.padding(10.dp)) {
                 Box(modifier = Modifier.fillMaxWidth()){
-                    Text18_600(text = data.customer_name, modifier = Modifier)
+                    Text14_h2(text = data.customer_name, modifier = Modifier)
                     Image(
                         painter = painterResource(id = R.drawable.location_pin),
 
@@ -72,9 +72,9 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>,call:(Addr
                 }
 
 
-                Text14_400(text = data.Address1)
-                Text14_400(text = "${data.Address2}, ${data.PinCode},")
-                Text14_400(text = data.LandMark)
+                Text12_body1(text = data.Address1)
+                Text12_body1(text = "${data.Address2}, ${data.PinCode},")
+                Text12_body1(text = data.LandMark)
 
             }
         }
@@ -96,7 +96,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
 //            .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
 //                .align(Alignment.CenterHorizontally))
 
-            Text16_700(text = "Add Address", modifier = Modifier
+            Text13_body1(text = "Add Address", modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
                     navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
@@ -234,7 +234,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
 fun noAddressAvailable(){
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(250.dp))
-        Text14_400(text = "No Address available", modifier = Modifier.align(Alignment.Center))
+        Text12_body1(text = "No Address available", modifier = Modifier.align(Alignment.Center))
 
 
     }

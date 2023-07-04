@@ -4,9 +4,7 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 
@@ -16,9 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -27,19 +22,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberImagePainter
-import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 
-import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
 import com.grocery.groceryapp.common.Utils
-import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
-import com.grocery.groceryapp.data.modal.CategoryWiseDashboardResponse
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
-import com.grocery.groceryapp.features.Home.Navigator.gridItems
-import com.grocery.groceryapp.features.Home.ui.AllItems
-import com.grocery.groceryapp.features.Home.ui.GroceriesItems
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
-import com.grocery.groceryapp.features.Home.ui.viewmodal.ProfileViewModal
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import java.text.DecimalFormat
 
@@ -147,13 +134,13 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, call:(HomeAllProd
 
             )
 
-            Text20_700(
+            Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text12Sp_600(
+            Text10_h2(
                 text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -165,7 +152,7 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, call:(HomeAllProd
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text12Sp_600(
+                Text10_h2(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
@@ -185,7 +172,7 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, call:(HomeAllProd
                         },
 
                     ) {
-                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
+                    Text11_body2(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
                 }
 
 

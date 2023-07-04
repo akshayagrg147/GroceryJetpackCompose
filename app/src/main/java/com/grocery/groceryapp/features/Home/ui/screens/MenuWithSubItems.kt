@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import com.google.accompanist.pager.*
-import com.grocery.groceryapp.Utils.Text16_700
+import com.grocery.groceryapp.Utils.Text13_body1
 import com.grocery.groceryapp.features.Home.ui.ui.theme.greyLightColor
 import kotlinx.coroutines.launch
 
@@ -115,7 +115,7 @@ fun Tabs(pagerState: PagerState) {
 @Composable
 fun TabsContent(pagerState: PagerState) {
 
-    HorizontalPager(state = pagerState,count = 6) {
+    HorizontalPager(state = pagerState, count = 6) {
 
             page ->
         when (page) {
@@ -135,7 +135,7 @@ fun TabContentScreen(data: String) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text16_700(
+        Text13_body1(
             text = data
 
         )

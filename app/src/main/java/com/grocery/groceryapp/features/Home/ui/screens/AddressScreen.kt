@@ -1,7 +1,6 @@
 package com.grocery.groceryapp.features.Home.ui.screens
 
-import android.app.Activity
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -18,13 +17,13 @@ import androidx.navigation.NavHostController
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.data.modal.PassingAddress
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
 import com.grocery.groceryapp.features.Home.ui.ui.theme.disableColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.redColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.seallcolor
 import com.grocery.groceryapp.features.Home.ui.viewmodal.AddressViewModal
 import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
-import com.grocery.groceryapp.data.modal.PassingAddress
 
 @Composable
 fun addressScreen(
@@ -37,7 +36,7 @@ val context= LocalContext.current.getActivity()
     val name = remember { mutableStateOf("") }
     val phonenumber = remember { mutableStateOf("") }
     val pincode = remember { mutableStateOf("") }
-    val address1 = remember { mutableStateOf("") }
+    val city = remember { mutableStateOf("") }
     val address2 = remember { mutableStateOf("") }
     val landmark = remember { mutableStateOf("") }
 
@@ -45,7 +44,7 @@ val context= LocalContext.current.getActivity()
 
     phonenumber.value = address.phone_number ?: ""
     pincode.value = address.pincode ?: ""
-    address1.value = address.address1 ?: ""
+    city.value = address.address1 ?: ""
     address2.value = address.address2 ?: ""
     landmark.value = address.landmark ?: ""
 
@@ -56,40 +55,41 @@ val context= LocalContext.current.getActivity()
     ) {
         item {
             Column(modifier = Modifier.fillMaxSize()) {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp)
+                )
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
 
                 ) {
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(10.dp)
-                    )
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.TopCenter),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text24_700(text = "Add Address", color = Color.Black)
+                        Text16_h1(text = "Add Address", color = Color.Black)
                     }
                 }
                 Row(
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
-                    Column() {
-                        val state = remember {
+                    Column {
+                        val namestate = remember {
                             mutableStateOf(true)
                         }
                         CommonTextField(
                             text = name,
                             placeholder = stringResource(id = R.string.name)
                         ) {
-                            state.value = it.length >= 3
+                            namestate.value = it.length >= 3
                         }
-                        if (!state.value)
-                            Text14_400(
+                        if (!namestate.value)
+                            Text12_body1(
                                 text = "Enter full name",
                                 color = redColor,
                                 modifier = Modifier.align(Alignment.End)
@@ -102,17 +102,17 @@ val context= LocalContext.current.getActivity()
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Column() {
-                        val state = remember {
+                        val phonenumberstate = remember {
                             mutableStateOf(true)
                         }
                         CommonNumberField(
                             text = phonenumber,
                             placeholder = stringResource(id = R.string.phone_number)
                         ) {
-                            state.value = it.length == 10
+                            phonenumberstate.value = it.length == 10
                         }
-                        if (!state.value)
-                            Text14_400(
+                        if (!phonenumberstate.value)
+                            Text12_body1(
                                 text = "phone number should be 10 digit",
                                 color = redColor,
                                 modifier = Modifier.align(Alignment.End)
@@ -124,22 +124,56 @@ val context= LocalContext.current.getActivity()
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Column() {
-                        val state = remember {
+                        val pincodelocal = remember {
                             mutableStateOf(true)
                         }
                         CommonNumberField(
                             text = pincode,
                             placeholder = stringResource(id = R.string.pincode)
                         ) {
-                            state.value = it.length == 6
+                            pincodelocal.value = it.length == 6
+
+                            when (it) {
+                                "136027" -> {
+                                    city.value="kaithal"
+                                }
+                                "122505" -> {
+                                    city.value="gurgaon"
+                                }
+                                else -> {
+                                    city.value=""
+                                }
+                            }
 
                         }
-                        if (!state.value)
-                            Text14_400(
+                        if (!pincodelocal.value) {
+                            Text12_body1(
                                 text = "pin code should be 6 digit",
                                 color = redColor,
                                 modifier = Modifier.align(Alignment.End)
                             )
+
+                        }
+
+                                if(pincode.value== "136027" || pincode.value== "122505"|| pincode.value== ""){
+
+                                }else{
+                                    if (pincode.value.length>5){
+                                        Text12_body1(
+                                            text = "Not available in your city",
+                                            color = redColor,
+                                            modifier = Modifier.align(Alignment.End)
+                                        )
+                                    }
+
+                                }
+
+
+
+
+
+
+
                     }
                 }
 
@@ -148,45 +182,38 @@ val context= LocalContext.current.getActivity()
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Column() {
-                        val state = remember {
+                        val address = remember {
                             mutableStateOf(true)
                         }
 
 
-                        CommonTextField(
-                            text = address1,
-                            placeholder = stringResource(id = R.string.address1)
-                        ) {
-                            state.value = it.length >= 6
-                        }
-                        if (!state.value)
-                            Text14_400(
-                                text = "Address Incomplete",
-                                color = redColor,
-                                modifier = Modifier.align(Alignment.End)
-                            )
-
-                    }
-                }
-                Row(
-                    modifier = Modifier.padding(vertical = 10.dp)
-                ) {
-                    Column() {
-                        val state = remember {
-                            mutableStateOf(true)
-                        }
                         CommonTextField(
                             text = address2,
-                            placeholder = stringResource(id = R.string.address2)
+                            placeholder = stringResource(id = R.string.address1)
                         ) {
-                            state.value = it.length >= 6
+                            address.value = it.length >= 3
                         }
-                        if (!state.value)
-                            Text14_400(
-                                text = "Alternative address Incomplete",
+                        if (!address.value)
+                            Text12_body1(
+                                text = "State Incomplete",
                                 color = redColor,
                                 modifier = Modifier.align(Alignment.End)
                             )
+
+                    }
+                }
+                Row(
+                    modifier = Modifier.padding(vertical = 10.dp)
+                ) {
+                    Column() {
+
+                        CommonTextFieldNonEditable(
+                            text = city,
+                            placeholder = stringResource(id = R.string.city)
+                        ) {
+
+                        }
+
 
 
                     }
@@ -195,17 +222,17 @@ val context= LocalContext.current.getActivity()
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Column() {
-                        val state = remember {
+                        val landmarkstate = remember {
                             mutableStateOf(true)
                         }
                         CommonTextField(
                             text = landmark,
                             placeholder = stringResource(id = R.string.landmark)
                         ) {
-                            state.value = it.length >= 6
+                            landmarkstate.value = it.length >= 6
                         }
-                        if (!state.value)
-                            Text14_400(
+                        if (!landmarkstate.value)
+                            Text12_body1(
                                 text = "Landmark address Incomplete",
                                 color = redColor,
                                 modifier = Modifier.align(Alignment.End)
@@ -217,17 +244,17 @@ val context= LocalContext.current.getActivity()
                 CommonButton(
                     text = "Submit Address",
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = if (name.value.isNotEmpty() && phonenumber.value.isNotEmpty() && pincode.value.isNotEmpty() && address1.value.isNotEmpty() && address2.value.isNotEmpty() && landmark.value.isNotEmpty()) seallcolor else disableColor
+                    backgroundColor = if (name.value.isNotEmpty() && phonenumber.value.isNotEmpty() && pincode.value.isNotEmpty() && city.value.isNotEmpty() && address2.value.isNotEmpty() && landmark.value.isNotEmpty()) seallcolor else disableColor
                 )
                 {
-                    if (name.value.isNotEmpty() && phonenumber.value.isNotEmpty() && pincode.value.isNotEmpty() && address1.value.isNotEmpty() && address2.value.isNotEmpty() && landmark.value.isNotEmpty()) {
+                    if (name.value.isNotEmpty() && phonenumber.value.isNotEmpty() && pincode.value.isNotEmpty() && city.value.isNotEmpty() && address2.value.isNotEmpty() && landmark.value.isNotEmpty()) {
                         if (editcalled) {
                             val response = viewModal.UpdateAddress(
                                 AddressItems(address.id!!,
                                     name.value,
                                     phonenumber.value,
                                     Integer.parseInt(pincode.value),
-                                    address1.value,
+                                    city.value,
                                     address2.value,
                                     landmark.value
                                 )
@@ -241,7 +268,7 @@ val context= LocalContext.current.getActivity()
                                     name.value,
                                     phonenumber.value,
                                     Integer.parseInt(pincode.value),
-                                    address1.value,
+                                    city.value,
                                     address2.value,
                                     landmark.value,
 
@@ -265,5 +292,9 @@ val context= LocalContext.current.getActivity()
 
     }
 
+
+}
+
+fun callingStateApi(value: Boolean) {
 
 }

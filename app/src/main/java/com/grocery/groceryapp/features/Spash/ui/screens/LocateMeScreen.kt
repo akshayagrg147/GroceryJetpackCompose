@@ -20,7 +20,7 @@ import com.grocery.groceryapp.HiltApplication.Companion.context
 
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.CommonButton
-import com.grocery.groceryapp.Utils.Text24_700
+import com.grocery.groceryapp.Utils.Text14_h1
 import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.greyLightColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.MapScreenViewModal
@@ -81,11 +81,11 @@ fun locateMeScreen(navController: NavHostController, context: Context,mapScreenV
                         .padding(vertical = 10.dp)
                         .align(Alignment.CenterHorizontally)
                 )
-                Text24_700(
+                Text14_h1(
                         text = "Get our service in nearby of your locations",
                         modifier = Modifier.padding(top = 20.dp, bottom = 15.dp)
                     )
-            Text24_700(
+            Text14_h1(
                 text = "${combinedaddress}",
                 color= greyLightColor,
                 modifier = Modifier.padding(top = 20.dp, bottom = 15.dp)

@@ -47,14 +47,13 @@ import java.text.DecimalFormat
 fun SearchResult(
     data: HomeAllProductsResponse.HomeResponse,
     viewModal: HomeAllProductsViewModal,
-    context: Context,navcontroller: NavHostController
+    context: Context, navcontroller: NavHostController
 ) {
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .padding( horizontal = 4.dp, vertical = 4.dp)
-
+            .padding(horizontal = 4.dp, vertical = 4.dp)
             .width(150.dp)
             .clickable {
                 navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
@@ -66,11 +65,16 @@ fun SearchResult(
                 .fillMaxWidth()
                 .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
-            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.orignalprice?.toFloat()?:0.0f))*100)).toString()
+            val offpercentage: String = (DecimalFormat("#.##").format(
+                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.orignalprice?.toFloat()
+                    ?: 0.0f)) * 100
+            )).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
+                text = "${offpercentage}% off", color = titleColor,
+                modifier = Modifier.align(
                     Alignment.End
-                ),fontSize = 10.sp,
+                ),
+                fontSize = 10.sp,
             )
 
             Image(
@@ -85,13 +89,13 @@ fun SearchResult(
 
             )
 
-            Text20_700(
+            Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text12Sp_600(
+            Text10_h2(
                 text = "${data.quantity} pcs,Price", color = availColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
@@ -103,16 +107,24 @@ fun SearchResult(
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                Text12Sp_600(
+                Text10_h2(
                     text = "₹ ${data.price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
-                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
-                Card( border = BorderStroke(1.dp, titleColor),
+                Text(
+                    text = "₹${data.orignalprice ?: "0.00"}",
+                    fontSize = 11.sp,
+                    color = bodyTextColor,
+                    modifier = Modifier.padding(start = 5.dp),
+                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                )
+                Card(
+                    border = BorderStroke(1.dp, titleColor),
                     modifier = Modifier
 
-                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp)).padding(start=20.dp)
+                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                        .padding(start = 20.dp)
 
                         .background(color = whiteColor)
                         .clickable {
@@ -135,9 +147,12 @@ fun SearchResult(
                         },
 
                     ) {
-                    Text13_700(text = "ADD", availColor, modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
+                    Text11_body2(
+                        text = "ADD",
+                        availColor,
+                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                    )
                 }
-
 
 
             }
@@ -149,7 +164,11 @@ fun SearchResult(
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun SearchScreenProducts(navHostController: NavHostController,context: Context,viewModal: HomeAllProductsViewModal = hiltViewModel()) {
+fun SearchScreenProducts(
+    navHostController: NavHostController,
+    context: Context,
+    viewModal: HomeAllProductsViewModal = hiltViewModel()
+) {
     var search = rememberSaveable {
         mutableStateOf("")
     }
@@ -189,9 +208,10 @@ fun SearchScreenProducts(navHostController: NavHostController,context: Context,v
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-                .padding(start = 10.dp, end = 10.dp,top=10.dp).focusRequester(focusRequester = focusRequester),
+                .padding(start = 10.dp, end = 10.dp, top = 10.dp)
+                .focusRequester(focusRequester = focusRequester),
             placeholder = {
-                Text14_400(
+                Text12_body1(
                     text = "Search Store",
                     color = bodyTextColor,
                 )
@@ -210,7 +230,7 @@ fun SearchScreenProducts(navHostController: NavHostController,context: Context,v
                     IconButton(onClick = {
                         search.value = ""
 
-                        responseData.value= HomeAllProductsResponse()
+                        responseData.value = HomeAllProductsResponse()
                     }) {
                         Icon(
                             Icons.Default.Close, contentDescription = "",
@@ -219,7 +239,7 @@ fun SearchScreenProducts(navHostController: NavHostController,context: Context,v
                 }
             },
             leadingIcon = {
-                IconButton(onClick = {responseData.value=HomeAllProductsResponse()}) {
+                IconButton(onClick = { responseData.value = HomeAllProductsResponse() }) {
                     Icon(
                         Icons.Default.Search, contentDescription = "",
                     )
@@ -227,10 +247,12 @@ fun SearchScreenProducts(navHostController: NavHostController,context: Context,v
             },
             singleLine = true,
         )
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(20.dp))
-        Text16_700(
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp)
+        )
+        Text13_body1(
             text = "Results finds ${responseData.value.list?.size}",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
@@ -246,13 +268,9 @@ fun SearchScreenProducts(navHostController: NavHostController,context: Context,v
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(horizontal = 1.dp)
             ) { itemData ->
-                SearchResult(itemData,viewModal,context,navHostController)
+                SearchResult(itemData, viewModal, context, navHostController)
             }
-
-
         }
-
-
     }
 
 

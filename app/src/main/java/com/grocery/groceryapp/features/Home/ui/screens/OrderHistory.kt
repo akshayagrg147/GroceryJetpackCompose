@@ -8,7 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,25 +21,26 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
-
 import com.grocery.groceryapp.R
-import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.Utils.CommonHeader
+import com.grocery.groceryapp.Utils.Text12_body1
+import com.grocery.groceryapp.Utils.Text13_body1
 import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
+import com.grocery.groceryapp.features.Home.ui.ui.theme.faqColor
 import com.grocery.groceryapp.features.Home.ui.viewmodal.ProfileViewModal
 
 @Composable
 fun ProfileScreenNavigation(navController: NavHostController, context: Activity) {
-
-
-            OrderHistoryScreen(context,navController)
-
-
+    OrderHistoryScreen(context, navController)
 }
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun OrderHistoryScreen(
 
-    context: Activity,navController: NavHostController,viewModal: ProfileViewModal = hiltViewModel()
+    context: Activity,
+    navController: NavHostController,
+    viewModal: ProfileViewModal = hiltViewModel()
 ) {
 
     Column(
@@ -63,7 +65,7 @@ fun OrderHistoryScreen(
                     .padding(bottom = 15.dp)
                 // .verticalScroll(state = scrollState)
 
-            ){
+            ) {
 
                 item {
                     Box(
@@ -73,13 +75,17 @@ fun OrderHistoryScreen(
                             .background(Color.Gray)
                     )
                 }
-                if(viewModal.orderhistorydata.value.statusCode==200)
-                {items(viewModal.orderhistorydata.value.list!!){data->
-                    OrderHistoryRow(data){
-                        navController.currentBackStackEntry?.arguments?.putParcelable("orderDetail", viewModal.orderhistorydata.value)
-                        navController.navigate(DashBoardNavRoute.OrderDetail.screen_route)
+                if (viewModal.orderhistorydata.value.statusCode == 200) {
+                    items(viewModal.orderhistorydata.value.list!!) { data ->
+                        OrderHistoryRow(data) {
+                            navController.currentBackStackEntry?.arguments?.putParcelable(
+                                "orderDetail",
+                                viewModal.orderhistorydata.value
+                            )
+                            navController.navigate(DashBoardNavRoute.OrderDetail.screen_route)
+                        }
                     }
-                }}
+                }
 
             }
 
@@ -88,86 +94,92 @@ fun OrderHistoryScreen(
     }
 
 
-
 }
+
 @Composable
-fun OrderHistoryRow(data: AllOrdersHistoryList.Orders,call:(AllOrdersHistoryList.Orders)->Unit) {
-Card(modifier = Modifier.fillMaxWidth() .padding(5.dp).clickable {
-    call(data)
-}, elevation = 3.dp) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
+fun OrderHistoryRow(
+    data: AllOrdersHistoryList.Orders,
+    call: (AllOrdersHistoryList.Orders) -> Unit
+) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(5.dp)
+        .clickable {
+            call(data)
+        }, elevation = 3.dp) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_orders_icon),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(40.dp)
-                    .align(Alignment.CenterVertically)
-            )
-            Column(
-                modifier = Modifier.padding(start = 20.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_orders_icon),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .align(Alignment.CenterVertically)
+                )
+                Column(
+                    modifier = Modifier.padding(start = 20.dp)
+                ) {
 
-                Text16_700(text = data?.orderId?:"", modifier = Modifier.align(Alignment.CenterHorizontally))
+                    Text13_body1(
+                        text = data.orderId ?: "",
+                        color=faqColor,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
 
-                Spacer(modifier = Modifier.height(2.dp))
-                Text14_400(text = "Total Amount ₹ ${data?.totalOrderValue}")
-                Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text12_body1(text = "Total Amount ₹ ${data?.totalOrderValue}")
+                    Spacer(modifier = Modifier.height(2.dp))
+
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colorResource(id = androidx.browser.R.color.browser_actions_bg_grey)),
+
+
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text12_body1(text = "${data?.orderList?.size} items")
+
 
             }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(colorResource(id = androidx.browser.R.color.browser_actions_bg_grey)),
-
-
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text14_400(text = "${data?.orderList?.size} items")
-
-
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray)
-        )
-        Text14_400(text = "Order Date ${data?.createdDate} ")
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-
-
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Image(
-                painter = rememberImagePainter(R.drawable.location_pin_icon),
-                contentDescription = "",
+            Box(
                 modifier = Modifier
-                    .size(20.dp)
-
-
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
             )
-            Text14_400(text = "${data.address}")
+            Text12_body1(text = "Order Date ${data?.createdDate} ")
+            Spacer(modifier = Modifier.height(5.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+
+
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Image(
+                    painter = rememberImagePainter(R.drawable.location_pin_icon),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(20.dp)
+
+
+                )
+                Text12_body1(text = "${data.address}")
+            }
+            Spacer(modifier = Modifier.height(10.dp))
 
 
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-
-
     }
-}
 
 
 }

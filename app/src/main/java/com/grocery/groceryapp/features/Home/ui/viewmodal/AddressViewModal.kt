@@ -28,10 +28,8 @@ import javax.inject.Inject
 class AddressViewModal @Inject constructor(val dao: Dao):ViewModel() {
     private val live:MutableState<List<CartItems>> = mutableStateOf(emptyList())
     val responseLiveData:MutableState<List<CartItems>> =live
-
     fun saveAddress(address: AddressItems)=viewModelScope.launch(Dispatchers.IO){
         dao.insertAddressItem(address)
-
     }
     fun UpdateAddress(address: AddressItems)=viewModelScope.launch(Dispatchers.IO){
         dao.updateAddressItem(

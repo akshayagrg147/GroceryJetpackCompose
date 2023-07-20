@@ -20,10 +20,13 @@ import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterLoginViewModal
 import com.grocery.groceryapp.features.Spash.domain.Modal.Country
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.common.CommonProgressBar
 import com.grocery.groceryapp.features.Home.ui.ui.theme.headingColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
 import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterEvent
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -42,7 +45,10 @@ fun SignUpScreen(
         CommonProgressBar()
 
     val contactNum = remember {
-        mutableStateOf(navController.previousBackStackEntry?.arguments?.getString("mobileNumber")!!)
+        mutableStateOf(
+            navController.previousBackStackEntry?.arguments?.getString("mobileNumber")
+                ?: "+919812205054"
+        )
     }
     val name = remember {
         mutableStateOf("")
@@ -58,103 +64,107 @@ fun SignUpScreen(
         mutableStateOf("")
     }
 
+    LaunchedEffect(key1 = Unit){
+        viewModal.registerEventFlow.collectLatest {
+        isDialog  =  when(it){
+                is ApiState.Success ->{
+                    sharedPreferences.setJwtToken(it.data.token!!)
+                    navController.navigate(ScreenRoute.LocateMeScreen.route)
+                    false
+                }
+
+                is ApiState.Failure -> {
+                    context.showMsg(it.msg.message.toString())
+                    false
+                }
+                ApiState.Loading -> true
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+            .fillMaxSize(), verticalArrangement = Arrangement.Center
+    ) {
+
+        Image(
+            painter = painterResource(id = R.drawable.ornge_carrot),
+            contentDescription = "splash image",
+            modifier = Modifier
+                .padding(top = 150.dp)
+                .width(50.dp)
+                .height(50.dp)
+                .align(alignment = Alignment.CenterHorizontally)
+
+        )
+        Text14_h1(
+            text = "Sign Up", color = headingColor,
+            modifier = Modifier.padding(bottom = 10.dp, top = 25.dp)
+        )
         Column(
             modifier = Modifier
+                .padding(top = 2.dp)
                 .fillMaxSize()
-                .padding(10.dp)
-                .fillMaxSize(), verticalArrangement = Arrangement.Center
         ) {
-
-            Image(
-                painter = painterResource(id = R.drawable.ornge_carrot),
-
-                contentDescription = "splash image",
-                modifier = Modifier
-                    .padding(top = 150.dp)
-                    .width(50.dp)
-                    .height(50.dp)
-                    .align(alignment = Alignment.CenterHorizontally)
-
-            )
-            Text14_h1(
-                text = "Sign Up", color = headingColor,
-                modifier = Modifier.padding(bottom = 10.dp, top = 25.dp)
-            )
-            Column(
-                modifier = Modifier
-                    .padding(top = 2.dp)
-                    .fillMaxSize()
+            Row(
+                modifier = Modifier.padding(vertical = 10.dp)
             ) {
-                Row(
-                    modifier = Modifier.padding(vertical = 10.dp)
-                ) {
-                    CommonTextField(text = name, placeholder = stringResource(id = R.string.name))
-                }
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 10.dp)
-                        .fillMaxWidth()
+                CommonTextField(text = name, placeholder = stringResource(id = R.string.name))
+            }
+            Row(
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .fillMaxWidth()
+            )
+            {
+
+
+                CommonTextField(
+                    text = contactNum,
+                    placeholder = stringResource(id = R.string.phone_number),
+                    keyboardType = KeyboardType.Phone,
+                    modifier = Modifier.padding(start = 10.dp)
                 )
-                {
-
-
-                    CommonTextField(
-                        text = contactNum,
-                        placeholder = stringResource(id = R.string.phone_number),
-                        keyboardType = KeyboardType.Phone,
-                        modifier = Modifier.padding(start = 10.dp)
-                    )
-
-                }
-
-                Row(
-                    modifier = Modifier.padding(vertical = 10.dp)
-                ) {
-                    CommonTextField(
-                        text = email,
-                        placeholder = "E Mail",
-                    )
-                }
-                Column(Modifier.fillMaxWidth()) {
-                    Row {
-                        CommonButton(
-                            text = "Sign Up",
-                            modifier = Modifier.fillMaxWidth(),
-                            backgroundColor = titleColor,
-                            color = Color.White
-
-                        ) {
-                            isDialog=true
-                            val res = viewModal.registrationGetResponse.value
-                            viewModal.setData(
-                                RegisterLoginRequest(
-                                email.value,name.value,contactNum.value
-                            )
-                            )
-                            viewModal.getRegistration()
-                            if(res.statusCode == 200)
-                            {  isDialog=false
-                                context.showMsg(res.message.toString())
-                                sharedPreferences.setJwtToken(res.token!!)
-                                navController.navigate(ScreenRoute.LocateMeScreen.route)
-                            }
-                            else{
-                                isDialog=false
-                                context.showMsg(res.message.toString())
-
-                            }
-
-
-                        }
-                    }
-                }
 
             }
 
+            Row(
+                modifier = Modifier.padding(vertical = 10.dp)
+            ) {
+                CommonTextField(
+                    text = email,
+                    placeholder = "E Mail",
+                )
+            }
+            Column(Modifier.fillMaxWidth()) {
+                Row {
+                    CommonButton(
+                        text = "Sign Up",
+                        modifier = Modifier.fillMaxWidth(),
+                        backgroundColor = titleColor,
+                        color = Color.White
+
+                    ) {
+                        viewModal.onEvent(
+                            RegisterEvent.RegisterEventFlow(
+                                RegisterLoginRequest(
+                                    email.value, name.value, contactNum.value
+                                )
+                            )
+                        )
+
+
+
+                    }
+                }
+            }
 
         }
 
 
+    }
 
 
 }

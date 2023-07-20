@@ -48,9 +48,6 @@ fun loginScreen(
     if (isDialog)
         CommonProgressBar()
 
-
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()

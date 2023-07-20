@@ -62,6 +62,7 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.GetRelatedSearch(obj)
     }
+    fun getProductCategory()= toResultFlow { apiService.getProductCategory() }
     fun gettingJwt()= toResultFlow {apiService.gettingJwtToken()  }
     fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest) = toResultFlow { apiService.checkMobileNumberExist(registerLoginRequest) }
 

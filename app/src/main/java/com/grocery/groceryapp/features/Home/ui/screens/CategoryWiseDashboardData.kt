@@ -65,9 +65,9 @@ fun CategoryWiseDashboardAllData(
                         viewModal.insertCartItem(
                             data.ProductId ?: "",
                             data.productImage1 ?: "",
-                            data.price?.toInt() ?: 0,
+                            data.selling_price?.toInt() ?: 0,
                             data.productName ?: "",
-                            data.orignalprice ?: ""
+                            data.orignal_price ?: ""
                         )
                         viewModal.getItemCount()
                         viewModal.getItemPrice()
@@ -115,7 +115,7 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, call:(HomeAllProd
                 .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
 
-            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.price?.toFloat() ?: 0.0f) /(data.orignalprice?.toFloat()?:0.0f))*100)).toString()
+            val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.selling_price?.toFloat() ?: 0.0f) /(data.orignal_price?.toFloat()?:0.0f))*100)).toString()
             Text(
                 text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
                     Alignment.End
@@ -153,11 +153,11 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, call:(HomeAllProd
             ) {
 
                 Text10_h2(
-                    text = "₹ ${data.price}",
+                    text = "₹ ${data.selling_price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
-                Text(text ="₹${data.orignalprice ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
+                Text(text ="₹${data.orignal_price ?: "0.00"}",fontSize = 11.sp  , color = bodyTextColor, modifier = Modifier.padding(start = 5.dp),style= TextStyle(textDecoration = TextDecoration.LineThrough))
                 Card( border = BorderStroke(1.dp, titleColor),
                     modifier = Modifier
 

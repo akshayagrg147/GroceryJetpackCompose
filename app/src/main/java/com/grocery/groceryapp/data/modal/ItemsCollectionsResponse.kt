@@ -15,12 +15,12 @@ data class ItemsCollectionsResponse(
 ) {
     @JsonClass(generateAdapter = true)
     data class SubItems (
-        @Json(name = "actual_price")
-        val actualPrice: String="",
-            @Json(name = "itemCategoryId")
-        val itemCategoryId: String="",
-        @Json(name = "price")
-        val price: String="",
+        @Json(name = "orignal_price")
+        val orignal_price: String="",
+            @Json(name = "item_category_name")
+        val item_category_name: String="",
+        @Json(name = "selling_price")
+        val selling_price: String="",
         @Json(name = "ProductDescription")
         val productDescription: String="",
         @Json(name = "productId")

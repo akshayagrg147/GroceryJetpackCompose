@@ -2,6 +2,7 @@ package com.grocery.groceryapp.data.network
 
 import com.grocery.groceryapp.Utils.Constants
 import com.grocery.groceryapp.data.modal.*
+import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -75,6 +76,9 @@ interface ApiService {
 
     @POST(Constants.GetRelatedSearch)
     suspend fun GetRelatedSearch(@Body obj: RelatedSearchRequest): Response<HomeAllProductsResponse>
+
+    @GET(Constants.getProductCategory)
+    suspend fun getProductCategory(): Response<getProductCategory>
 
 
 }

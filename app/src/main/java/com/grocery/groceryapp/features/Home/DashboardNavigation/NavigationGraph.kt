@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.gson.Gson
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.data.modal.AllOrdersHistoryList
 import com.grocery.groceryapp.data.modal.OrderIdResponse
@@ -17,6 +18,7 @@ import com.grocery.groceryapp.features.Spash.ProfileScreenNavigation
 import com.grocery.groceryapp.features.Spash.ui.screens.MapScreen
 import com.grocery.groceryapp.features.Spash.ui.screens.menuitems
 import com.grocery.groceryapp.data.modal.PassingAddress
+import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 import com.grocery.groceryapp.features.Spash.CategoryWiseDashboardAllData
 
 
@@ -92,8 +94,7 @@ fun NavigationGraph(
 
         }
         composable(DashBoardNavRoute.MenuItems.screen_route) {
-            val data = it.arguments?.getString("data") ?: ""
-            menuitems(navController, context, data)
+            menuitems(navController, context)
         }
         composable(DashBoardNavRoute.MapScreen.screen_route) {
             MapScreen(navController, context, sharedPreferences)

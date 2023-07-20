@@ -103,7 +103,7 @@ fun RelatedSearchItem(
         ) {
 
             val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.orignalprice?.toFloat()
+                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
             Text(
@@ -145,12 +145,12 @@ fun RelatedSearchItem(
             ) {
 
                 Text10_h2(
-                    text = "₹ ${data.price}",
+                    text = "₹ ${data.selling_price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
                 Text(
-                    text = "₹${data.orignalprice ?: "0.00"}",
+                    text = "₹${data.orignal_price ?: "0.00"}",
                     fontSize = 11.sp,
                     color = com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor,
                     modifier = Modifier.padding(start = 5.dp),

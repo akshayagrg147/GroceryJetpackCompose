@@ -19,8 +19,8 @@ data class HomeAllProductsResponse(
     @JsonClass(generateAdapter = true)
     @Parcelize
     data class HomeResponse(
-        @Json(name = "price")
-        val price: String?=null,
+        @Json(name = "selling_price")
+        val selling_price: String?=null,
         @Json(name = "ProductImage1")
         val productImage1: String?=null,
         @Json(name = "productName")
@@ -29,8 +29,8 @@ data class HomeAllProductsResponse(
         val quantity: String?=null,
         @Json(name = "productId")
         val ProductId: String?=null,
-        @Json(name="actual_price")
-        val orignalprice: String?=null
+        @Json(name="orignal_price")
+        val orignal_price: String?=null
 
     ):Parcelable
 }

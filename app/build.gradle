@@ -124,6 +124,10 @@ dependencies {
     implementation ("io.coil-kt:coil-compose:1.4.0")
     implementation "io.coil-kt:coil-gif:1.4.0"
 
+    //pass data
+//    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+
+
     //google maps
     implementation "com.google.maps.android:maps-compose:1.0.0"
     implementation "com.google.android.gms:play-services-maps:18.0.2"

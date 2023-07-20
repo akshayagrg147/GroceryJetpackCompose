@@ -26,10 +26,7 @@ sealed class DashBoardNavRoute( var screen_route:String=""){
 
     object PrivacyPolicyScreen : DashBoardNavRoute("PrivacyPolicy")
     //submenu items
-    object MenuItems : DashBoardNavRoute("{data}/MenuItems"){
-        fun senddata(data:String)="$data/MenuItems"
-
-    }
+    object MenuItems : DashBoardNavRoute("MenuItems")
 
 
 }

@@ -12,15 +12,11 @@ import java.io.IOException
 
 
 fun <T> toResultFlow(call: suspend () -> Response<T>): Flow<ApiState<T>> = flow {
-
     emit(ApiState.Loading)
-
     try {
         val response = call()
-
         if (response.isSuccessful) {
             response.body()?.let {
-
                 emit(ApiState.Success(it))
             }
         } else {

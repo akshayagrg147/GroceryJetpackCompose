@@ -17,8 +17,7 @@ import com.grocery.groceryapp.common.ApiState
 import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,51 +29,31 @@ class RegisterLoginViewModal @Inject constructor(private val repository: CommonR
     }
 
     val field = listOf(Place.Field.NAME, Place.Field.LAT_LNG)
-     private val registrationResponse: MutableState<RegisterLoginResponse> = mutableStateOf(
-         RegisterLoginResponse()
-     )
-    val registrationGetResponse: State<RegisterLoginResponse> = registrationResponse
-   // fun register(registerLoginResponse: RegisterLoginRequest) = repository.registerUser(registerLoginResponse)
+    private val _registerEventFlow:MutableSharedFlow<ApiState<RegisterLoginResponse>> = MutableSharedFlow()
+    var registerEventFlow = _registerEventFlow.asSharedFlow()
+    private set
 
-    val _res:MutableSharedFlow<RegisterLoginRequest> = MutableSharedFlow(1)
-
-    fun setData(data: RegisterLoginRequest){
-        _res.tryEmit(data)
-    }
-
-
-    fun getRegistration() = viewModelScope.launch {
-        repository.registerUser(_res.first()).collect {
-            when (it) {
-                is ApiState.Success -> {
-                    registrationResponse.value = RegisterLoginResponse(it.data.message, it.data.statusCode, it.data.token,it.data.status)
-                }
-                is ApiState.Failure -> {
-                    registrationResponse.value = RegisterLoginResponse("Something went wrong", 400, null,false)
-                }
-                ApiState.Loading -> {
-
-                }
-            }
-        }
-    }
-     fun getLoginResponse() = viewModelScope.launch {
-        repository.registerUser(_res.first()).collect {
-            when (it) {
-                is ApiState.Success -> {
-                    registrationResponse.value = RegisterLoginResponse(it.data.message, it.data.statusCode, null,it.data.status)
-                }
-                is ApiState.Failure -> {
-                    val adapter = moshi.adapter<FailureResponse>(FailureResponse::class.java)
-                    val data = adapter.fromJson(it.msg.toString())
-                    registrationResponse.value = RegisterLoginResponse(data?.message, 400, null,false)
-                }
-                ApiState.Loading -> {
-
-                }
+    fun onEvent(event: RegisterEvent){
+        when(event){
+            is RegisterEvent.RegisterEventFlow -> viewModelScope.launch {
+                repository.registerUser(event.data)
+                    .onStart {
+                        _registerEventFlow.emit(ApiState.Loading)
+                    }
+                    .catch {
+                        _registerEventFlow.emit(ApiState.Failure(it))
+                    }
+                    .collect{
+                        _registerEventFlow.emit(it)
+                    }
             }
         }
     }
 
 }
 
+sealed class RegisterEvent{ data class RegisterEventFlow(
+        val data:RegisterLoginRequest
+    ) : RegisterEvent()
+
+}

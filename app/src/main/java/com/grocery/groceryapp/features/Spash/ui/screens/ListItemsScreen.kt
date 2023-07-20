@@ -217,19 +217,19 @@ fun ListItems(
                             var filterlist1: List<HomeAllProductsResponse.HomeResponse>? = null
                             if (hundredone.value)
                                 filterlist1 = filterlist?.filter {
-                                    it.price?.toInt()!! <= 49
+                                    it.selling_price?.toInt()!! <= 49
                                 }
                              if (twohundredone.value)
                                  filterlist1 = filterlist?.filter {
-                                    it.price?.toInt()!! in 11..30
+                                    it.selling_price?.toInt()!! in 11..30
                                 }
                              if (threehundredone.value)
                                  filterlist1 =filterlist?.filter {
-                                    it.price?.toInt()!! in 41..50
+                                    it.selling_price?.toInt()!! in 41..50
                                 }
                             if (fivehundredone.value)
                                 filterlist1 =filterlist?.filter {
-                                    it.price?.toInt()!! >=51
+                                    it.selling_price?.toInt()!! >=51
                                 }
                             else{
                                //  filterlist1=filterlist
@@ -403,10 +403,10 @@ fun srt(sortTyoe: String, lss: List<HomeAllProductsResponse.HomeResponse>) {
             lss?.sortedByDescending { it.productName }
         }
         "high" -> {
-            lss?.sortedBy { it.price?.toInt() }
+            lss?.sortedBy { it.selling_price?.toInt() }
         }
         "low" -> {
-            lss?.sortedByDescending { it.price?.toInt() }
+            lss?.sortedByDescending { it.selling_price?.toInt() }
         }
 
     }
@@ -441,7 +441,7 @@ fun SubItems(
         ) {
 
             val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.orignalprice?.toFloat()
+                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
             Text(
@@ -483,12 +483,12 @@ fun SubItems(
             ) {
 
                 Text10_h2(
-                    text = "₹ ${data.price}",
+                    text = "₹ ${data.selling_price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
                 Text(
-                    text = "₹${data.orignalprice ?: "0.00"}",
+                    text = "₹${data.orignal_price ?: "0.00"}",
                     fontSize = 11.sp,
                     color = bodyTextColor,
                     modifier = Modifier.padding(start = 5.dp),
@@ -507,9 +507,9 @@ fun SubItems(
                             viewModal.insertCartItem(
                                 data.ProductId ?: "",
                                 data.productImage1 ?: "",
-                                data.price?.toInt() ?: 0,
+                                data.selling_price?.toInt() ?: 0,
                                 data.productName ?: "",
-                                data.orignalprice ?: ""
+                                data.orignal_price ?: ""
                             )
                             viewModal.getItemCount()
                             viewModal.getItemPrice()
@@ -637,11 +637,11 @@ private fun Body(
         }
         "high" -> {
             context.showMsg("high")
-            ls = viewModal.globalmutablelist1.value.list?.sortedBy { it.price?.toInt() }
+            ls = viewModal.globalmutablelist1.value.list?.sortedBy { it.selling_price?.toInt() }
         }
         "low" -> {
             context.showMsg("low")
-            ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it?.price?.toInt() }
+            ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it?.selling_price?.toInt() }
         }
         "filter" -> {
 

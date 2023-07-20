@@ -39,6 +39,7 @@ import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
+import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Home.ui.viewmodal.CartItemsViewModal
@@ -174,11 +175,12 @@ fun ShimmerAnimation(
 fun     menuitems(
     navController: NavHostController,
     context: Context,
-    value: String,
+
     viewModal: CartItemsViewModal = hiltViewModel()
 ) {
-    val selectedIndex = remember { mutableStateOf(1) }
-    val passingvalue = value
+    val bundle = navController.previousBackStackEntry?.savedStateHandle?.get<getProductCategory.ItemData>("data") ?: getProductCategory.ItemData()
+    val selectedIndex = remember { mutableStateOf("") }
+    val passingvalue = bundle
     val productdetail = remember {
         mutableStateOf(ItemsCollectionsResponse.SubItems())
     }
@@ -189,66 +191,6 @@ fun     menuitems(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
     viewModal.getCartItem()
-
-
-    val ls: MutableList<MainProducts> = ArrayList()
-    if (passingvalue.equals("vegetables")) {
-        ls.add(MainProducts("vegetable", R.drawable.vegetable, Purple700, "10"))
-        ls.add(MainProducts("Fruits", R.drawable.fruitbasket, borderColor, "30"))
-
-        ls.add(MainProducts("garbage", R.drawable.garbage, darkFadedColor, "70"))
-        ls.add(MainProducts("electrical", R.drawable.electrical, darkFadedColor, "90"))
-        ls.add(MainProducts("pipes", R.drawable.oils, darkFadedColor, "110"))
-    } else if (passingvalue.equals("diary")) {
-        ls.add(MainProducts("milk", R.drawable.milk, disableColor, "50"))
-        ls.add(MainProducts("Breads", R.drawable.bread, borderColor, "650"))
-        ls.add(MainProducts("Eggs", R.drawable.eggs, disableColor, "670"))
-        ls.add(MainProducts("Poha", R.drawable.poha, darkFadedColor, "690"))
-        ls.add(MainProducts("Panner", R.drawable.panner, darkFadedColor, "710"))
-        ls.add(MainProducts("Curd", R.drawable.curd, darkFadedColor, "730"))
-    } else if (passingvalue.equals("drink")) {
-        ls.add(MainProducts("cold drink", R.drawable.cold_drink, Purple700, "130"))
-        ls.add(MainProducts("juices", R.drawable.juices, borderColor, "150"))
-        ls.add(MainProducts("wine", R.drawable.wine, disableColor, "170"))
-        ls.add(MainProducts("water", R.drawable.water, disableColor, "190"))
-
-    } else if (passingvalue.equals("personal care")) {
-        ls.add(MainProducts("Body Mosturizers", R.drawable.body_mosture, Purple700, "210"))
-        ls.add(MainProducts("Soaps", R.drawable.soaps, borderColor, "230"))
-        ls.add(MainProducts("oral care", R.drawable.oral_care, disableColor, "250"))
-        ls.add(MainProducts("facial care", R.drawable.facial_care, darkFadedColor, "270"))
-        ls.add(MainProducts("handwash", R.drawable.hand_wash, darkFadedColor, "290"))
-        ls.add(MainProducts("cosmetics", R.drawable.cosmetic, darkFadedColor, "310"))
-    } else if (passingvalue.equals("cleaning essentials")) {
-        ls.add(MainProducts("Detrgent", R.drawable.tide, Purple700, "330"))
-        ls.add(MainProducts("Floor Cleaner", R.drawable.floor_cleaner, borderColor, "350"))
-        ls.add(MainProducts("Toilet Cleaner", R.drawable.toilet_cleaner, disableColor, "370"))
-        ls.add(MainProducts("Cleaning Tools", R.drawable.cleaning_tools, darkFadedColor, "390"))
-        ls.add(MainProducts("shoe Polish", R.drawable.shoe_polish, darkFadedColor, "410"))
-
-    } else if (passingvalue.equals("Pet care")) {
-        ls.add(MainProducts("Dog food", R.drawable.dog_food, Purple700, "430"))
-        ls.add(MainProducts("cat food", R.drawable.cat_food, borderColor, "450"))
-        ls.add(MainProducts("Pet Grooming", R.drawable.pet_grooming, disableColor, "470"))
-
-
-    } else if (passingvalue.equals("Baby care")) {
-        ls.add(MainProducts("Diapers", R.drawable.diaper, Purple700, "530"))
-        ls.add(MainProducts("Baby Food", R.drawable.baby_food, borderColor, "550"))
-        ls.add(MainProducts("Baby Skin Care", R.drawable.baby_care, disableColor, "570"))
-        ls.add(MainProducts("Baby gift set", R.drawable.baby_gift, darkFadedColor, "590"))
-        ls.add(MainProducts("toys", R.drawable.toys, darkFadedColor, "610"))
-
-    } else {
-        //random data
-        ls.add(MainProducts("Drinks", R.drawable.fruitbasket, Purple700, "101"))
-        ls.add(MainProducts("Juics", R.drawable.snacks, borderColor, "3002"))
-        ls.add(MainProducts("Coldpress", R.drawable.nonveg, disableColor, "3003"))
-        ls.add(MainProducts("Drinks", R.drawable.oils, darkFadedColor, "3004"))
-        ls.add(MainProducts("Water", R.drawable.oils, darkFadedColor, "3005"))
-        ls.add(MainProducts("Soda", R.drawable.oils, darkFadedColor, "3006"))
-    }
-
     ModalBottomSheetLayout(
         sheetContent = {
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
@@ -345,19 +287,17 @@ fun     menuitems(
                         modifier = Modifier
                             .padding(bottom = 15.dp)
                     ) {
-                        selectedIndex.value = ls[0].productId?.toInt() ?: 0
-                        viewModal.setProductId(ProductIdIdModal(ls[0].productId))
+                        selectedIndex.value = passingvalue.subCategoryList?.get(0)?.name ?: ""
+                        viewModal.setProductId(ProductIdIdModal(passingvalue.subCategoryList?.get(0)?.name))
 
-                        items(ls) { item ->
+                        items(passingvalue.subCategoryList?: emptyList()) { item ->
 
                             ItemEachRow(
                                 item,
-                                selectedIndex,
-                                viewModal
-                            ) { productid, selectedvalue ->
-                                Log.d("productidgetting", "${productid}")
-                                viewModal.setProductId(ProductIdIdModal(productid))
-
+                                selectedIndex
+                            ) {  selectedvalue ->
+                                Log.d("productidgetting", "$selectedvalue")
+                                viewModal.setProductId(ProductIdIdModal(selectedvalue))
                                 selectedIndex.value = selectedvalue
 
                             }
@@ -411,15 +351,15 @@ fun     menuitems(
 
 @Composable
 fun ItemEachRow(
-    item: MainProducts,
-    selectedIndex: MutableState<Int>,
-    viewModal: CartItemsViewModal,
-    call: (item: String, selectedvalue: Int) -> Unit
+    item: getProductCategory.ItemData.SubCategory,
+    selectedIndex: MutableState<String>,
+
+    call: (item: String) -> Unit
 ) {
     Card(elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
 
-        backgroundColor = if (selectedIndex.value == item.productId?.toInt()) Color.LightGray else Color.White,
+        backgroundColor = if (selectedIndex.value == item.name) Color.LightGray else Color.White,
         modifier = Modifier
 
 
@@ -428,7 +368,7 @@ fun ItemEachRow(
             .padding(5.dp)
             .clickable {
 
-                call(item.productId ?: "", item.productId?.toInt()!!)
+                call(item.name ?: "")
             }) {
         Column(
             modifier = Modifier.padding(10.dp),
@@ -438,7 +378,7 @@ fun ItemEachRow(
         ) {
 
             Image(
-                painter = rememberImagePainter(item.image),
+                painter = rememberImagePainter(item.subCategoryUrl),
                 contentDescription = "",
                 modifier = Modifier
                     .size(40.dp)
@@ -482,7 +422,7 @@ fun MenuItemGrid(
                 .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
             val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.actualPrice?.toFloat()
+                100.0 - ((data.orignal_price?.toFloat() ?: 0.0f) / (data.selling_price?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
 
@@ -525,7 +465,7 @@ fun MenuItemGrid(
             ) {
 
                 Text10_h2(
-                    text = "₹ ${data.price}",
+                    text = "₹ ${data.selling_price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
@@ -542,9 +482,9 @@ fun MenuItemGrid(
                             viewModal.insertCartItem(
                                 data.productId ?: "",
                                 data.productImage1 ?: "",
-                                data.price?.toInt() ?: 0,
+                                data.selling_price.toInt() ?: 0,
                                 data.productName ?: "",
-                                data.actualPrice ?: ""
+                                data.orignal_price ?: ""
                             )
                             viewModal.getCartItem()
                             Toast

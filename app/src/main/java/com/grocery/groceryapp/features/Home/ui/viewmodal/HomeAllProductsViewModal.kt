@@ -22,6 +22,7 @@ import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.network.ApiService
 import com.grocery.groceryapp.data.network.CallingCategoryWiseData
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
+import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -51,6 +52,7 @@ class HomeAllProductsViewModal @Inject constructor(
         getItemCount()
         getItemPrice()
         callingDashboardCategoryWiseList()
+        getProductCategory()
     }
 
     var passingdata: MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
@@ -62,12 +64,15 @@ class HomeAllProductsViewModal @Inject constructor(
     val CategoryWiseDashboardRespon: State<CategoryWiseDashboardResponse> =
         CategoryWiseDashboardResponse
 
-
+private val getCategory:MutableState<getProductCategory> = mutableStateOf(getProductCategory(
+    emptyList(),"",0))
+    val getCategory1: State<getProductCategory> = getCategory
     private val bestsellingProductsResponse: MutableState<HomeAllProductsResponse> =
         mutableStateOf(HomeAllProductsResponse(null, null, null))
 
     val exclusiveProductsResponse1: State<HomeAllProductsResponse> = exclusiveProductsResponse
     val bestsellingProductsResponse1: State<HomeAllProductsResponse> = bestsellingProductsResponse
+
 
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val list: State<List<AddressItems>> = addresslist
@@ -146,7 +151,25 @@ class HomeAllProductsViewModal @Inject constructor(
         dao.deleteAllFromTable()
     }
 
+fun getProductCategory() = viewModelScope.launch {
+    repository.getProductCategory().collectLatest {
+        when (it) {
+            is ApiState.Success -> {
+                Log.d("suceessmsg", "sucess exlusive ${Gson().toJson(it)}")
 
+                getCategory.value = it.data
+            }
+            is ApiState.Failure -> {
+                Log.d("suceessmsg", "sucess getProductCategory ${Gson().toJson(it)}")
+                getCategory.value =
+                    getProductCategory(emptyList(), "Something went wrong", 401)
+            }
+            is ApiState.Loading -> {
+
+            }
+        }
+    }
+}
     fun callingExcusiveProducts(city: String) = viewModelScope.launch {
         Log.d("suceessmsg", "sucess ${Gson().toJson(city)}")
         repository.ExclusiveProducts("kaithal").collectLatest {

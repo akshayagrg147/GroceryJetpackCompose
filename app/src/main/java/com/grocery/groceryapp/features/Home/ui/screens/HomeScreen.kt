@@ -45,6 +45,7 @@ import com.google.accompanist.flowlayout.SizeMode
 import com.google.accompanist.pager.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.gson.Gson
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
@@ -54,6 +55,7 @@ import com.grocery.groceryapp.common.Utils.Companion.vibrator
 import com.grocery.groceryapp.data.modal.CategoryWiseDashboardResponse
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
+import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
@@ -141,6 +143,7 @@ fun BodyDashboard(
     )
     val best = viewModal.bestsellingProductsResponse1.value
     val res = viewModal.exclusiveProductsResponse1.value
+    val category=viewModal.getCategory1.value
     Column(
         //  verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -314,27 +317,30 @@ fun BodyDashboard(
 
             }
 
-            val ls: MutableList<MainProducts> = ArrayList()
-            ls.add(MainProducts("vegetables", R.drawable.vegetable, borderColor, null))
-            ls.add(MainProducts("diary", R.drawable.diary, borderColor, null))
-            ls.add(MainProducts("drink", R.drawable.cold_drink, disableColor, null))
-            ls.add(MainProducts("personal care", R.drawable.personal_care, borderColor, null))
-            ls.add(MainProducts("Pet Care", R.drawable.pet_care, lightBlueColor, null))
-            ls.add(MainProducts("cleaning essentials", R.drawable.cleaning, borderColor, null))
-            ls.add(MainProducts("Baby care", R.drawable.ginger, lightBlueColor, null))
-            ls.add(MainProducts("Sauces", R.drawable.saucesspreads, darkFadedColor, null))
+//            val ls: MutableList<getProductCategory.ItemData> = ArrayList()
+//            ls.addAll(category.itemData)
+//            ls.add(MainProducts("vegetables", R.drawable.vegetable, borderColor, null))
+//            ls.add(MainProducts("diary", R.drawable.diary, borderColor, null))
+//            ls.add(MainProducts("drink", R.drawable.cold_drink, disableColor, null))
+//            ls.add(MainProducts("personal care", R.drawable.personal_care, borderColor, null))
+//            ls.add(MainProducts("Pet Care", R.drawable.pet_care, lightBlueColor, null))
+//            ls.add(MainProducts("cleaning essentials", R.drawable.cleaning, borderColor, null))
+//            ls.add(MainProducts("Baby care", R.drawable.ginger, lightBlueColor, null))
+//            ls.add(MainProducts("Sauces", R.drawable.saucesspreads, darkFadedColor, null))
 
             val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 4)
+
+
+            category.itemData=  category.itemData?.filter { it.subCategoryList?.isNotEmpty()==true }
             FlowRow(
                 mainAxisSize = SizeMode.Expand,
-                mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
 
             ) {
-                for (i in 0 until ls.size) {
+                for (i in 0 until category.itemData!!.size) {
                     GroceriesItems(
-                        ls[i].color,
-                        ls[i].image,
-                        ls[i].name,
+                        lightBlueColor,
+                        R.drawable.pet_care,
+                        category.itemData!![i],
                         navcontroller,
                         viewModal,
                         itemSize
@@ -593,7 +599,7 @@ fun ExclusiveOffers(
         ) {
 
             val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.orignalprice?.toFloat()
+                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
             Text(
@@ -633,12 +639,12 @@ fun ExclusiveOffers(
             ) {
 
                 Text10_h2(
-                    text = "₹ ${data.price}",
+                    text = "₹ ${data.selling_price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
                 Text(
-                    text = "₹${data.orignalprice ?: "0.00"}",
+                    text = "₹${data.orignal_price ?: "0.00"}",
                     fontSize = 11.sp,
                     color = bodyTextColor,
                     modifier = Modifier.padding(start = 5.dp),
@@ -656,9 +662,9 @@ fun ExclusiveOffers(
                             viewModal.insertCartItem(
                                 data.ProductId ?: "",
                                 data.productImage1 ?: "",
-                                data.price?.toInt() ?: 0,
+                                data.selling_price?.toInt() ?: 0,
                                 data.productName ?: "",
-                                data.orignalprice ?: ""
+                                data.selling_price ?: ""
                             )
                             //    viewModal.getCartItem()
                             Toast
@@ -813,7 +819,6 @@ fun BestOffers(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 4.dp)
-
             .width(150.dp)
             .clickable {
                 navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
@@ -826,7 +831,7 @@ fun BestOffers(
                 .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
             val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.orignalprice?.toFloat()
+                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
             Text(
@@ -868,12 +873,12 @@ fun BestOffers(
             ) {
 
                 Text10_h2(
-                    text = "₹ ${data.price}",
+                    text = "₹ ${data.selling_price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
                 Text(
-                    text = "₹${data.orignalprice ?: "0.00"}",
+                    text = "₹${data.orignal_price ?: "0.00"}",
                     fontSize = 11.sp,
                     color = bodyTextColor,
                     modifier = Modifier.padding(start = 5.dp),
@@ -892,9 +897,9 @@ fun BestOffers(
                             viewModal.insertCartItem(
                                 data.ProductId ?: "",
                                 data.productImage1 ?: "",
-                                data.price?.toInt() ?: 0,
+                                data.selling_price?.toInt() ?: 0,
                                 data.productName ?: "",
-                                data.orignalprice ?: ""
+                                data.orignal_price ?: ""
                             )
                             //     viewModal.getCartItem()
                             Toast
@@ -925,7 +930,7 @@ fun BestOffers(
 fun GroceriesItems(
     color: Color,
     drawable: Int,
-    item: String,
+    item: getProductCategory.ItemData,
     navController: NavHostController,
     viewModal: HomeAllProductsViewModal,
     itemSize: Dp
@@ -938,7 +943,9 @@ fun GroceriesItems(
             .size(itemSize)
             .padding(5.dp)
             .clickable {
-                navController.navigate(DashBoardNavRoute.MenuItems.senddata(item))
+                val data:String = Gson().toJson(item)
+                navController.currentBackStackEntry?.savedStateHandle?.set("data",item)
+                navController.navigate(DashBoardNavRoute.MenuItems.screen_route)
 
 
             }
@@ -949,12 +956,14 @@ fun GroceriesItems(
                 .padding(10.dp)
         ) {
 
-            Text10_h2(
-                text = item, color = whiteColor,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+            item.category?.let {
+                Text10_h2(
+                    text = it, color = whiteColor,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
 
-            )
+                )
+            }
             Image(
                 painter = painterResource(id = drawable),
                 contentDescription = "splash image",

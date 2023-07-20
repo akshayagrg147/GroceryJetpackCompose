@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.data.network
 
 import android.util.Log
+import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.AppPreferenceProvider
 
 import kotlinx.coroutines.flow.first
@@ -11,28 +12,21 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class OAuthInterceptor @Inject constructor(
-    private val appPreferenceProvider: AppPreferenceProvider
+    private val sharedPreference: sharedpreferenceCommon
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
-        request = request.newBuilder().header("Authorization",
-            "Bearer ${
-//                runBlocking {
-////                    preferenceStore.getPref(PreferenceStore.token1).first()
-////                        .also {
-////                            Log.d("main", "intercept: $it")
-////                        }
-//                    repository.getToken.first().token
-//                        .also {
-//                            Log.d("main", "intercept: $it")
-//                        }
-//                }
-                appPreferenceProvider.getUserIdToken().also {
-                    Log.d("main", "intercept: $it")
-                }
-            }"
-        )
-            .build()
+        val jwtToken = sharedPreference.getJwtToken()
+
+        // Logging the JWT token
+        Log.d("main", "JWT Token: $jwtToken")
+
+        // Include the Bearer token if available
+        if (jwtToken.isNotEmpty()) {
+            request = request.newBuilder()
+                .header("Authorization", "Bearer $jwtToken")
+                .build()
+        }
         return chain.proceed(request)
     }
 

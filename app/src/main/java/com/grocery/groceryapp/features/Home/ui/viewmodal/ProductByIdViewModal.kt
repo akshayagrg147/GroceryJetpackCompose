@@ -79,7 +79,7 @@ class ProductByIdViewModal @Inject constructor(
                 Integer.parseInt(value.homeproducts.price ?: "0"),
                 value.homeproducts.productName!!,
                 value.homeproducts.orignalprice,
-                savingAmount = (value.homeproducts.orignalprice?.toInt()!! - value.homeproducts.price?.toInt()!!).toString()
+                savingAmount = (value.homeproducts.orignalprice?.toInt()!! - value.homeproducts.selling_price?.toInt()!!).toString()
             )
             repo.insert(data)
         } else if (intger >= 1) {

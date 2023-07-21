@@ -77,7 +77,7 @@ fun SplashScreen(
             }
         }
         else{
-            navController.navigate(ScreenRoute.SignUpScreen.route)
+            navController.navigate(ScreenRoute.LoginScreen.route)
         }
 
     }

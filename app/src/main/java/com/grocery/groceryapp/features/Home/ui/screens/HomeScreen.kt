@@ -50,14 +50,19 @@ import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
+import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.common.Utils.Companion.vibrator
 import com.grocery.groceryapp.data.modal.CategoryWiseDashboardResponse
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
+import com.grocery.groceryapp.data.modal.RegisterLoginRequest
 import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeEvent
+import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterEvent
+import kotlinx.coroutines.flow.collectLatest
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
 import vtsen.hashnode.dev.simplegooglemapapp.ui.screens.LocationPermissionsAndSettingDialogs
 import java.text.DecimalFormat
@@ -77,7 +82,25 @@ fun homescreen(
     var requestLocationUpdate by remember { mutableStateOf(true) }
     val pager = rememberPagerState()
     val scroll: ScrollState = rememberScrollState(0)
+    LaunchedEffect(key1 = Unit){
+        viewModal.onEvent(
+            HomeEvent.CategoryWiseEventFlow
 
+        )
+        viewModal.onEvent(
+            HomeEvent.ExclusiveEventFlow
+
+        )
+        viewModal.onEvent(
+            HomeEvent.BestSellingEventFlow
+        )
+        viewModal.onEvent(
+            HomeEvent.ItemCategoryEventFlow
+        )
+
+
+
+    }
     var searchvisibility by remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
         HeaderDeliveryTime(viewModal, navcontroller, scroll, lazyListState)
@@ -112,6 +135,10 @@ fun homescreen(
             )
 
 
+
+
+
+
 }
 
 @Composable
@@ -137,13 +164,16 @@ fun BodyDashboard(
     navcontroller: NavHostController, lazyListState: LazyListState,
     context: Activity, availibilty: (Boolean) -> Unit
 ) {
+
+
    val padding by animateDpAsState(
         targetValue = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT,
         animationSpec = tween(durationMillis = 300)
     )
-    val best = viewModal.bestsellingProductsResponse1.value
-    val res = viewModal.exclusiveProductsResponse1.value
-    val category=viewModal.getCategory1.value
+    val exlusiveResponse by viewModal.exclusive.collectAsState()
+    val categoryWiseResponse by viewModal.categoryWiseResponse.collectAsState()
+    val getProductCategory by viewModal.getProductCategory.collectAsState()
+    val bestSelling by viewModal.bestSelling.collectAsState()
     Column(
         //  verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -188,13 +218,29 @@ fun BodyDashboard(
             },
             singleLine = true,
         )
+        HorizontalPager(count = 3, state = pager) { index ->
+            Banner(pagerState = pager)
+        }
 
-        Column(modifier = Modifier.fillMaxSize()) {
-            HorizontalPager(count = 3, state = pager) { index ->
-                Banner(pagerState = pager)
+        //exclusive
+        if(exlusiveResponse.isLoading)
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .fillMaxWidth()
+                // .height(260.dp)
+            ){
+                repeat(5) {
+                    item {
+                        ShimmerAnimation()
+
+                    }
+                }
             }
 
-//exclusive offers
+        else if(exlusiveResponse.data != null)
+        {
+            //exclusive offers
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -209,8 +255,8 @@ fun BodyDashboard(
                     "See all", color = seallcolor, modifier = Modifier
                         .padding(top = 5.dp, end = 20.dp)
                         .clickable {
-                            if (res.statusCode == 200) {
-                                val list1 = res.list
+                            if (exlusiveResponse.data?.statusCode == 200) {
+                                val list1 = exlusiveResponse.data?.list
                                 context.launchActivity<ListItemsActivity>() {
                                     putExtra(
                                         "parced",
@@ -233,25 +279,40 @@ fun BodyDashboard(
                 // .height(260.dp)
             ) {
 
-                if (res.statusCode == 200) {
-                    val list1 = res.list
+                if (exlusiveResponse.data?.statusCode == 200) {
+                    val list1 = exlusiveResponse.data?.list
                     if (list1?.isEmpty() == true) {
-                        availibilty(true)
+                        // availibilty(true)
                         return@LazyRow
                     }
                     items(list1!!) { data ->
                         ExclusiveOffers(data, context!!, navcontroller, viewModal)
                     }
                 } else {
-                    repeat(5) {
-                        item {
-                            ShimmerAnimation()
 
-                        }
+                }
+            }
+
+        }
+
+
+
+        //Best selling
+        if(bestSelling.isLoading)
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .fillMaxWidth()
+                // .height(260.dp)
+            ){
+                repeat(5) {
+                    item {
+                        ShimmerAnimation()
+
                     }
                 }
             }
-//Best selling
+        else  if(bestSelling.data != null){
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -266,8 +327,8 @@ fun BodyDashboard(
                     "See all", color = seallcolor, modifier = Modifier
                         .padding(top = 5.dp, end = 20.dp)
                         .clickable {
-                            if (best.statusCode == 200) {
-                                val list1 = best.list
+                            if (bestSelling.data?.statusCode == 200) {
+                                val list1 = bestSelling.data?.list
                                 context.launchActivity<ListItemsActivity>() {
                                     putExtra(
                                         "parced",
@@ -286,156 +347,173 @@ fun BodyDashboard(
                 // .height(260.dp)
             ) {
 
-                if (best.statusCode == 200) {
-                    val list1 = best.list
+                if (bestSelling.data?.statusCode == 200) {
+                    val list1 = bestSelling.data?.list
                     if (list1?.isNotEmpty() == true)
                         items(list1) { data ->
                             BestOffers(navcontroller, data, context, viewModal)
                         }
-                } else {
-                    repeat(5) {
-                        item {
-                            ShimmerAnimation()
-
-                        }
-                    }
-                }
-            }
-
-            //groceries
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
-            ) {
-                Text13_body1(
-                    text = "Groceries", color = Color.Black,
-                    modifier = Modifier
-                        .weight(3f)
-                        .padding(start = 10.dp),
-                )
-
-            }
-
-//            val ls: MutableList<getProductCategory.ItemData> = ArrayList()
-//            ls.addAll(category.itemData)
-//            ls.add(MainProducts("vegetables", R.drawable.vegetable, borderColor, null))
-//            ls.add(MainProducts("diary", R.drawable.diary, borderColor, null))
-//            ls.add(MainProducts("drink", R.drawable.cold_drink, disableColor, null))
-//            ls.add(MainProducts("personal care", R.drawable.personal_care, borderColor, null))
-//            ls.add(MainProducts("Pet Care", R.drawable.pet_care, lightBlueColor, null))
-//            ls.add(MainProducts("cleaning essentials", R.drawable.cleaning, borderColor, null))
-//            ls.add(MainProducts("Baby care", R.drawable.ginger, lightBlueColor, null))
-//            ls.add(MainProducts("Sauces", R.drawable.saucesspreads, darkFadedColor, null))
-
-            val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 4)
-
-
-            category.itemData=  category.itemData?.filter { it.subCategoryList?.isNotEmpty()==true }
-            FlowRow(
-                mainAxisSize = SizeMode.Expand,
-
-            ) {
-                for (i in 0 until category.itemData!!.size) {
-                    GroceriesItems(
-                        lightBlueColor,
-                        R.drawable.pet_care,
-                        category.itemData!![i],
-                        navcontroller,
-                        viewModal,
-                        itemSize
-                    )
                 }
             }
         }
-        //last list items
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
-            repeat(viewModal.CategoryWiseDashboardRespon.value.list?.size ?: 0) {
 
-                Card(
-                    elevation = 1.dp,
-                    shape = RoundedCornerShape(2.dp),
+
+//Cateory Wise
+        if(getProductCategory.isLoading)
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .fillMaxWidth()
+                // .height(260.dp)
+            ){
+                repeat(5) {
+                    item {
+                        ShimmerAnimation()
+
+                    }
+                }
+            }
+        else
+            Column(modifier = Modifier.fillMaxSize()) {
+
+                //groceries
+                Row(
                     modifier = Modifier
-                        .padding(horizontal = 4.dp, vertical = 10.dp)
-
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
                 ) {
-                    Column() {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
-                        ) {
+                    Text13_body1(
+                        text = "Groceries", color = Color.Black,
+                        modifier = Modifier
+                            .weight(3f)
+                            .padding(start = 10.dp),
+                    )
+
+                }
+                val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 4)
+                getProductCategory.data?.itemData=  getProductCategory.data?.itemData?.filter { it.subCategoryList?.isNotEmpty()==true }
+                FlowRow(
+                    mainAxisSize = SizeMode.Expand,
+
+                    ) {
+                    if(getProductCategory.data?.itemData?.isNotEmpty()==true)
+                        for (i in 0 until getProductCategory.data?.itemData?.size!!) {
+                            GroceriesItems(
+                                lightBlueColor,
+                                R.drawable.pet_care,
+                                getProductCategory.data?.itemData!![i],
+                                navcontroller,
+                                viewModal,
+                                itemSize
+                            )
+                        }
+                }
+            }
+
+
+
+        //last list items
+        if(getProductCategory.isLoading)
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .fillMaxWidth()
+                // .height(260.dp)
+            ){
+                repeat(5) {
+                    item {
+                        ShimmerAnimation()
+
+                    }
+                }
+            }
+        else
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            )
+            {
+                repeat(categoryWiseResponse.data?.list?.size ?: 0) {
+
+                    Card(
+                        elevation = 1.dp,
+                        shape = RoundedCornerShape(2.dp),
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp, vertical = 10.dp)
+
+                    ) {
+                        Column() {
                             Row(
-                                modifier = Modifier.padding(horizontal = 10.dp),
-                                Arrangement.spacedBy(10.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp), Arrangement.SpaceBetween
                             ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 10.dp),
+                                    Arrangement.spacedBy(10.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Home,
+                                        contentDescription = null,
+                                        tint = Color.LightGray,
+                                    )
+                                    Column() {
+                                        Text14_h1(
+                                            text = categoryWiseResponse.data?.list?.get(
+                                                it
+                                            )?.categoryTitle ?: "", color = headingColor,
+                                            modifier = Modifier
+
+                                        )
+                                        Text13_body1(
+                                            text = categoryWiseResponse.data?.list?.get(
+                                                it
+                                            )?.category ?: "", color = greyLightColor,
+                                            modifier = Modifier
+                                        )
+                                    }
+                                }
                                 Icon(
-                                    imageVector = Icons.Default.Home,
+                                    imageVector = Icons.Default.ArrowForward,
                                     contentDescription = null,
                                     tint = Color.LightGray,
+                                    modifier = Modifier.clickable {
+                                        viewModal.setcategory(
+                                            categoryWiseResponse.data?.list?.get(
+                                                it
+                                            )?.category ?: ""
+                                        )
+                                        navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
+                                    }
                                 )
-                                Column() {
-                                    Text14_h1(
-                                        text = viewModal.CategoryWiseDashboardRespon.value.list?.get(
-                                            it
-                                        )?.categoryTitle ?: "", color = headingColor,
-                                        modifier = Modifier
 
-                                    )
-                                    Text13_body1(
-                                        text = viewModal.CategoryWiseDashboardRespon.value.list?.get(
-                                            it
-                                        )?.category ?: "", color = greyLightColor,
-                                        modifier = Modifier
-                                    )
-                                }
-                            }
-                            Icon(
-                                imageVector = Icons.Default.ArrowForward,
-                                contentDescription = null,
-                                tint = Color.LightGray,
-                                modifier = Modifier.clickable {
-                                    viewModal.setcategory(
-                                        viewModal.CategoryWiseDashboardRespon.value.list?.get(
-                                            it
-                                        )?.category ?: ""
-                                    )
-                                    navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
-                                }
-                            )
-
-                        }
-
-                        Spacer(modifier = Modifier.height(5.dp))
-                        val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2.1f)
-                        FlowRow(
-                            mainAxisSize = SizeMode.Expand,
-                            mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
-                        ) {
-                            for (i in 0 until viewModal.CategoryWiseDashboardRespon.value.list?.get(
-                                it
-                            )!!.ls?.size!!) {
-                                AllItems(
-                                    viewModal.CategoryWiseDashboardRespon.value.list?.get(it)!!.ls?.get(
-                                        i
-                                    )!!,
-                                    context, navcontroller, viewModal, itemSize
-                                )
                             }
 
+                            Spacer(modifier = Modifier.height(5.dp))
+                            val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2.1f)
+                            FlowRow(
+                                mainAxisSize = SizeMode.Expand,
+                                mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
+                            ) {
+                                for (i in 0 until categoryWiseResponse.data?.list?.get(
+                                    it
+                                )!!.ls?.size!!) {
+                                    CateoryWiseItems(
+                                        categoryWiseResponse.data?.list?.get(it)!!.ls?.get(
+                                            i
+                                        )!!,
+                                        context, navcontroller, viewModal, itemSize
+                                    )
+                                }
+
+                            }
+                            Spacer(modifier = Modifier.height(20.dp))
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
+
+
                     }
-
-
                 }
+                Spacer(modifier = Modifier.height(30.dp))
             }
-            Spacer(modifier = Modifier.height(30.dp))
-        }
-
 
     }
 
@@ -692,7 +770,7 @@ fun ExclusiveOffers(
 
 
 @Composable
-fun AllItems(
+fun CateoryWiseItems(
     data: CategoryWiseDashboardResponse.cat.L,
     context: Context,
     navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp
@@ -705,7 +783,7 @@ fun AllItems(
             .padding(start = 1.dp, end = 1.dp, bottom = 1.dp)
             .width(itemSize)
             .clickable {
-               navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.productId!!} exclusive"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.productId!!} exclusive"))
             }
 
     ) {
@@ -943,8 +1021,8 @@ fun GroceriesItems(
             .size(itemSize)
             .padding(5.dp)
             .clickable {
-                val data:String = Gson().toJson(item)
-                navController.currentBackStackEntry?.savedStateHandle?.set("data",item)
+                val data: String = Gson().toJson(item)
+                navController.currentBackStackEntry?.savedStateHandle?.set("data", item)
                 navController.navigate(DashBoardNavRoute.MenuItems.screen_route)
 
 

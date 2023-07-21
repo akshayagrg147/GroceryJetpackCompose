@@ -52,8 +52,7 @@ class RegisterLoginViewModal @Inject constructor(private val repository: CommonR
 
 }
 
-sealed class RegisterEvent{ data class RegisterEventFlow(
-        val data:RegisterLoginRequest
-    ) : RegisterEvent()
+sealed class RegisterEvent{
+    data class RegisterEventFlow(val data:RegisterLoginRequest) : RegisterEvent()
 
 }

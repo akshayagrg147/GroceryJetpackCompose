@@ -17,8 +17,13 @@ import com.grocery.groceryapp.RoomDatabase.RoomRepository
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.Constants.Companion.NETWORK_PAGE_SIZE
 import com.grocery.groceryapp.common.ApiState
+import com.grocery.groceryapp.common.doOnFailure
+import com.grocery.groceryapp.common.doOnLoading
+import com.grocery.groceryapp.common.doOnSuccess
 import com.grocery.groceryapp.data.modal.CategoryWiseDashboardResponse
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
+import com.grocery.groceryapp.data.modal.RegisterLoginRequest
+import com.grocery.groceryapp.data.modal.RegisterLoginResponse
 import com.grocery.groceryapp.data.network.ApiService
 import com.grocery.groceryapp.data.network.CallingCategoryWiseData
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
@@ -47,31 +52,30 @@ class HomeAllProductsViewModal @Inject constructor(
     val cat: CallingCategoryWiseData
 ) : ViewModel() {
     init {
-        callingBestSelling(sharedPreferences.getCity())
-        callingExcusiveProducts(sharedPreferences.getCity())
         getItemCount()
         getItemPrice()
-        callingDashboardCategoryWiseList()
-        getProductCategory()
+
+
     }
 
-    var passingdata: MutableLiveData<List<HomeAllProductsResponse.HomeResponse>> = MutableLiveData()
-    private val exclusiveProductsResponse: MutableState<HomeAllProductsResponse> =
-        mutableStateOf(HomeAllProductsResponse(null, null, null))
+    //events object
 
-    private val CategoryWiseDashboardResponse: MutableState<CategoryWiseDashboardResponse> =
-        mutableStateOf(CategoryWiseDashboardResponse(null, null, null))
-    val CategoryWiseDashboardRespon: State<CategoryWiseDashboardResponse> =
-        CategoryWiseDashboardResponse
+    private val _bestSelling:MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> = MutableStateFlow(ComposeUiResponse())
+    var bestSelling = _bestSelling.asStateFlow()
+        private set
 
-private val getCategory:MutableState<getProductCategory> = mutableStateOf(getProductCategory(
-    emptyList(),"",0))
-    val getCategory1: State<getProductCategory> = getCategory
-    private val bestsellingProductsResponse: MutableState<HomeAllProductsResponse> =
-        mutableStateOf(HomeAllProductsResponse(null, null, null))
 
-    val exclusiveProductsResponse1: State<HomeAllProductsResponse> = exclusiveProductsResponse
-    val bestsellingProductsResponse1: State<HomeAllProductsResponse> = bestsellingProductsResponse
+    private val _exclusive:MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> = MutableStateFlow(ComposeUiResponse())
+    var exclusive = _exclusive.asStateFlow()
+        private set
+
+    private val _categoryWiseResponse:MutableStateFlow<ComposeUiResponse<CategoryWiseDashboardResponse>> = MutableStateFlow(ComposeUiResponse())
+    var categoryWiseResponse = _categoryWiseResponse.asStateFlow()
+        private set
+
+    private val _getProductCategory:MutableStateFlow<ComposeUiResponse<getProductCategory>> = MutableStateFlow(ComposeUiResponse())
+    var getProductCategory = _getProductCategory.asStateFlow()
+        private set
 
 
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
@@ -150,44 +154,83 @@ private val getCategory:MutableState<getProductCategory> = mutableStateOf(getPro
     fun deleteCartItems() = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteAllFromTable()
     }
+    fun onEvent(event:HomeEvent){
+        when(event){
+             HomeEvent.BestSellingEventFlow -> viewModelScope.launch {
+                repository.BestSellingProducts()
+                    .collectLatest {
+                        when(it){
+                            is ApiState.Loading->{
+                                _bestSelling.value = ComposeUiResponse( isLoading = true)
+                            }
+                            is ApiState.Success->{
+                                _bestSelling.value = ComposeUiResponse(data = it.data)
+                            }
+                            is ApiState.Failure->{
 
-fun getProductCategory() = viewModelScope.launch {
-    repository.getProductCategory().collectLatest {
-        when (it) {
-            is ApiState.Success -> {
-                Log.d("suceessmsg", "sucess exlusive ${Gson().toJson(it)}")
-
-                getCategory.value = it.data
-            }
-            is ApiState.Failure -> {
-                Log.d("suceessmsg", "sucess getProductCategory ${Gson().toJson(it)}")
-                getCategory.value =
-                    getProductCategory(emptyList(), "Something went wrong", 401)
-            }
-            is ApiState.Loading -> {
+                                _bestSelling.value = ComposeUiResponse( error = it?.msg.toString())
+                            }
+                        }
+                    }
 
             }
+             HomeEvent.ExclusiveEventFlow -> viewModelScope.launch {
+                repository.ExclusiveProducts(city="kaithal")
+                    .collectLatest {
+                        when(it){
+                            is ApiState.Loading->{
+                                _exclusive.value = ComposeUiResponse( isLoading = true)
+                            }
+                            is ApiState.Success->{
+                                _exclusive.value = ComposeUiResponse(data = it.data)
+                            }
+                            is ApiState.Failure->{
+                                _exclusive.value = ComposeUiResponse( error = it?.msg.toString())
+                            }
+                        }
+                    }
+
+
+            }
+             HomeEvent.ItemCategoryEventFlow -> viewModelScope.launch {
+                Log.d("checkResponse", "onEvent: called")
+                repository.getProductCategory()
+                    .collectLatest {
+                        when(it){
+                            is ApiState.Loading->{
+                                _getProductCategory.value = ComposeUiResponse( isLoading = true)
+                            }
+                            is ApiState.Success->{
+                                _getProductCategory.value = ComposeUiResponse(data = it.data)
+                            }
+                            is ApiState.Failure->{
+                                _getProductCategory.value = ComposeUiResponse( error = it?.msg.toString())
+                            }
+                        }
+                    }
+            }
+             HomeEvent.CategoryWiseEventFlow->viewModelScope.launch {
+                repository.callingDasboardProducts()
+                    .collectLatest {
+                        when(it){
+                            is ApiState.Loading->{
+                                _categoryWiseResponse.value = ComposeUiResponse( isLoading = true)
+                            }
+                            is ApiState.Success->{
+                                _categoryWiseResponse.value = ComposeUiResponse(data = it.data)
+                            }
+                            is ApiState.Failure->{
+                                _categoryWiseResponse.value = ComposeUiResponse( error = it?.msg.toString())
+                            }
+                        }
+                    }
+
+            }
+            else -> {}
         }
     }
-}
-    fun callingExcusiveProducts(city: String) = viewModelScope.launch {
-        Log.d("suceessmsg", "sucess ${Gson().toJson(city)}")
-        repository.ExclusiveProducts("kaithal").collectLatest {
-            when (it) {
-                is ApiState.Success -> {
-                    Log.d("suceessmsg", "sucess exlusive ${Gson().toJson(it)}")
-                    exclusiveProductsResponse.value = it.data
-                }
-                is ApiState.Failure -> {
-                    exclusiveProductsResponse.value =
-                        HomeAllProductsResponse(null, "Something went wrong", 401)
-                }
-                is ApiState.Loading -> {
 
-                }
-            }
-        }
-    }
+
 
     fun getItemCount() = viewModelScope.launch {
 
@@ -245,49 +288,10 @@ fun getProductCategory() = viewModelScope.launch {
     }
 
 
-    fun gettingData(): LiveData<List<HomeAllProductsResponse.HomeResponse>> {
-        return passingdata
 
-    }
 
-    fun passingData(list: List<HomeAllProductsResponse.HomeResponse>) {
-        passingdata.value = list
 
-    }
 
-    fun callingBestSelling(city: String) = viewModelScope.launch {
-        repository.BestSellingProducts().collectLatest {
-            when (it) {
-                is ApiState.Success -> {
-                    bestsellingProductsResponse.value = it.data
-                }
-                is ApiState.Failure -> {
-                    bestsellingProductsResponse.value =
-                        HomeAllProductsResponse(null, "Something went wrong", 401)
-                }
-                is ApiState.Loading -> {
-
-                }
-            }
-        }
-    }
-
-    fun callingDashboardCategoryWiseList() = viewModelScope.launch {
-        repository.callingDasboardProducts().collectLatest {
-            when (it) {
-                is ApiState.Success -> {
-                    CategoryWiseDashboardResponse.value = it.data
-                }
-                is ApiState.Failure -> {
-                    CategoryWiseDashboardResponse.value =
-                        CategoryWiseDashboardResponse(null, "Something went wrong", 401)
-                }
-                is ApiState.Loading -> {
-
-                }
-            }
-        }
-    }
 
     fun setFilterList(filterlist: List<HomeAllProductsResponse.HomeResponse>?) {
         Log.d("kdkkdk", "skksk ${Gson().toJson(filterlist)}")
@@ -351,3 +355,16 @@ class PaginSoucrce @Inject constructor(
         }
     }
 }
+sealed class HomeEvent{
+    object ExclusiveEventFlow : HomeEvent()
+    object BestSellingEventFlow : HomeEvent()
+    object ItemCategoryEventFlow:HomeEvent()
+    object CategoryWiseEventFlow:HomeEvent()
+
+}
+
+data class ComposeUiResponse<T>(
+    val data:T? = null,
+    val error:String = "",
+    val isLoading:Boolean = false
+)

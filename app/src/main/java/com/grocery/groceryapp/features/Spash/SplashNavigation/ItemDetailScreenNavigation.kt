@@ -29,15 +29,16 @@ import com.google.accompanist.pager.*
 import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.*
-import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
 import com.grocery.groceryapp.data.modal.ProductByIdResponseModal
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
+import com.grocery.groceryapp.data.modal.RelatedSearchRequest
 import com.grocery.groceryapp.features.Home.ui.screens.ShimmerAnimation
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductByIdViewModal
-import kotlinx.coroutines.flow.collectLatest
+import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductEvents
+import com.grocery.groceryapp.features.Home.ui.viewmodal.ProductEvents.RelatedSearchEvents
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor as bodyTextColor1
@@ -46,31 +47,41 @@ import com.grocery.groceryapp.features.Home.ui.ui.theme.bodyTextColor as bodyTex
 fun ItemScreenNavigation(
     context: Context,
     productId: String?,
-    category: String?,
+
     navController: NavHostController,
     viewModal: ProductByIdViewModal = hiltViewModel()
 ) {
+    val _itemDetailFlow by viewModal.itemDetailFlow.collectAsState()
+    var isLoading by remember { mutableStateOf(true) }
 
+    LaunchedEffect(key1 = true) {
+        viewModal.onEvents(
+            RelatedSearchEvents(RelatedSearchRequest(Price = "50", category = "grocery"))
 
-    when (category) {
-        "Best" -> {
-            viewModal.setData(ProductIdIdModal(productId = productId))
-            viewModal.calllingBestProductById()
-        }
-        "exclusive" -> {
-            viewModal.setData(ProductIdIdModal(productId = productId))
-            viewModal.calllingExclsuiveProductById()
-        }
-        else -> {
+        )
+        viewModal.onEvents(
+            ProductEvents.ItemDetailEvent(ProductIdIdModal(productId))
 
-            viewModal.setData(ProductIdIdModal(productId = productId))
-            viewModal.calllingAllProductById()
-
-        }
+        )
     }
-    var response = viewModal.responseLiveData
-    if (response.value.statusCode == 200) {
-        ItemDetailsScreen(response.value, navController, context, viewModal)
+
+    var response = _itemDetailFlow
+    if (_itemDetailFlow.isLoading) {
+        CircularProgressBar(
+            progress = 0.75f, // 75% progress
+            isLoading = isLoading, // Show CircularProgressIndicator when loading
+            progressColor = Color.Blue,
+            backgroundColor = Color.LightGray,
+            strokeWidth = 8f
+        )
+
+    } else if (_itemDetailFlow.data != null) {
+        isLoading = false
+        ItemDetailsScreen(response.data!!, navController, context)
+    } else if (_itemDetailFlow.error.isNotEmpty()) {
+        isLoading = false
+        context.showMsg(_itemDetailFlow.error)
+
     }
 
 
@@ -80,8 +91,7 @@ fun ItemScreenNavigation(
 fun RelatedSearchItem(
     data: HomeAllProductsResponse.HomeResponse,
     context: Context,
-    navcontroller: NavHostController,
-    viewModal: ProductByIdViewModal
+    navcontroller: NavHostController
 ) {
 
     Card(
@@ -92,7 +102,7 @@ fun RelatedSearchItem(
 
             .width(150.dp)
             .clickable {
-                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata(data.ProductId!!))
             }
 
     ) {
@@ -121,11 +131,7 @@ fun RelatedSearchItem(
                 modifier = Modifier
                     .width(150.dp)
                     .height(100.dp)
-                    .align(alignment = Alignment.CenterHorizontally)
-
-
-            )
-
+                    .align(alignment = Alignment.CenterHorizontally))
             Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
@@ -188,14 +194,16 @@ fun ItemDetailsScreen(
     value: ProductByIdResponseModal,
     navController: NavHostController,
     context: Context,
-    viewModal: ProductByIdViewModal
+    viewModal: ProductByIdViewModal = hiltViewModel()
 ) {
     val cartcount = remember { mutableStateOf(0) }
+    val relatedSearch by viewModal.eventRelatedSearchFlow.collectAsState()
 
     val pager = rememberPagerState()
     viewModal.getItemBaseOnProductId(value.homeproducts?.productId ?: "")
+    viewModal.getTotalProductItemsPrice()
+    viewModal.getTotalProductItems()
 
-    viewModal.calllingRelatedSearch()
     cartcount.value = viewModal.productIdCount.value
     val tabList = listOf(
         "Description",
@@ -203,35 +211,6 @@ fun ItemDetailsScreen(
     )
     val pagerState: PagerState = rememberPagerState(initialPage = 0)
     val coroutineScope = rememberCoroutineScope()
-
-
-//    LaunchedEffect(key1 = true) {
-//        viewModal.onEvents(
-//            ProductEvents.RelatedSearchEvents(
-//                RelatedSearchRequest(
-//                    "100",
-//                    "Snacks"
-//                )
-//            )
-//        )
-//    }
-
-    LaunchedEffect(key1 = true ){
-        viewModal.eventRelatedSearchFlow.collectLatest {
-            when(it){
-                is ApiState.Success -> {
-
-                }
-                is ApiState.Failure -> {
-
-                }
-                ApiState.Loading -> {
-
-                }
-            }
-        }
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (l1, l2) = createRefs()
@@ -252,6 +231,7 @@ fun ItemDetailsScreen(
 
                 ) {
                     item {
+                        //tab view for image
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Card(
                                 elevation = 1.dp,
@@ -308,22 +288,20 @@ fun ItemDetailsScreen(
                             ) {
 
                                 Text12_body1(
-                                    text = "₹ ${value.homeproducts?.price}",
+                                    text = "₹ ${value.homeproducts?.orignalprice}",
                                     color = headingColor,
                                     //  modifier= Modifier.weight(0.5F)
                                 )
                                 Text(
-                                    text = "₹${value.homeproducts?.orignalprice ?: "0.00"}",
+                                    text = "₹${value.homeproducts?.selling_price ?: "0.00"}",
                                     fontSize = 12.sp,
                                     color = bodyTextColor1,
                                     modifier = Modifier.padding(start = 5.dp),
                                     style = TextStyle(textDecoration = TextDecoration.LineThrough)
                                 )
                             }
-
-
-
                             Spacer(modifier = Modifier.height(10.dp))
+                            //add button
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -331,9 +309,6 @@ fun ItemDetailsScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
 
-
-                                viewModal.getTotalProductItemsPrice()
-                                viewModal.getTotalProductItems()
 
                                 if (cartcount.value > 0)
                                     Row {
@@ -400,7 +375,7 @@ fun ItemDetailsScreen(
 
                         }
                     }
-
+//horizental tab heder
                     stickyHeader {
                         TabRow(
                             modifier = Modifier.fillMaxWidth(),
@@ -427,7 +402,7 @@ fun ItemDetailsScreen(
                             }
                         }
                     }
-
+//tab layout for description and reviews
                     item {
                         HorizontalPager(
                             state = pagerState,
@@ -441,45 +416,50 @@ fun ItemDetailsScreen(
                             }
                         }
                     }
+                    //related search list
                     item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 10.dp), Arrangement.SpaceBetween
-                        ) {
-                            Text13_body1(
-                                text = "Related Search", color = Color.Black,
-                                modifier = Modifier
-                                    .padding(start = 10.dp),
-                            )
 
-                        }
-                        LazyRow(
-                            modifier = Modifier
-                                .padding(top = 15.dp)
-                                .fillMaxWidth()
-                            // .height(260.dp)
-                        ) {
-                            var relatedresponse = viewModal.relatedsearch1
-
-                            if (relatedresponse.value.statusCode == 200) {
-                                val list1 = relatedresponse.value.list
-                                items(list1!!) { data ->
-                                    RelatedSearchItem(data, context!!, navController, viewModal)
-                                }
-
-
-                            } else {
-                                repeat(5) {
-                                    item {
-                                        ShimmerAnimation()
-
-                                    }
-                                }
+                        if (relatedSearch.isLoading) {
+                            repeat(5) {
+                                ShimmerAnimation()
                             }
+                        } else if (relatedSearch.data != null) {
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp), Arrangement.SpaceBetween
+                            ) {
+                                Text13_body1(
+                                    text = "Related Search", color = Color.Black,
+                                    modifier = Modifier
+                                        .padding(start = 10.dp),
+                                )
+
+                            }
+                            LazyRow(
+                                modifier = Modifier
+                                    .padding(top = 15.dp)
+                                    .fillMaxWidth()
+                                // .height(260.dp)
+                            ) {
+                                val relatedresponse = relatedSearch.data
+                                if (relatedresponse?.statusCode == 200) {
+                                    val list1 = relatedresponse.list
+                                    items(list1?: emptyList()) { data ->
+                                        RelatedSearchItem(data, context, navController)
+                                    }
+
+
+                                }
+
+                            }
+                            Spacer(modifier = Modifier.height(45.dp))
+                        } else {
 
                         }
-                        Spacer(modifier = Modifier.height(45.dp))
+
+
                     }
                 }
 
@@ -487,11 +467,9 @@ fun ItemDetailsScreen(
 
 
         }
-
-
-
+        //view cart
         cardviewAddtoCart(
-            viewModal, navController,
+             navController,
             context,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
@@ -502,10 +480,10 @@ fun ItemDetailsScreen(
 
 @Composable
 fun cardviewAddtoCart(
-    viewModal: ProductByIdViewModal,
+
     navController: NavHostController,
     context: Context,
-    modifier: Modifier
+    modifier: Modifier,viewModal: ProductByIdViewModal = hiltViewModel(),
 ) {
     Card(
         elevation = 2.dp,
@@ -532,7 +510,7 @@ fun cardviewAddtoCart(
 
                 Image(
                     painter = painterResource(id = R.drawable.cart_icon),
-                    contentDescription = "Carrot Icon",
+                    contentDescription = "Cart icon",
                     alignment = Alignment.Center,
                     modifier = Modifier
 

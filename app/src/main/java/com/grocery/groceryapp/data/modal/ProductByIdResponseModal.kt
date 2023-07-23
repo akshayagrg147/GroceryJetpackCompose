@@ -20,8 +20,7 @@ data class ProductByIdResponseModal(
     val selling_price: String?,
         @Json(name="orignal_price")
         val orignalprice: String?,
-        @Json(name = "price")
-        val price: String?=null,
+
         @Json(name = "productId")
         val productId: String?=null,
         @Json(name = "ProductImage1")

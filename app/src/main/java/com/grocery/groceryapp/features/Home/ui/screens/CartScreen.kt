@@ -3,7 +3,6 @@ package com.grocery.groceryapp.features.Home.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -47,7 +46,6 @@ import com.grocery.groceryapp.R
 import com.grocery.groceryapp.RoomDatabase.CartItems
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
-import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.common.CommonProgressBar
 import com.grocery.groceryapp.data.modal.OrderIdCreateRequest
 import com.grocery.groceryapp.features.Home.domain.modal.AddressItems
@@ -212,7 +210,7 @@ fun CartScreen(
                                 )
                                 Log.d("messagepassing","${Gson().toJson(request)}")
                                 viewModal.passingOrderIdGenerateRequest(request)
-                                viewModal.calllingBookingOrder()
+                                viewModal.callingBookingOrder()
 
 
                             }
@@ -361,7 +359,7 @@ private fun Header1(
                             .padding(start = 10.dp)
                     )
                     Text12_body1(
-                        text = "₹ ${viewModal.SavingAmountState.value}",
+                        text = "₹ ${viewModal.savingAmountState.value}",
                         color = whiteColor,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
@@ -394,11 +392,11 @@ fun Body1(
     ) {
 
 
-        if (viewModal.allcartitemsState.value.isEmpty())
+        if (viewModal.allCartItemsState.value.isEmpty())
             noHistoryAvailable()
         else {
 
-            for (item in viewModal.allcartitemsState.value) {
+            for (item in viewModal.allCartItemsState.value) {
                 order.add(
                     OrderIdCreateRequest.Order(
                         item.ProductIdNumber,
@@ -735,7 +733,7 @@ fun ItemEachRow(
                     IconButton(modifier = Modifier
                         .height(20.dp)
                         .width(20.dp), onClick = {
-                        viewModal.DeleteProduct(data.ProductIdNumber)
+                        viewModal.deleteProduct(data.ProductIdNumber)
                         context.showMsg("1 item deleted")
 
                     }) {

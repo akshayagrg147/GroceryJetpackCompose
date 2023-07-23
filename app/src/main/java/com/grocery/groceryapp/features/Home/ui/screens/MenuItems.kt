@@ -38,7 +38,6 @@ import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.data.modal.ItemsCollectionsResponse
 import com.grocery.groceryapp.data.modal.ProductIdIdModal
 import com.grocery.groceryapp.features.Home.Navigator.gridItems
-import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
@@ -70,11 +69,11 @@ fun ShimmerItem(
 }
 
 @Composable
-fun cardviewAddtoCart(
-    viewmodal: CartItemsViewModal,
+fun cardViewAddtoCart(
+
     navController: NavHostController,
     context: Context,
-    modifier: Modifier
+    modifier: Modifier,viewmodal: CartItemsViewModal= hiltViewModel(),
 ) {
     Card(
         elevation = 2.dp,
@@ -310,17 +309,21 @@ fun     menuitems(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
 
-                        if (viewModal.itemcollections1.value.statusCode == 200) {
+                        if (viewModal._itemsCollection.value.statusCode == 200) {
+                            if(viewModal._itemsCollection.value.list?.isNotEmpty()==true)
                             gridItems(
-                                data = viewModal.itemcollections1.value.list!!,
+                                data = viewModal._itemsCollection.value.list!!,
                                 columnCount = 2,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 modifier = Modifier.padding(horizontal = 1.dp)
                             ) { itemData ->
-                                MenuItemGrid(itemData, context, viewModal) { passvalue ->
+                                MenuItemGrid(itemData, context) { passvalue ->
                                     productdetail.value = passvalue
                                     scope.launch { modalBottomSheetState.show() }
                                 }
+                            }
+                            else{
+
                             }
                         } else {
                             repeat(5) {
@@ -335,8 +338,7 @@ fun     menuitems(
 
                 }
             }
-            cardviewAddtoCart(
-                viewModal,
+            cardViewAddtoCart(
                 navController,
                 context,
                 modifier = Modifier.align(Alignment.BottomCenter)
@@ -399,7 +401,7 @@ fun ItemEachRow(
 @Composable
 fun MenuItemGrid(
     data: ItemsCollectionsResponse.SubItems, context: Context,
-    viewModal: CartItemsViewModal,
+    viewModal: CartItemsViewModal= hiltViewModel(),
     passItem: (productdetail: ItemsCollectionsResponse.SubItems) -> Unit
 ) {
 

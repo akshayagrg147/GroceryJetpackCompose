@@ -32,16 +32,32 @@ class CartItemsViewModal @Inject constructor(
     val repo: RoomRepository
 ) :
     ViewModel() {
-    val emitProductId: MutableSharedFlow<ProductIdIdModal> = MutableSharedFlow(1)
+    private val emitProductId: MutableSharedFlow<ProductIdIdModal> = MutableSharedFlow(1)
+    private val allCartItems: MutableState<List<CartItems>> = mutableStateOf(emptyList())
+    val allCartItemsState: State<List<CartItems>> = allCartItems
+    private val savingAmountMutable: MutableState<Int> = mutableStateOf(0)
+    val savingAmountState: State<Int> = savingAmountMutable
+    private val itemsCollection: MutableState<ItemsCollectionsResponse> = mutableStateOf(ItemsCollectionsResponse(null, null, null))
+    val _itemsCollection: State<ItemsCollectionsResponse> = itemsCollection
+    val _res: MutableSharedFlow<OrderIdCreateRequest> = MutableSharedFlow(1)
+    private val totalCount: MutableState<Int> = mutableStateOf(0)
+    val totalCountState: State<Int> = totalCount
+    private val totalPrice: MutableState<Int> =
+        mutableStateOf(0)
+    val totalPriceState: State<Int> = totalPrice
+    private val orderConfirmedStatus: MutableState<OrderIdResponse> = mutableStateOf(OrderIdResponse())
+    val orderConfirmedStatusState: State<OrderIdResponse> = orderConfirmedStatus
+    private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
+    val addresslistState: State<List<AddressItems>> = addresslist
 
     init {
         getAllCartAddressItems()
-        calllingItemsCollectionsId(emitProductId)
+        callingItemsCollectionsId(emitProductId)
     }
 
     fun setProductId(product_id: ProductIdIdModal) {
         emitProductId.tryEmit(product_id)
-        calllingItemsCollectionsId(emitProductId)
+        callingItemsCollectionsId(emitProductId)
     }
 
     fun getAllAddressItems() = viewModelScope.launch {
@@ -51,37 +67,10 @@ class CartItemsViewModal @Inject constructor(
 
     }
 
-    private val allcartitems: MutableState<List<CartItems>> = mutableStateOf(emptyList())
-    val allcartitemsState: State<List<CartItems>> = allcartitems
-
-    private val SavingAmmountMutable: MutableState<Int> = mutableStateOf(0)
-    val SavingAmountState: State<Int> = SavingAmmountMutable
-
-    private val itemcollections: MutableState<ItemsCollectionsResponse> =
-        mutableStateOf(ItemsCollectionsResponse(null, null, null))
-    val itemcollections1: State<ItemsCollectionsResponse> = itemcollections
-    val _res: MutableSharedFlow<OrderIdCreateRequest> = MutableSharedFlow(1)
-
-    private val totalcount: MutableState<Int> =
-        mutableStateOf(0)
-    val totalCountState: State<Int> = totalcount
-
-    private val totalPrice: MutableState<Int> =
-        mutableStateOf(0)
-    val totalPriceState: State<Int> = totalPrice
-
-    val orderConfirmedStatus: MutableState<OrderIdResponse> =
-        mutableStateOf(OrderIdResponse())
-    val orderConfirmedStatusState: State<OrderIdResponse> = orderConfirmedStatus
-
-
-    private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
-    val addresslistState: State<List<AddressItems>> = addresslist
 
     private fun getAllCartAddressItems() = viewModelScope.launch {
-
         repo.getCartItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }.collect {
-            allcartitems.value = it
+            allCartItems.value = it
         }
 
 
@@ -98,7 +87,7 @@ class CartItemsViewModal @Inject constructor(
 
     }
 
-    fun getTotalProductItemsPrice() = viewModelScope.launch {
+    private fun getTotalProductItemsPrice() = viewModelScope.launch {
         repo.getTotalProductItemsPrice().catch { e -> Log.d("main", "Exception: ${e.message} ") }
             .collect {
                 totalPrice.value = it ?: 0
@@ -106,11 +95,10 @@ class CartItemsViewModal @Inject constructor(
             }
     }
 
-    fun getTotalProductItems() = viewModelScope.launch {
+    private fun getTotalProductItems() = viewModelScope.launch {
         repo.getTotalProductItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }
             .collect {
-                totalcount.value = it ?: 0
-
+                totalCount.value = it ?: 0
             }
 
     }
@@ -118,7 +106,7 @@ class CartItemsViewModal @Inject constructor(
     fun getSavingAmount() = viewModelScope.launch {
         repo.getTotalSavingAmount().catch { e -> Log.d("main", "Exception: ${e.message} ") }
             .collect {
-                SavingAmmountMutable.value = it ?: 0
+                savingAmountMutable.value = it ?: 0
             }
     }
 
@@ -148,19 +136,19 @@ class CartItemsViewModal @Inject constructor(
 
     }
 
-    fun DeleteProduct(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
+    fun deleteProduct(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteCartItem(productIdNumber)
     }
 
-    fun calllingItemsCollectionsId(productIdIdModal: MutableSharedFlow<ProductIdIdModal>) =
+    fun callingItemsCollectionsId(productIdIdModal: MutableSharedFlow<ProductIdIdModal>) =
         viewModelScope.launch {
             repository.ItemsCollections(productIdIdModal.first()).collectLatest {
                 when (it) {
                     is ApiState.Success -> {
-                        itemcollections.value = it.data
+                        itemsCollection.value = it.data
                     }
                     is ApiState.Failure -> {
-                        itemcollections.value = ItemsCollectionsResponse(null, it.msg.message, 401)
+                        itemsCollection.value = ItemsCollectionsResponse(null, it.msg.message, 401)
 
                     }
                     is ApiState.Loading -> {
@@ -174,17 +162,15 @@ class CartItemsViewModal @Inject constructor(
     fun passingOrderIdGenerateRequest(request: OrderIdCreateRequest) {
         _res.tryEmit(request)
     }
-    fun calllingBookingOrder() = viewModelScope.launch {
+    fun callingBookingOrder() = viewModelScope.launch {
         repository.OrderIdRequest(_res.first()).collectLatest {
             when (it) {
                 is ApiState.Success -> {
-                    Log.d("djjdjdj", "djjd success")
                     orderConfirmedStatus.value = it.data
 
 
                 }
                 is ApiState.Failure -> {
-                    Log.d("djjdjdj", "djjd failed")
                     orderConfirmedStatus.value =
                         OrderIdResponse(
                             message = it.msg.message ?: "Order Failed",

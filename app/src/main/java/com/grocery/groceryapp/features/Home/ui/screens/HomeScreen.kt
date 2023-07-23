@@ -50,19 +50,14 @@ import com.grocery.groceryapp.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.SharedPreference.sharedpreferenceCommon
 import com.grocery.groceryapp.Utils.*
-import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.common.Utils
 import com.grocery.groceryapp.common.Utils.Companion.vibrator
 import com.grocery.groceryapp.data.modal.CategoryWiseDashboardResponse
 import com.grocery.groceryapp.data.modal.HomeAllProductsResponse
-import com.grocery.groceryapp.data.modal.RegisterLoginRequest
-import com.grocery.groceryapp.features.Home.domain.modal.MainProducts
 import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.HomeEvent
-import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterEvent
-import kotlinx.coroutines.flow.collectLatest
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
 import vtsen.hashnode.dev.simplegooglemapapp.ui.screens.LocationPermissionsAndSettingDialogs
 import java.text.DecimalFormat
@@ -75,7 +70,6 @@ fun homescreen(
     viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
     val lazyListState = rememberLazyListState()
-    Log.d("mdmmdmd", lazyListState.isScrolled.toString())
     val context = LocalContext.current.getActivity()
     var mFusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context!!)
@@ -237,7 +231,6 @@ fun BodyDashboard(
                     }
                 }
             }
-
         else if(exlusiveResponse.data != null)
         {
             //exclusive offers
@@ -403,7 +396,6 @@ fun BodyDashboard(
                                 R.drawable.pet_care,
                                 getProductCategory.data?.itemData!![i],
                                 navcontroller,
-                                viewModal,
                                 itemSize
                             )
                         }
@@ -477,7 +469,7 @@ fun BodyDashboard(
                                     contentDescription = null,
                                     tint = Color.LightGray,
                                     modifier = Modifier.clickable {
-                                        viewModal.setcategory(
+                                         viewModal.setcategory(
                                             categoryWiseResponse.data?.list?.get(
                                                 it
                                             )?.category ?: ""
@@ -666,7 +658,7 @@ fun ExclusiveOffers(
             .padding(horizontal = 4.dp)
             .width(150.dp)
             .clickable {
-                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!}"))
             }
 
     ) {
@@ -771,7 +763,7 @@ fun ExclusiveOffers(
 
 @Composable
 fun CateoryWiseItems(
-    data: CategoryWiseDashboardResponse.cat.L,
+    data: CategoryWiseDashboardResponse.CategoryItem.ItemData,
     context: Context,
     navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp
 ) {
@@ -783,7 +775,7 @@ fun CateoryWiseItems(
             .padding(start = 1.dp, end = 1.dp, bottom = 1.dp)
             .width(itemSize)
             .clickable {
-                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.productId!!} exclusive"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.productId!!}"))
             }
 
     ) {
@@ -793,7 +785,7 @@ fun CateoryWiseItems(
         ) {
 
             val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.price?.toFloat() ?: 0.0f) / (data.actualPrice?.toFloat()
+                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignalPrice?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
             Text(
@@ -831,12 +823,12 @@ fun CateoryWiseItems(
             ) {
 
                 Text10_h2(
-                    text = "₹ ${data.price}",
+                    text = "₹ ${data.selling_price}",
                     color = headingColor,
                     //  modifier= Modifier.weight(0.5F)
                 )
                 Text(
-                    text = "₹${data.actualPrice ?: "0.00"}",
+                    text = "₹${data.orignalPrice ?: "0.00"}",
                     fontSize = 11.sp,
                     color = bodyTextColor,
                     modifier = Modifier.padding(start = 5.dp),
@@ -855,9 +847,9 @@ fun CateoryWiseItems(
                             viewModal.insertCartItem(
                                 data.productId ?: "",
                                 data.productImage1 ?: "",
-                                data.price?.toInt() ?: 0,
+                                data.selling_price?.toInt() ?: 0,
                                 data.productName ?: "",
-                                data.actualPrice ?: ""
+                                data.orignalPrice ?: ""
                             )
                             //    viewModal.getCartItem()
                             Toast
@@ -899,7 +891,7 @@ fun BestOffers(
             .padding(horizontal = 4.dp)
             .width(150.dp)
             .clickable {
-                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!}"))
             }
 
     ) {
@@ -1010,7 +1002,6 @@ fun GroceriesItems(
     drawable: Int,
     item: getProductCategory.ItemData,
     navController: NavHostController,
-    viewModal: HomeAllProductsViewModal,
     itemSize: Dp
 ) {
     Card(

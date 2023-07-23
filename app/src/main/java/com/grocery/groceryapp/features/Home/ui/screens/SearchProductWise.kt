@@ -56,7 +56,7 @@ fun SearchResult(
             .padding(horizontal = 4.dp, vertical = 4.dp)
             .width(150.dp)
             .clickable {
-                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+               // navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {

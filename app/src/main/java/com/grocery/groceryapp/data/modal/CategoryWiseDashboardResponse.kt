@@ -7,32 +7,32 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class  CategoryWiseDashboardResponse(
     @Json(name = "itemData")
-    val list: List<cat>?,
+    val list: List<CategoryItem>?,
     @Json(name = "message")
     val message: String?,
     @Json(name = "statusCode")
     val statusCode: Int?
 ) {
     @JsonClass(generateAdapter = true)
-    data class cat(
+    data class CategoryItem(
 
         @Json(name = "categoryTitle")
     val categoryTitle: String?,
         @Json(name = "category")
         val category: String?,
         @Json(name = "ls")
-        val ls: List<L?>?
+        val ls: List<ItemData?>?
     ) {
         @JsonClass(generateAdapter = true)
-        data class L(
-            @Json(name = "actual_price")
-            val actualPrice: String?,
+        data class ItemData(
+            @Json(name = "orignal_price")
+            val orignalPrice: String?,
             @Json(name = "category")
             val category: String?,
             @Json(name = "DashboardDisplay")
             val dashboardDisplay: Boolean?,
-            @Json(name = "price")
-            val price: String?,
+            @Json(name = "selling_price")
+            val selling_price: String?,
             @Json(name = "ProductDescription")
             val productDescription: String?,
             @Json(name = "productId")

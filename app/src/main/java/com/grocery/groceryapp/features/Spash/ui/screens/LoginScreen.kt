@@ -3,6 +3,7 @@ package com.grocery.groceryapp.features.Spash
 import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -60,6 +62,7 @@ fun loginScreen(
                 verticalArrangement = Arrangement.Center
             ) {
 
+
                 Image(
                     painter = painterResource(id = R.drawable.ornge_carrot),
 
@@ -75,7 +78,9 @@ fun loginScreen(
                     text = "Log In", color = headingColor,
                     modifier = Modifier.padding(bottom = 10.dp, top = 25.dp)
                 )
-                OutlinedTextField(value = mobile, onValueChange = {
+                OutlinedTextField(value = mobile,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    onValueChange = {
                     mobile = it
                 }, label = { Text(text = "+91") }, modifier = Modifier
                     .fillMaxWidth()
@@ -167,12 +172,12 @@ fun loginScreen(
                                         navController.navigate(ScreenRoute.SignUpScreen.route)
                                     }
                                     }
-                                    else
-                                    { navController.currentBackStackEntry?.arguments?.apply {
-                                        putString("mobileNumber","+91${mobile}")
+                                    else {
+                                        navController.currentBackStackEntry?.arguments?.apply {
+                                            putString("mobileNumber", "+91${mobile}")
+                                        }
+                                    }
 
-                                        navController.navigate(ScreenRoute.SignUpScreen.route)
-                                    }}
                                 }
                                 is ApiState.Failure -> {
                                     isDialog = false

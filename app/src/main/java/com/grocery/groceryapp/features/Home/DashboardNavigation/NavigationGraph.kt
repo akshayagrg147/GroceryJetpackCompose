@@ -1,6 +1,8 @@
 package com.grocery.groceryapp.DashBoardNavRouteNavigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,6 +22,7 @@ import com.grocery.groceryapp.features.Spash.ui.screens.menuitems
 import com.grocery.groceryapp.data.modal.PassingAddress
 import com.grocery.groceryapp.features.Home.domain.modal.getProductCategory
 import com.grocery.groceryapp.features.Spash.CategoryWiseDashboardAllData
+import com.grocery.groceryapp.features.Spash.ItemScreenNavigation
 
 
 @OptIn(ExperimentalPagerApi::class)
@@ -46,7 +49,7 @@ fun NavigationGraph(
         composable(DashBoardNavRoute.ProductDetail.screen_route) {
             val data = it.arguments?.getString("data") ?: ""
 
-            OrderDetailsScreen(data, context, navController)
+            ItemScreenNavigation(context,data, navController)
         }
 
         composable(DashBoardNavRoute.PrivacyPolicyScreen.screen_route) {

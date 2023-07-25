@@ -87,5 +87,9 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         return mPrefs.edit().putString(AppConstant.imageuri, image).apply()
     }
 
+    fun clearSharePreference():Boolean{
+        return mPrefs.edit().clear().commit()
+    }
+
 
 }

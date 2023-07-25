@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.Utils
 
 import android.annotation.SuppressLint
+import android.graphics.Paint.Style
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,6 +30,16 @@ import com.grocery.groceryapp.features.Home.ui.ui.theme.*
 fun Text12_body1(text: String, color: Color = bodyTextColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.body1, color = color, modifier = modifier,fontSize = 12.sp)
 }
+@Composable
+fun Text12_with_strikethrough(text1: String,text2:String, color: Color = bodyTextColor, modifier: Modifier = Modifier,style:TextStyle=loginTypography.body1) {
+    Row(modifier=Modifier,) {
+        Text(text = "${text1}",  color = color, modifier = modifier,fontSize = 12.sp, style = LocalTextStyle.current.copy(textDecoration = TextDecoration.LineThrough))
+
+    }
+        Text(text = "$text2 ",  color = color, modifier = modifier,fontSize = 12.sp, style = style)
+
+    }
+
 
 @Composable
 fun Text14_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
@@ -71,7 +83,8 @@ fun CommonButton(
     modifier: Modifier,
     color: Color = Color.White,
     backgroundColor: Color = titleColor,
-    onClick: () -> Unit = {}
+    enabled: Boolean = true,
+    onClick: (Boolean) -> Unit = {}
 ) {
     Card(
         modifier = modifier,
@@ -80,8 +93,9 @@ fun CommonButton(
     ) {
         Box(
             modifier = Modifier
-                .background(backgroundColor)
-                .clickable { onClick() }
+                .background(if (enabled) backgroundColor else Color.Gray) // Change background color based on enabled state
+
+                .clickable { onClick(enabled) }
         ) {
             Text13_body1(
                 text = text,

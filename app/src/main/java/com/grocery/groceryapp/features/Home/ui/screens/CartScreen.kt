@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -29,9 +30,13 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
@@ -121,187 +126,248 @@ fun CartScreen(
             }
         }
 
-    ModalBottomSheetLayout(
-        sheetContent = {
+            ModalBottomSheetLayout(
+                sheetContent = {
 
-            Column(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.fillMaxSize()) {
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp)
-                ) {
-
-                    Row(
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.TopCenter)
-                            .padding(vertical = 20.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text14_h1(text = "Order Summary", color = Color.Black)
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text12_body1(
-                        text = "Order Amount",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-                    Text12_body1(
-                        text = "₹ ${viewModal.totalPriceState.value}",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text12_body1(
-                        text = "Service Charges",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-                    Text12_body1(
-                        text = "₹ ${viewModal.totalPriceState.value * 0.1}",
-                        color = blackColor,
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                    )
-
-                }
-                if (choose.value) {
-                    Text13_body1(
-                        text = "Choose Address",
-                        color = Color.Black,
-                        modifier = Modifier.padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp),
-
-                    ) {
-                    AddressComponent(viewModal, navController, {
-                        when (it) {
-                            "containsData" -> {
-                                choose.value = true
+                            .padding(16.dp),
+                        elevation = 4.dp
+                    ){
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ){
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 20.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text14_h1(text = "Order Summary", color = Color.Black)
                             }
-                            "ProceedButton" -> {
-                                isDialog = true
 
-                                val request = OrderIdCreateRequest(
-                                    orderList = order,
-                                    address = addressvalue,
-                                    paymentmode = "COD",
-                                    totalOrderValue = viewModal.totalPriceState.value.toString(),
-                                    mobilenumber = sharedpreferenceCommon.getMobileNumber()
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text12_body1(
+                                    text = "Order Amount",
+                                    color = blackColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
                                 )
-                                Log.d("messagepassing","${Gson().toJson(request)}")
-                                viewModal.passingOrderIdGenerateRequest(request)
-                                viewModal.callingBookingOrder()
-
+                                Text12_body1(
+                                    text = "₹ ${viewModal.totalPriceState.value}",
+                                    color = blackColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
 
                             }
-                            else -> {
 
-                                choose.value = false
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text12_body1(
+                                    text = "Service Charges",
+                                    color = blackColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text12_body1(
+                                    text = "₹ ${viewModal.totalPriceState.value * 0.1}",
+                                    color = blackColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text12_body1(
+                                    text = "Delivery Charges",
+                                    color = blackColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+
+                                Text12_with_strikethrough(
+                                    text1 = if (viewModal.totalPriceState.value.toInt() > 100) "₹ ${(viewModal.totalPriceState.value * 0.9)}" else "${
+                                        "₹ ${(viewModal.totalPriceState.value * 0.9)}"
+                                        
+                                    } ",
+                                    text2="FREE",
+                                    color = blackColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text14_h1(
+                                    text = "Grand Total",
+                                    color = blackColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+                                Text14_h1(
+                                    text = "₹ ${(viewModal.totalPriceState.value * 0.9)}",
+                                    color = blackColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+
                             }
                         }
 
 
-                    }, {
-                        addressvalue = it
-                    })
+                }
+                    if (choose.value) {
+                        Text13_body1(
+                            text = "Choose Address",
+                            color = Color.Black,
+                            modifier = Modifier.padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp),
+
+                        ) {
+                        AddressComponent(viewModal, navController, {
+                            when (it) {
+                                "containsData" -> {
+                                    choose.value = true
+                                }
+                                "ProceedButton" -> {
+                                    isDialog = true
+
+                                    val request = OrderIdCreateRequest(
+                                        orderList = order,
+                                        address = addressvalue,
+                                        paymentmode = "COD",
+                                        totalOrderValue = viewModal.totalPriceState.value.toString(),
+                                        mobilenumber = sharedpreferenceCommon.getMobileNumber()
+                                    )
+                                    Log.d("messagepassing","${Gson().toJson(request)}")
+                                    viewModal.passingOrderIdGenerateRequest(request)
+                                    viewModal.callingBookingOrder()
+
+
+                                }
+                                else -> {
+
+                                    choose.value = false
+                                }
+                            }
+
+
+                        }, {
+                            addressvalue = it
+                        })
+
+                    }
+
 
                 }
+            },
+            sheetState = modalBottomSheetState,
+            sheetShape = RoundedCornerShape(
+                topStart = 20.dp, topEnd = 20.dp
+            )
 
 
-            }
-        },
-        sheetState = modalBottomSheetState,
-        sheetShape = RoundedCornerShape(
-            topStart = 20.dp, topEnd = 20.dp
-        )
-
-
+        ) {
+Column(modifier = Modifier.fillMaxSize()) {
+    IconButton(
+        onClick = { },
+        modifier = Modifier
+            .align(Alignment.End)
+            .padding(8.dp)
     ) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = "Close",
+            tint = Color.Transparent
+        )
+    }       
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            ConstraintLayout(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize()
-                    .padding(bottom = 40.dp)
-            ) {
-                val scroll: ScrollState = rememberScrollState(0)
+    Box(modifier = Modifier.fillMaxSize()) {
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(bottom = 40.dp)
+        ) {
+            val scroll: ScrollState = rememberScrollState(0)
 
-                val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
-                val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
+            val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
+            val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
 
-                val (l1, l2, l3) = createRefs()
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(l1) {
-                        top.linkTo(parent.top)
-                        end.linkTo(parent.end)
-                        start.linkTo(parent.start)
+            val (l1, l2, l3) = createRefs()
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(l1) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                    start.linkTo(parent.start)
 //                    bottom.linkTo(l2.top)
 
-                    }) {
-                    Header1(scroll, headerHeightPx, viewModal)
-                    Body1(order, scroll, viewModal, context)
-                    Toolbar1(scroll, headerHeightPx, toolbarHeightPx)
-                    //  Title1( "none", scroll, headerHeightPx, toolbarHeightPx)
-
-                }
-
+                }) {
+                Header1(scroll, headerHeightPx, viewModal)
+                Body1(order, scroll, viewModal, context)
+                Toolbar1(scroll, headerHeightPx, toolbarHeightPx)
+                //  Title1( "none", scroll, headerHeightPx, toolbarHeightPx)
 
             }
-            //  if(viewModal.responseLiveData.value.isNotEmpty())
-            Card(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                elevation = 0.dp,
-                shape = CutCornerShape(30.dp),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .background(colorResource(id = R.color.green_700))
-                        .clickable {
-                            viewModal.getAllAddressItems()
 
-                            scope.launch { modalBottomSheetState.show() }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
 
-                    Text14_h1(
-                        text = "Go to Checkout(₹ ${viewModal.totalPriceState.value})",
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(vertical = 15.dp)
-                    )
-
-                }
-            }
         }
 
+        //  if(viewModal.responseLiveData.value.isNotEmpty())
+        Card(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            elevation = 0.dp,
+            shape = CutCornerShape(30.dp),
+        ) {
+            CommonButton(
+                text = "Go to Checkout(₹ ${viewModal.totalPriceState.value})",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                backgroundColor = colorResource(id = R.color.green_700),
+                color = Color.White,
+                enabled = viewModal.totalPriceState.value != 0
+            ) {
+                if (it) {
+                    viewModal.getAllAddressItems()
+
+                    scope.launch { modalBottomSheetState.show() }
+                }
+
+            }
+
+        }
+    }
+}
 
     }
 }
+
 
 @Composable
 private fun Header1(
@@ -581,14 +647,15 @@ fun AddressComponent(
         }
         Spacer(modifier = Modifier.height((20.dp)))
         CommonButton(
+            enabled = viewModal.addresslistState.value.isNotEmpty(),
             text = "Proceed to payment",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         )
         {
-
-            call("ProceedButton")
+            if(it)
+                call("ProceedButton")
         }
 
 

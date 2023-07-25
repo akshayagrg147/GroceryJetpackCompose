@@ -24,11 +24,20 @@ import com.grocery.groceryapp.common.ApiState
 import com.grocery.groceryapp.common.CommonProgressBar
 import com.grocery.groceryapp.features.Home.ui.ui.theme.headingColor
 import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
+import com.grocery.groceryapp.features.Home.ui.ui.theme.whiteColor
 import com.grocery.groceryapp.features.Spash.SplashNavigation.ScreenRoute
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.RegisterEvent
 import kotlinx.coroutines.flow.collectLatest
+import java.util.regex.Pattern
 
-@OptIn(ExperimentalMaterialApi::class)
+val emailPattern = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+        "\\@" +
+        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+        "(" +
+        "\\." +
+        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+        ")+"
+
 @Composable
 fun SignUpScreen(
     navController: NavHostController,
@@ -63,6 +72,7 @@ fun SignUpScreen(
     val email = remember {
         mutableStateOf("")
     }
+
 
     LaunchedEffect(key1 = Unit){
         viewModal.registerEventFlow.collectLatest {
@@ -123,6 +133,7 @@ fun SignUpScreen(
 
                 CommonTextField(
                     text = contactNum,
+                    enable=false,
                     placeholder = stringResource(id = R.string.phone_number),
                     keyboardType = KeyboardType.Phone,
                     modifier = Modifier.padding(start = 10.dp)
@@ -143,10 +154,11 @@ fun SignUpScreen(
                     CommonButton(
                         text = "Sign Up",
                         modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = titleColor,
+                        enabled = email.value.matches(emailPattern.toRegex())&&name.value.isNotEmpty(),
                         color = Color.White
 
                     ) {
+                        if(it)
                         viewModal.onEvent(
                             RegisterEvent.RegisterEventFlow(
                                 RegisterLoginRequest(

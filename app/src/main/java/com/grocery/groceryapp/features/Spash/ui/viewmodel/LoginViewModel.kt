@@ -17,7 +17,7 @@ import com.grocery.groceryapp.features.Spash.domain.repository.AuthRepository
 import com.grocery.groceryapp.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.android.parcel.RawValue
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,10 +25,9 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val repo:AuthRepository,private val commonRepository: CommonRepository
 ) : ViewModel(){
-    private val response:MutableState<CheckNumberExistResponse> = mutableStateOf(
-        CheckNumberExistResponse(false,null,null,null)
-    )
-    val resp=response
+    private val _loginResponse:MutableStateFlow<ComposeUiResponse<CheckNumberExistResponse>> = MutableStateFlow(ComposeUiResponse())
+     val loginResponse=_loginResponse.asStateFlow()
+
 
     fun createUserWithPhone(
         mobile:String,
@@ -38,25 +37,40 @@ class LoginViewModel @Inject constructor(
     fun signWithCredential(
         code:String
     ) = repo.signInWithCredentials(code)
+fun onEvent(mobile: LoginEvent) {
+    when(mobile){
+      is  LoginEvent.LoginResponse->{
+            viewModelScope.launch {
+                Log.d("loginViewModal", "checkMobileNumberExist: test11")
+                commonRepository.checkMobileNumberExist(
+                    RegisterLoginRequest(null,null,mobile.mobileNumber)
+                ) .collectLatest {
+                    when(it){
+                        is ApiState.Success->{
+                            Log.d("loginViewModal", "checkMobileNumberExist 11: ${Gson().toJson(it.data)}")
+                            _loginResponse.emit(ComposeUiResponse(data = it.data))
 
-    fun checkMobileNumberExist(mobile: String)=viewModelScope.launch {
-        commonRepository.checkMobileNumberExist(
-            RegisterLoginRequest(null,null,mobile)
-        ) .collectLatest {
-            when(it){
-                is ApiState.Success->{
-                    response.value=it.data
-
-                }
-                is ApiState.Failure->{
-                    response.value=CheckNumberExistResponse(false,null,false,401)
-                }
-                is ApiState.Loading->{
-
+                        }
+                        is ApiState.Failure->{
+                            _loginResponse.emit(ComposeUiResponse(error = it.msg.toString()))
+                            Log.d("loginViewModal", "checkMobileNumberExist22: ${it.msg}")
+                        }
+                        is ApiState.Loading->{
+                            _loginResponse.emit(ComposeUiResponse(isLoading = true))
+                        }
+                    }
                 }
             }
+
         }
+
     }
 
+}
+
+
     fun gettingJwtToken()=commonRepository.gettingJwt()
+}
+sealed class LoginEvent{
+    data class LoginResponse(val mobileNumber:String): LoginEvent()
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,21 +22,26 @@ import com.grocery.groceryapp.HiltApplication.Companion.context
 import com.grocery.groceryapp.R
 import com.grocery.groceryapp.Utils.CommonButton
 import com.grocery.groceryapp.Utils.Text14_h1
+import com.grocery.groceryapp.common.CommonProgressBar
 import com.grocery.groceryapp.features.Home.ui.screens.HomeActivity
 import com.grocery.groceryapp.features.Home.ui.ui.theme.greyLightColor
+import com.grocery.groceryapp.features.Home.ui.ui.theme.titleColor
 import com.grocery.groceryapp.features.Spash.ui.viewmodel.MapScreenViewModal
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
 import vtsen.hashnode.dev.simplegooglemapapp.ui.screens.LocationPermissionsAndSettingDialogs
 import java.util.*
 
 @Composable
-fun locateMeScreen(navController: NavHostController, context: Context,mapScreenViewModal: MapScreenViewModal= hiltViewModel()) {
+fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hiltViewModel()) {
     var mFusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context!!)
     var latitude: Double? = null
     var longitude: Double? = null
+    var isDialog by remember { mutableStateOf(true) }
     var requestLocationUpdate by remember { mutableStateOf(true) }
     var combinedaddress by remember { mutableStateOf("") }
+    if (isDialog)
+        CommonProgressBar()
     if (requestLocationUpdate) {
         Log.d("latitudeandlongitude","call1")
 
@@ -55,6 +61,7 @@ fun locateMeScreen(navController: NavHostController, context: Context,mapScreenV
                             mapScreenViewModal
                         ) { lat, lng, addrss, city ->
                             if (addrss != null) {
+                                isDialog=false
                                 combinedaddress = "${addrss.getAddressLine(0)},$city"
                                 mapScreenViewModal.setAddress(combinedaddress,city)
                             }
@@ -96,7 +103,12 @@ fun locateMeScreen(navController: NavHostController, context: Context,mapScreenV
             {
                 CommonButton(
                     text = "Locate Me",
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    backgroundColor = titleColor,
+                    color = Color.White,
+                    enabled = combinedaddress.isNotEmpty()
                 )
                 {
                     context.startActivity(Intent(context, HomeActivity::class.java))

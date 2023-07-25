@@ -1,6 +1,7 @@
 package com.grocery.groceryapp.features.Home.ui.screens
 
 import android.content.Context
+import android.widget.Space
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -100,7 +101,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                 .fillMaxWidth()
                 .clickable {
                     navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
-                 //   viewModal.list.value.sortedBy { it.customer_name }
+                    //   viewModal.list.value.sortedBy { it.customer_name }
 
                 }
                 .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
@@ -124,7 +125,9 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
             }
             item {
                 if(viewModal.list.value.isEmpty())
-                    noAddressAvailable() }
+                    noAddressAvailable(){
+                        navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
+                    } }
             items(viewModal.list.value) { item ->
                 val dismissState = rememberDismissState()
 
@@ -215,7 +218,8 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                             ).value,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .align(alignment = Alignment.CenterVertically).animateItemPlacement(animationSpec = tween(durationMillis = 600))
+                                .align(alignment = Alignment.CenterVertically)
+                                .animateItemPlacement(animationSpec = tween(durationMillis = 600))
                         ) {
                             AddressFiled(item, selectedIndex, call = {
                                 val passing= PassingAddress(it.id,it.customer_name,"ak@gmail.com",it.customer_PhoneNumber,it.PinCode.toString(),it.LandMark,it.Address1,it.Address2)
@@ -231,11 +235,16 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
 
         }}
 @Composable
-fun noAddressAvailable(){
-    Box(modifier = Modifier.fillMaxSize()) {
+fun noAddressAvailable(click:()->Unit){
+    Column(modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(250.dp))
-        Text12_body1(text = "No Address available", modifier = Modifier.align(Alignment.Center))
+        Text12_body1(text = "No Address available")
+        Text14_h1(text = "click to add address", modifier = Modifier.clickable {
+            click()
 
+        })
 
     }
 

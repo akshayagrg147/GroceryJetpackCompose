@@ -29,7 +29,7 @@ fun splashScreenNavigation(
             loginScreen(navController, context,sharedPreferences)
         }
         composable(ScreenRoute.LocateMeScreen.route) {
-            locateMeScreen(navController, context)
+            locateMeScreen( context)
         }
         composable(ScreenRoute.MapScreen.route) {
             MapScreen(navController, context,sharedPreferences)

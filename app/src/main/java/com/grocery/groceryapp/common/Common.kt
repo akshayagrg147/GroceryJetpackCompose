@@ -40,6 +40,7 @@ fun OtpView(
     charSize: TextUnit = 20.sp,
     containerSize: Dp = charSize.value.dp * 2,
     otpCount: Int = 6,
+
     type: Int = OTP_VIEW_TYPE_BORDER,
     enabled: Boolean = true,
     password: Boolean = false,
@@ -50,6 +51,7 @@ fun OtpView(
     BasicTextField(
         modifier = modifier,
         value = otpText,
+
         onValueChange = {
             if (it.length <= otpCount) {
                 onOtpTextChange.invoke(it)

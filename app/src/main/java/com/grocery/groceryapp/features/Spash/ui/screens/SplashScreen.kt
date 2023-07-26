@@ -41,7 +41,7 @@ fun SplashScreen(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = R.drawable.icon),
+            painter = painterResource(id = R.drawable.grocery),
 
             contentDescription = "splash image",
             modifier = Modifier
@@ -53,7 +53,7 @@ fun SplashScreen(
         )
 
         Column(verticalArrangement = Arrangement.SpaceBetween) {
-            Text14_h1(text = "nectar", modifier = Modifier.padding(top = 5.dp), color = Color.White)
+            Text14_h1(text = "BFresho", modifier = Modifier.padding(top = 5.dp), color = Color.White)
             Text12_body1(
                 text = "Online Groceries",
                 modifier = Modifier.padding(),

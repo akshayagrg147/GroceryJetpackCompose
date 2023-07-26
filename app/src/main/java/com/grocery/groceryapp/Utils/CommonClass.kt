@@ -32,18 +32,29 @@ fun Text12_body1(text: String, color: Color = bodyTextColor, modifier: Modifier 
 }
 @Composable
 fun Text12_with_strikethrough(text1: String,text2:String, color: Color = bodyTextColor, modifier: Modifier = Modifier,style:TextStyle=loginTypography.body1) {
-    Row(modifier=Modifier,) {
-        Text(text = "${text1}",  color = color, modifier = modifier,fontSize = 12.sp, style = LocalTextStyle.current.copy(textDecoration = TextDecoration.LineThrough))
+    Box(modifier = modifier) {
+        Row(modifier = Modifier,Arrangement.spacedBy(10.dp )) {
+            Text(
+                text = "${text1}",
+                color = color,
+                modifier = Modifier.padding(8.dp),
+                fontSize = 12.sp,
+                style = LocalTextStyle.current.copy(textDecoration = TextDecoration.LineThrough)
+            )
+            Text(text = "$text2 ", color = color,modifier = Modifier.padding(8.dp), fontSize = 12.sp, style = style)
+        }
 
     }
-        Text(text = "$text2 ",  color = color, modifier = modifier,fontSize = 12.sp, style = style)
-
     }
 
 
 @Composable
 fun Text14_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp)
+}
+@Composable
+fun Text30_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 30.sp)
 }
 @Composable
 fun Text16_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {

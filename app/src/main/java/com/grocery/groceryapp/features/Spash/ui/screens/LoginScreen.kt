@@ -59,7 +59,7 @@ fun loginScreen(
     if (isDialog)
         CommonProgressBar()
 
-    SideEffect{
+    LaunchedEffect(key1 = loginResponse){
         Log.d("loginViewModal", "checkMobileNumberExist: not exist")
         if(loginResponse)
         viewModal.onEvent(LoginEvent.LoginResponse("+91${mobile}"))
@@ -70,7 +70,8 @@ fun loginScreen(
     LaunchedEffect(key1 = mobileRegisterResponse) {
         if (mobileRegisterResponse.isLoading) {
             Log.d("loginViewModal", "checkMobileNumberExist: loading")
-        } else if (mobileRegisterResponse.data != null) {
+        }
+        else if (mobileRegisterResponse.data != null) {
             Log.d("loginViewModal", "checkMobileNumberExist: loadinged")
             isDialog = false
 
@@ -93,7 +94,8 @@ fun loginScreen(
                 }
             }
 
-        } else if (mobileRegisterResponse.error.isNotEmpty()) {
+        }
+        else if (mobileRegisterResponse.error.isNotEmpty()) {
             isDialog = false
             Log.d("loginViewModal", "checkMobileNumberExist: error")
             Toast.makeText(context, mobileRegisterResponse.error, Toast.LENGTH_SHORT).show()
@@ -108,34 +110,33 @@ fun loginScreen(
             .background(color = Color.White),
         contentAlignment = Alignment.TopCenter
     ){
-        CurvedBackground()
+       // CurvedBackground()
         Column(
             modifier = Modifier
 
-                .padding(20.dp)
+                .padding(20.dp),
+
+//            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text30_h1(
+                text = "Sign Up on Grocery", color = titleColor,
+                modifier = Modifier.padding(bottom = 5.dp, top = 55.dp, start = 10.dp)
+            )
+
             if (!isCompleted)
             {
-                Image(
-                    painter = painterResource(id = R.drawable.ornge_carrot),
-
-                    contentDescription = "splash image",
-                    modifier = Modifier
-                        .width(50.dp)
-                        .height(50.dp)
-
-
+                Text12_body1(
+                    text = "Enter your Phone no. ", color = headingColor,
+                    modifier = Modifier.padding(bottom = 5.dp, top = 2.dp, start = 10.dp)
                 )
 
-                Text14_h1(
-                    text = "Log In", color = headingColor,
-                    modifier = Modifier.padding(bottom = 10.dp, top = 25.dp)
-                )
                 OutlinedTextField(value = mobile,
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+
+                    keyboardOptions = KeyboardOptions .Default.copy(keyboardType = KeyboardType.Number),
                     onValueChange = {
                         mobile = it
-                    }, label = { Text(text = "+91") }, modifier = Modifier
+                    },
+                    label = { Text(text = "Enter Mobile  no.") }, modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
                 )
@@ -144,7 +145,7 @@ fun loginScreen(
 
                     Row(verticalAlignment = Alignment.Bottom) {
                         CommonButton(
-                            text = "Send Otp",
+                            text = "Proceed",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp),
@@ -182,16 +183,13 @@ fun loginScreen(
 
             }
             else{
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
+
                     Text12_body1(
                         text = "Please Enter 6 digit code sent on +91${mobile}", color = fadedTextColor,
+                        modifier = Modifier.padding( start = 10.dp)
                     )
                     Spacer(modifier = Modifier.height(10.dp))
-                    OtpView(otpText = otp) {
+                    OtpView(otpText = otp, modifier = Modifier.padding( start = 10.dp)) {
                         otp = it
                     }
                     Spacer(modifier = Modifier.height(20.dp))
@@ -202,7 +200,7 @@ fun loginScreen(
                             .padding(10.dp),
                         backgroundColor = titleColor,
                         color = Color.White,
-                        enabled = otp.isNotEmpty()
+                        enabled = otp.length==6
 
 
                     ) {
@@ -232,7 +230,7 @@ fun loginScreen(
 
                     }
 
-                }
+
             }
 
 

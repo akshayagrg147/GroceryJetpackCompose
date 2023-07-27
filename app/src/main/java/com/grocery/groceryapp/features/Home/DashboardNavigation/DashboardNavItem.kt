@@ -13,6 +13,7 @@ sealed class DashBoardNavRoute( var screen_route:String=""){
     object AllOrderHistory : DashBoardNavRoute("AllOrderHistory")
     object CartScreen : DashBoardNavRoute("CartScreen")
     object OrderSuccessful : DashBoardNavRoute("OrderSuccessful")
+    object ApplyCoupons : DashBoardNavRoute("ApplyCoupons")
     object ProductDetail : DashBoardNavRoute("{data}/ProductDetail"){
         fun senddata(data:String)="$data/ProductDetail"
 

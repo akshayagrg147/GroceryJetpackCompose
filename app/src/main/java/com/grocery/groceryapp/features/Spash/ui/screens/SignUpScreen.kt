@@ -2,14 +2,20 @@ package com.grocery.groceryapp.features.Spash
 
 import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,12 +68,6 @@ fun SignUpScreen(
     val name = remember {
         mutableStateOf("")
     }
-    val search = remember {
-        mutableStateOf("")
-    }
-    val code = remember {
-        mutableStateOf("")
-    }
 
     val email = remember {
         mutableStateOf("")
@@ -92,91 +92,69 @@ fun SignUpScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp)
-            .fillMaxSize(), verticalArrangement = Arrangement.Center
+            .background(Color.LightGray) // Add a background color to the entire screen
     ) {
-
-        Image(
-            painter = painterResource(id = R.drawable.ornge_carrot),
-            contentDescription = "splash image",
-            modifier = Modifier
-                .padding(top = 150.dp)
-                .width(50.dp)
-                .height(50.dp)
-                .align(alignment = Alignment.CenterHorizontally)
-
-        )
-        Text14_h1(
-            text = "Sign Up", color = headingColor,
-            modifier = Modifier.padding(bottom = 10.dp, top = 25.dp)
-        )
         Column(
             modifier = Modifier
-                .padding(top = 2.dp)
                 .fillMaxSize()
+               // Apply rounded corners with a radius of 16.dp
+
+               , // Increase the padding for better spacing
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally // Align the content to the center horizontally
         ) {
-            Row(
-                modifier = Modifier.padding(vertical = 10.dp)
+            PageHeader()
+
+            Column(
+                modifier = Modifier.fillMaxSize().background(Color.White)
+                    .clip(RoundedCornerShape(46.dp))
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
             ) {
+                Text(
+                    text = stringResource(id = R.string.sign_up),
+                    color = headingColor,
+                    style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(bottom = 16.dp, start = 5.dp)
+                )
                 CommonTextField(text = name, placeholder = stringResource(id = R.string.name))
-            }
-            Row(
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth()
-            )
-            {
-
-
+                Spacer(modifier = Modifier.height(16.dp)) // Add some vertical spacing between the rows
                 CommonTextField(
                     text = contactNum,
-                    enable=false,
+                    enable = false,
                     placeholder = stringResource(id = R.string.phone_number),
-                    keyboardType = KeyboardType.Phone,
-                    modifier = Modifier.padding(start = 10.dp)
+                    keyboardType = KeyboardType.Phone
                 )
-
-            }
-
-            Row(
-                modifier = Modifier.padding(vertical = 10.dp)
-            ) {
+                Spacer(modifier = Modifier.height(16.dp))
                 CommonTextField(
                     text = email,
-                    placeholder = "E Mail",
+                    placeholder = stringResource(id = R.string.email),
                 )
-            }
-            Column(Modifier.fillMaxWidth()) {
-                Row {
+                Spacer(modifier = Modifier.height(32.dp)) // Add some extra spacing at the bottom
+                Column(Modifier.fillMaxWidth()) {
                     CommonButton(
-                        text = "Sign Up",
+                        text = stringResource(id = R.string.sign_up),
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = email.value.matches(emailPattern.toRegex())&&name.value.isNotEmpty(),
+                        enabled = email.value.matches(emailPattern.toRegex()) && name.value.isNotEmpty(),
                         color = Color.White
-
                     ) {
-                        if(it)
-                        viewModal.onEvent(
-                            RegisterEvent.RegisterEventFlow(
-                                RegisterLoginRequest(
-                                    email.value, name.value, contactNum.value
+                        if (it) {
+                            viewModal.onEvent(
+                                RegisterEvent.RegisterEventFlow(
+                                    RegisterLoginRequest(
+                                        email.value, name.value, contactNum.value
+                                    )
                                 )
                             )
-                        )
-
-
-
+                        }
                     }
                 }
             }
-
         }
-
-
     }
+
 
 
 }

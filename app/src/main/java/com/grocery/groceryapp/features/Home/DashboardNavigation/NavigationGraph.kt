@@ -77,6 +77,9 @@ fun NavigationGraph(
         composable(DashBoardNavRoute.CartScreen.screen_route) {
             CartScreen(navController, context, sharedPreferences)
         }
+        composable(DashBoardNavRoute.ApplyCoupons.screen_route){
+            ApplyCoupons(navController)
+        }
 
         composable(DashBoardNavRoute.OrderSuccessful.screen_route) {
             var model =
@@ -104,3 +107,5 @@ fun NavigationGraph(
         }
     }
 }
+
+

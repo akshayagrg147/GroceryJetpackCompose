@@ -260,9 +260,14 @@ val context= LocalContext.current.getActivity()
                                 )
                             )
                             if (response.isCompleted) {
-                                navController.navigate(DashBoardNavRoute.AddressScreen.screen_route)
+                                navController.navigate(DashBoardNavRoute.AddressScreen.screen_route){
+                                    popUpTo(DashBoardNavRoute.CartScreen.screen_route) {
+                                        inclusive = true
+                                    }
+                                }
                             }
-                        } else
+                        }
+                        else
                             viewModal.saveAddress(
                                 AddressItems( address.id!!,
                                     name.value,
@@ -274,11 +279,16 @@ val context= LocalContext.current.getActivity()
 
                                 )
                             )
-                        if (name.value.isNotEmpty()) {
-                            navController.navigate(DashBoardNavRoute    .AddressScreen.screen_route)
-                        } else {
-                            navController.navigate(ScreenRoute.CartScreen.route)
-                        }
+                        navController.popBackStack()
+//                        if (name.value.isNotEmpty()) {
+//                            navController.navigate(DashBoardNavRoute .AddressScreen.screen_route){
+//                                popUpTo(DashBoardNavRoute.CartScreen.screen_route) {
+//                                    inclusive = true
+//                                }
+//                            }
+//                        } else {
+//                            navController.navigate(ScreenRoute.CartScreen.route)
+//                        }
                         // navController.navigate(ScreenRoute.CartScreen.route)}
 
                     } else

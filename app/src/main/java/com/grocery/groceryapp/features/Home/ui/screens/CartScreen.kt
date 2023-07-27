@@ -2,7 +2,9 @@ package com.grocery.groceryapp.features.Home.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -105,7 +107,12 @@ fun CartScreen(
                             "orderstatus",
                             viewModal.orderConfirmedStatusState.value
                         )
-                        navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route)
+                        navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route) {
+                            popUpTo(DashBoardNavRoute.Home.screen_route) {
+                                inclusive = true
+                            }
+                        }
+
                     }
                 }
                 //  scope.launch { modalBottomSheetState.hide() }
@@ -126,7 +133,6 @@ fun CartScreen(
     ModalBottomSheetLayout(
         sheetContent = {
             Column(modifier = Modifier.fillMaxSize()) {
-                TransparentCrossButton(onClick = {})
 
                 Card(
                     modifier = Modifier
@@ -198,7 +204,7 @@ fun CartScreen(
                             )
 
                             Text12_with_strikethrough(
-                                text1 = if (viewModal.totalPriceState.value.toInt() > 100) "₹ ${(viewModal.totalPriceState.value * 0.9)}" else "₹ ${(viewModal.totalPriceState.value * 0.9)} ",
+                                text1 = if (viewModal.totalPriceState.value.toInt() > 100) "₹ 30" else "₹ 30 ",
                                 text2 = "FREE",
                                 color = blackColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
@@ -216,8 +222,13 @@ fun CartScreen(
                                 color = blackColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
+
                             Text14_h1(
-                                text = "₹ ${(viewModal.totalPriceState.value * 0.9)}",
+                                text = if (viewModal.totalPriceState.value.toInt() < 100) {
+                                    "₹ "+((30)+(viewModal.totalPriceState.value.toInt()))
+                                } else {
+                                    "₹ ${viewModal.totalPriceState.value * 0.9}"
+                                },
                                 color = blackColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
@@ -341,7 +352,8 @@ fun TransparentCrossButton(onClick: () -> Unit) {
         Column(
         modifier = Modifier
             .size(48.dp)
-            .padding(16.dp).background(Color.Transparent)
+            .padding(16.dp)
+            .background(Color.Transparent)
             ,verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
             // Align the button in the center of its parent
@@ -601,7 +613,9 @@ fun AddressComponent(
     viewModal: CartItemsViewModal,
     navController: NavHostController,
     call: (String) -> Unit, passingaddress: (String) -> Unit
-) {
+    ) {
+
+
 
     var selectedIndex = remember { mutableStateOf(1) }
     Column(modifier = Modifier.fillMaxSize()) {
@@ -635,6 +649,37 @@ fun AddressComponent(
                     .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
                     .align(Alignment.Center), color = navdrawerColor
             )
+
+        }
+        Spacer(modifier = Modifier.height((20.dp)))
+        val backData = navController.currentBackStackEntry?.savedStateHandle?.let {
+            it.get<Bundle>("passCoupon")
+        }
+        if(backData!=null){
+
+            CommonButton(
+                enabled = true,
+                backgroundColor = Color.LightGray,
+
+                text = "Applied ${backData.get("CouponName")}",
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+            )
+        }
+        else
+        CommonButton(
+            enabled = true,
+
+            text = "Apply Coupon",
+
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        )
+        {
+            navController.navigate(DashBoardNavRoute.ApplyCoupons.screen_route)
 
         }
         Spacer(modifier = Modifier.height((20.dp)))

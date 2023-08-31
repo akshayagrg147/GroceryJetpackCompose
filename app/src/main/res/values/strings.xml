@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GroceryApp</string>
     <string name="name">Enter your name</string>
+    <string name="address">Search for area,streat name..</string>
     <string name="phone_number">Enter Phone Number</string>
     <string name="landmark">LandMark</string>
     <string name="address1">Address</string>

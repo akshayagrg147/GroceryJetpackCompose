@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "558459610565",
+    "project_id": "mandixpress-d67a9",
+    "storage_bucket": "mandixpress-d67a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558459610565:android:5e962ed6ea7bdb159097ac",
+        "android_client_info": {
+          "package_name": "com.grocery.mandixpress"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558459610565-74guj334rbrr93qo23esnrsnjc1sfnrg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grocery.mandixpress",
+            "certificate_hash": "bbbdf94861428888d5991f8c0eadfb3daa147589"
+          }
+        },
+        {
+          "client_id": "558459610565-5hdnpc0ah1f05ugupr06l5rbb5di8ph5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLA0N5SOJaa6UmPKmpblwoBdpFXd1LtWU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558459610565-5hdnpc0ah1f05ugupr06l5rbb5di8ph5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

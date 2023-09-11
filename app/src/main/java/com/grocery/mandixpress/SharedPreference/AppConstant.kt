@@ -11,6 +11,7 @@ class AppConstant {
         const val lng = "longitude"
         const val jwttoken = "jwttoken"
         const val combine = "CombinedAddress"
+        const val serarchSelection = "serarchSelection"
         const val mobilenumber = "mobilenumber"
         const val imageuri = "imageuri"
 

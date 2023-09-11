@@ -45,10 +45,11 @@ val loginTypography = Typography(
     ),
 
     h4 = TextStyle(
-        fontFamily = font_bold,
+        fontFamily = font_semibold,
         fontWeight = FontWeight.W700,
-        fontSize = 24.sp,
-        color = titleColor
+        fontSize = 10.sp,
+        color = blackColor
+
     ),
 
     h1 = TextStyle(
@@ -69,6 +70,7 @@ val loginTypography = Typography(
         fontSize = 16.sp,
         color = bodyTextColor
     ),
+
     body2 = TextStyle(
         fontFamily = font_bold,
         fontWeight = FontWeight.W700,
@@ -91,6 +93,8 @@ val loginTypography = Typography(
     )
 
 )
+
+
 
 val regVehicleTypography = Typography(
     body2 = TextStyle(

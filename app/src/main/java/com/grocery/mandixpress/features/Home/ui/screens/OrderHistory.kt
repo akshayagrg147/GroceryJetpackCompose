@@ -142,9 +142,7 @@ fun OrderHistoryRow(
         .padding(top = 15.dp)
         .background(Color.White, RoundedCornerShape(8.dp))
         .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
-        .clickable {
-            call(data)
-        }
+
         .fillMaxWidth()){
         Column(
             modifier = Modifier
@@ -169,19 +167,16 @@ fun OrderHistoryRow(
             ) {
                 Column(
                     modifier = Modifier.weight(1f)
-                ) {
+                ) {  Spacer(Modifier.height(5.dp))
                     Text16_h1(
                         text = "${data.orderId}",color=Color.Black
                     )
 
-                    Spacer(Modifier.height(15.dp))
-                    Text12_body1(
-                        text = "${data.orderList?.size} items"
-                    )
+
                 }
                 Spacer(Modifier.width(20.dp))
                 Image(
-                    painter = painterResource(id = com.grocery.mandixpress.R.drawable.ic_orders_icon),
+                    painter = painterResource(id = com.grocery.mandixpress.R.drawable.order_icon),
                     contentDescription = "",
                     modifier = Modifier
                         .size(40.dp)
@@ -195,7 +190,7 @@ fun OrderHistoryRow(
                 Column(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.Start
-                ) {
+                ) {Spacer(modifier = Modifier.height(8.dp))
                     Text12_body1(text = "Total Amount", modifier = Modifier, color = Color.Black)
                     Text12_body1(text = "₹ ${data.totalOrderValue}", modifier = Modifier)
                 }
@@ -211,9 +206,9 @@ fun OrderHistoryRow(
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.location_icon), // Replace with your icon resource
+                            painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
                             contentDescription = "Location Icon",
-                            tint = Color.Black,
+
                             modifier = Modifier.size(24.dp)
                         )
                         Text(
@@ -222,18 +217,22 @@ fun OrderHistoryRow(
                             style = TextStyle(fontSize = 12.sp)
                         )
                     }
-                    Text12_body1( text = " ${data.address?.take(20)}", modifier = Modifier.padding(start = 10.dp))
+                    Text12_body1( text = "   ${data.address?.take(10)}..", modifier = Modifier.padding(start = 10.dp))
 
                     }
 
 
                 }
+            Spacer(Modifier.height(15.dp))
+            Text12_body1(
+                text = "items \n ${data.orderList?.size} "
+            )
 
             Spacer(modifier = Modifier.height(10.dp))
 
             AppButtonComponent(text="View Details"){
 
-
+                call(data)
 
             }
             }

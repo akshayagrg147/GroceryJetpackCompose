@@ -21,19 +21,23 @@ data class ItemsCollectionsResponse(
         val item_category_name: String="",
         @Json(name = "selling_price")
         val selling_price: String="",
-        @Json(name = "ProductDescription")
+        @Json(name = "productDescription")
         val productDescription: String="",
         @Json(name = "productId")
         val productId: String="",
-        @Json(name = "ProductImage1")
+        @Json(name = "productImage1")
         val productImage1: String="",
-        @Json(name = "ProductImage2")
+        @Json(name = "productImage2")
         val productImage2: String="",
-        @Json(name = "ProductImage3")
+        @Json(name = "productImage3")
         val productImage3: String="",
         @Json(name = "productName")
         val productName: String="",
         @Json(name = "quantity")
         val quantity: String=""
+    ,
+        @Json(name = "quantityInstructionController")
+        val quantityInstructionController : String=""
+
     )
 }

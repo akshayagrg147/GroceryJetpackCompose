@@ -20,7 +20,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,8 +30,8 @@ import com.grocery.mandixpress.R
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 
 @Composable
-fun Text12_body1(text: String, color: Color = bodyTextColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.body1, color = color, modifier = modifier,fontSize = 12.sp,)
+fun Text12_body1(text: String, color: Color = bodyTextColor, modifier: Modifier = Modifier,textAlign: TextAlign= TextAlign.Start) {
+    Text(text = text, style = loginTypography.body1, color = color, modifier = modifier,fontSize = 12.sp, textAlign = textAlign)
 }
 @Composable
 fun Text12_with_strikethrough(text1: String,text2:String, color: Color = bodyTextColor, modifier: Modifier = Modifier,style:TextStyle=loginTypography.body1) {
@@ -45,28 +47,32 @@ fun Text12_with_strikethrough(text1: String,text2:String, color: Color = bodyTex
         }
 
     }
-    }
+}
 
 
 @Composable
 fun Text14_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp)
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp,maxLines = 2,overflow = TextOverflow.Ellipsis )
+}
+@Composable
+fun Text14_h1_(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp )
 }
 @Composable
 fun Text30_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 30.sp)
 }
 @Composable
-fun Text16_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 16.sp, fontWeight = FontWeight.Bold)
+fun Text16_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier,textAlign: TextAlign= TextAlign.Start) {
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 16.sp, fontWeight = FontWeight.Bold, textAlign = textAlign,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
 @Composable
 fun Text18_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 18.sp, fontWeight = FontWeight.Bold)
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 18.sp, fontWeight = FontWeight.Bold,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
 @Composable
-fun Text12_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,fontSize = 12.sp)
+fun Text12_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier,textAlign: TextAlign= TextAlign.Start) {
+    Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,textAlign = textAlign,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
 
 @Composable
@@ -85,11 +91,11 @@ fun Text16_700Error(text: String, color: Color = blackColor, modifier: Modifier 
 
 @Composable
 fun Text14_h2(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 14.sp)
+    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 14.sp,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
 @Composable
 fun Text10_h2(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 10.sp)
+    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 10.sp,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
 @Composable
 fun CommonButton(
@@ -103,7 +109,7 @@ fun CommonButton(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.dp, strokeColor),
+        border = BorderStroke(1.dp, strokeColor),
     ) {
         Box(
             modifier = Modifier
@@ -223,7 +229,7 @@ fun CommonNumberField(
             )
         },
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth().border(1.dp, Color.Transparent, shape = RoundedCornerShape(4.dp))
             .clickable { onClick(text.value) },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         enabled = enable,
@@ -280,7 +286,7 @@ fun CommonTextField(
                 )
             },
             modifier = modifier
-                .fillMaxWidth()
+                .fillMaxWidth().border(1.dp, Color.Transparent, shape = RoundedCornerShape(4.dp))
                 .clickable { onClick(text.value) },
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             enabled = enable,
@@ -305,10 +311,21 @@ fun CommonTextFieldNonEditable(
     onClick: (String) -> Unit = {}
 
 ) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(1.dp, borderColor, androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
+            .background(Color.White, androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
+            .clickable(enabled = enable) { /* Handle click if needed */ }
+    ) {
+
+
     TextField(
         value = text.value,
-        onValueChange = { text.value = it
-            onClick(it)},
+        onValueChange = {
+            text.value = it
+            onClick(it)
+        },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.White,
             focusedLabelColor = fadedTextColor,
@@ -316,7 +333,8 @@ fun CommonTextFieldNonEditable(
             unfocusedLabelColor = fadedTextColor,
             unfocusedIndicatorColor = borderColor,
             focusedIndicatorColor = headingColor,
-            disabledIndicatorColor = fadedTextColor
+            disabledIndicatorColor = fadedTextColor,
+
         ),
         label = { Text(text = placeholder) },
         trailingIcon = {
@@ -329,7 +347,7 @@ fun CommonTextFieldNonEditable(
             )
         },
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth().border(1.dp, Color.Transparent, shape = RoundedCornerShape(4.dp))
             .clickable { onClick(text.value) },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         enabled = enable,
@@ -337,4 +355,5 @@ fun CommonTextFieldNonEditable(
             color = Color.Black
         )
     )
+}
 }

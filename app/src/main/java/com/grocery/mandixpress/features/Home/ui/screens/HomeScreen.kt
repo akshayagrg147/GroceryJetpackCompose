@@ -121,15 +121,15 @@ fun homescreen(
 
                 // Curved background for the sheet
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().background(Color.Transparent)
                     ,
                     contentAlignment = Alignment.Center
                 )
                 {
                     Image(
-                        painter = painterResource(id = R.drawable.minus), // Replace with your image resource
+                        painter = painterResource(id = R.drawable.close_button), // Replace with your image resource
                         contentDescription = "Cross Button",
-                        modifier = Modifier, // Adjust the size as needed
+                        modifier = Modifier.size(50.dp).padding(bottom = 10.dp), // Adjust the size as needed
                         contentScale = ContentScale.Fit
                     )
 
@@ -177,13 +177,18 @@ fun homescreen(
 //                            colorFilter = ColorFilter.tint(seallcolor)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Column() {
+                        Column(modifier = Modifier.clickable{
+                            sharedpreferenceCommon.getCombinedAddress()
+                            val intent = Intent(context, HomeActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            context.startActivity(intent)
+                        }) {
                             Text12_h1(
                                 text = "Use Your Current location",
                                 color = seallcolor,
 
                             )
-                            Text12_body1(text = "Sector 49")
+                            Text12_body1(text = sharedpreferenceCommon.getCombinedAddress())
                         }
                         Spacer(modifier = Modifier.weight(1f))
 
@@ -205,7 +210,7 @@ fun homescreen(
                             Log.d("checkdata","${prediction.getFullText(null)}")
 
                             PredictionItem(prediction = prediction){
-                                sharedpreferenceCommon.setCombineAddress(it)
+                                sharedpreferenceCommon.setSearchAddress(it)
                                 val intent = Intent(context, HomeActivity::class.java)
                                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 context.startActivity(intent)
@@ -379,7 +384,7 @@ fun BodyDashboard(
                     modifier = Modifier
                         .padding(start = 10.dp),
                 )
-                Text13_body1(
+                Text11_body2(
                     "See all", color = seallcolor, modifier = Modifier
                         .padding(top = 5.dp, end = 20.dp)
                         .clickable {
@@ -451,7 +456,7 @@ fun BodyDashboard(
                     modifier = Modifier
                         .padding(start = 10.dp),
                 )
-                Text13_body1(
+                Text11_body2(
                     "See all", color = seallcolor, modifier = Modifier
                         .padding(top = 5.dp, end = 20.dp)
                         .clickable {
@@ -527,8 +532,8 @@ fun BodyDashboard(
                     if(getProductCategory.data?.itemData?.isNotEmpty()==true)
                         for (i in 0 until getProductCategory.data?.itemData?.size!!) {
                             GroceriesItems(
-                                lightBlueColor,
-                                R.drawable.pet_care,
+                                whiteColor,
+                                getProductCategory.data?.itemData!![i].imageUrl!!,
                                 getProductCategory.data?.itemData!![i],
                                 navcontroller,
                                 itemSize
@@ -821,7 +826,7 @@ fun ExclusiveOffers(
                     ?: 0.0f)) * 100
             )).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor,
+                text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
@@ -829,8 +834,7 @@ fun ExclusiveOffers(
             )
 
             Image(
-
-                painter = rememberImagePainter(data.productImage1),
+                painter = rememberImagePainter(data.productImage2),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(150.dp)
@@ -845,7 +849,7 @@ fun ExclusiveOffers(
                     .align(Alignment.CenterHorizontally)
             )
             Text10_h2(
-                text = "${data.quantity} pcs,Price", color = availColor,
+                text = "${data.quantityInstructionController}", color = bodyTextColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
@@ -937,7 +941,7 @@ fun CateoryWiseItems(
                     ?: 0.0f)) * 100
             )).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor,
+                text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
@@ -959,7 +963,7 @@ fun CateoryWiseItems(
                     .align(Alignment.CenterHorizontally)
             )
             Text10_h2(
-                text = "${data.quantity} pcs,Price", color = availColor,
+                text = "${data.quantityInstructionController}", color = bodyTextColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
@@ -1053,7 +1057,7 @@ fun BestOffers(
                     ?: 0.0f)) * 100
             )).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor,
+                text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
@@ -1079,7 +1083,7 @@ fun BestOffers(
                     .align(Alignment.CenterHorizontally)
             )
             Text10_h2(
-                text = "${data.quantity} pcs,Price", color = availColor,
+                text = "${data.quantityInstructionController}", color = bodyTextColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
@@ -1147,7 +1151,7 @@ fun BestOffers(
 @Composable
 fun GroceriesItems(
     color: Color,
-    drawable: Int,
+    drawable: String,
     item: getProductCategory.ItemData,
     navController: NavHostController,
     itemSize: Dp
@@ -1169,26 +1173,29 @@ fun GroceriesItems(
 
     ) {
         Column(
-            modifier = Modifier
-                .padding(10.dp)
+            modifier = Modifier.fillMaxHeight().fillMaxWidth()
         ) {
 
+
+
+            Image(
+                painter = rememberImagePainter(drawable),
+                contentDescription = "splash image",
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(50.dp)
+                    .padding(top = 2.dp)
+            )
             item.category?.let {
                 Text10_h2(
-                    text = it, color = whiteColor,
+                    text = it, color = faqColor,
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally),
+
 
                 )
             }
-            Image(
-                painter = painterResource(id = drawable),
-                contentDescription = "splash image",
-                modifier = Modifier
-                    .width(200.dp)
-                    .height(100.dp)
-                    .padding(top = 2.dp)
-            )
+
 
 
         }

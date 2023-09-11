@@ -23,17 +23,17 @@ data class ProductByIdResponseModal(
 
         @Json(name = "productId")
         val productId: String?=null,
-        @Json(name = "ProductImage1")
+        @Json(name = "productImage1")
         val productImage1: String?=null,
-        @Json(name = "ProductImage2")
+        @Json(name = "productImage2")
         val productImage2: String?=null,
-        @Json(name = "ProductImage3")
+        @Json(name = "productImage3")
         val productImage3: String?=null,
         @Json(name = "productName")
         val productName: String?=null,
         @Json(name = "quantity")
         val quantity: String?=null,
-        @Json(name = "ProductDescription")
+        @Json(name = "productDescription")
         val ProductDescription:String?=null,
         @Json(name = "rating")
     val rating: List<Rating?>?

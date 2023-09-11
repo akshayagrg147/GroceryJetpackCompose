@@ -2,7 +2,7 @@ package com.grocery.mandixpress.Utils
 
 class Constants {
     companion object{
-     const val AppUrl = "https://c281-119-82-94-196.ngrok-free.app/"
+     const val AppUrl = "https://26c1-103-101-101-135.ngrok-free.app/"
      const val ApiEnd_register ="Customers/register"
        const val NETWORK_PAGE_SIZE = 50
         const val HomeAllProducts ="Customers/HomeAllProducts"

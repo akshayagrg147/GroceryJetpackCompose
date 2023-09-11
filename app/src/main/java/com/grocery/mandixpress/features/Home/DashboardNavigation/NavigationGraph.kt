@@ -56,11 +56,11 @@ fun NavigationGraph(
         }
         composable(DashBoardNavRoute.OrderDetail.screen_route) {
             var model =
-                navController.previousBackStackEntry?.arguments?.getParcelable<AllOrdersHistoryList>(
+                navController.previousBackStackEntry?.arguments?.getParcelable<AllOrdersHistoryList.Orders>(
                     "orderDetail"
                 )
-
-            orderDetil(data = model ?: AllOrdersHistoryList(), navController)
+            if(model!=null)
+            orderDetil(data = model, navController)
         }
         composable(DashBoardNavRoute.AllOrderHistory.screen_route) {
 

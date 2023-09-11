@@ -117,7 +117,7 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, call:(HomeAllProd
 
             val offpercentage:String =(DecimalFormat("#.##").format(100.0- ((data.selling_price?.toFloat() ?: 0.0f) /(data.orignal_price?.toFloat()?:0.0f))*100)).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor, modifier = Modifier.align(
+                text = "${offpercentage}% off", color = sec20timer, modifier = Modifier.align(
                     Alignment.End
                 ),fontSize = 10.sp,
             )
@@ -141,7 +141,7 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, call:(HomeAllProd
                     .align(Alignment.CenterHorizontally)
             )
             Text10_h2(
-                text = "${data.quantity} pcs,Price", color = availColor,
+                text = "${data.quantityInstructionController}", color = bodyTextColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)

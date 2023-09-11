@@ -76,10 +76,7 @@ fun ListItems(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    var listdata = null
     var filterclicked by remember { mutableStateOf(false) }
-    var minimum by remember { mutableStateOf("") }
-    var maximum by remember { mutableStateOf("") }
     var selectedIndex = remember { mutableStateOf(1) }
     ModalBottomSheetLayout(
 
@@ -94,13 +91,9 @@ fun ListItems(
                 ) {
                     val ls: MutableList<FilterOptions> = ArrayList()
                     ls.add(FilterOptions("By Budget", "1"))
-                    // ls.add(FilterOptions("Change Sort", "2"))
-                    LazyColumn(
-                        //  verticalArrangement = Arrangement.SpaceBetween,
+                     LazyColumn(
                         modifier = Modifier
                             .padding(bottom = 1.dp)
-                        // .verticalScroll(state = scrollState)
-
                     ) {
                         items(ls) { item ->
 
@@ -142,8 +135,6 @@ fun ListItems(
                                     modifier = Modifier.padding(10.dp),
                                     onCheckedChange = { hundredone.value = it },
                                 )
-                                // below line is use to add text to our check box and we are
-                                // adding padding to our text of checkbox
                                 Text(
                                     text = "Rs. 49 and below",
                                     modifier = Modifier.padding(16.dp),
@@ -158,8 +149,6 @@ fun ListItems(
                                     modifier = Modifier.padding(10.dp),
                                     onCheckedChange = { twohundredone.value = it },
                                 )
-                                // below line is use to add text to our check box and we are
-                                // adding padding to our text of checkbox
                                 Text(
                                     text = "Rs. 11 and 30",
                                     modifier = Modifier.padding(16.dp),
@@ -174,8 +163,6 @@ fun ListItems(
                                     modifier = Modifier.padding(10.dp),
                                     onCheckedChange = { threehundredone.value = it },
                                 )
-                                // below line is use to add text to our check box and we are
-                                // adding padding to our text of checkbox
                                 Text(
                                     text = "Rs. 41 and 50",
                                     modifier = Modifier.padding(16.dp),
@@ -189,8 +176,6 @@ fun ListItems(
                                     modifier = Modifier.padding(10.dp),
                                     onCheckedChange = { fivehundredone.value = it },
                                 )
-                                // below line is use to add text to our check box and we are
-                                // adding padding to our text of checkbox
                                 Text(
                                     text = "Rs. 50 and above",
                                     modifier = Modifier.padding(16.dp),
@@ -199,8 +184,6 @@ fun ListItems(
                             }
 
                         }
-
-
 
                         Spacer(modifier = Modifier.height(25.dp))
 
@@ -322,38 +305,6 @@ fun ListItems(
                     Title(ls?.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
                 }
 
-//                item{
-//                    Box(modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(110.dp)) {
-//                        Image(
-//                            painter = painterResource(id = R.drawable.banner), contentDescription = "",
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                        )
-//                        Text24_700(text = ls?.message?:"none", modifier = Modifier.align(
-//                            Alignment.BottomCenter))
-//
-//                    }
-//                }
-//
-//
-//                items(   lss!!) { data ->
-//                    Box(modifier = Modifier
-//                        .fillMaxHeight()
-//                        .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))) {
-//                        SubItems(data){
-//                            lss?.sortedByDescending { it->it.productName }
-//                        }
-//                    }
-//                    // Column(modifier = Modifier.padding(10.dp)) {
-//
-//                    //}
-//
-//
-//                }
-
-
             }
             Card(
                 modifier = Modifier
@@ -394,32 +345,12 @@ fun ListItems(
 
 }
 
-fun srt(sortTyoe: String, lss: List<HomeAllProductsResponse.HomeResponse>) {
-    when (sortTyoe) {
-        "asc" -> {
-            lss?.sortedBy { it.productName }
-        }
-        "dsc" -> {
-            lss?.sortedByDescending { it.productName }
-        }
-        "high" -> {
-            lss?.sortedBy { it.selling_price?.toInt() }
-        }
-        "low" -> {
-            lss?.sortedByDescending { it.selling_price?.toInt() }
-        }
-
-    }
-
-}
 
 @Composable
 fun SubItems(
     data: HomeAllProductsResponse.HomeResponse,
     viewModal: HomeAllProductsViewModal,
     context: Context,
-    itemSize: Dp,
-    call: () -> Unit
 ) {
 
     Card(
@@ -445,7 +376,7 @@ fun SubItems(
                     ?: 0.0f)) * 100
             )).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor,
+                text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
@@ -471,7 +402,7 @@ fun SubItems(
                     .align(Alignment.CenterHorizontally)
             )
             Text10_h2(
-                text = "${data.quantity} pcs,Price", color = availColor,
+                text = "${data.quantityInstructionController}", color = bodyTextColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
@@ -624,27 +555,19 @@ private fun Body(
     when (viewModal.responseLiveData.value) {
 
         "asc" -> {
-            context.showMsg("asc")
-            Log.d("sjsjjsj", viewModal.listState.value.list?.get(0)!!.productName!!)
             ls = viewModal.globalmutablelist1.value.list?.sortedBy { it?.productName?.lowercase() }
-
-            Log.d("sjsjjsj", viewModal.listState.value!!.list?.get(0)!!.productName!!)
         }
 
         "dsc" -> {
-            context.showMsg("dsc")
             ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it?.productName?.lowercase() }
         }
         "high" -> {
-            context.showMsg("high")
             ls = viewModal.globalmutablelist1.value.list?.sortedBy { it.selling_price?.toInt() }
         }
         "low" -> {
-            context.showMsg("low")
             ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it?.selling_price?.toInt() }
         }
         "filter" -> {
-
             ls = viewModal.listState.value.list
         }
         else -> {
@@ -668,9 +591,7 @@ private fun Body(
         ) {
             if (ls != null) {
                 for (item in ls) {
-                    SubItems(item, viewModal, context, itemSize) {
-
-                    }
+                    SubItems(item, viewModal, context, )
                 }
             }
 
@@ -798,9 +719,6 @@ private fun Title(
     )
 }
 
-private val productnamecompare = Comparator<HomeAllProductsResponse.HomeResponse> { left, right ->
-    left.productName?.lowercase()!!.compareTo(right.productName?.lowercase()!!)
-}
 
 
 

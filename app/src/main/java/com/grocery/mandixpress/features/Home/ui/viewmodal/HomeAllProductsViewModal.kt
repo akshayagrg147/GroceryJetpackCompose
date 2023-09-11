@@ -145,7 +145,8 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
     fun gettingAddres(): String {
-        return sharedPreferences.getCombinedAddress()
+        val address=if(sharedPreferences.getSearchAddress().isNotEmpty()) sharedPreferences.getSearchAddress() else sharedPreferences.getCombinedAddress()
+        return address
     }
 
     suspend fun getAddress() = withContext(Dispatchers.IO) {

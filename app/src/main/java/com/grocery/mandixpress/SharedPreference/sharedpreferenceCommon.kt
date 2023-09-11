@@ -35,6 +35,14 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         return mPrefs.edit().putString(AppConstant.combine, comibineAddress).apply()
     }
 
+    fun setSearchAddress(address: String): Any {
+        return mPrefs.edit().putString(AppConstant.serarchSelection, address).apply()
+    }
+    fun getSearchAddress(): String {
+        return mPrefs.getString(AppConstant.serarchSelection, "").toString()
+    }
+
+
     fun setLat(lat: String): Any {
         return mPrefs.edit().putString(AppConstant.lat, lat).apply()
     }

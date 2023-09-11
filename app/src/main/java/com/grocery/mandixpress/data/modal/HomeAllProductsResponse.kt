@@ -21,12 +21,19 @@ data class HomeAllProductsResponse(
     data class HomeResponse(
         @Json(name = "selling_price")
         val selling_price: String?=null,
-        @Json(name = "ProductImage1")
+        @Json(name = "productImage1")
         val productImage1: String?=null,
+        @Json(name = "productImage2")
+        val productImage2: String?=null,
+        @Json(name = "productImage3")
+        val productImage3: String?=null,
         @Json(name = "productName")
         val productName: String?=null,
         @Json(name = "quantity")
         val quantity: String?=null,
+        @Json(name = "quantityInstructionController")
+        val quantityInstructionController: String?=null,
+
         @Json(name = "productId")
         val ProductId: String?=null,
         @Json(name="orignal_price")

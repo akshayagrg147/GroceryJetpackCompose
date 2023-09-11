@@ -2,6 +2,7 @@ package com.grocery.mandixpress.features.Spash
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Space
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -117,7 +120,7 @@ fun RelatedSearchItem(
                     ?: 0.0f)) * 100
             )).toString()
             Text(
-                text = "${offpercentage}% off", color = titleColor,
+                text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
@@ -139,7 +142,7 @@ fun RelatedSearchItem(
                     .align(Alignment.CenterHorizontally)
             )
             Text10_h2(
-                text = "${data.quantity} pcs,Price", color = availColor,
+                text = "${data.quantityInstructionController}", color = bodyTextColor1,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)
@@ -233,6 +236,34 @@ fun ItemDetailsScreen(
                     item {
                         //tab view for image
                         Column(modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+
+                                    .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
+                                    .align(Alignment.CenterHorizontally),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .padding(end = 8.dp)
+                                        .clickable {
+                                            navController.popBackStack()
+                                        }
+                                )
+                                Text16_h1(
+                                    text = "Product Screen",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+
+                                        .padding(start = 10.dp, top = 15.dp, bottom = 10.dp),
+                                    color = navdrawerColor
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
                             Card(
                                 elevation = 1.dp,
                                 shape = RoundedCornerShape(20.dp),
@@ -267,16 +298,15 @@ fun ItemDetailsScreen(
                                     .padding(horizontal = 20.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(
+                                Text14_h1_(
                                     text = value.homeproducts?.productName ?: "",
-                                    color = titleColor,
-                                    style = loginTypography.h1,
-                                    fontSize = 18.sp,
+                                    color = headingColor,
+
                                 )
-                                Text12_body1(
-                                    text = value.homeproducts?.quantity ?: "", modifier = Modifier
-                                        .padding(top = 5.dp)
-                                )
+//                                Text12_body1(
+//                                    text = value.homeproducts?.quantity ?: "", modifier = Modifier
+//                                        .padding(top = 5.dp)
+//                                )
 
                             }
                             Spacer(modifier = Modifier.height(2.dp))
@@ -288,12 +318,12 @@ fun ItemDetailsScreen(
                             ) {
 
                                 Text12_body1(
-                                    text = "₹ ${value.homeproducts?.orignalprice}",
-                                    color = headingColor,
+                                    text = "₹ ${value.homeproducts?.selling_price}",
+                                    color = headingColor
                                     //  modifier= Modifier.weight(0.5F)
                                 )
                                 Text(
-                                    text = "₹${value.homeproducts?.selling_price ?: "0.00"}",
+                                    text = "₹${value.homeproducts?.orignalprice ?: "0.00"}",
                                     fontSize = 12.sp,
                                     color = bodyTextColor1,
                                     modifier = Modifier.padding(start = 5.dp),
@@ -594,7 +624,7 @@ fun Banner(
 fun TabContentScreen(data: String) {
     Column(
 
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

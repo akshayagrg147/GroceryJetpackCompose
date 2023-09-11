@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +37,8 @@ import com.grocery.mandixpress.features.Home.ui.ui.theme.navdrawerColor
 
 import com.grocery.mandixpress.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import com.grocery.mandixpress.data.modal.PassingAddress
+import com.grocery.mandixpress.features.Home.ui.ui.theme.headingColor
+import com.grocery.mandixpress.features.Home.ui.ui.theme.seallcolor
 import kotlinx.coroutines.launch
 
 
@@ -130,9 +133,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
-                    navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
-                }
+
                 .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
                 .align(Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
@@ -141,24 +142,23 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(24.dp)
-                    .padding(end = 8.dp).clickable{
+                    .size(30.dp)
+                    .padding(end = 8.dp)
+                    .clickable {
                         navHostController.popBackStack()
                     }
             )
-            Text13_body1(text = "Add Address", modifier = Modifier
+            Text16_h1(text = "Add Address", modifier = Modifier
                 .fillMaxWidth()
 
                 .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
                 , color = navdrawerColor
             )
-            Icon(
-                imageVector = Icons.Default.Home,
-                contentDescription = null,
-                tint = navdrawerColor,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 8.dp)
+            Image(
+                painter = painterResource(id = R.drawable.homeicon), // Replace with your image resource
+                contentDescription = "Cross Button",
+                modifier = Modifier, // Adjust the size as needed
+                contentScale = ContentScale.Fit
             )
         }
 
@@ -300,7 +300,7 @@ fun noAddressAvailable(click:()->Unit){
         horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(250.dp))
         Text12_body1(text = "No Address available")
-        Text14_h1(text = "click to add address", modifier = Modifier.clickable {
+        Text14_h1(text = "click to add address",color= headingColor, modifier = Modifier.clickable {
             click()
 
         })

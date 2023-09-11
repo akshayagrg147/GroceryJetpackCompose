@@ -141,7 +141,7 @@ fun CartScreen(
     ModalBottomSheetLayout(
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()
-                .requiredHeight(400.dp)){
+              ){
 
                 Box(
                     modifier = Modifier.fillMaxWidth()
@@ -198,14 +198,15 @@ fun CartScreen(
                                 .padding(horizontal = 10.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text12_body1(
+
+                            Text10_h2(
                                 text = "Order Amount",
-                                color = blackColor,
+                                color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
-                            Text12_body1(
+                            Text10_h2(
                                 text = "₹ ${viewModal.totalPriceState.value}",
-                                color = blackColor,
+                                color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
                         }
@@ -216,14 +217,14 @@ fun CartScreen(
                                 .padding(horizontal = 10.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text12_body1(
+                            Text10_h2(
                                 text = "Service Charges",
-                                color = blackColor,
+                                color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
-                            Text12_body1(
+                            Text10_h2(
                                 text = "₹ ${String.format("%.2f",viewModal.totalPriceState.value * 0.1)}",
-                                color = blackColor,
+                                color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
                         }
@@ -233,9 +234,9 @@ fun CartScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 10.dp),
                         ) {
-                            Text12_body1(
+                            Text10_h2(
                                 text = "Delivery Charges",
-                                color = blackColor,
+                                color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically).weight(1f),
 
                                 )
@@ -243,7 +244,7 @@ fun CartScreen(
                             Text12_with_strikethrough(
                                 text1 = if (viewModal.totalPriceState.value.toInt() > 100) "₹ 30" else "₹ 30 ",
                                 text2 = "FREE",
-                                color = blackColor,
+                                color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
                         }
@@ -256,9 +257,9 @@ fun CartScreen(
                                 it.get<Bundle>("passCoupon")
                             }
                         val grandTotal = if (viewModal.totalPriceState.value.toInt() < 100) {
-                            "₹ " + ((30) + (viewModal.totalPriceState.value.toInt()))
+                            "₹ " + ((30) + (viewModal.totalPriceState.value.toDouble()))
                         } else {
-                            "₹ ${viewModal.totalPriceState.value * 0.9}"
+                            "₹ ${viewModal.totalPriceState.value .toDouble() * 0.9}"
                         }
                         if (passCoupon) {
                             if ((backBundleData?.get("CouponPercent") != null))
@@ -278,17 +279,17 @@ fun CartScreen(
                                     .padding(horizontal = 10.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text14_h1(
+                                Text10_h2(
                                     text = "Coupon Applied(${backBundleData?.get("CouponName")})",
-                                    color = blackColor,
+                                    color = headingColor,
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
 
-                                Text14_h1(
-                                    text = (cuponDiscount
+                                Text10_h2(
+                                    text = (String.format("%.2f",cuponDiscount)
 
                                             ).toString(),
-                                    color = blackColor,
+                                    color = headingColor,
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
                             }
@@ -302,14 +303,14 @@ fun CartScreen(
                             ) {
                                 Text14_h1(
                                     text = "Grand Total",
-                                    color = blackColor,
+                                    color = headingColor,
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
 
                                 Text14_h1(
-                                    text = (grandTotal.replace("₹ ", "").toDoubleOrNull()
-                                        ?.minus(cuponDiscount!!.toInt())).toString(),
-                                    color = blackColor,
+                                    text = String.format("%.2f",(grandTotal.replace("₹ ", "").toDoubleOrNull()
+                                        ?.minus(cuponDiscount!!.toInt()))).toString(),
+                                    color = headingColor,
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
                             }
@@ -323,13 +324,13 @@ fun CartScreen(
                             ) {
                                 Text14_h1(
                                     text = "Grand Total",
-                                    color = blackColor,
+                                    color = headingColor,
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
 
                                 Text14_h1(
-                                    text = grandTotal,
-                                    color = blackColor,
+                                    text = String.format("%.2f",(grandTotal.replace("₹ ", "")).toDoubleOrNull()).toString(),
+                                    color = headingColor,
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
                             }
@@ -983,7 +984,7 @@ fun ItemEachRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text13_body1(
+                    Text10_h2(
                         text = "${data.strProductName}",
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
@@ -999,12 +1000,18 @@ fun ItemEachRow(
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
-                Text12_body1(
+                Text10_h2(
                     text = "₹ ${data.strProductPrice}",
-                    color = blackColor,
+                    color = headingColor,
                 )
+
+
+
+
+
                 Text(
                     text = "₹${data.actualprice ?: "0.00"}",
+                    fontSize = 11.sp,
                     color = bodyTextColor,
                     modifier = Modifier.padding(start = 10.dp),
                     style = TextStyle(textDecoration = TextDecoration.LineThrough)

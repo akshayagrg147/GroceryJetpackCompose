@@ -429,7 +429,7 @@ fun MenuItemGrid(
             )).toString()
 
             Text(
-                text = "${offpercentage}% off", color = titleColor,
+                text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
@@ -455,7 +455,7 @@ fun MenuItemGrid(
                     .align(Alignment.CenterHorizontally)
             )
             Text10_h2(
-                text = "${data.quantity} pcs,Price", color = availColor,
+                text = "${data.quantityInstructionController}", color = bodyTextColor,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterHorizontally)

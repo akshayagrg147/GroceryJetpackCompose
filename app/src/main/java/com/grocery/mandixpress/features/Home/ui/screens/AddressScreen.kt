@@ -23,6 +23,7 @@ import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.data.modal.PassingAddress
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.Home.ui.ui.theme.disableColor
+import com.grocery.mandixpress.features.Home.ui.ui.theme.headingColor
 import com.grocery.mandixpress.features.Home.ui.ui.theme.redColor
 import com.grocery.mandixpress.features.Home.ui.ui.theme.seallcolor
 import com.grocery.mandixpress.features.Home.ui.viewmodal.AddressViewModal
@@ -57,7 +58,7 @@ val context= LocalContext.current.getActivity()
     ) {
         item {
 
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp)) {
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -75,13 +76,13 @@ val context= LocalContext.current.getActivity()
                             .align(Alignment.TopCenter),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text16_h1(text = "Add Address", color = Color.Black)
+                        Text16_h1(text = "Add Address", color = headingColor)
                     }
                 }
                 Row(
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
-                    Column {
+                    Column (){
                         val namestate = remember {
                             mutableStateOf(true)
                         }

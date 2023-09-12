@@ -10,6 +10,9 @@ import com.grocery.mandixpress.RoomDatabase.CartItems
 import com.grocery.mandixpress.RoomDatabase.Dao
 import com.grocery.mandixpress.RoomDatabase.RoomRepository
 import com.grocery.mandixpress.common.ApiState
+import com.grocery.mandixpress.common.doOnFailure
+import com.grocery.mandixpress.common.doOnLoading
+import com.grocery.mandixpress.common.doOnSuccess
 import com.grocery.mandixpress.data.modal.ItemsCollectionsResponse
 import com.grocery.mandixpress.data.modal.OrderIdCreateRequest
 import com.grocery.mandixpress.data.modal.OrderIdResponse
@@ -18,10 +21,7 @@ import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,10 +45,13 @@ class CartItemsViewModal @Inject constructor(
     private val totalPrice: MutableState<Int> =
         mutableStateOf(0)
     val totalPriceState: State<Int> = totalPrice
-    private val orderConfirmedStatus: MutableState<OrderIdResponse> = mutableStateOf(OrderIdResponse())
-    val orderConfirmedStatusState: State<OrderIdResponse> = orderConfirmedStatus
+
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val addresslistState: State<List<AddressItems>> = addresslist
+
+    private val flow:MutableStateFlow<CommonUiObjectResponse<OrderIdResponse>> =  MutableStateFlow(CommonUiObjectResponse())
+    var sharedFlow=flow.asStateFlow()
+    private set
 
     init {
         getAllCartAddressItems()
@@ -159,37 +162,30 @@ class CartItemsViewModal @Inject constructor(
             }
 
         }
-    fun passingOrderIdGenerateRequest(request: OrderIdCreateRequest) {
-        _res.tryEmit(request)
-    }
-    fun callingBookingOrder() = viewModelScope.launch {
-        repository.OrderIdRequest(_res.first()).collectLatest {
-            when (it) {
-                is ApiState.Success -> {
-                    orderConfirmedStatus.value = it.data
+
+    fun onEvent(event: CartEvent){
+        when(event ){
+             is CartEvent.createOrderId->{
+                 viewModelScope.launch {
+                     repository.OrderIdRequest(event.request).doOnLoading {
+                         flow.value = CommonUiObjectResponse(isLoading = true,)
 
 
-                }
-                is ApiState.Failure -> {
-                    orderConfirmedStatus.value =
-                        OrderIdResponse(
-                            message = it.msg.message ?: "Order Failed",
-                            statusCode = 401
-                        )
+                     }.doOnSuccess {
+                         flow.value = CommonUiObjectResponse(data = it,)
 
+                     }.doOnFailure {
+                         flow.value = CommonUiObjectResponse(error = it?.message?:"something went wrong",)
+                     }.collect()
+                 }
 
-                }
-                is ApiState.Loading -> {
-
-                }
-
-            }
         }
 
-
-
-
-
+        }
 
     }
+
+}
+sealed class CartEvent{
+    data class createOrderId(val request: OrderIdCreateRequest):CartEvent()
 }

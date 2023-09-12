@@ -1,12 +1,14 @@
 package com.grocery.mandixpress.features.Spash.domain.repository
 
+import android.content.SharedPreferences
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.ApiService
 import com.grocery.mandixpress.toResultFlow
 import javax.inject.Inject
 
 class CommonRepository @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,  var sharedPreferences: sharedpreferenceCommon
 ) {
 
     fun registerUser(
@@ -65,7 +67,7 @@ class CommonRepository @Inject constructor(
     }
     fun getAllOrders(string: String
     ) = toResultFlow {
-        apiService.AllOrders(string)
+        apiService.AllOrders(string+"@"+sharedPreferences.getMobileNumber())
     }
     fun GetRelatedSearch(obj:RelatedSearchRequest
     ) = toResultFlow {

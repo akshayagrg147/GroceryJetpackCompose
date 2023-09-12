@@ -186,7 +186,7 @@ class HomeAllProductsViewModal @Inject constructor(
 
             }
              HomeEvent.ExclusiveEventFlow -> viewModelScope.launch {
-                repository.ExclusiveProducts(city="kaithal")
+                repository.ExclusiveProducts(city=sharedPreferences.getCity())
                     .collectLatest {
                         when(it){
                             is ApiState.Loading->{

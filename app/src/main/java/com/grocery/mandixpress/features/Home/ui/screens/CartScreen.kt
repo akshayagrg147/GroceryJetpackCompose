@@ -56,6 +56,7 @@ import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.data.modal.OrderIdCreateRequest
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
+import com.grocery.mandixpress.features.Home.ui.viewmodal.CartEvent
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartItemsViewModal
 import com.grocery.mandixpress.features.Spash.SplashNavigation.ScreenRoute
 import kotlinx.coroutines.launch
@@ -101,42 +102,32 @@ fun CartScreen(
     viewModal.getSavingAmount()
     if (isDialog)
         CommonProgressBar()
-    Log.d("messagecoming", "call cart screen")
 
 
 
-    when (viewModal.orderConfirmedStatusState.value.statusCode) {
-        200 -> {
-
-            LaunchedEffect(key1 = true) {
-                viewModal.orderConfirmedStatusState.value.apply {
-
-                    navController.currentBackStackEntry?.arguments?.putParcelable(
-                        "orderstatus",
-                        viewModal.orderConfirmedStatusState.value
-                    )
-                    navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route) {
-                        popUpTo(DashBoardNavRoute.Home.screen_route) {
-                            inclusive = true
-                        }
-                    }
-
-                }
-            }
-            //  scope.launch { modalBottomSheetState.hide() }
-
-
+    val orderIDResponse by viewModal.sharedFlow.collectAsState()
+    if(orderIDResponse.data?.statusCode==200){
+        Log.d("ordercreation","called ${orderIDResponse.data} ")
+        isDialog=false
+        LaunchedEffect(key1 = Unit){
+            navController.currentBackStackEntry?.arguments?.putParcelable(
+                "orderstatus",
+                orderIDResponse.data
+            )
+            navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route) {
+//                popUpTo(DashBoardNavRoute.Home.screen_route) {
+//                    inclusive = true
+//                }
         }
-        401 -> {
-            isDialog = false
-            //  scope.launch { modalBottomSheetState.hide() }
 
-        }
-        else -> {
-            // scope.launch { modalBottomSheetState.hide() }
-            Log.d("messagecoming", "someting went wrong")
+
         }
     }
+    else if (orderIDResponse.error.isNotEmpty()) {
+        isDialog=false
+        Toast.makeText(context, orderIDResponse.error, Toast.LENGTH_SHORT).show()
+    }
+
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -237,7 +228,9 @@ fun CartScreen(
                             Text10_h2(
                                 text = "Delivery Charges",
                                 color = headingColor,
-                                modifier = Modifier.align(Alignment.CenterVertically).weight(1f),
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .weight(1f),
 
                                 )
 
@@ -393,8 +386,9 @@ fun CartScreen(
                                     mobilenumber = sharedpreferenceCommon.getMobileNumber()
                                 )
                                 Log.d("messagepassing", "${Gson().toJson(request)}")
-                                viewModal.passingOrderIdGenerateRequest(request)
-                                viewModal.callingBookingOrder()
+                                viewModal.onEvent(CartEvent.createOrderId(request))
+
+
                             }
                             else -> {
                                 choose.value = false
@@ -872,12 +866,12 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>, address: 
     Card(
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, Color.White),
-        backgroundColor = if (selectedIndex.value == data.id.toInt()) greycolor else Color.White,
+        border = BorderStroke(1.dp, Color.LightGray),
+        backgroundColor = if (selectedIndex.value == data.id.toInt()) greyLightColor else Color.White,
         modifier = Modifier
             .fillMaxWidth()
-            .width(180.dp)
-            .height(120.dp)
+
+
             .padding(start = 5.dp)
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
             .clickable {
@@ -893,10 +887,10 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>, address: 
 
         ) {
             Column(modifier = Modifier.padding(10.dp)) {
-                Text12_body1(text = data.customer_name)
-                Text12_body1(text = data.Address1)
-                Text12_body1(text = "${data.Address2}, ${data.PinCode},")
-                Text12_body1(text = data.LandMark)
+                Text12_h1(text = data.customer_name,color= if (selectedIndex.value == data.id.toInt()) whiteColor else blackColor,)
+                Text12_h1(text = data.Address1,color= if (selectedIndex.value == data.id.toInt()) whiteColor else blackColor)
+                Text12_h1(text = "${data.Address2}, ${data.PinCode},",color= if (selectedIndex.value == data.id.toInt()) whiteColor else blackColor)
+                Text12_h1(text = data.LandMark,color= if (selectedIndex.value == data.id.toInt()) whiteColor else blackColor)
 
             }
         }

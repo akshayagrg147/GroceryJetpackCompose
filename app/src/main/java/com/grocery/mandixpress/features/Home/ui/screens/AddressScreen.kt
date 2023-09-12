@@ -310,6 +310,3 @@ val context= LocalContext.current.getActivity()
 
 }
 
-fun callingStateApi(value: Boolean) {
-
-}

@@ -122,20 +122,12 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>,call:(Addr
 fun AllAddress(navHostController: NavHostController,context: Context,viewModal: HomeAllProductsViewModal = hiltViewModel()){
     var selectedIndex = remember{ mutableStateOf(1) }
     val scope = rememberCoroutineScope()
-
-
-    Column(modifier = Modifier.fillMaxSize()) {
-//        Text24_700(text = "All address", modifier = Modifier
-//                .fillMaxWidth()
-//            .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
-//                .align(Alignment.CenterHorizontally))
-
-        Row(
+    Row(
             modifier = Modifier
                 .fillMaxWidth()
 
                 .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
-                .align(Alignment.CenterHorizontally),
+                ,Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ){
             Icon(
@@ -149,7 +141,7 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
                     }
             )
             Text16_h1(text = "Add Address", modifier = Modifier
-                .fillMaxWidth()
+
 
                 .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
                 , color = navdrawerColor
@@ -163,21 +155,18 @@ fun AllAddress(navHostController: NavHostController,context: Context,viewModal: 
         }
 
 
-        }
+
 
         LazyColumn(
             modifier = Modifier
-                .padding(top = 45.dp)
+                .padding(top = 55.dp)
                 .fillMaxSize()
             // .height(260.dp)
         ) {
 //            key = {
 //                it.id
 //            }
-            scope.launch {
-                viewModal.getAddress()
 
-            }
 
             item {
 //                FloatingButton {

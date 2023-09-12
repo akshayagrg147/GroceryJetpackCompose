@@ -121,7 +121,9 @@ fun homescreen(
 
                 // Curved background for the sheet
                 Box(
-                    modifier = Modifier.fillMaxWidth().background(Color.Transparent)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent)
                     ,
                     contentAlignment = Alignment.Center
                 )
@@ -129,7 +131,9 @@ fun homescreen(
                     Image(
                         painter = painterResource(id = R.drawable.close_button), // Replace with your image resource
                         contentDescription = "Cross Button",
-                        modifier = Modifier.size(50.dp).padding(bottom = 10.dp), // Adjust the size as needed
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(bottom = 10.dp), // Adjust the size as needed
                         contentScale = ContentScale.Fit
                     )
 
@@ -167,7 +171,9 @@ fun homescreen(
                     // namestate.value = it.length >= 3
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Row(modifier = Modifier.fillMaxWidth().padding(start=10.dp)) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp)) {
                         Image(
                             painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
                             contentDescription = "Location Icon",
@@ -373,6 +379,10 @@ fun BodyDashboard(
             }
         else if(exlusiveResponse.data != null)
         {
+//            if(exlusiveResponse.data!!.message=="no"){
+//                NoAvaibiltyScreen()
+//                return
+//            }
             //exclusive offers
             Row(
                 modifier = Modifier
@@ -1173,7 +1183,9 @@ fun GroceriesItems(
 
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight().fillMaxWidth()
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
         ) {
 
 

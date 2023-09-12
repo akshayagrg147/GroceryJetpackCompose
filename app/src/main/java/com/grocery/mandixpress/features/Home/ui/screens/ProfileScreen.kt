@@ -66,7 +66,7 @@ fun profileScreen(
 
         }
     LaunchedEffect(key1 = Unit) {
-        viewModal.onEvent(ProfileEvent.callingUserProfile("+919812205054"))
+        viewModal.onEvent(ProfileEvent.callingUserProfile(sharedpreferenceCommon.getMobileNumber()))
 
     }
     Column() {

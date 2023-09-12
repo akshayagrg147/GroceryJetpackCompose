@@ -1,6 +1,7 @@
 package com.grocery.mandixpress.features.Home.ui.screens
 
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +34,7 @@ fun OrderConfirmation(
     data: OrderIdResponse,
     navController: NavHostController, viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
+    Log.d("printOrderConfirmation","$data")
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .componentRegistry {
             if (Build.VERSION.SDK_INT >= 28) {

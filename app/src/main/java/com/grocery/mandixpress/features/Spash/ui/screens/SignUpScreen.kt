@@ -55,7 +55,7 @@ fun SignUpScreen(
     val contactNum = remember {
         mutableStateOf(
             navController.previousBackStackEntry?.arguments?.getString("mobileNumber")
-                ?: "+919812205054"
+                ?: ""
         )
     }
     val name = remember {

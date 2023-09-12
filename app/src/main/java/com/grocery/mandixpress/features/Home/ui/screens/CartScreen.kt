@@ -980,7 +980,7 @@ fun ItemEachRow(
                 ) {
                     Text10_h2(
                         text = "${data.strProductName}",
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier.fillMaxWidth().weight(1f).align(Alignment.CenterVertically)
                     )
                     IconButton(modifier = Modifier
                         .height(20.dp)

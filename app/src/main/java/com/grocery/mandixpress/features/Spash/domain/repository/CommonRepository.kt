@@ -44,6 +44,8 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.categorywise_collectionProducts()
     }
+     fun availibilityCheck(pincode:String)= toResultFlow { apiService.availibilityCheck(pincode = pincode) }
+
     fun getUserResponse( mobileNumber:String) = toResultFlow { apiService.getuserdetails(RegisterLoginRequest(null,null,mobileNumber)) }
     fun callPendingProductById(productIdIdModal: ProductIdIdModal
     ) = toResultFlow {

@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +22,7 @@ import com.grocery.mandixpress.HiltApplication.Companion.context
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text14_h1
+import com.grocery.mandixpress.Utils.showMsg
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.features.Home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.Home.ui.ui.theme.greyLightColor
@@ -92,7 +94,7 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                         modifier = Modifier.padding(top = 20.dp, bottom = 15.dp)
                     )
             Text14_h1(
-                text = "${combinedaddress}",
+                text = "$combinedaddress",
                 color= greyLightColor,
                 modifier = Modifier.padding(top = 20.dp, bottom = 15.dp)
             )
@@ -109,10 +111,17 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                     color = Color.White,
                     enabled = combinedaddress.isNotEmpty()
                 )
-                {
-                    val intent = Intent(context, HomeActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    context.startActivity(intent)
+                {  Log.d("errorcheck","${extractSixDigitNumber(combinedaddress)}")
+                    if(extractSixDigitNumber(combinedaddress)?.length==6){
+                        mapScreenViewModal.savePinCode(extractSixDigitNumber(combinedaddress))
+                        val intent = Intent(context, HomeActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        context.startActivity(intent)
+                    }
+                    else{
+                        Log.d("errorcheck","${extractSixDigitNumber(combinedaddress)}")
+                    }
+
 
 
                 }
@@ -125,6 +134,11 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
 
     }
 
+}
+fun extractSixDigitNumber(input: String): String? {
+    val regex = Regex("\\b\\d{6}\\b") // Matches 6 digits surrounded by word boundaries
+    val matchResult = regex.find(input)
+    return matchResult?.value
 }
 fun getAddressFromLatLng(
     context: Context, latitude: Double, longitude: Double,

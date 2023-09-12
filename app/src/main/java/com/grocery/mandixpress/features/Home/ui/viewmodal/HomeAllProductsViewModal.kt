@@ -20,6 +20,7 @@ import com.grocery.mandixpress.Utils.Constants.Companion.NETWORK_PAGE_SIZE
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.CategoryWiseDashboardResponse
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
+import com.grocery.mandixpress.data.modal.commonResponse
 import com.grocery.mandixpress.data.network.ApiService
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
@@ -67,6 +68,10 @@ class HomeAllProductsViewModal @Inject constructor(
 
     private val _categoryWiseResponse:MutableStateFlow<ComposeUiResponse<CategoryWiseDashboardResponse>> = MutableStateFlow(ComposeUiResponse())
     var categoryWiseResponse = _categoryWiseResponse.asStateFlow()
+        private set
+
+    private val availibilityCheck:MutableStateFlow<ComposeUiResponse<commonResponse>> = MutableStateFlow(ComposeUiResponse())
+    var _availibilityCheck = availibilityCheck.asStateFlow()
         private set
 
     private val _getProductCategory:MutableStateFlow<ComposeUiResponse<getProductCategory>> = MutableStateFlow(ComposeUiResponse())
@@ -237,6 +242,25 @@ class HomeAllProductsViewModal @Inject constructor(
                     }
 
             }
+
+            HomeEvent.AreaAvailibilityEventFlow->viewModelScope.launch {
+                Log.d("postalcode","${sharedPreferences.getPostalCode()}")
+                repository.availibilityCheck(sharedPreferences.getPostalCode())
+                    .collectLatest {
+                        when(it){
+                            is ApiState.Loading->{
+                                availibilityCheck.value = ComposeUiResponse( isLoading = true)
+                            }
+                            is ApiState.Success->{
+                                availibilityCheck.value = ComposeUiResponse(data = it.data)
+                            }
+                            is ApiState.Failure->{
+                                availibilityCheck.value = ComposeUiResponse( error = it?.msg.toString())
+                            }
+                        }
+                    }
+
+            }
             else -> {}
         }
     }
@@ -371,6 +395,8 @@ sealed class HomeEvent{
     object BestSellingEventFlow : HomeEvent()
     object ItemCategoryEventFlow:HomeEvent()
     object CategoryWiseEventFlow:HomeEvent()
+
+    object AreaAvailibilityEventFlow:HomeEvent()
 
 }
 

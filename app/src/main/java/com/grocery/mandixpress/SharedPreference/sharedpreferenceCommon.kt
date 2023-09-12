@@ -60,7 +60,7 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     }
 
     fun getPostalCode(): String {
-        return mPrefs.getString(AppConstant.pincode, "123456").toString()
+        return mPrefs.getString(AppConstant.pincode, "").toString()
     }
 
     fun getLat(): String {

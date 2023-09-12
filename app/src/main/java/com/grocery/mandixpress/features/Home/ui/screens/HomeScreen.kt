@@ -90,6 +90,10 @@ fun homescreen(
     val address = remember { mutableStateOf("") }
     LaunchedEffect(key1 = Unit){
         viewModal.onEvent(
+            HomeEvent.AreaAvailibilityEventFlow
+
+        )
+        viewModal.onEvent(
             HomeEvent.CategoryWiseEventFlow
 
         )
@@ -249,6 +253,7 @@ fun homescreen(
                 SearchBar() {
                     navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
                 }
+            if(viewModal.getitemcountState.value>=1)
             cardviewAddtoCart(
                 viewModal,
                 navcontroller,
@@ -314,6 +319,8 @@ fun BodyDashboard(
     val categoryWiseResponse by viewModal.categoryWiseResponse.collectAsState()
     val getProductCategory by viewModal.getProductCategory.collectAsState()
     val bestSelling by viewModal.bestSelling.collectAsState()
+    val commonResponse by viewModal._availibilityCheck.collectAsState()
+    if(commonResponse.data?.statusCode==200)
     Column(
         //  verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -657,6 +664,9 @@ fun BodyDashboard(
                 Spacer(modifier = Modifier.height(30.dp))
             }
 
+    }
+    else if(commonResponse.data?.statusCode==201){
+        NoAvaibiltyScreen()
     }
 
 }

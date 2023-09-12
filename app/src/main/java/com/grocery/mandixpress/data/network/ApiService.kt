@@ -47,6 +47,9 @@ interface ApiService {
     suspend fun categorywise_collectionProducts(
     ): Response<CategoryWiseDashboardResponse>
 
+    @POST(Constants.availibilityCheck)
+    suspend fun availibilityCheck(@Body pincode:String):Response<commonResponse>
+
     @POST(Constants.GetPendingProductById)
     suspend fun GetPendingProductById(@Body productIdIdModal: ProductIdIdModal): Response<ProductByIdResponseModal>
 

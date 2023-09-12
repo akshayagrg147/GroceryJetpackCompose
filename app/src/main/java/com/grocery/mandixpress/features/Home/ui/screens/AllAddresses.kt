@@ -29,50 +29,28 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.google.accompanist.flowlayout.FlowRow
 import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
+import com.grocery.mandixpress.common.AppCustomChips
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
-import com.grocery.mandixpress.features.Home.ui.ui.theme.navdrawerColor
 
 import com.grocery.mandixpress.features.Spash.ui.viewmodel.HomeAllProductsViewModal
 import com.grocery.mandixpress.data.modal.PassingAddress
-import com.grocery.mandixpress.features.Home.ui.ui.theme.headingColor
-import com.grocery.mandixpress.features.Home.ui.ui.theme.seallcolor
+import com.grocery.mandixpress.features.Home.ui.ui.theme.*
+import com.grocery.mandixpress.features.Home.ui.viewmodal.ProfileEvent
 import kotlinx.coroutines.launch
 
 
-@Composable
-fun FloatingButton(onClick: () -> Unit) {
-    val context = LocalContext.current
 
-    Box(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxSize()
-            .clickable {
-                onClick()
-            },
-        contentAlignment = Alignment.BottomEnd
-    ) {
-        FloatingActionButton(
-            onClick = {},
-            // You can customize the FloatingActionButton appearance here.
-        ) {
-            // You can add an icon or text here for the floating button
-            // For example:
-            // Icon(Icons.Default.Add, contentDescription = "Add")
-            Text("Add")
-        }
-    }
-}
 
 @Composable
 fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>,call:(AddressItems)->Unit) {
 
     Card(
         elevation = 1.dp,
-        shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Color.Black),
+        shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Color.LightGray),
         backgroundColor = if(selectedIndex.value==data.id.toInt()) Color.LightGray else Color.White ,modifier = Modifier
             .fillMaxWidth()
 
@@ -84,33 +62,34 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>,call:(Addr
             }
 
     ){
-        Box(modifier = Modifier
+        Row( modifier = Modifier.fillMaxSize().padding(all = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween){
 
-        ) {
-            Column(modifier = Modifier.padding(10.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
+                contentDescription = "Location Icon",
 
-                Box(modifier = Modifier.fillMaxWidth()){
-                    Text14_h2(text = data.customer_name, modifier = Modifier)
-                    Image(
-                        painter = painterResource(id = com.google.android.material.R.drawable.material_ic_edit_black_24dp),
-
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding()
-                            .width(20.dp)
-                            .height(20.dp)
-                            .align(Alignment.TopEnd)
-                            .clickable { call(data) }
-
-                    )
-                }
-
-
-                Text12_body1(text = data.Address1)
-                Text12_body1(text = "${data.Address2}, ${data.PinCode},")
-                Text12_body1(text = data.LandMark)
+                modifier = Modifier.size(24.dp)
+            )
+            Column(modifier = Modifier .weight(1f).padding(horizontal = 5.dp)) {
+                Text10_h2(text = "Home:"+data.customer_name, modifier = Modifier)
+                Text11_body2(text = "${data.Address1},${data.Address2}, ${data.PinCode},${data.LandMark}", modifier = Modifier.fillMaxWidth())
 
             }
+
+            Image(
+                painter = painterResource(id = com.google.android.material.R.drawable.material_ic_edit_black_24dp),
+
+                contentDescription = "",
+                modifier = Modifier
+                    .padding()
+                    .width(20.dp)
+                    .height(20.dp)
+
+                    .clickable { call(data) }
+
+            )
         }
     }
 
@@ -119,180 +98,172 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>,call:(Addr
 }
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun AllAddress(navHostController: NavHostController,context: Context,viewModal: HomeAllProductsViewModal = hiltViewModel()){
-    var selectedIndex = remember{ mutableStateOf(1) }
-    val scope = rememberCoroutineScope()
-    Row(
-            modifier = Modifier
-                .fillMaxWidth()
+fun AllAddress(navHostController: NavHostController,context: Context) {
 
-                .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
-                ,Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .padding(end = 8.dp)
-                    .clickable {
-                        navHostController.popBackStack()
-                    }
-            )
-            Text16_h1(text = "Add Address", modifier = Modifier
+    var selected by remember { mutableStateOf(0) }
 
-
-                .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
-                , color = navdrawerColor
-            )
-            Image(
-                painter = painterResource(id = R.drawable.homeicon), // Replace with your image resource
-                contentDescription = "Cross Button",
-                modifier = Modifier, // Adjust the size as needed
-                contentScale = ContentScale.Fit
-            )
+    Column() {
+        CommonHeader(text = "Address", color = Color.Black) {
+            navHostController.popBackStack()
+        }
+        FlowRow {
+            listOf<String>("All Address", "Add Address").forEachIndexed { index, s ->
+                AppCustomChips(
+                    selected = index == selected,
+                    index = index,
+                    title = s,
+                    unSelectedBackgroundColor = Color.LightGray,
+                    borderStroke = BorderStroke(0.dp, Color.Transparent)
+                ) { data ->
+                    selected = data
+                }
+            }
         }
 
 
+        if (selected == 0)
+            allAddress(navHostController)
+        else if (selected == 1)
+        {
+            addressScreen(address = PassingAddress(), navController = navHostController)
+        }
+    }
 
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = 55.dp)
-                .fillMaxSize()
-            // .height(260.dp)
-        ) {
-//            key = {
-//                it.id
-//            }
 
 
-            item {
-//                FloatingButton {
-//                    navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
-//                }
-                if(viewModal.list.value.isEmpty())
-                    noAddressAvailable(){
-                        navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
-                    } }
-            items(viewModal.list.value) { item ->
-                val dismissState = rememberDismissState()
+}
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@Composable
+fun allAddress(navHostController: NavHostController,viewModal: HomeAllProductsViewModal = hiltViewModel()){
+    var selectedIndex = remember { mutableStateOf(1) }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = Unit){
+        viewModal.getAddress()
+    }
+    LazyColumn(
+        modifier = Modifier
+            .padding(top = 15.dp)
+            .fillMaxSize()
+        // .height(260.dp)
+    ) {
+        item {
 
-                if (dismissState.isDismissed(DismissDirection.EndToStart)) {
-
-
-                    viewModal.deleteAddress(item.id.toInt())
-                }
-                else if (dismissState.isDismissed(DismissDirection.StartToEnd)) {
-                    val passing= PassingAddress(item.id,item.customer_name,"ak@gmail.com",item.customer_PhoneNumber,item.PinCode.toString(),item.LandMark,item.Address1,item.Address2)
-
-                    navHostController.currentBackStackEntry?.arguments?.putParcelable("address", passing)
-                    navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
-                }
-
-                SwipeToDismiss(
-                    state = dismissState,
-                    modifier = Modifier
-                        .padding(vertical = Dp(1f)),
-                    directions = setOf(
-                        DismissDirection.EndToStart
-                    ),
-                    dismissThresholds = { direction ->
-                        FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.1f else 0.05f)
-                    },
-                    background = {
-
-                        val color = when (dismissState.dismissDirection) {
-                            DismissDirection.EndToStart -> Color.Red
-                            null -> Color.Transparent
-                            else -> {Color.Transparent}
-                        }
-                        val direction = dismissState.dismissDirection
-
-                        if (direction == DismissDirection.StartToEnd) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(color)
-                                    .padding(8.dp)
-                            ) {
-                                Column(modifier = Modifier.align(Alignment.CenterStart)) {
-                                    Icon(
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                    Text(
-                                        text = "Move to Edit", fontWeight = FontWeight.Bold,
-                                        textAlign = TextAlign.Center,
-                                        color = Color.White
-                                    )
-                                }
-
-                            }
-                        } else {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(color)
-                                    .padding(8.dp)
-                            ) {
-                                Column(modifier = Modifier.align(Alignment.CenterEnd)) {
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowBack,
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    )
-                                    Spacer(modifier = Modifier.heightIn(5.dp))
-                                    Text(
-                                        text = "Move to Delete",
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.LightGray
-                                    )
-
-                                }
-                            }
-                        }
-                    },
-                    dismissContent = {
-
-                        Card(
-                            elevation = animateDpAsState(
-                                if (dismissState.dismissDirection != null) 4.dp else 0.dp
-                            ).value,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(alignment = Alignment.CenterVertically)
-                                .animateItemPlacement(animationSpec = tween(durationMillis = 600))
-                        ) {
-                            AddressFiled(item, selectedIndex, call = {
-                                val passing= PassingAddress(it.id,it.customer_name,"ak@gmail.com",it.customer_PhoneNumber,it.PinCode.toString(),it.LandMark,it.Address1,it.Address2)
-
-                                navHostController.currentBackStackEntry?.arguments?.putParcelable("address", passing)
-                                navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
+            if(viewModal.list.value.isEmpty())
+                noAddressAvailable()
 
 
-                            })
-                        }
-                    })
+        }
+        items(viewModal.list.value) { item ->
+            val dismissState = rememberDismissState()
+
+            if (dismissState.isDismissed(DismissDirection.EndToStart)) {
+                viewModal.deleteAddress(item.id.toInt())
             }
 
-        }}
+            SwipeToDismiss(
+                state = dismissState,
+                modifier = Modifier
+                    .padding(vertical = Dp(1f)),
+                directions = setOf(
+                    DismissDirection.EndToStart
+                ),
+                dismissThresholds = { direction ->
+                    FractionalThreshold(if (direction == DismissDirection.EndToStart) 0.1f else 0.05f)
+                },
+                background = {
+
+                    val color = when (dismissState.dismissDirection) {
+                        DismissDirection.EndToStart -> lightred
+                        null -> Color.Transparent
+                        else -> {Color.Transparent}
+                    }
+                    val direction = dismissState.dismissDirection
+
+                    if (direction == DismissDirection.StartToEnd) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color)
+                                .padding(8.dp)
+                        ) {
+                            Column(modifier = Modifier.align(Alignment.CenterStart)) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                                Text(
+                                    text = "Move to Edit", fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center,
+                                    color = Color.White
+                                )
+                            }
+
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color)
+                                .padding(8.dp)
+                        ) {
+                            Column(modifier = Modifier.align(Alignment.CenterEnd)) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                                Spacer(modifier = Modifier.heightIn(5.dp))
+                                Text(
+                                    text = "Move to Delete",
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.LightGray
+                                )
+
+                            }
+                        }
+                    }
+                },
+                dismissContent = {
+
+                    Card(
+                        elevation = animateDpAsState(
+                            if (dismissState.dismissDirection != null) 4.dp else 0.dp
+                        ).value,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(alignment = Alignment.CenterVertically)
+                            .animateItemPlacement(animationSpec = tween(durationMillis = 600))
+                    ) {
+                        AddressFiled(item, selectedIndex, call = {
+                            val passing= PassingAddress(it.id,it.customer_name,"ak@gmail.com",it.customer_PhoneNumber,it.PinCode.toString(),it.LandMark,it.Address1,it.Address2)
+
+                            navHostController.currentBackStackEntry?.arguments?.putParcelable("address", passing)
+                            navHostController.navigate(DashBoardNavRoute.AddnewAddressScreen.screen_route)
+
+
+                        })
+                    }
+                })
+        }
+
+    }}
+
+
+
+
 @Composable
-fun noAddressAvailable(click:()->Unit){
+fun noAddressAvailable(){
     Column(modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(250.dp))
         Text12_body1(text = "No Address available")
-        Text14_h1(text = "click to add address",color= headingColor, modifier = Modifier.clickable {
-            click()
 
-        })
 
     }
 

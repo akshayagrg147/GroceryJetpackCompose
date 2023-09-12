@@ -45,4 +45,9 @@ class MapScreenViewModal @Inject constructor(val sharedpreference: sharedprefere
         sharedpreference.setCity(city)
 
     }
+
+    fun savePinCode(extractSixDigitNumber: String?) {
+        sharedpreference.setPinCode(extractSixDigitNumber?:"")
+
+    }
 }

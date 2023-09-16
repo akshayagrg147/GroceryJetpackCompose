@@ -36,7 +36,7 @@ import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.Home.Navigator.gridItems
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -68,12 +68,12 @@ fun SearchResult(
                 100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
-            Text(
+            Text10_h2(
                 text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
-                fontSize = 10.sp,
+
             )
 
             Image(

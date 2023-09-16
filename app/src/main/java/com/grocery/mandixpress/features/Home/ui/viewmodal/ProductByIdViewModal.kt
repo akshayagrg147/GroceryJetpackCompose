@@ -19,7 +19,6 @@ import com.grocery.mandixpress.data.modal.ProductByIdResponseModal
 import com.grocery.mandixpress.data.modal.ProductIdIdModal
 import com.grocery.mandixpress.data.modal.RelatedSearchRequest
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.ComposeUiResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

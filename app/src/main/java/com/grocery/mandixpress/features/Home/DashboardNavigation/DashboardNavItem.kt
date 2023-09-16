@@ -1,13 +1,16 @@
 package com.grocery.mandixpress.DashBoardNavRouteNavigation
 
+import com.grocery.mandixpress.data.modal.BannerImageResponse
+import com.grocery.mandixpress.features.Home.ui.screens.PassParceableBanner
+
 
 sealed class DashBoardNavRoute( var screen_route:String=""){
 
     object Home : DashBoardNavRoute("Shop")
     object SearchProductItems : DashBoardNavRoute("Search")
 
+    object DashBoardCategoryWisePagination : DashBoardNavRoute("DashBoardCategoryWisePagination")
 
-    object DashBoardCategoryWisePagination: DashBoardNavRoute("DashBoardCategoryWisePagination")
     object Profile: DashBoardNavRoute("Account")
     object AddressScreen : DashBoardNavRoute("AddressScreen")
     object AllOrderHistory : DashBoardNavRoute("AllOrderHistory")

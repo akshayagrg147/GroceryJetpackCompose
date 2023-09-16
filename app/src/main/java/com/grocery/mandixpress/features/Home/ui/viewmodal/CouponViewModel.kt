@@ -2,19 +2,12 @@ package com.grocery.mandixpress.features.Home.ui.viewmodal
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.common.api.Api
 import com.grocery.mandixpress.common.ApiState
-import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
-import com.grocery.mandixpress.data.modal.ProductIdIdModal
-import com.grocery.mandixpress.data.modal.RelatedSearchRequest
-import com.grocery.mandixpress.features.Home.domain.modal.Coupon
 import com.grocery.mandixpress.features.Home.domain.modal.CouponResponse
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.ComposeUiResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

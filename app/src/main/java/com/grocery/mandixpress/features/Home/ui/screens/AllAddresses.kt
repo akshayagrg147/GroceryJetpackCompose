@@ -13,18 +13,12 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,13 +30,9 @@ import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.AppCustomChips
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.data.modal.PassingAddress
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
-import com.grocery.mandixpress.features.Home.ui.viewmodal.ProfileEvent
-import kotlinx.coroutines.launch
-
-
 
 
 @Composable
@@ -194,9 +184,9 @@ fun allAddress(navHostController: NavHostController,viewModal: HomeAllProductsVi
                                     tint = Color.White,
                                     modifier = Modifier.align(Alignment.CenterHorizontally)
                                 )
-                                Text(
-                                    text = "Move to Edit", fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center,
+                                Text11_body2(
+                                    text = "Move to Edit",
+
                                     color = Color.White
                                 )
                             }
@@ -217,10 +207,8 @@ fun allAddress(navHostController: NavHostController,viewModal: HomeAllProductsVi
                                     modifier = Modifier.align(Alignment.CenterHorizontally)
                                 )
                                 Spacer(modifier = Modifier.heightIn(5.dp))
-                                Text(
+                                Text11_body2(
                                     text = "Move to Delete",
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold,
                                     color = Color.LightGray
                                 )
 

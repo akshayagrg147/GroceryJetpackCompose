@@ -31,7 +31,7 @@ import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 
 @Composable
 fun Text12_body1(text: String, color: Color = bodyTextColor, modifier: Modifier = Modifier,textAlign: TextAlign= TextAlign.Start) {
-    Text(text = text, style = loginTypography.body1, color = color, modifier = modifier,fontSize = 12.sp, textAlign = textAlign)
+    Text(text = text, style = loginTypography.body1, color = color,fontSize = 12.sp, modifier = modifier, textAlign = textAlign)
 }
 @Composable
 fun Text12_with_strikethrough(text1: String,text2:String, color: Color = bodyTextColor, modifier: Modifier = Modifier,style:TextStyle=loginTypography.body1) {
@@ -58,10 +58,7 @@ fun Text14_h1(text: String, color: Color = titleColor, modifier: Modifier = Modi
 fun Text14_h1_(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp )
 }
-@Composable
-fun Text30_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 30.sp)
-}
+
 @Composable
 fun Text16_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier,textAlign: TextAlign= TextAlign.Start) {
     Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 16.sp, fontWeight = FontWeight.Bold, textAlign = textAlign,maxLines = 2,overflow = TextOverflow.Ellipsis )
@@ -72,7 +69,7 @@ fun Text18_h1(text: String, color: Color = titleColor, modifier: Modifier = Modi
 }
 @Composable
 fun Text12_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier,textAlign: TextAlign= TextAlign.Start) {
-    Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,textAlign = textAlign,maxLines = 2,overflow = TextOverflow.Ellipsis )
+    Text(text = text, style = loginTypography.h4, color = color, modifier = modifier,fontSize = 12.sp,textAlign = textAlign,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
 
 @Composable
@@ -82,10 +79,6 @@ fun Text13_body1(text: String, color: Color = blackColor, modifier: Modifier = M
 @Composable
 fun Text11_body2(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 11.sp)
-}
-@Composable
-fun Text16_700Error(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier,)
 }
 
 
@@ -97,6 +90,7 @@ fun Text14_h2(text: String, color: Color = headingColor, modifier: Modifier = Mo
 fun Text10_h2(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 10.sp,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
+
 @Composable
 fun CommonButton(
     text: String,
@@ -214,9 +208,10 @@ fun CommonNumberField(
             focusedLabelColor = fadedTextColor,
             textColor = headingColor,
             unfocusedLabelColor = fadedTextColor,
-            unfocusedIndicatorColor = borderColor,
-            focusedIndicatorColor = headingColor,
-            disabledIndicatorColor = fadedTextColor
+            unfocusedIndicatorColor = Color.Transparent, // Remove unfocused underline
+            focusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = fadedTextColor,
+
         ),
         label = { Text(text = placeholder) },
         trailingIcon = {
@@ -271,8 +266,8 @@ fun CommonTextField(
                 focusedLabelColor = fadedTextColor,
                 textColor = headingColor,
                 unfocusedLabelColor = fadedTextColor,
-                unfocusedIndicatorColor = borderColor,
-                focusedIndicatorColor = headingColor,
+                unfocusedIndicatorColor = Color.Transparent, // Remove unfocused underline
+                focusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = fadedTextColor
             ),
             label = { Text(text = placeholder) },
@@ -331,8 +326,8 @@ fun CommonTextFieldNonEditable(
             focusedLabelColor = fadedTextColor,
             textColor = headingColor,
             unfocusedLabelColor = fadedTextColor,
-            unfocusedIndicatorColor = borderColor,
-            focusedIndicatorColor = headingColor,
+            unfocusedIndicatorColor = Color.Transparent, // Remove unfocused underline
+            focusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = fadedTextColor,
 
         ),

@@ -1,20 +1,24 @@
 package com.grocery.mandixpress.features.Spash
 
 import android.app.Activity
+import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -210,6 +214,31 @@ fun loginScreen(
                         otp = it
                     }
                     Spacer(modifier = Modifier.height(20.dp))
+                resendTimer(){
+                    if(it){
+                        scope.launch(Dispatchers.Main) {
+                            viewModal.createUserWithPhone(
+                                "+91${mobile}",
+                                context
+                            ).collect {
+                                when (it) {
+                                    is ApiState.Success -> {
+                                        isDialog = false
+                                        context.showMsg(it.data)
+                                        isCompleted = true
+                                    }
+                                    is ApiState.Failure -> {
+                                        isDialog = false
+                                        context.showMsg(it.msg.toString())
+                                    }
+                                    ApiState.Loading -> {
+                                        isDialog = true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                     CommonButton(
                         text = "Submit Otp",
                         modifier = Modifier
@@ -254,7 +283,7 @@ fun loginScreen(
                     .fillMaxWidth()
                     .wrapContentHeight()
             ){
-                Text(text = "By Continuing in our T&C", fontSize = 10.sp, modifier = Modifier.align(
+                Text10_h2(text = "By Continuing in our T&C",  modifier = Modifier.align(
                     Alignment.BottomCenter))
             }
 
@@ -266,6 +295,67 @@ fun loginScreen(
 
 
 }
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun resendTimer(call:(Boolean)->Unit) {
+        var otp by remember { mutableStateOf("") }
+        var countdown by remember { mutableStateOf(30) } // Initial countdown time
+
+        val timerState by rememberUpdatedState(countdown)
+        var isTimerActive by remember { mutableStateOf(true) }
+
+        // Create a CountDownTimer
+        val countDownTimer = remember {
+            object : CountDownTimer((timerState * 1000).toLong(), 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    countdown = (millisUntilFinished / 1000).toInt()
+                }
+
+                override fun onFinish() {
+                    countdown = 0
+                    isTimerActive = false
+                }
+            }
+        }
+    LaunchedEffect(isTimerActive) {
+        if (isTimerActive)
+        countDownTimer.start()
+        else {
+            countDownTimer.cancel()
+        }
+
+    }
+
+    Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            if (countdown > 0) {
+                Text(
+                    text = "OTP will expire in $countdown seconds",
+                    style = MaterialTheme.typography.subtitle1,
+                    color = Color.Gray
+                )
+            } else {
+                Text12_h1(
+                    text = "Resend OTP",
+                    color = headingColor,
+                    modifier = Modifier.clickable{
+                        countdown = 30
+                        isTimerActive=true
+                        call(true)
+
+                    }
+                )
+            }
+
+
+
+        }
+    }
+
 
 @Composable
 fun CurvedBackground() {

@@ -29,6 +29,10 @@ data class HomeAllProductsResponse(
         val productImage3: String?=null,
         @Json(name = "productName")
         val productName: String?=null,
+        @Json(name = "productDescription")
+        val productDescription: String?=null,
+
+
         @Json(name = "quantity")
         val quantity: String?=null,
         @Json(name = "quantityInstructionController")

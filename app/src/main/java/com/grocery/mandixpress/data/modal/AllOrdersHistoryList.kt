@@ -39,7 +39,7 @@ data class AllOrdersHistoryList(
         data class Order(
             @Json(name = "productId")
             val productId: String?,
-            @Json(name = "product_name")
+            @Json(name = "productName")
             val productName: String?,
             @Json(name = "productprice")
             val productprice: String?,

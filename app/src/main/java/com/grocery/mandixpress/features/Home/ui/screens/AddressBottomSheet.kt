@@ -163,7 +163,7 @@ fun CurvedBottomSheetWithButton(viewModel: AddressViewModal = hiltViewModel(),) 
 
                 }
             ) {
-                Text(text = "Open Bottom Sheet")
+                Text12_body1(text = "Open Bottom Sheet")
             }
             println("sizeandvalue ${viewModel.predictions.collectAsState()}")
 

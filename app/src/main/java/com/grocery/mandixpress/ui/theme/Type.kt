@@ -33,49 +33,38 @@ val loginTypography = Typography(
     body1 = TextStyle(
         fontFamily = font_regular,
         fontWeight = FontWeight.W400,
-        fontSize = 14.sp,
-        color = bodyTextColor
+
     ),
 
     h5 = TextStyle(
-        fontFamily = font_regular,
+        fontFamily = font_semibold,
         fontWeight = FontWeight.W400,
-        fontSize = 16.sp,
-        color = fadedTextColor
     ),
 
     h4 = TextStyle(
         fontFamily = font_semibold,
-        fontWeight = FontWeight.W700,
-        fontSize = 10.sp,
-        color = blackColor
+        fontWeight = FontWeight.W500,
 
     ),
 
     h1 = TextStyle(
-        fontFamily = font_bold,
-        fontWeight = FontWeight.W700,
-        fontSize = 20.sp,
-        color = titleColor
+        fontFamily = font_semibold,
+        fontWeight = FontWeight.W800,
     ),
     h2 = TextStyle(
         fontFamily = font_semibold,
-        fontWeight = FontWeight.W600,
-        fontSize = 18.sp,
-        color = bodyTextColor
+        fontWeight = FontWeight.W300,
     ),
     h3 = TextStyle(
         fontFamily = font_semibold,
         fontWeight = FontWeight.W600,
-        fontSize = 16.sp,
-        color = bodyTextColor
+
     ),
 
     body2 = TextStyle(
         fontFamily = font_bold,
         fontWeight = FontWeight.W700,
-        fontSize = 16.sp,
-        color = whiteColor
+
     ),
 
     subtitle1 = TextStyle(
@@ -96,55 +85,10 @@ val loginTypography = Typography(
 
 
 
-val regVehicleTypography = Typography(
-    body2 = TextStyle(
-        fontFamily = font_semibold,
-        fontWeight = FontWeight.W600,
-        fontSize = 14.sp,
-        color = fadedTextColor
-    ),
-    subtitle1 = TextStyle(
-        fontFamily = font_regular,
-        fontWeight = FontWeight.W400,
-        fontSize = 12.sp,
-        color = fadedTextColor
-    )
-
-)
-
-val searchStTypography = Typography(
-    body1 = TextStyle(
-        fontFamily = font_bold,
-        fontWeight = FontWeight.W700,
-        fontSize = 12.sp,
-        color = titleColor
-    )
-)
 
 
-val scanTypography = Typography(
-    body1 = TextStyle(
-        fontFamily = font_regular,
-        fontWeight = FontWeight.W400,
-        fontSize = 24.sp,
-        color = Color.White
-    )
-)
 
-val chargeTypography = Typography(
-    body1 = TextStyle(
-        fontFamily = font_bold,
-        fontWeight = FontWeight.W700,
-        fontSize = 32.sp,
-        color = sec20timer
-    )
-)
 
-val billTypography = Typography(
-    body1 = TextStyle(
-        fontFamily = font_semibold,
-        fontWeight = FontWeight.W500,
-        fontSize = 9.sp,
-        color = darkFadedColor
-    )
-)
+
+
+

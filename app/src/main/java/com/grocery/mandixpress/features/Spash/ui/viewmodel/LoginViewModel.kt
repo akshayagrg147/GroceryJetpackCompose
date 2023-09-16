@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.CheckNumberExistResponse
 import com.grocery.mandixpress.data.modal.RegisterLoginRequest
+import com.grocery.mandixpress.features.Home.ui.viewmodal.ComposeUiResponse
 import com.grocery.mandixpress.features.Spash.domain.repository.AuthRepository
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,9 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val repo:AuthRepository,private val commonRepository: CommonRepository
 ) : ViewModel(){
-    private val _loginResponse:MutableStateFlow<ComposeUiResponse<CheckNumberExistResponse>> = MutableStateFlow(ComposeUiResponse())
+    private val _loginResponse:MutableStateFlow<ComposeUiResponse<CheckNumberExistResponse>> = MutableStateFlow(
+        ComposeUiResponse()
+    )
      val loginResponse=_loginResponse.asStateFlow()
 
 

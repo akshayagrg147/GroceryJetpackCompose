@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.grocery.mandixpress.Utils.Text12_h1
 
 @Composable
 fun PrivacyPolicyScreen() {
@@ -24,14 +25,13 @@ fun PrivacyPolicyScreen() {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            Text(
+            Text12_h1(
                 text = "There will be the complete privacy policy screen",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp),
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp
+
             )
         }
     }

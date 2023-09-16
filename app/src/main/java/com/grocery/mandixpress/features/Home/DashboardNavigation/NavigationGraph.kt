@@ -1,5 +1,6 @@
 package com.grocery.mandixpress.DashBoardNavRouteNavigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,7 +18,7 @@ import com.grocery.mandixpress.features.Spash.ProfileScreenNavigation
 import com.grocery.mandixpress.features.Spash.ui.screens.MapScreen
 import com.grocery.mandixpress.features.Spash.ui.screens.menuitems
 import com.grocery.mandixpress.data.modal.PassingAddress
-import com.grocery.mandixpress.features.Spash.CategoryWiseDashboardAllData
+import com.grocery.mandixpress.features.Home.ui.screens.CategoryWiseDashboardAllData
 import com.grocery.mandixpress.features.Spash.ItemScreenNavigation
 
 
@@ -35,7 +36,13 @@ fun NavigationGraph(
             homescreen(navController,sharedPreferences)
         }
         composable(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route) {
-            CategoryWiseDashboardAllData(context,navController)
+
+            var model =
+                navController.previousBackStackEntry?.arguments?.getParcelable<PassParceableBanner>(
+                    "index"
+                )
+            Log.d("gggddd","previous:- ${model?.index}")
+            CategoryWiseDashboardAllData(context,model?:PassParceableBanner(),navController)
         }
 
         composable(DashBoardNavRoute.SearchProductItems.screen_route) {

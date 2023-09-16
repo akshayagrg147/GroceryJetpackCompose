@@ -47,7 +47,7 @@ fun CommonProgressBar() {
             onClick = onClick,
             modifier = modifier
                 .fillMaxWidth().background(background)
-                .height(45.dp),
+                .height(35.dp),
             elevation = elevation,
             shape = shape,
 

@@ -119,12 +119,12 @@ fun RelatedSearchItem(
                 100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
-            Text(
+            Text10_h2(
                 text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
-                fontSize = 10.sp,
+
             )
 
             Image(
@@ -202,7 +202,7 @@ fun ItemDetailsScreen(
     val cartcount = remember { mutableStateOf(0) }
     val relatedSearch by viewModal.eventRelatedSearchFlow.collectAsState()
 
-    val pager = rememberPagerState()
+    val pager = rememberPagerState(3)
     viewModal.getItemBaseOnProductId(value.homeproducts?.productId ?: "")
     viewModal.getTotalProductItemsPrice()
     viewModal.getTotalProductItems()
@@ -212,7 +212,7 @@ fun ItemDetailsScreen(
         "Description",
         "Reviews"
     )
-    val pagerState: PagerState = rememberPagerState(initialPage = 0)
+    val pagerState: PagerState = rememberPagerState( 3)
     val coroutineScope = rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
@@ -271,7 +271,7 @@ fun ItemDetailsScreen(
                                     .fillMaxWidth()
 
                             ) {
-                                HorizontalPager(count = 3, state = pager) { index ->
+                                HorizontalPager( state = pager) { index ->
                                     if (index == 0)
                                         Banner(
                                             pagerState = pager,
@@ -413,10 +413,7 @@ fun ItemDetailsScreen(
                             contentColor = Color.Black,
                             selectedTabIndex = pagerState.currentPage,
                             // Override the indicator, using the provided pagerTabIndicatorOffset modifier
-                            indicator = { tabPositions ->
-                                TabRowDefaults.Indicator(
-                                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-                                )
+                            indicator = {
                             }
                         ) {
                             tabList.forEachIndexed { index, title ->
@@ -435,8 +432,7 @@ fun ItemDetailsScreen(
 //tab layout for description and reviews
                     item {
                         HorizontalPager(
-                            state = pagerState,
-                            count = tabList.size
+                            state = rememberPagerState( 1),
                         ) { page: Int ->
                             when (page) {
                                 0 -> TabContentScreen(
@@ -607,14 +603,6 @@ fun Banner(
 
         )
 
-        HorizontalPagerIndicator(
-            pagerState = pagerState, pageCount = 3,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(vertical = 10.dp),
-            indicatorWidth = 8.dp,
-            indicatorShape = RectangleShape
-        )
     }
 
 }

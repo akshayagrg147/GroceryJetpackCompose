@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -40,18 +39,22 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.SizeMode
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.Home.domain.modal.FilterOptions
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 private val headerHeight = 160.dp
 private val toolbarHeight = 16.dp
+
 
 private val paddingMedium = 16.dp
 
@@ -70,6 +73,7 @@ fun ListItems(
     ls: HomeAllProductsResponse,
     viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
+
     viewModal.setList(ls)
 
     val modalBottomSheetState =
@@ -77,12 +81,15 @@ fun ListItems(
     val scope = rememberCoroutineScope()
 
     var filterclicked by remember { mutableStateOf(false) }
+    var productClicked by remember { mutableStateOf(false) }
     var selectedIndex = remember { mutableStateOf(1) }
+    var productdetail = remember {
+        mutableStateOf(HomeAllProductsResponse.HomeResponse())
+    }
     ModalBottomSheetLayout(
 
         sheetContent = {
-
-            if (filterclicked)
+             if (filterclicked)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -119,7 +126,7 @@ fun ListItems(
                         val threehundredone = remember { mutableStateOf(false) }
                         val fivehundredone = remember { mutableStateOf(false) }
                         Text12_h1(
-                            text = "FILTER & SORT",
+                            text = "FILTER & SORT",   color= titleColor,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
 
@@ -135,10 +142,10 @@ fun ListItems(
                                     modifier = Modifier.padding(10.dp),
                                     onCheckedChange = { hundredone.value = it },
                                 )
-                                Text(
-                                    text = "Rs. 49 and below",
+                                Text10_h2(
+                                    text = "Rs. 99 and below",
                                     modifier = Modifier.padding(16.dp),
-                                    fontSize = 12.sp
+
                                 )
                             }
 
@@ -149,10 +156,10 @@ fun ListItems(
                                     modifier = Modifier.padding(10.dp),
                                     onCheckedChange = { twohundredone.value = it },
                                 )
-                                Text(
-                                    text = "Rs. 11 and 30",
+                                Text10_h2(
+                                    text = "Rs. 100 and 299",
                                     modifier = Modifier.padding(16.dp),
-                                    fontSize = 12.sp
+
                                 )
                             }
 
@@ -163,10 +170,10 @@ fun ListItems(
                                     modifier = Modifier.padding(10.dp),
                                     onCheckedChange = { threehundredone.value = it },
                                 )
-                                Text(
-                                    text = "Rs. 41 and 50",
+                                Text10_h2(
+                                    text = "Rs. 300 and 399",
                                     modifier = Modifier.padding(16.dp),
-                                    fontSize = 12.sp
+
                                 )
                             }
                             Row {
@@ -176,10 +183,10 @@ fun ListItems(
                                     modifier = Modifier.padding(10.dp),
                                     onCheckedChange = { fivehundredone.value = it },
                                 )
-                                Text(
-                                    text = "Rs. 50 and above",
+                                Text10_h2(
+                                    text = "Rs. 400 and above",
                                     modifier = Modifier.padding(16.dp),
-                                    fontSize = 12.sp
+
                                 )
                             }
 
@@ -200,19 +207,19 @@ fun ListItems(
                             var filterlist1: List<HomeAllProductsResponse.HomeResponse>? = null
                             if (hundredone.value)
                                 filterlist1 = filterlist?.filter {
-                                    it.selling_price?.toInt()!! <= 49
+                                    it.selling_price?.toInt()!! <= 99
                                 }
                              if (twohundredone.value)
                                  filterlist1 = filterlist?.filter {
-                                    it.selling_price?.toInt()!! in 11..30
+                                    it.selling_price?.toInt()!! in 100..299
                                 }
                              if (threehundredone.value)
                                  filterlist1 =filterlist?.filter {
-                                    it.selling_price?.toInt()!! in 41..50
+                                    it.selling_price?.toInt()!! in 300..499
                                 }
                             if (fivehundredone.value)
                                 filterlist1 =filterlist?.filter {
-                                    it.selling_price?.toInt()!! >=51
+                                    it.selling_price?.toInt()!! >=500
                                 }
                             else{
                                //  filterlist1=filterlist
@@ -226,6 +233,10 @@ fun ListItems(
                         }
                     }
                 }
+            else if(productClicked){
+                Log.d("productclicked","${productClicked} }")
+                showItemDescription(productdetail)
+            }
             else
                 Column(
                     modifier = Modifier
@@ -300,7 +311,13 @@ fun ListItems(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Header(scroll, headerHeightPx)
-                    Body(scroll, viewModal, context)
+                    Body(scroll, viewModal, context){
+
+                        productClicked=true
+                        filterclicked=false
+                        productdetail.value=it
+                        scope.launch { modalBottomSheetState.show() }
+                    }
                     Toolbar(scroll, headerHeightPx, toolbarHeightPx)
                     Title(ls?.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
                 }
@@ -322,6 +339,7 @@ fun ListItems(
                 ) {
                     Text14_h1(text = "Sort", modifier = Modifier.clickable {
                         filterclicked = false
+                        productClicked=false
                         scope.launch { modalBottomSheetState.show() }
 
                     })
@@ -332,6 +350,7 @@ fun ListItems(
                     )
                     Text14_h1(text = "Filter", modifier = Modifier.clickable {
                         filterclicked = true
+                        productClicked=false
                         scope.launch { modalBottomSheetState.show() }
                     })
                 }
@@ -344,13 +363,91 @@ fun ListItems(
 
 
 }
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun showItemDescription(productdetail: MutableState<HomeAllProductsResponse.HomeResponse>) {
+
+    val scope = rememberCoroutineScope()
+    val pager = rememberPagerState(pageCount = 3)
+    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+        val (l1, l2) = createRefs()
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .constrainAs(l1) {
+                top.linkTo(parent.top)
+
+            }
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Card(
+                    elevation = 2.dp,
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth().padding(top=20.dp)
+
+                ) {
+                    HorizontalPager( state = pager) { index ->
+                        if (index == 0)
+                            Banner(
+                                pagerState = pager,
+                                productdetail.value.productImage1 ?: ""
+                            )
+                        if (index == 1)
+                            Banner(
+                                pagerState = pager,
+                                productdetail.value.productImage2 ?: ""
+                            )
+                        if (index == 2)
+                            Banner(
+                                pagerState = pager,
+                                productdetail.value.productImage3 ?: ""
+                            )
+                    }
+
+                }
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text12_h1(
+                        text = productdetail.value.productName ?: "",
+                        color= headingColor,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                    IconButton(onClick = {
+
+                    }) {
+
+                    }
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                Text13_body1(text = "Product Detail", modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp))
+                Spacer(modifier = Modifier.height(5.dp))
+                Text12_body1(
+                    text = productdetail.value.productDescription ?: "",
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                )
+
+
+            }
+
+
+        }
+
+
+    }
+}
 
 
 @Composable
 fun SubItems(
     data: HomeAllProductsResponse.HomeResponse,
     viewModal: HomeAllProductsViewModal,
-    context: Context,
+    context: Context, passclicked:(HomeAllProductsResponse.HomeResponse)->Unit
 ) {
 
     Card(
@@ -361,6 +458,8 @@ fun SubItems(
 
             .width(160.dp)
             .clickable {
+                passclicked(data)
+
 //                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
@@ -375,12 +474,12 @@ fun SubItems(
                 100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
                     ?: 0.0f)) * 100
             )).toString()
-            Text(
+            Text10_h2(
                 text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
-                fontSize = 10.sp,
+
             )
 
             Image(
@@ -479,7 +578,7 @@ fun ItemEachRow(
     Card(elevation = 1.dp,
 
 
-        backgroundColor = if (selectedIndex.value == item.productId?.toInt()) Color.LightGray else Color.White,
+        backgroundColor = if (selectedIndex.value == item.productId?.toInt()) Color.White else Color.White,
         modifier = Modifier
 
             .width(100.dp)
@@ -548,7 +647,7 @@ private fun Body(
 
     scroll: ScrollState,
     viewModal: HomeAllProductsViewModal,
-    context: Context,
+    context: Context, passclicked: (HomeAllProductsResponse.HomeResponse) -> Unit
 
     ) {
     var ls: List<HomeAllProductsResponse.HomeResponse>? = null
@@ -591,7 +690,9 @@ private fun Body(
         ) {
             if (ls != null) {
                 for (item in ls) {
-                    SubItems(item, viewModal, context, )
+                    SubItems(item, viewModal, context, ){
+                       passclicked(it)
+                    }
                 }
             }
 
@@ -654,10 +755,9 @@ private fun Title(
     var titleHeightPx by remember { mutableStateOf(0f) }
     var titleWidthPx by remember { mutableStateOf(0f) }
 
-    Text(
+    Text16_h1(
         text = str,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
+        color= blackColor,
         modifier = Modifier
             .graphicsLayer {
                 val collapseRange: Float = (headerHeightPx - toolbarHeightPx)

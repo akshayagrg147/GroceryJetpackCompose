@@ -96,8 +96,8 @@ dependencies {
     //flow row
     implementation "com.google.accompanist:accompanist-flowlayout:0.23.1"
     //accomap
-    implementation "com.google.accompanist:accompanist-pager:0.25.0"
-    implementation "com.google.accompanist:accompanist-pager-indicators:0.25.0"
+    implementation("com.flaviofaria:kenburnsview:1.0.7")
+    implementation("com.google.accompanist:accompanist-pager:0.12.0")
 
     //constraint layout
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"

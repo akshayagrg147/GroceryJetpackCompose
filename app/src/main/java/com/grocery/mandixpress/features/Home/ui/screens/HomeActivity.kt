@@ -20,7 +20,7 @@ import com.grocery.mandixpress.connectionState.currentConnectivityState
 import com.grocery.mandixpress.connectionState.observeConnectivityAsFlow
 import com.grocery.mandixpress.connectionState.ui.onlineconnection
 import com.grocery.mandixpress.features.Home.ui.ui.theme.GroceryAppTheme
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject

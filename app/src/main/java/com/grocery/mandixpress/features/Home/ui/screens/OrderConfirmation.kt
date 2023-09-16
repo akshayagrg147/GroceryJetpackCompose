@@ -27,7 +27,7 @@ import com.grocery.mandixpress.Utils.Text13_body1
 import com.grocery.mandixpress.common.Utils.Companion.showNotification
 import com.grocery.mandixpress.data.modal.OrderIdResponse
 import com.grocery.mandixpress.features.Home.ui.ui.theme.whiteColor
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.HomeAllProductsViewModal
+import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 
 
 @Composable

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.grocery.mandixpress.R
+import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.data.modal.RelatedSearchRequest
 import com.grocery.mandixpress.features.Home.domain.modal.Coupon
 import com.grocery.mandixpress.features.Home.domain.modal.CouponResponse
@@ -146,7 +147,7 @@ fun ApplyButton(navController: NavController,call:()->Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp),
     ) {
-        Text(text = "Apply")
+        Text10_h2(text = "Apply")
     }
 }
 

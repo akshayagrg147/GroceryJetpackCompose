@@ -1,5 +1,6 @@
 package com.grocery.mandixpress.data.network
 
+import android.util.Log
 import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.features.Home.domain.modal.CouponResponse
@@ -76,6 +77,8 @@ interface ApiService {
 
     @POST(Constants.checkMobileNumberExist)
     suspend fun checkMobileNumberExist(@Body registerLoginRequest: RegisterLoginRequest): Response<CheckNumberExistResponse>
+    @GET(Constants.callBannerImage)
+    suspend fun callBannerImage(): Response<BannerImageResponse>
 
     @POST(Constants.CreateOrderId)
     suspend fun CreateOrderId(@Body registerLoginRequest: OrderIdCreateRequest): Response<OrderIdResponse>
@@ -94,8 +97,25 @@ interface ApiService {
 
 class CallingCategoryWiseData {
     var data = ""
+    var bannerItemData:BannerImageResponse.ItemData=BannerImageResponse.ItemData()
     fun settingData(ss: String) {
         data = ss
+    }
+    fun setItemDataClass(  bannerItemDat:BannerImageResponse.ItemData,index:Int){
+        bannerItemData=bannerItemDat
+        if(index==0){
+            settingData(bannerItemData.bannercategory1?:"")
+        }
+        else if(index==1){
+            settingData(bannerItemData.bannercategory2?:"")
+        }
+        else{
+            settingData(bannerItemData.bannercategory3?:"")
+        }
+
+    }
+    fun getItemDataClass():BannerImageResponse.ItemData{
+        return bannerItemData
     }
 
     fun gettingData(): String {

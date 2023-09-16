@@ -106,10 +106,9 @@ fun SignUpScreen(
                     .clip(RoundedCornerShape(46.dp))
                     .padding(horizontal = 16.dp, vertical = 24.dp)
             ) {
-                Text(
+                Text14_h2(
                     text = stringResource(id = R.string.sign_up),
                     color = headingColor,
-                    style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(bottom = 16.dp, start = 5.dp)
                 )
                 CommonTextField(text = name, placeholder = stringResource(id = R.string.name))

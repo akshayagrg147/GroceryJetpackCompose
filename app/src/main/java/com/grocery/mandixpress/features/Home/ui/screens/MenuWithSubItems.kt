@@ -20,111 +20,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import com.google.accompanist.pager.*
+import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.Utils.Text13_body1
+import com.grocery.mandixpress.Utils.Text14_h2
 import com.grocery.mandixpress.features.Home.ui.ui.theme.greyLightColor
+import com.grocery.mandixpress.features.Home.ui.ui.theme.whiteColor
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalUnitApi::class)
-@ExperimentalPagerApi
-@Composable
-fun MenuWithSubItems() {
-    val pagerState = rememberPagerState()
-    Column(
-        modifier = Modifier.background(Color.White)
-    ) {
-        TopAppBar(backgroundColor = greyLightColor) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "SubItems Menu",
-                    style = TextStyle(color = Color.White),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = TextUnit(
-                        18F,
-                        TextUnitType.Sp
-                    ),
-                    modifier = Modifier.padding(all = Dp(5F)),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-        Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState)
-    }
-}
 
 
-@ExperimentalPagerApi
-@Composable
-fun Tabs(pagerState: PagerState) {
-    val list = listOf(
-        "Home" to Icons.Default.Home,
-        "Shopping" to Icons.Default.ShoppingCart,
-        "Settings" to Icons.Default.Settings,
-        "Home" to Icons.Default.Home,
-        "Shopping" to Icons.Default.ShoppingCart,
-        "Settings" to Icons.Default.Settings
-    )
-    val scope = rememberCoroutineScope()
-    ScrollableTabRow(
-
-        selectedTabIndex = pagerState.currentPage,
 
 
-        backgroundColor = greyLightColor,
-
-        contentColor = Color.White,
-
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
-                height = 2.dp,
-                color = Color.White
-            )
-        }
-    ) {
-        list.forEachIndexed { index, _ ->
-            Tab(
-                icon = {
-                    Icon(imageVector = list[index].second, contentDescription = null)
-                },
-                text = {
-                    Text(
-                        list[index].first,
-                        color = if (pagerState.currentPage == index) Color.White else Color.LightGray
-                    )
-                },
-                selected = pagerState.currentPage == index,
-                onClick = {
-                    // on below line we are specifying the scope.
-                    scope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                }
-            )
-        }
-    }
-}
-
-
-@ExperimentalPagerApi
-@Composable
-fun TabsContent(pagerState: PagerState) {
-
-    HorizontalPager(state = pagerState, count = 6) {
-
-            page ->
-        when (page) {
-            0 -> TabContentScreen(data = "Welcome to Home Screen")
-            1 -> TabContentScreen(data = "Welcome to Shopping Screen")
-            2 -> TabContentScreen(data = "Welcome to Settings Screen")
-        }
-    }
-}
 
 
 @Composable

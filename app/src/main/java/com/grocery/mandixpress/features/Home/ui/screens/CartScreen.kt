@@ -214,7 +214,7 @@ fun CartScreen(
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
                             Text10_h2(
-                                text = "₹ ${String.format("%.2f",viewModal.totalPriceState.value * 0.1)}",
+                                text = "₹ ${String.format("%.2f",viewModal.totalPriceState.value * 0.09)}",
                                 color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
@@ -235,8 +235,8 @@ fun CartScreen(
                                 )
 
                             Text12_with_strikethrough(
-                                text1 = if (viewModal.totalPriceState.value.toInt() > 100) "₹ 30" else "₹ 30 ",
-                                text2 = "FREE",
+                                text1 = if (viewModal.totalPriceState.value.toInt() < 100) "Free" else "₹ 30",
+                                text2 = if (viewModal.totalPriceState.value.toInt() < 100) "₹ 30" else "Free",
                                 color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
@@ -250,16 +250,16 @@ fun CartScreen(
                                 it.get<Bundle>("passCoupon")
                             }
                         val grandTotal = if (viewModal.totalPriceState.value.toInt() < 100) {
-                            "₹ " + ((30) + (viewModal.totalPriceState.value.toDouble()))
+                            "₹ " + ((30) + (viewModal.totalPriceState.value.toDouble()+viewModal.totalPriceState.value .toDouble() * 0.09))
                         } else {
-                            "₹ ${viewModal.totalPriceState.value .toDouble() * 0.9}"
+                            "₹ ${(viewModal.totalPriceState.value.toDouble()+viewModal.totalPriceState.value .toDouble() * 0.09)}"
                         }
                         if (passCoupon) {
                             if ((backBundleData?.get("CouponPercent") != null))
 
                             { val cuponDiscount =
                                 (
-                                        (((backBundleData?.get("CouponPercent") as Int) * grandTotal.replace(
+                                        (((backBundleData.get("CouponPercent") as Int) * grandTotal.replace(
                                             "₹ ",
                                             ""
                                         ).toDoubleOrNull()!!)) / 100)
@@ -335,7 +335,7 @@ fun CartScreen(
 
                         if (passCoupon) {
                             if(backBundleData?.get("CouponPercent")!=null){
-                                val percent: Int = backBundleData?.get("CouponPercent") as Int
+                                val percent: Int = backBundleData.get("CouponPercent") as Int
                                 AppliedCupon(backBundleData.get("CouponName").toString(), percent) {
                                     backBundleData=null
                                     passCoupon = false;
@@ -353,7 +353,7 @@ fun CartScreen(
                                     .fillMaxWidth()
                                     .padding(vertical = 8.dp),
                             ) {
-                                Text(text = "Apply Coupon")
+                                Text12_body1(text = "Apply Coupon",color= whiteColor)
                             }
                         }
                     }
@@ -377,7 +377,10 @@ fun CartScreen(
                             }
                             "ProceedButton" -> {
                                 isDialog = true
+if(addressvalue?.isEmpty()==true){
 
+    addressvalue= " ${viewModal.addresslistState.value[0].customer_name}\n${viewModal.addresslistState.value[0].Address1}\n${viewModal.addresslistState.value[0].Address2}\n${viewModal.addresslistState.value[0].PinCode}\n${viewModal.addresslistState.value[0].LandMark}"
+}
                                 val request = OrderIdCreateRequest(
                                     orderList = order,
                                     address = addressvalue,
@@ -654,10 +657,8 @@ private fun Title1(
     var titleHeightPx by remember { mutableStateOf(0f) }
     var titleWidthPx by remember { mutableStateOf(0f) }
 
-    Text(
+    Text16_h1(
         text = str,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
         modifier = Modifier
             .graphicsLayer {
                 val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
@@ -817,23 +818,19 @@ fun AppliedCupon(title: String?, percenage: Int?, clickOnRemove: (Boolean) -> Un
 
             // Text Column
             Column {
-                Text(
+                Text14_h2(
                     text = title ?: "null",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
-                Text(
+                Text11_body2(
                     text = " Applied $percenage",
-                    fontSize = 11.sp,
                     color = Color.Gray
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
+            Text14_h2(
                 text = "Remove",
-                fontSize = 14.sp,
-                color = Color.Magenta,
+                color = lightred,
                 modifier = Modifier
                     .padding(16.dp)
                     .clickable {
@@ -932,7 +929,7 @@ fun SimpleRadioButtonComponent() {
                             context.showMsg(text)
                         }
                     )
-                    Text(
+                    Text11_body2(
                         text = text,
                         modifier = Modifier.padding(start = 16.dp)
                     )
@@ -980,7 +977,10 @@ fun ItemEachRow(
                 ) {
                     Text10_h2(
                         text = "${data.strProductName}",
-                        modifier = Modifier.fillMaxWidth().weight(1f).align(Alignment.CenterVertically)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
                     )
                     IconButton(modifier = Modifier
                         .height(20.dp)
@@ -994,22 +994,18 @@ fun ItemEachRow(
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
-                Text10_h2(
-                    text = "₹ ${data.strProductPrice}",
+
+
+
+
+                Text12_with_strikethrough(
+                    text1 = "₹ ${data.strProductPrice}",
+                    text2 = "₹${data.actualprice ?: "0.00"}",
                     color = headingColor,
+
                 )
 
 
-
-
-
-                Text(
-                    text = "₹${data.actualprice ?: "0.00"}",
-                    fontSize = 11.sp,
-                    color = bodyTextColor,
-                    modifier = Modifier.padding(start = 10.dp),
-                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                )
 
 //                Text14_400(text = data.strProductName.toString())
                 Spacer(modifier = Modifier.height(8.dp))

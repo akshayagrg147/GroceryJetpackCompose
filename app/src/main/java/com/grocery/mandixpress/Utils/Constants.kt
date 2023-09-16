@@ -2,9 +2,9 @@ package com.grocery.mandixpress.Utils
 
 class Constants {
     companion object{
-     const val AppUrl = "https://2dc4-2401-4900-1c0b-5ad5-7d4f-e1b4-f44a-4666.ngrok-free.app/"
+     const val AppUrl = "https://e529-2401-4900-1c55-30e8-393b-db2f-cdf9-44a0.ngrok-free.app/"
      const val ApiEnd_register ="Customers/register"
-       const val NETWORK_PAGE_SIZE = 50
+       const val NETWORK_PAGE_SIZE = 10
         const val HomeAllProducts ="Customers/HomeAllProducts"
         const val SearchAllProductsSearch ="Customers/SearchAllProducts"
         const val BestSelling_collectionProducts ="Customers/BestSelling"
@@ -19,6 +19,7 @@ class Constants {
         const val gettingjwt ="gettingJwt"
         const val getuserdetails="Customers/getUserDetails"
         const val checkMobileNumberExist="Customers/checkMobileNumberExist"
+        const val  callBannerImage="Customers/getBannerCategory"
         const val CreateOrderId="Customers/CreateOrderId"
         const val AllOrders="Customers/AllOrders"
         const val GetRelatedSearch="Customers/GetRelatedSearch"

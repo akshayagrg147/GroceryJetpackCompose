@@ -185,7 +185,7 @@ fun     menuitems(
     }
 
     val scope = rememberCoroutineScope()
-    val pager = rememberPagerState()
+    val pager = rememberPagerState(3)
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
@@ -206,10 +206,10 @@ fun     menuitems(
                             elevation = 2.dp,
                             shape = RoundedCornerShape(20.dp),
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxWidth().padding(top=20.dp)
 
                         ) {
-                            HorizontalPager(count = 3, state = pager) { index ->
+                            HorizontalPager(state = pager) { index ->
                                 if (index == 0)
                                     Banner(
                                         pagerState = pager,
@@ -238,6 +238,7 @@ fun     menuitems(
                         ) {
                             Text12_h1(
                                 text = productdetail.value.productName ?: "",
+                                color= headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
                             IconButton(onClick = {
@@ -247,11 +248,11 @@ fun     menuitems(
                             }
                         }
                         Spacer(modifier = Modifier.height(5.dp))
-                        Text13_body1(text = "Product Detail", modifier = Modifier.fillMaxWidth())
+                        Text13_body1(text = "Product Detail", modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp))
                         Spacer(modifier = Modifier.height(5.dp))
                         Text12_body1(
                             text = productdetail.value.productDescription ?: "",
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                         )
 
 
@@ -274,6 +275,7 @@ fun     menuitems(
             Column(modifier = Modifier.fillMaxSize()) {
                 Text14_h1(
                     text = "Sub cart menus",
+                    color= headingColor,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Row(
@@ -428,12 +430,12 @@ fun MenuItemGrid(
                     ?: 0.0f)) * 100
             )).toString()
 
-            Text(
+            Text10_h2(
                 text = "${offpercentage}% off", color = sec20timer,
                 modifier = Modifier.align(
                     Alignment.End
                 ),
-                fontSize = 10.sp,
+
             )
 
             Image(
@@ -533,14 +535,7 @@ fun Banner(
 
         )
 
-        HorizontalPagerIndicator(
-            pagerState = pagerState, pageCount = 3,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(vertical = 10.dp),
-            indicatorWidth = 8.dp,
-            indicatorShape = RectangleShape
-        )
+
     }
 
 }

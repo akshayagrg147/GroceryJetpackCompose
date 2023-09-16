@@ -1,4 +1,4 @@
-package com.grocery.mandixpress.features.Spash.ui.viewmodel
+package com.grocery.mandixpress.features.Home.ui.viewmodal
 
 import android.content.Context
 import android.util.Log
@@ -16,13 +16,10 @@ import com.grocery.mandixpress.RoomDatabase.CartItems
 import com.grocery.mandixpress.RoomDatabase.Dao
 import com.grocery.mandixpress.RoomDatabase.RoomRepository
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
-import com.grocery.mandixpress.Utils.Constants.Companion.NETWORK_PAGE_SIZE
 import com.grocery.mandixpress.common.ApiState
-import com.grocery.mandixpress.data.modal.CategoryWiseDashboardResponse
-import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
-import com.grocery.mandixpress.data.modal.commonResponse
-import com.grocery.mandixpress.data.network.ApiService
+import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
+import com.grocery.mandixpress.data.pagingsource.PaginSoucrce
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
@@ -30,11 +27,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.HttpException
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,24 +53,53 @@ class HomeAllProductsViewModal @Inject constructor(
 
     //events object
 
-    private val _bestSelling:MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> = MutableStateFlow(ComposeUiResponse())
+    private val _bestSelling: MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> =
+        MutableStateFlow(
+            ComposeUiResponse()
+        )
     var bestSelling = _bestSelling.asStateFlow()
         private set
 
 
-    private val _exclusive:MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> = MutableStateFlow(ComposeUiResponse())
+    private val _exclusive: MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> =
+        MutableStateFlow(
+            ComposeUiResponse()
+        )
     var exclusive = _exclusive.asStateFlow()
         private set
 
-    private val _categoryWiseResponse:MutableStateFlow<ComposeUiResponse<CategoryWiseDashboardResponse>> = MutableStateFlow(ComposeUiResponse())
+    private val _categoryWiseResponse: MutableStateFlow<ComposeUiResponse<CategoryWiseDashboardResponse>> =
+        MutableStateFlow(
+            ComposeUiResponse()
+        )
     var categoryWiseResponse = _categoryWiseResponse.asStateFlow()
         private set
 
-    private val availibilityCheck:MutableStateFlow<ComposeUiResponse<commonResponse>> = MutableStateFlow(ComposeUiResponse())
+    private val availibilityCheck: MutableStateFlow<ComposeUiResponse<commonResponse>> =
+        MutableStateFlow(
+            ComposeUiResponse()
+        )
     var _availibilityCheck = availibilityCheck.asStateFlow()
         private set
 
-    private val _getProductCategory:MutableStateFlow<ComposeUiResponse<getProductCategory>> = MutableStateFlow(ComposeUiResponse())
+    private val bannerImage: MutableStateFlow<ComposeUiResponse<BannerImageResponse>> =
+        MutableStateFlow(
+            ComposeUiResponse()
+        )
+    var _bannerImage = bannerImage.asStateFlow()
+        private set
+
+    private val bannerCategoryResponse: MutableStateFlow<ComposeUiResponse<ItemsCollectionsResponse>> =
+        MutableStateFlow(
+            ComposeUiResponse()
+        )
+    var _bannerCategoryResponse = bannerCategoryResponse.asStateFlow()
+        private set
+
+    private val _getProductCategory: MutableStateFlow<ComposeUiResponse<getProductCategory>> =
+        MutableStateFlow(
+            ComposeUiResponse()
+        )
     var getProductCategory = _getProductCategory.asStateFlow()
         private set
 
@@ -82,13 +107,18 @@ class HomeAllProductsViewModal @Inject constructor(
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val list: State<List<AddressItems>> = addresslist
 
+    private val bannerData: MutableStateFlow<Pair<BannerImageResponse.ItemData, Int>> =
+        MutableStateFlow(Pair(BannerImageResponse.ItemData(), -1))
+        var _bannerData = bannerData.asStateFlow()
+        private set
+
     private val totalcount: MutableState<Int> = mutableStateOf(0)
     val getitemcountState: MutableState<Int> = totalcount
     private val totalprice: MutableState<Int> = mutableStateOf(0)
     val getitempriceState: MutableState<Int> = totalprice
 
     private val m11: MutableStateFlow<String> = MutableStateFlow("")
-    val getitemcount11 = m11.asSharedFlow()
+    val getitemcount11 = m11.asStateFlow()
     private val live: MutableState<String> = mutableStateOf("")
     val responseLiveData: MutableState<String> = live
 
@@ -130,7 +160,11 @@ class HomeAllProductsViewModal @Inject constructor(
 
 
     }
-    fun searchAddress(query: String,placesClient: PlacesClient): Flow<List<AutocompletePrediction>> {
+
+    fun searchAddress(
+        query: String,
+        placesClient: PlacesClient
+    ): Flow<List<AutocompletePrediction>> {
         val request = FindAutocompletePredictionsRequest.builder()
             .setQuery(query)
             .build()
@@ -141,7 +175,7 @@ class HomeAllProductsViewModal @Inject constructor(
                 predictions.emit(response.autocompletePredictions)
             }
         }
-        return  predictions
+        return predictions
     }
 
     fun setupFlow(query: String) {
@@ -150,7 +184,9 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
     fun gettingAddres(): String {
-        val address=if(sharedPreferences.getSearchAddress().isNotEmpty()) sharedPreferences.getSearchAddress() else sharedPreferences.getCombinedAddress()
+        val address = if (sharedPreferences.getSearchAddress()
+                .isNotEmpty()
+        ) sharedPreferences.getSearchAddress() else sharedPreferences.getCombinedAddress()
         return address
     }
 
@@ -170,21 +206,22 @@ class HomeAllProductsViewModal @Inject constructor(
     fun deleteCartItems() = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteAllFromTable()
     }
-    fun onEvent(event:HomeEvent){
-        when(event){
-             HomeEvent.BestSellingEventFlow -> viewModelScope.launch {
+
+    fun onEvent(event: HomeEvent) {
+        when (event) {
+            is  HomeEvent.BestSellingEventFlow -> viewModelScope.launch {
                 repository.BestSellingProducts()
                     .collectLatest {
-                        when(it){
-                            is ApiState.Loading->{
-                                _bestSelling.value = ComposeUiResponse( isLoading = true)
+                        when (it) {
+                            is ApiState.Loading -> {
+                                _bestSelling.value = ComposeUiResponse(isLoading = true)
                             }
-                            is ApiState.Success->{
+                            is ApiState.Success -> {
                                 _bestSelling.value = ComposeUiResponse(data = it.data)
                             }
-                            is ApiState.Failure->{
+                            is ApiState.Failure -> {
 
-                                _bestSelling.value = ComposeUiResponse( error = it?.msg.toString())
+                                _bestSelling.value = ComposeUiResponse(error = it?.msg.toString())
                             }
                         }
                     }
@@ -242,7 +279,23 @@ class HomeAllProductsViewModal @Inject constructor(
                     }
 
             }
+HomeEvent.BannerImageEventFlow->viewModelScope.launch {
+    repository.bannerImageApiCall()
+        .collectLatest {
+            when(it){
+                is ApiState.Loading->{
+                    bannerImage.value = ComposeUiResponse( isLoading = true)
+                }
+                is ApiState.Success->{
+                    bannerImage.value = ComposeUiResponse(data = it.data)
+                }
+                is ApiState.Failure->{
+                    bannerImage.value = ComposeUiResponse( error = it?.msg.toString())
+                }
+            }
+        }
 
+}
             HomeEvent.AreaAvailibilityEventFlow->viewModelScope.launch {
                 Log.d("postalcode","${sharedPreferences.getPostalCode()}")
                 repository.availibilityCheck(sharedPreferences.getPostalCode())
@@ -261,10 +314,27 @@ class HomeAllProductsViewModal @Inject constructor(
                     }
 
             }
+          is  HomeEvent.BannerCategoryEventFlow->viewModelScope.launch {
+                repository.ItemsCollections(ProductIdIdModal(event.subcategoryName)).collectLatest {
+                    when (it) {
+                        is ApiState.Success -> {
+                            bannerCategoryResponse.value = ComposeUiResponse(data = it.data)
+                        }
+                        is ApiState.Failure -> {
+
+                            bannerCategoryResponse.value = ComposeUiResponse(error = it?.msg.toString())
+
+                        }
+                        is ApiState.Loading -> {
+                            bannerCategoryResponse.value = ComposeUiResponse(isLoading = true)
+                        }
+
+                    }
+                }
+            }
             else -> {}
         }
     }
-
 
 
     fun getItemCount() = viewModelScope.launch {
@@ -280,9 +350,9 @@ class HomeAllProductsViewModal @Inject constructor(
     fun getItemPrice() = viewModelScope.launch {
         roomrespo.getTotalProductItemsPrice()
             .catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }.collect {
-            totalprice.value = it ?: 0
-            Log.d("dmdndnd", totalprice.value.toString())
-        }
+                totalprice.value = it ?: 0
+                Log.d("dmdndnd", totalprice.value.toString())
+            }
     }
 
     fun insertCartItem(
@@ -312,10 +382,18 @@ class HomeAllProductsViewModal @Inject constructor(
 
     }
 
-    fun setcategory(ss: String) {
-        cat.settingData(ss)
+    fun setcategory(value: String) {
+        cat.settingData(value)
 
     }
+
+    fun setItemDataClass(bannerItemDat: BannerImageResponse.ItemData, indexValue: Int) {
+         bannerData.value=(Pair(bannerItemDat, indexValue))
+            cat.setItemDataClass(bannerItemDat, indexValue)
+
+
+    }
+
 
     fun getcategory(): String {
         return cat.gettingData()
@@ -323,85 +401,45 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
 
-
-
-
-
-
     fun setFilterList(filterlist: List<HomeAllProductsResponse.HomeResponse>?) {
         Log.d("kdkkdk", "skksk ${Gson().toJson(filterlist)}")
         listMutable.value = HomeAllProductsResponse(filterlist)
     }
 
-    fun getfilterlist(): List<HomeAllProductsResponse.HomeResponse>? {
-        return filterlist
-    }
 
     val allresponse: Flow<PagingData<HomeAllProductsResponse.HomeResponse>> =
-        Pager(PagingConfig(pageSize = NETWORK_PAGE_SIZE)) {
-            pagingDataSource
-        }.flow.cachedIn(viewModelScope)
+        Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                prefetchDistance = 5,
+                enablePlaceholders = false,
+                initialLoadSize = 10
+            ), pagingSourceFactory = {
+                pagingDataSource
+            }).flow.cachedIn(viewModelScope)
+
+
+
+
 
 }
 
-class PaginSoucrce @Inject constructor(
-    private val apiService: ApiService,
-    val calling: CallingCategoryWiseData
-) :
-    PagingSource<Int, HomeAllProductsResponse.HomeResponse>() {
 
-    val INITIAL_LOAD_SIZE = 0
-    override fun getRefreshKey(state: PagingState<Int, HomeAllProductsResponse.HomeResponse>): Int? {
-        return state.anchorPosition
-    }
-
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, HomeAllProductsResponse.HomeResponse> {
-        return try {
-
-            val position = params.key ?: 1
-            val offset =
-                if (params.key != null) ((position - 1) * NETWORK_PAGE_SIZE) + 1 else INITIAL_LOAD_SIZE
-            return try {
-                // val jsonResponse = service.getCryptoList(start = offset, limit = params.loadSize).data
-                val homeproduts =
-                    apiService.getHomeAllProducts(offset, params.loadSize, calling.gettingData())
-
-                val nextKey = if (homeproduts.body()?.list?.isEmpty() == true) {
-                    null
-                } else {
-                    // initial load size = 3 * NETWORK_PAGE_SIZE
-                    // ensure we're not requesting duplicating items, at the 2nd request
-                    position + (params.loadSize / NETWORK_PAGE_SIZE)
-                }
-                LoadResult.Page(
-                    data = homeproduts.body()?.list ?: emptyList(),
-                    prevKey = null, // Only paging forward.
-                    // assume that if a full page is not loaded, that means the end of the data
-                    nextKey = nextKey
-                )
-
-            } catch (exception: IOException) {
-                return LoadResult.Error(exception)
-            } catch (exception: HttpException) {
-                return LoadResult.Error(exception)
-            }
-        } catch (exception: Exception) {
-            return LoadResult.Error(exception)
-        }
-    }
-}
-sealed class HomeEvent{
+sealed class HomeEvent {
     object ExclusiveEventFlow : HomeEvent()
     object BestSellingEventFlow : HomeEvent()
     object ItemCategoryEventFlow:HomeEvent()
     object CategoryWiseEventFlow:HomeEvent()
 
-    object AreaAvailibilityEventFlow:HomeEvent()
+    object AreaAvailibilityEventFlow : HomeEvent()
+    object BannerImageEventFlow : HomeEvent()
+    data class BannerCategoryEventFlow(val subcategoryName:String) : HomeEvent()
+
 
 }
 
 data class ComposeUiResponse<T>(
-    val data:T? = null,
-    val error:String = "",
-    val isLoading:Boolean = false
+    val data: T? = null,
+    val error: String = "",
+    val isLoading: Boolean = false
 )

@@ -37,12 +37,8 @@ fun NavigationGraph(
         }
         composable(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route) {
 
-            var model =
-                navController.previousBackStackEntry?.arguments?.getParcelable<PassParceableBanner>(
-                    "index"
-                )
-            Log.d("gggddd","previous:- ${model?.index}")
-            CategoryWiseDashboardAllData(context,model?:PassParceableBanner(),navController)
+
+            CategoryWiseDashboardAllData(context,navController)
         }
 
         composable(DashBoardNavRoute.SearchProductItems.screen_route) {

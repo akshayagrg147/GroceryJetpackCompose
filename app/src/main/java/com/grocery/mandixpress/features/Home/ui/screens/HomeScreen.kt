@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Space
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+
 
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -416,10 +418,9 @@ fun BodyDashboard(
                         )
 
                        val parceable=PassParceableBanner(index,imageUrls[index].second)
-                        navcontroller.currentBackStackEntry?.arguments?.putParcelable(
-                            "index",
-                            parceable
-                        )
+
+                        navcontroller.currentBackStackEntry?.savedStateHandle?.set("data", parceable)
+
                         navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
 
 
@@ -427,6 +428,28 @@ fun BodyDashboard(
 
 
                     }
+                }
+                if(bannerImage.data!!.itemData[0].bannercategory1?.isNotEmpty()==true)
+                {
+                    Box(modifier = Modifier.background(color= whiteColor), contentAlignment = Alignment.TopCenter) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text14_h2(text = "${bannerImage.data!!.itemData.get(0).bannercategory1} Special",color= pendingColor)
+                        Spacer(modifier = Modifier.height(25.dp))
+                        ScrollingImageRow(size = 100.dp,imageUrls[0].second.subCategoryList){
+
+                            viewModal.setItemDataClass(
+                                imageUrls[0].second,0
+                            )
+                            val parceable=PassParceableBanner(0,imageUrls[0].second)
+
+                            navcontroller.currentBackStackEntry?.savedStateHandle?.set("data", parceable)
+
+                            navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
+
+
+                        }
+                    }
+
                 }
 
             }
@@ -856,13 +879,15 @@ fun Banner(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp).clickable{
+            .padding(10.dp)
+            .clickable {
                 call()
             }
     ) {
         Image(
             painter = rememberImagePainter(url), contentDescription = "",
-            modifier = Modifier.height(109.dp) // Set the height to match the image's height
+            modifier = Modifier
+                .height(109.dp) // Set the height to match the image's height
                 .width(1482.dp)
 
         )
@@ -1238,7 +1263,6 @@ fun GroceriesItems(
             .size(itemSize)
             .padding(5.dp)
             .clickable {
-                val data: String = Gson().toJson(item)
                 navController.currentBackStackEntry?.savedStateHandle?.set("data", item)
                 navController.navigate(DashBoardNavRoute.MenuItems.screen_route)
 

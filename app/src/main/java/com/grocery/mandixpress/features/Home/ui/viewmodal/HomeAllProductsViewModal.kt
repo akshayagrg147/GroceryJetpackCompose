@@ -107,11 +107,6 @@ class HomeAllProductsViewModal @Inject constructor(
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val list: State<List<AddressItems>> = addresslist
 
-    private val bannerData: MutableStateFlow<Pair<BannerImageResponse.ItemData, Int>> =
-        MutableStateFlow(Pair(BannerImageResponse.ItemData(), -1))
-        var _bannerData = bannerData.asStateFlow()
-        private set
-
     private val totalcount: MutableState<Int> = mutableStateOf(0)
     val getitemcountState: MutableState<Int> = totalcount
     private val totalprice: MutableState<Int> = mutableStateOf(0)
@@ -388,7 +383,6 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
     }
 
     fun setItemDataClass(bannerItemDat: BannerImageResponse.ItemData, indexValue: Int) {
-         bannerData.value=(Pair(bannerItemDat, indexValue))
             cat.setItemDataClass(bannerItemDat, indexValue)
 
 

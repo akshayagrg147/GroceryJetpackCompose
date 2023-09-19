@@ -84,6 +84,11 @@ fun orderDetil(
                         }
                         if (data.orderList?.isNotEmpty() == true)
                             for (i in 0 until data.orderList.size!!) {
+                                Spacer(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(10.dp)
+                                )
                                 Row(
                                     Modifier
                                         .fillMaxWidth()

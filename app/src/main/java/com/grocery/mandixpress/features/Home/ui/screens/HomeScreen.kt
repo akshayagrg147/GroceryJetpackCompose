@@ -384,7 +384,7 @@ fun BodyDashboard(
                 val imageUrls:MutableList<Pair<String, BannerImageResponse.ItemData>> = mutableListOf()
                 for(item in bannerImage.data!!.itemData){
                     Log.d("image_for_banner","${item.bannercategory1!=null}  ${item.bannercategory2!=null}  ${item.bannercategory3!=null}")
-                    if (item.bannercategory1 != null) {
+                    if (item.bannercategory1?.isNotEmpty()==true) {
                         imageUrls.add(Pair(item.imageUrl1 ?: "", item))
                     }
                     if (item.bannercategory2 != null) {

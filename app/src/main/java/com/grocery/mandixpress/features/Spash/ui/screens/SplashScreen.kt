@@ -1,26 +1,30 @@
 package com.grocery.mandixpress.features.Spash
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.Spash.SplashNavigation.ScreenRoute
-import com.grocery.mandixpress.Utils.Text12_body1
-import com.grocery.mandixpress.Utils.Text14_h1
+import com.grocery.mandixpress.appUpdate.InAppUpdateManager
 import com.grocery.mandixpress.features.Home.ui.screens.HomeActivity
-import com.grocery.mandixpress.features.Home.ui.ui.theme.availColor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SplashScreen(
@@ -59,24 +63,75 @@ fun SplashScreen(
 
 
     }
+    AutoUpdateScreen(sharedpreferenceCommon,navController)
 
-    LaunchedEffect(key1 = Unit){
-        delay(500)
-        Log.d("groceryApp", "SplashScreen:${sharedpreferenceCommon.getJwtToken()} ")
-        if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
-            if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty())
-                context.startActivity(Intent(context, HomeActivity::class.java))
-            else {
 
-                navController.navigate(ScreenRoute.LocateMeScreen.route)
+
+
+
+}
+@Composable
+fun AutoUpdateScreen(
+    sharedpreferenceCommon: sharedpreferenceCommon,
+    navController: NavHostController
+) {
+    val context = LocalContext.current
+    val updateManager = remember { InAppUpdateManager(context as ComponentActivity) }
+    var updateAvailable by remember { mutableStateOf(false) }
+
+    val resultLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Handle successful update
+                    Log.d("groceryApp", "SplashScreen:${sharedpreferenceCommon.getJwtToken()} ")
+                    if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
+                        if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty())
+                            context.startActivity(Intent(context, HomeActivity::class.java))
+                        else {
+
+                            navController.navigate(ScreenRoute.LocateMeScreen.route)
+                        }
+                    }
+                    else{
+                        navController.navigate(ScreenRoute.LoginScreen.route)
+                    }
+
+
             }
         }
-        else{
 
-            navController.navigate(ScreenRoute.LoginScreen.route)
+    LaunchedEffect(key1 = updateManager) {
+        updateAvailable = withContext(Dispatchers.IO) {
+            updateManager.checkForUpdates()
         }
-
     }
 
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        if (updateAvailable) {
+            updateManager.startUpdateFlow()
+          //  resultLauncher.launch(null)
+        } else {
+            LaunchedEffect(key1 = Unit){
+                delay(500)
+                Log.d("groceryApp", "SplashScreen:${sharedpreferenceCommon.getJwtToken()} ")
+                if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
+                    if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty())
+                        context.startActivity(Intent(context, HomeActivity::class.java))
+                    else {
 
+                        navController.navigate(ScreenRoute.LocateMeScreen.route)
+                    }
+                }
+                else{
+
+                    navController.navigate(ScreenRoute.LoginScreen.route)
+                }
+
+            }
+        }
+    }
 }

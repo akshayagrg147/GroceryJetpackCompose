@@ -42,7 +42,7 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
     var requestLocationUpdate by remember { mutableStateOf(true) }
     var combinedaddress by remember { mutableStateOf("") }
     if (isDialog)
-        CommonProgressBar()
+        CommonProgressBar(text = "Fetching Location....")
     if (requestLocationUpdate) {
         Log.d("latitudeandlongitude","call1")
 

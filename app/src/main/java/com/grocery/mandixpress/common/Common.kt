@@ -1,9 +1,7 @@
 package com.grocery.mandixpress.common
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -12,7 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,15 +22,76 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text12_h1
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
+import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.Text16_h1
+import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommonProgressBar() {
-    Dialog(onDismissRequest = {}) {
-        CircularProgressIndicator()
-    }
-}
+fun CommonProgressBar(text: String="Easy shop with Us") {
+
+
+    Dialog(onDismissRequest = {}, properties = DialogProperties(
+        dismissOnClickOutside = false,
+
+        // Apply custom properties here if needed
+    )
+    ) {
+
+        Box(
+            modifier = Modifier
+                .size(170.dp)
+
+                .border(
+                    1.dp,
+                    borderColor,
+                    androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                )
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, Color(0xAA000000)),
+                    ))
+
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.background)
+                    .padding(10.dp)
+                  ,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                CircularProgressIndicator(color= headingColor)
+                Spacer(Modifier.height(10.dp))
+                Text12_h1(text = text,color= headingColor)
+
+
+            }
+        }
+
+}}
     @Composable
     fun AppButtonComponent(
         text: String,
@@ -46,7 +105,8 @@ fun CommonProgressBar() {
         Button(
             onClick = onClick,
             modifier = modifier
-                .fillMaxWidth().background(background)
+                .fillMaxWidth()
+                .background(background)
                 .height(35.dp),
             elevation = elevation,
             shape = shape,

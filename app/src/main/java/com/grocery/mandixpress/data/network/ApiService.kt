@@ -103,15 +103,30 @@ class CallingCategoryWiseData {
     }
     fun setItemDataClass(  bannerItemDat:BannerImageResponse.ItemData,index:Int){
         bannerItemData=bannerItemDat
-        if(index==0){
-            settingData(bannerItemData.bannercategory1?:"")
-        }
-        else if(index==1){
-            settingData(bannerItemData.bannercategory2?:"")
+
+Log.d("itemcategory","${bannerItemDat.bannercategory1?.isNotEmpty()==true}  $index  ")
+            if(bannerItemDat.bannercategory1?.isNotEmpty()==true){
+                if(index==0){
+                settingData(bannerItemData.bannercategory1?:"")
+            }
+                else if(index==1){
+                    settingData(bannerItemData.bannercategory2?:"")
+                }
+                else{
+                    settingData(bannerItemData.bannercategory3?:"")
+                }
+
+
         }
         else{
-            settingData(bannerItemData.bannercategory3?:"")
-        }
+                 if(index==0){
+                    settingData(bannerItemData.bannercategory2?:"")
+                }
+                else{
+                    settingData(bannerItemData.bannercategory3?:"")
+                }
+            }
+
 
     }
     fun getItemDataClass():BannerImageResponse.ItemData{

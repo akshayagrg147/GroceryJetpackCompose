@@ -64,7 +64,7 @@ fun loginScreen(
     }
 
     if (isDialog)
-        CommonProgressBar()
+        CommonProgressBar("Hold for a moment")
 
     LaunchedEffect(key1 = loginResponse){
         Log.d("loginViewModal", "checkMobileNumberExist: not exist")
@@ -175,6 +175,8 @@ fun loginScreen(
                             enabled = mobile.length==10
 
                         ) {
+                            if(mobile.length!=10)
+                                return@CommonButton
                             scope.launch(Dispatchers.Main) {
                                 viewModal.createUserWithPhone(
                                     "+91${mobile}",
@@ -265,7 +267,8 @@ fun loginScreen(
                                         }
                                         is ApiState.Failure -> {
                                             isDialog = false
-                                            context.showMsg(it.msg.toString())
+                                            Log.d("errormsg","${it.msg}")
+                                            context.showMsg("something went wrong")
                                         }
                                         ApiState.Loading -> {
                                             isDialog = true

@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -23,13 +24,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.Utils
@@ -176,7 +181,7 @@ fun SearchScreenProducts(
     }
     val scope = rememberCoroutineScope()
     scope.launch(Dispatchers.IO) {
-        viewModal.repo?.collectLatest {
+        viewModal.repo.collectLatest {
             when (it) {
                 is ApiState.Success -> {
 
@@ -204,6 +209,10 @@ fun SearchScreenProducts(
                 search.value = it
                 viewModal.setupFlow(search.value)
             },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search,
+                keyboardType = KeyboardType.Text // Set keyboard type to Text
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
@@ -215,6 +224,7 @@ fun SearchScreenProducts(
                     color = bodyTextColor,
                 )
             },
+
 
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
@@ -251,10 +261,17 @@ fun SearchScreenProducts(
                 .fillMaxWidth()
                 .height(20.dp)
         )
+        if(search.value.isNotEmpty())
         Text13_body1(
             text = "Results finds ${responseData.value.list?.size}",
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
+        else{
+            Text13_body1(
+                text = "Results finds 0",
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        }
 
         LazyColumn(
             modifier = Modifier
@@ -267,6 +284,7 @@ fun SearchScreenProducts(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(horizontal = 1.dp)
             ) { itemData ->
+                if(search.value.isNotEmpty())
                 SearchResult(itemData, viewModal, context, navHostController)
             }
         }

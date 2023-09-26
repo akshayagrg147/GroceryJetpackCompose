@@ -73,8 +73,8 @@ fun Text12_h1(text: String, color: Color = titleColor, modifier: Modifier = Modi
 }
 
 @Composable
-fun Text13_body1(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 13.sp)
+fun Text13_body1(text: String, color: Color = blackColor, modifier: Modifier = Modifier,textAlign: TextAlign=TextAlign.Start) {
+    Text(text = text, style = loginTypography.body2, color = color, modifier = modifier, fontSize = 13.sp,textAlign = textAlign)
 }
 @Composable
 fun Text11_body2(text: String, color: Color = blackColor, modifier: Modifier = Modifier) {

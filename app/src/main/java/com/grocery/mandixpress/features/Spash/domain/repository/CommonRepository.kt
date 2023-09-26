@@ -1,6 +1,5 @@
 package com.grocery.mandixpress.features.Spash.domain.repository
 
-import android.content.SharedPreferences
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.ApiService
@@ -16,15 +15,10 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.RegisterUser(addUser)
     }
-    fun LoginUser(
-        addUser: String
-    ) = toResultFlow {
-        apiService.LoginUser(addUser)
-    }
+
     fun HomeAllProducts(ss:String
     ) = toResultFlow {
-        apiService.getHomeAllProductsSearch(ss)
-
+            apiService.getHomeAllProductsSearch(ss)
     }
 
     fun getAppCoupons(
@@ -34,30 +28,22 @@ class CommonRepository @Inject constructor(
     }
 
 
-    fun ExclusiveProducts(city: String) = toResultFlow {
-        apiService.getExclusiveProducts(ExclusiveOfferRequest(city))
+    fun ExclusiveProducts(city: String,pincode: String) = toResultFlow {
+        apiService.getExclusiveProducts(pincode)
     }
-    fun BestSellingProducts() = toResultFlow {
-        apiService.getBestSellingProducts()
+    fun BestSellingProducts(postalCode: String) = toResultFlow {
+        apiService.getBestSellingProducts(postalCode)
     }
-    fun callingDasboardProducts(
-    ) = toResultFlow {
-        apiService.categorywise_collectionProducts()
+    fun callingDasboardProducts(postalCode: String) = toResultFlow {
+        apiService.categorywise_collectionProducts(postalCode)
     }
      fun availibilityCheck(pincode:String)= toResultFlow { apiService.availibilityCheck(pincode = pincode) }
 
     fun getUserResponse( mobileNumber:String) = toResultFlow { apiService.getuserdetails(RegisterLoginRequest(null,null,mobileNumber)) }
-    fun callPendingProductById(productIdIdModal: ProductIdIdModal
-    ) = toResultFlow {
-        apiService.GetPendingProductById(productIdIdModal)
-    }
+
     fun callBestProductById(productIdIdModal: ProductIdIdModal
     ) = toResultFlow {
         apiService.getBestProductById(productIdIdModal)
-    }
-    fun callEclusiveById(productIdIdModal: ProductIdIdModal
-    ) = toResultFlow {
-        apiService.getExclusiveProductById(productIdIdModal)
     }
     fun ItemsCollections(productIdIdModal: ProductIdIdModal
     ) = toResultFlow {
@@ -75,11 +61,11 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.GetRelatedSearch(obj)
     }
-    fun getProductCategory()= toResultFlow { apiService.getProductCategory() }
+    fun getProductCategory(postalCode: String) = toResultFlow { apiService.getProductCategory(postalCode) }
     fun gettingJwt()= toResultFlow {apiService.gettingJwtToken()  }
     fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest) = toResultFlow { apiService.checkMobileNumberExist(registerLoginRequest) }
-    fun bannerImageApiCall()= toResultFlow {
-        apiService.callBannerImage()
+    fun bannerImageApiCall(postalCode: String) = toResultFlow {
+        apiService.callBannerImage(postalCode)
     }
 
 

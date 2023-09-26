@@ -152,6 +152,7 @@ dependencies {
 
     //play integrity
     implementation 'com.google.firebase:firebase-appcheck-playintegrity:17.0.1'
+    implementation 'com.google.firebase:firebase-messaging:23.2.1'
 
     implementation 'com.google.android.libraries.places:places:3.2.0'
 //    implementation 'com.github.imagekit-developer:imagekit-android:2.0.0'

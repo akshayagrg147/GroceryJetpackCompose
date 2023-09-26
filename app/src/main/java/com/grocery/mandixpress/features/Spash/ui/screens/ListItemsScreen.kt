@@ -754,14 +754,18 @@ private fun Title(
 ) {
     var titleHeightPx by remember { mutableStateOf(0f) }
     var titleWidthPx by remember { mutableStateOf(0f) }
+    var isScrollingDown by remember { mutableStateOf(true) }
 
     Text16_h1(
         text = str,
         color= blackColor,
         modifier = Modifier
             .graphicsLayer {
+
+
                 val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
-                val collapseFraction: Float = (scroll.value / collapseRange).coerceIn(0f, 1f)
+
+                val collapseFraction: Float =    (scroll.value / collapseRange).coerceIn(0f, 1f)
 
                 val scaleXY = lerp(
                     titleFontScaleStart.dp,
@@ -769,7 +773,7 @@ private fun Title(
                     collapseFraction
                 )
 
-                val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 2f
+                val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 5f
 
                 val titleYFirstInterpolatedPoint = lerp(
                     headerHeight - titleHeightPx.toDp() - paddingMedium,
@@ -795,11 +799,22 @@ private fun Title(
                     collapseFraction
                 )
 
+                val marginTopWhenScrolled = 7.dp // Adjust the margin value as needed
+
+
+                // Calculate the margin based on the scroll position
+                val marginTop = if (collapseFraction > 0) {
+                    lerp(0.dp, marginTopWhenScrolled, collapseFraction).toPx()
+                } else {
+                    0f // No margin when not scrolled
+                }
+
+
                 val titleY = lerp(
                     titleYFirstInterpolatedPoint,
                     titleYSecondInterpolatedPoint,
                     collapseFraction
-                )
+                ) + marginTop.dp
 
                 val titleX = lerp(
                     titleXFirstInterpolatedPoint,

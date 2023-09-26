@@ -110,7 +110,9 @@ fun orderDetil(
                                         )
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text13_body1(color= greyLightColor,
-                                            text = data.orderList.get(i)?.productName ?: "", modifier = Modifier.width(130.dp)
+                                            text = data.orderList.get(i)?.productName ?: "", modifier = Modifier.width(130.dp),
+                                            textAlign = TextAlign.Center
+
                                         )
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text13_body1(color= greyLightColor,text = "  ₹ ${data.orderList.get(i)?.productprice}")

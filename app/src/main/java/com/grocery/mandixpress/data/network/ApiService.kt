@@ -18,12 +18,12 @@ interface ApiService {
     //    @POST(Constants.getuserdetails)
 //    suspend fun getUserDetails():Response<>
 
-    @POST(Constants.exclusive_collectionProducts)
-    suspend fun getExclusiveProducts(@Body red:ExclusiveOfferRequest): Response<HomeAllProductsResponse>
+    @GET(Constants.exclusive_collectionProducts)
+    suspend fun getExclusiveProducts(@Query("pincode") pincode: String): Response<HomeAllProductsResponse>
 
 
-    @POST(Constants.BestSelling_collectionProducts)
-    suspend fun getBestSellingProducts(): Response<HomeAllProductsResponse>
+    @GET(Constants.BestSelling_collectionProducts)
+    suspend fun getBestSellingProducts(@Query("pincode") pincode: String): Response<HomeAllProductsResponse>
 
 
     @GET(Constants.HomeAllProducts)
@@ -45,14 +45,10 @@ interface ApiService {
 
 
     @GET(Constants.categorywise_collectionProducts)
-    suspend fun categorywise_collectionProducts(
-    ): Response<CategoryWiseDashboardResponse>
+    suspend fun categorywise_collectionProducts( @Query("pincode") pincode: String): Response<CategoryWiseDashboardResponse>
 
     @POST(Constants.availibilityCheck)
     suspend fun availibilityCheck(@Body pincode:String):Response<commonResponse>
-
-    @POST(Constants.GetPendingProductById)
-    suspend fun GetPendingProductById(@Body productIdIdModal: ProductIdIdModal): Response<ProductByIdResponseModal>
 
     @POST(Constants.GetBestProductById)
     suspend fun getBestProductById(@Body productIdIdModal: ProductIdIdModal): Response<ProductByIdResponseModal>
@@ -78,7 +74,7 @@ interface ApiService {
     @POST(Constants.checkMobileNumberExist)
     suspend fun checkMobileNumberExist(@Body registerLoginRequest: RegisterLoginRequest): Response<CheckNumberExistResponse>
     @GET(Constants.callBannerImage)
-    suspend fun callBannerImage(): Response<BannerImageResponse>
+    suspend fun callBannerImage(@Query("pincode") pincode: String): Response<BannerImageResponse>
 
     @POST(Constants.CreateOrderId)
     suspend fun CreateOrderId(@Body registerLoginRequest: OrderIdCreateRequest): Response<OrderIdResponse>
@@ -90,7 +86,7 @@ interface ApiService {
     suspend fun GetRelatedSearch(@Body obj: RelatedSearchRequest): Response<HomeAllProductsResponse>
 
     @GET(Constants.getProductCategory)
-    suspend fun getProductCategory(): Response<getProductCategory>
+    suspend fun getProductCategory(@Query("pincode") pincode: String): Response<getProductCategory>
 
 
 }
@@ -98,32 +94,36 @@ interface ApiService {
 class CallingCategoryWiseData {
     var data = ""
     var bannerItemData:BannerImageResponse.ItemData=BannerImageResponse.ItemData()
-    fun settingData(ss: String) {
-        data = ss
+    fun settingData(ss: String,postalCode:String) {
+        data = ss+"__"+postalCode
     }
-    fun setItemDataClass(  bannerItemDat:BannerImageResponse.ItemData,index:Int){
+    fun setItemDataClass(
+        bannerItemDat: BannerImageResponse.ItemData,
+        index: Int,
+        postalCode: String
+    ){
         bannerItemData=bannerItemDat
 
 Log.d("itemcategory","${bannerItemDat.bannercategory1?.isNotEmpty()==true}  $index  ")
             if(bannerItemDat.bannercategory1?.isNotEmpty()==true){
                 if(index==0){
-                settingData(bannerItemData.bannercategory1?:"")
+                settingData(bannerItemData.bannercategory1?:"",postalCode)
             }
                 else if(index==1){
-                    settingData(bannerItemData.bannercategory2?:"")
+                    settingData(bannerItemData.bannercategory2?:"",postalCode)
                 }
                 else{
-                    settingData(bannerItemData.bannercategory3?:"")
+                    settingData(bannerItemData.bannercategory3?:"",postalCode)
                 }
 
 
         }
         else{
                  if(index==0){
-                    settingData(bannerItemData.bannercategory2?:"")
+                    settingData(bannerItemData.bannercategory2?:"",postalCode)
                 }
                 else{
-                    settingData(bannerItemData.bannercategory3?:"")
+                    settingData(bannerItemData.bannercategory3?:"",postalCode)
                 }
             }
 

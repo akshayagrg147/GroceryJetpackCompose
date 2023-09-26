@@ -11,11 +11,15 @@ data class RegisterLoginRequest(
     @Json(name = "name")
     val name: String?=null,
     @Json(name = "phone")
-    val phone: String?=null
+    val phone: String?=null,
+    @Json(name = "pincode")
+    val pincode: String?=null
 )
 @JsonClass(generateAdapter = true)
 data class ExclusiveOfferRequest(
     @Json(name = "city")
     val city: String?=null,
+    @Json(name = "pincode")
+    val pincode: String?=null,
 
 )

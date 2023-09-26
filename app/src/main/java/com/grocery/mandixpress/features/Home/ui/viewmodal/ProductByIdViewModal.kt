@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.grocery.mandixpress.RoomDatabase.CartItems
 import com.grocery.mandixpress.RoomDatabase.Dao
 import com.grocery.mandixpress.RoomDatabase.RoomRepository
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
@@ -27,6 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProductByIdViewModal @Inject constructor(
+    val sharedpreferenceCommon: sharedpreferenceCommon,
     val repository: CommonRepository,
     val dao: Dao,
     val repo: RoomRepository
@@ -114,6 +116,7 @@ class ProductByIdViewModal @Inject constructor(
         when (events) {
             is ProductEvents.RelatedSearchEvents -> {
                 viewModelScope.launch {
+                    events.data.pincode=sharedpreferenceCommon.getPostalCode()
                     repository.GetRelatedSearch(events.data)
                         .collectLatest {
                             when(it){

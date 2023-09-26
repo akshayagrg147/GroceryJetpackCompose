@@ -27,7 +27,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -205,7 +204,7 @@ class HomeAllProductsViewModal @Inject constructor(
     fun onEvent(event: HomeEvent) {
         when (event) {
             is  HomeEvent.BestSellingEventFlow -> viewModelScope.launch {
-                repository.BestSellingProducts()
+                repository.BestSellingProducts(sharedPreferences.getPostalCode())
                     .collectLatest {
                         when (it) {
                             is ApiState.Loading -> {
@@ -223,7 +222,7 @@ class HomeAllProductsViewModal @Inject constructor(
 
             }
              HomeEvent.ExclusiveEventFlow -> viewModelScope.launch {
-                repository.ExclusiveProducts(city=sharedPreferences.getCity())
+                repository.ExclusiveProducts(city=sharedPreferences.getCity(), pincode = sharedPreferences.getPostalCode())
                     .collectLatest {
                         when(it){
                             is ApiState.Loading->{
@@ -242,7 +241,7 @@ class HomeAllProductsViewModal @Inject constructor(
             }
              HomeEvent.ItemCategoryEventFlow -> viewModelScope.launch {
                 Log.d("checkResponse", "onEvent: called")
-                repository.getProductCategory()
+                repository.getProductCategory(sharedPreferences.getPostalCode())
                     .collectLatest {
                         when(it){
                             is ApiState.Loading->{
@@ -258,7 +257,7 @@ class HomeAllProductsViewModal @Inject constructor(
                     }
             }
              HomeEvent.CategoryWiseEventFlow->viewModelScope.launch {
-                repository.callingDasboardProducts()
+                repository.callingDasboardProducts(sharedPreferences.getPostalCode())
                     .collectLatest {
                         when(it){
                             is ApiState.Loading->{
@@ -275,7 +274,7 @@ class HomeAllProductsViewModal @Inject constructor(
 
             }
 HomeEvent.BannerImageEventFlow->viewModelScope.launch {
-    repository.bannerImageApiCall()
+    repository.bannerImageApiCall(sharedPreferences.getPostalCode())
         .collectLatest {
             when(it){
                 is ApiState.Loading->{
@@ -378,12 +377,12 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
     }
 
     fun setcategory(value: String) {
-        cat.settingData(value)
+        cat.settingData(value,sharedPreferences.getPostalCode())
 
     }
 
     fun setItemDataClass(bannerItemDat: BannerImageResponse.ItemData, indexValue: Int) {
-            cat.setItemDataClass(bannerItemDat, indexValue)
+            cat.setItemDataClass(bannerItemDat, indexValue,sharedPreferences.getPostalCode())
 
 
     }

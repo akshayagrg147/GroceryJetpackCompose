@@ -16,7 +16,9 @@ data class OrderIdCreateRequest(
     @Json(name = "paymentmode")
     val paymentmode: String?,
     @Json(name = "totalOrderValue")
-    val totalOrderValue: String?
+    val totalOrderValue: String?,
+    @Json(name = "pincode")
+    var pincode: String?
 ) {
     @JsonClass(generateAdapter = true)
     data class Order(

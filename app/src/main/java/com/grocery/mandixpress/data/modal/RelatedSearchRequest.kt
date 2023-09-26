@@ -8,4 +8,6 @@ data class RelatedSearchRequest (
     @Json(name = "Price")
     val Price:String?=null,
     @Json(name = "category")
-    val category:String?=null)
+    val category:String?=null,
+@Json(name = "pincode")
+    var pincode:String?=null)

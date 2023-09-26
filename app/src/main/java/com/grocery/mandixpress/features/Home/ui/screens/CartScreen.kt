@@ -386,7 +386,8 @@ if(addressvalue?.isEmpty()==true){
                                     address = addressvalue,
                                     paymentmode = "COD",
                                     totalOrderValue = viewModal.totalPriceState.value.toString(),
-                                    mobilenumber = sharedpreferenceCommon.getMobileNumber()
+                                    mobilenumber = sharedpreferenceCommon.getMobileNumber(),
+                                    pincode = sharedpreferenceCommon.getPostalCode()
                                 )
                                 Log.d("messagepassing", "${Gson().toJson(request)}")
                                 viewModal.onEvent(CartEvent.createOrderId(request))

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.grocery.mandixpress.RoomDatabase.CartItems
 import com.grocery.mandixpress.RoomDatabase.Dao
 import com.grocery.mandixpress.RoomDatabase.RoomRepository
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CartItemsViewModal @Inject constructor(
+class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedpreferenceCommon,
     val dao: Dao,
     val repository: CommonRepository,
     val repo: RoomRepository
@@ -167,6 +168,7 @@ class CartItemsViewModal @Inject constructor(
         when(event ){
              is CartEvent.createOrderId->{
                  viewModelScope.launch {
+                     event.request.pincode=sharedpreferenceCommon.getPostalCode()
                      repository.OrderIdRequest(event.request).doOnLoading {
                          flow.value = CommonUiObjectResponse(isLoading = true,)
 

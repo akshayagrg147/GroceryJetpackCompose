@@ -14,11 +14,14 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.rememberNavController
 import com.grocery.mandixpress.DashBoardNavRouteNavigation.NavigationGraph
+import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.Utils.launchActivity
 import com.grocery.mandixpress.connectionState.ConnectionState
 import com.grocery.mandixpress.connectionState.currentConnectivityState
 import com.grocery.mandixpress.connectionState.observeConnectivityAsFlow
 import com.grocery.mandixpress.connectionState.ui.onlineconnection
+import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.Home.ui.ui.theme.GroceryAppTheme
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,6 +59,7 @@ class HomeActivity() : ComponentActivity() {
 }
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun connectivityState(): State<ConnectionState> {
     val context = LocalContext.current
@@ -76,14 +80,14 @@ fun ConnectivityStatus() {
     if (isConnected) {
         internetconnectvity = true
 
-     //   navController.navigate(DashBoardNavRoute.Home.screen_route)
+       // navController.navigate(DashBoardNavRoute.Home.screen_route)
 
     } else {
         internetconnectvity = false
     }
     if(!internetconnectvity)
-    CustomDialog(){
-        internetconnectvity=true
+     CustomDialog(){
+         internetconnectvity=true
     }
 
 

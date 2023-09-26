@@ -1,17 +1,15 @@
 package com.grocery.mandixpress.features.Home.ui.screens
 
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.Space
 import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-
-
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -48,7 +46,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.gson.Gson
 import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
@@ -59,12 +56,10 @@ import com.grocery.mandixpress.common.Utils.Companion.vibrator
 import com.grocery.mandixpress.data.modal.BannerImageResponse
 import com.grocery.mandixpress.data.modal.CategoryWiseDashboardResponse
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
-import com.grocery.mandixpress.data.modal.ProductIdIdModal
 import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeEvent
-import com.grocery.mandixpress.features.Home.ui.viewmodal.ProductEvents
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
@@ -90,11 +85,11 @@ fun homescreen(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val address = remember { mutableStateOf("") }
-    LaunchedEffect(key1 = Unit){
-        viewModal.onEvent(
-            HomeEvent.AreaAvailibilityEventFlow
-
-        )
+    LaunchedEffect(key1 = Unit) {
+//        viewModal.onEvent(
+//            HomeEvent.AreaAvailibilityEventFlow
+//
+//        )
         viewModal.onEvent(
             HomeEvent.BannerImageEventFlow
         )
@@ -114,7 +109,6 @@ fun homescreen(
         )
 
 
-
     }
     var searchvisibility by remember { mutableStateOf(false) }
     ModalBottomSheetLayout(
@@ -132,8 +126,7 @@ fun homescreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.Transparent)
-                    ,
+                        .background(Color.Transparent),
                     contentAlignment = Alignment.Center
                 )
                 {
@@ -163,26 +156,30 @@ fun homescreen(
 
                 ) {
                     val predictions by viewModal.predictions.collectAsState()
-                    Text14_h2(text = "Select Delivery Address", color = headingColor, modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                        .padding(start = 20.dp, top = 20.dp))
+                    Text14_h2(
+                        text = "Select Delivery Address", color = headingColor, modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
+                            .padding(start = 20.dp, top = 20.dp)
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
                     // Text inside the curved background
                     CommonTextField(
-                        trailingIcon= com.bumptech.glide.R.drawable.abc_ic_search_api_material,
-                        iconColor=Color.LightGray,
+                        trailingIcon = com.bumptech.glide.R.drawable.abc_ic_search_api_material,
+                        iconColor = Color.LightGray,
                         text = address,
                         placeholder = stringResource(id = R.string.address),
                         modifier = Modifier.padding(horizontal = 10.dp)
                     ) {
-                        viewModal.searchAddress( it,placesClient)
-                    // namestate.value = it.length >= 3
+                        viewModal.searchAddress(it, placesClient)
+                        // namestate.value = it.length >= 3
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp)) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp)
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
                             contentDescription = "Location Icon",
@@ -192,17 +189,18 @@ fun homescreen(
 //                            colorFilter = ColorFilter.tint(seallcolor)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Column(modifier = Modifier.clickable{
+                        Column(modifier = Modifier.clickable {
                             sharedpreferenceCommon.getCombinedAddress()
                             val intent = Intent(context, HomeActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             context.startActivity(intent)
                         }) {
                             Text12_h1(
                                 text = "Use Your Current location",
                                 color = seallcolor,
 
-                            )
+                                )
                             Text12_body1(text = sharedpreferenceCommon.getCombinedAddress())
                         }
                         Spacer(modifier = Modifier.weight(1f))
@@ -220,32 +218,30 @@ fun homescreen(
                     Divider()
 
                     LazyColumn {
-                        items(predictions) {
-                                prediction ->
-                            Log.d("checkdata","${prediction.getFullText(null)}")
+                        items(predictions) { prediction ->
+                            Log.d("checkdata", "${prediction.getFullText(null)}")
 
-                            PredictionItem(prediction = prediction){
+                            PredictionItem(prediction = prediction) {
                                 sharedpreferenceCommon.setSearchAddress(it)
                                 val intent = Intent(context, HomeActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 context.startActivity(intent)
                             }
                         }
-
 
 
                     }
                 }
 
 
-
             }
         }
-    ){
+    ) {
         val coroutineScope = rememberCoroutineScope()
 
         Box(modifier = Modifier.fillMaxSize()) {
-            HeaderDeliveryTime(viewModal, navcontroller, scroll, lazyListState){
+            HeaderDeliveryTime(viewModal, navcontroller, scroll, lazyListState) {
                 coroutineScope.launch {
                     bottomSheetState.show()
                 }
@@ -258,13 +254,13 @@ fun homescreen(
                 SearchBar() {
                     navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
                 }
-            if(viewModal.getitemcountState.value>=1)
-            cardviewAddtoCart(
-                viewModal,
-                navcontroller,
-                context!!,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
+            if (viewModal.getitemcountState.value >= 1)
+                cardviewAddtoCart(
+                    viewModal,
+                    navcontroller,
+                    context!!,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
 
         }
     }
@@ -285,10 +281,6 @@ fun homescreen(
             )
 
 
-
-
-
-
 }
 
 @Composable
@@ -300,7 +292,7 @@ fun NoAvaibiltyScreen() {
             color = greyLightColor,
             modifier = Modifier.align(Alignment.CenterHorizontally),
 
-        )
+            )
 
     }
 }
@@ -315,11 +307,9 @@ fun BodyDashboard(
     context: Activity, availibilty: (Boolean) -> Unit
 ) {
 
-    var isDialog by remember { mutableStateOf(true) }
-    if (isDialog)
-        CommonProgressBar()
 
-   val padding by animateDpAsState(
+
+    val padding by animateDpAsState(
         targetValue = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT,
         animationSpec = tween(durationMillis = 300)
     )
@@ -330,61 +320,83 @@ fun BodyDashboard(
     val commonResponse by viewModal._availibilityCheck.collectAsState()
     val bannerImage by viewModal._bannerImage.collectAsState()
 
-    if(commonResponse.data?.statusCode==200) {
-        isDialog=false
-        Column(
-            //  verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = padding)
-                .verticalScroll(scroll)
-        ) {
-            TextField(
-                value = "",
-                shape = RoundedCornerShape(8.dp),
-                enabled = false,
-                onValueChange = {
-
-                },
+    Column(
+        //  verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = padding)
+            .verticalScroll(scroll)
+    ) {
+        if (exlusiveResponse.isLoading) {
+            ShimmerItemHeader()
+            LazyRow(
                 modifier = Modifier
+                    .padding(top = 15.dp)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(24.dp))
-                    .clickable {
-                        navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
+                // .height(260.dp)
+            ) {
+                repeat(5) {
+                    item {
+                        ShimmerAnimation()
+
                     }
-                    .padding(start = 10.dp, end = 10.dp),
-                placeholder = {
-                    Text12_body1(
-                        text = "Search Store",
-                        color = bodyTextColor,
+                }
+            }
+        }
+        if (bestSelling.isLoading)
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .fillMaxWidth()
+                // .height(260.dp)
+            ) {
+                repeat(5) {
+                    item {
+                        ShimmerAnimation()
+
+                    }
+                }
+            }
+        if (getProductCategory.isLoading)
+        LazyRow(
+            modifier = Modifier
+                .padding(top = 15.dp)
+                .fillMaxWidth()
+            // .height(260.dp)
+        ) {
+            repeat(5) {
+                item {
+                    ShimmerAnimation()
+
+                }
+            }
+        }
+
+        if (getProductCategory.isLoading)
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 15.dp)
+                    .fillMaxWidth()
+                // .height(260.dp)
+            ) {
+                repeat(5) {
+                    item {
+                        ShimmerAnimation()
+
+                    }
+                }
+            }
+        Log.d("image_for_banner", "test")
+        if (bannerImage.data?.statusCode == 200) {
+            if (bannerImage.data?.itemData?.isNotEmpty() == true) {
+                val imageUrls: MutableList<Pair<String, BannerImageResponse.ItemData>> =
+                    mutableListOf()
+                bannerImage.data!!.itemData.forEach { item ->
+                    Log.d(
+                        "image_for_banner",
+                        "${item.bannercategory1 != null}  ${item.bannercategory2 != null}  ${item.bannercategory3 != null}"
                     )
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.Transparent,
-                    trailingIconColor = titleColor,
-                    backgroundColor = greycolor,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                leadingIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            Icons.Default.Search, contentDescription = "",
-                        )
-                    }
-                },
-                singleLine = true,
-            )
-
-
-            Log.d("image_for_banner","test")
-            if(bannerImage.data?.statusCode==200){
-
-                val imageUrls:MutableList<Pair<String, BannerImageResponse.ItemData>> = mutableListOf()
-                for(item in bannerImage.data!!.itemData){
-                    Log.d("image_for_banner","${item.bannercategory1!=null}  ${item.bannercategory2!=null}  ${item.bannercategory3!=null}")
-                    if (item.bannercategory1?.isNotEmpty()==true) {
+                    if (item.bannercategory1?.isNotEmpty() == true) {
                         imageUrls.add(Pair(item.imageUrl1 ?: "", item))
                     }
                     if (item.bannercategory2 != null) {
@@ -394,367 +406,355 @@ fun BodyDashboard(
                         imageUrls.add(Pair(item.imageUrl3 ?: "", item))
                     }
                 }
+                if (imageUrls.isNotEmpty()) {
+                    TextField(
+                        value = "",
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = false,
+                        onValueChange = {
 
-
-
-                val pagerState = rememberPagerState(pageCount = imageUrls.size)
-
-                // Auto-scroll coroutine
-                LaunchedEffect(Unit) {
-                    while(true) {
-
-                        delay(2000)
-                        pagerState.animateScrollToPage(
-                            page = (pagerState.currentPage + 1) % (pagerState.pageCount),
-                            animationSpec = tween(600)
-                        )
-                    }
-                }
-
-                HorizontalPager( state = pagerState,modifier = Modifier.fillMaxSize()) { index ->
-                    Banner( url =  imageUrls[index].first,){
-                        viewModal.setItemDataClass(
-                            imageUrls[index].second,index
-                        )
-
-                       val parceable=PassParceableBanner(index,imageUrls[index].second)
-
-                        navcontroller.currentBackStackEntry?.savedStateHandle?.set("data", parceable)
-
-                        navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
-
-
-
-
-
-                    }
-                }
-                if(bannerImage.data!!.itemData[0].bannercategory1?.isNotEmpty()==true)
-                {
-                    Box(modifier = Modifier.background(color= whiteColor), contentAlignment = Alignment.TopCenter) {
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text14_h2(text = "${bannerImage.data!!.itemData.get(0).bannercategory1} Special",color= pendingColor)
-                        Spacer(modifier = Modifier.height(25.dp))
-                        ScrollingImageRow(size = 100.dp,imageUrls[0].second.subCategoryList){
-
-                            viewModal.setItemDataClass(
-                                imageUrls[0].second,0
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable {
+                                navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
+                            }
+                            .padding(start = 10.dp, end = 10.dp),
+                        placeholder = {
+                            Text12_body1(
+                                text = "Search Store",
+                                color = bodyTextColor,
                             )
-                            val parceable=PassParceableBanner(0,imageUrls[0].second)
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = Color.Transparent,
+                            trailingIconColor = titleColor,
+                            backgroundColor = greycolor,
+                            disabledIndicatorColor = Color.Transparent
+                        ),
+                        leadingIcon = {
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    Icons.Default.Search, contentDescription = "",
+                                )
+                            }
+                        },
+                        singleLine = true,
+                    )
 
-                            navcontroller.currentBackStackEntry?.savedStateHandle?.set("data", parceable)
+                    val pagerState = rememberPagerState(pageCount = imageUrls.size)
+
+                    // Auto-scroll coroutine
+                    LaunchedEffect(Unit) {
+                        while (true) {
+
+                            delay(2000)
+                            pagerState.animateScrollToPage(
+                                page = (pagerState.currentPage + 1) % (pagerState.pageCount),
+                                animationSpec = tween(600)
+                            )
+                        }
+                    }
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { index ->
+                        Banner(url = imageUrls[index].first) {
+                            viewModal.setItemDataClass(
+                                imageUrls[index].second, index
+                            )
+
+                            val parceable = PassParceableBanner(index, imageUrls[index].second)
+
+                            navcontroller.currentBackStackEntry?.savedStateHandle?.set(
+                                "data",
+                                parceable
+                            )
 
                             navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
 
 
                         }
                     }
+                    if (bannerImage.data!!.itemData[0].bannercategory1?.isNotEmpty() == true) {
+                        Box(
+                            modifier = Modifier.background(color = whiteColor),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text14_h2(
+                                text = "${bannerImage.data!!.itemData.get(0).bannercategory1} Special",
+                                color = pendingColor
+                            )
+                            Spacer(modifier = Modifier.height(25.dp))
+                            ScrollingImageRow(size = 100.dp, imageUrls[0].second.subCategoryList) {
 
-                }
+                                viewModal.setItemDataClass(
+                                    imageUrls[0].second, 0
+                                )
+                                val parceable = PassParceableBanner(0, imageUrls[0].second)
 
-            }
+                                navcontroller.currentBackStackEntry?.savedStateHandle?.set(
+                                    "data",
+                                    parceable
+                                )
 
-            //exclusive
-            if (exlusiveResponse.isLoading)
-                LazyRow(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .fillMaxWidth()
-                    // .height(260.dp)
-                ) {
-                    repeat(5) {
-                        item {
-                            ShimmerAnimation()
+                                navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
 
+
+                            }
                         }
+
                     }
                 }
-            else if (exlusiveResponse.data != null) {
+                //exclusive
+                if (exlusiveResponse.data != null) {
 //            if(exlusiveResponse.data!!.message=="no"){
 //                NoAvaibiltyScreen()
 //                return
 //            }
-                //exclusive offers
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp), Arrangement.SpaceBetween
-                ) {
-                    Text13_body1(
-                        text = "Exclusive Offers", color = Color.Black,
-                        modifier = Modifier
-                            .padding(start = 10.dp),
-                    )
-                    Text11_body2(
-                        "See all", color = seallcolor, modifier = Modifier
-                            .padding(top = 5.dp, end = 20.dp)
-                            .clickable {
-                                if (exlusiveResponse.data?.statusCode == 200) {
-                                    val list1 = exlusiveResponse.data?.list
-                                    context.launchActivity<ListItemsActivity>() {
-                                        putExtra(
-                                            "parced",
-                                            HomeAllProductsResponse(
-                                                list1,
-                                                "Exclusive Offers",
-                                                200
-                                            )
-                                        )
-
-                                    }
-                                }
-                            }
-                    )
-                }
-                LazyRow(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .fillMaxWidth()
-                    // .height(260.dp)
-                ) {
-
-                    if (exlusiveResponse.data?.statusCode == 200) {
-                        val list1 = exlusiveResponse.data?.list
-                        if (list1?.isEmpty() == true) {
-                            // availibilty(true)
-                            return@LazyRow
-                        }
-                        items(list1!!) { data ->
-                            ExclusiveOffers(data, context!!, navcontroller, viewModal)
-                        }
-                    } else {
-
-                    }
-                }
-
-            }
-
-
-            //Best selling
-            if (bestSelling.isLoading)
-                LazyRow(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .fillMaxWidth()
-                    // .height(260.dp)
-                ) {
-                    repeat(5) {
-                        item {
-                            ShimmerAnimation()
-
-                        }
-                    }
-                }
-            else if (bestSelling.data != null) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp), Arrangement.SpaceBetween
-                ) {
-                    Text13_body1(
-                        text = "Best Selling", color = Color.Black,
-                        modifier = Modifier
-                            .padding(start = 10.dp),
-                    )
-                    Text11_body2(
-                        "See all", color = seallcolor, modifier = Modifier
-                            .padding(top = 5.dp, end = 20.dp)
-                            .clickable {
-                                if (bestSelling.data?.statusCode == 200) {
-                                    val list1 = bestSelling.data?.list
-                                    context.launchActivity<ListItemsActivity>() {
-                                        putExtra(
-                                            "parced",
-                                            HomeAllProductsResponse(list1, "Best Selling", 200)
-                                        )
-                                    }
-                                }
-
-                            }
-                    )
-                }
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                    // .height(260.dp)
-                ) {
-
-                    if (bestSelling.data?.statusCode == 200) {
-                        val list1 = bestSelling.data?.list
-                        if (list1?.isNotEmpty() == true)
-                            items(list1) { data ->
-                                BestOffers(navcontroller, data, context, viewModal)
-                            }
-                    }
-                }
-            }
-
-
-//Cateory Wise
-            if (getProductCategory.isLoading)
-                LazyRow(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .fillMaxWidth()
-                    // .height(260.dp)
-                ) {
-                    repeat(5) {
-                        item {
-                            ShimmerAnimation()
-
-                        }
-                    }
-                }
-            else
-                Column(modifier = Modifier.fillMaxSize()) {
-
-                    //groceries
+                    //exclusive offers
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp)
+                            .padding(top = 10.dp), Arrangement.SpaceBetween
                     ) {
                         Text13_body1(
-                            text = "Groceries", color = Color.Black,
+                            text = "Exclusive Offers", color = Color.Black,
                             modifier = Modifier
-                                .weight(3f)
                                 .padding(start = 10.dp),
                         )
+                        Text11_body2(
+                            "See all", color = seallcolor, modifier = Modifier
+                                .padding(top = 5.dp, end = 20.dp)
+                                .clickable {
+                                    if (exlusiveResponse.data?.statusCode == 200) {
+                                        val list1 = exlusiveResponse.data?.list
+                                        context.launchActivity<ListItemsActivity>() {
+                                            putExtra(
+                                                "parced",
+                                                HomeAllProductsResponse(
+                                                    list1,
+                                                    "Exclusive Offers",
+                                                    200
+                                                )
+                                            )
 
+                                        }
+                                    }
+                                }
+                        )
                     }
-                    val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 4)
-                    getProductCategory.data?.itemData =
-                        getProductCategory.data?.itemData?.filter { it.subCategoryList?.isNotEmpty() == true }
-                    FlowRow(
-                        mainAxisSize = SizeMode.Expand,
+                    LazyRow(
+                        modifier = Modifier
+                            .padding(top = 15.dp)
+                            .fillMaxWidth()
+                        // .height(260.dp)
+                    ) {
 
-                        ) {
-                        if (getProductCategory.data?.itemData?.isNotEmpty() == true)
-                            for (i in 0 until getProductCategory.data?.itemData?.size!!) {
-                                GroceriesItems(
-                                    whiteColor,
-                                    getProductCategory.data?.itemData!![i].imageUrl!!,
-                                    getProductCategory.data?.itemData!![i],
-                                    navcontroller,
-                                    itemSize
-                                )
+                        if (exlusiveResponse.data?.statusCode == 200) {
+                            val list1 = exlusiveResponse.data?.list
+                            if (list1?.isEmpty() == true) {
+                                // availibilty(true)
+                                return@LazyRow
                             }
-                    }
-                }
-
-
-            //last list items
-            if (getProductCategory.isLoading)
-                LazyRow(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .fillMaxWidth()
-                    // .height(260.dp)
-                ) {
-                    repeat(5) {
-                        item {
-                            ShimmerAnimation()
+                            items(list1!!) { data ->
+                                ExclusiveOffers(data, context!!, navcontroller, viewModal)
+                            }
+                        } else {
 
                         }
                     }
+
                 }
-            else
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                )
-                {
-                    repeat(categoryWiseResponse.data?.list?.size ?: 0) {
-
-                        Card(
-                            elevation = 1.dp,
-                            shape = RoundedCornerShape(2.dp),
+                //Best selling
+                if (bestSelling.data != null) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp), Arrangement.SpaceBetween
+                    ) {
+                        Text13_body1(
+                            text = "Best Selling", color = Color.Black,
                             modifier = Modifier
-                                .padding(horizontal = 4.dp, vertical = 10.dp)
+                                .padding(start = 10.dp),
+                        )
+                        Text11_body2(
+                            "See all", color = seallcolor, modifier = Modifier
+                                .padding(top = 5.dp, end = 20.dp)
+                                .clickable {
+                                    if (bestSelling.data?.statusCode == 200) {
+                                        val list1 = bestSelling.data?.list
+                                        context.launchActivity<ListItemsActivity>() {
+                                            putExtra(
+                                                "parced",
+                                                HomeAllProductsResponse(list1, "Best Selling", 200)
+                                            )
+                                        }
+                                    }
 
+                                }
+                        )
+                    }
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                        // .height(260.dp)
+                    ) {
+
+                        if (bestSelling.data?.statusCode == 200) {
+                            val list1 = bestSelling.data?.list
+                            if (list1?.isNotEmpty() == true)
+                                items(list1) { data ->
+                                    BestOffers(navcontroller, data, context, viewModal)
+                                }
+                        }
+                    }
+                }
+
+//Cateory Wise
+                if (getProductCategory.data != null)
+                    Column(modifier = Modifier.fillMaxSize()) {
+
+                        //groceries
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp)
                         ) {
-                            Column() {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 10.dp), Arrangement.SpaceBetween
-                                ) {
+                            Text13_body1(
+                                text = "Groceries", color = Color.Black,
+                                modifier = Modifier
+                                    .weight(3f)
+                                    .padding(start = 10.dp),
+                            )
+
+                        }
+                        val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 4)
+                        getProductCategory.data?.itemData =
+                            getProductCategory.data?.itemData?.filter { it.subCategoryList?.isNotEmpty() == true }
+                        FlowRow(
+                            mainAxisSize = SizeMode.Expand,
+
+                            ) {
+                            if (getProductCategory.data?.itemData?.isNotEmpty() == true)
+                                for (i in 0 until getProductCategory.data?.itemData?.size!!) {
+                                    GroceriesItems(
+                                        whiteColor,
+                                        getProductCategory.data?.itemData!![i].imageUrl!!,
+                                        getProductCategory.data?.itemData!![i],
+                                        navcontroller,
+                                        itemSize
+                                    )
+                                }
+                        }
+                    }
+
+                //last list items
+                if (getProductCategory.data != null)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    )
+                    {
+                        repeat(categoryWiseResponse.data?.list?.size ?: 0) {
+
+                            Card(
+                                elevation = 1.dp,
+                                shape = RoundedCornerShape(2.dp),
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp, vertical = 10.dp)
+
+                            ) {
+                                Column() {
                                     Row(
-                                        modifier = Modifier.padding(horizontal = 10.dp),
-                                        Arrangement.spacedBy(10.dp)
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 10.dp), Arrangement.SpaceBetween
                                     ) {
+                                        Row(
+                                            modifier = Modifier.padding(horizontal = 10.dp),
+                                            Arrangement.spacedBy(10.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Home,
+                                                contentDescription = null,
+                                                tint = Color.LightGray,
+                                            )
+                                            Column() {
+                                                Text14_h1(
+                                                    text = categoryWiseResponse.data?.list?.get(
+                                                        it
+                                                    )?.categoryTitle ?: "", color = headingColor,
+                                                    modifier = Modifier
+
+                                                )
+                                                Text13_body1(
+                                                    text = categoryWiseResponse.data?.list?.get(
+                                                        it
+                                                    )?.category ?: "", color = greyLightColor,
+                                                    modifier = Modifier
+                                                )
+                                            }
+                                        }
                                         Icon(
-                                            imageVector = Icons.Default.Home,
+                                            imageVector = Icons.Default.ArrowForward,
                                             contentDescription = null,
                                             tint = Color.LightGray,
+                                            modifier = Modifier.clickable {
+                                                Log.d(
+                                                    "categorydata",
+                                                    "${categoryWiseResponse.data}"
+                                                )
+                                                viewModal.setcategory(
+                                                    categoryWiseResponse.data?.list?.get(
+                                                        it
+                                                    )?.categoryTitle ?: ""
+                                                )
+                                                navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
+                                            }
                                         )
-                                        Column() {
-                                            Text14_h1(
-                                                text = categoryWiseResponse.data?.list?.get(
-                                                    it
-                                                )?.categoryTitle ?: "", color = headingColor,
-                                                modifier = Modifier
 
-                                            )
-                                            Text13_body1(
-                                                text = categoryWiseResponse.data?.list?.get(
-                                                    it
-                                                )?.category ?: "", color = greyLightColor,
-                                                modifier = Modifier
-                                            )
-                                        }
-                                    }
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowForward,
-                                        contentDescription = null,
-                                        tint = Color.LightGray,
-                                        modifier = Modifier.clickable {
-                                            Log.d("categorydata","${categoryWiseResponse.data}")
-                                            viewModal.setcategory(
-                                                categoryWiseResponse.data?.list?.get(
-                                                    it
-                                                )?.categoryTitle     ?: ""
-                                            )
-                                            navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
-                                        }
-                                    )
-
-                                }
-
-                                Spacer(modifier = Modifier.height(5.dp))
-                                val itemSize: Dp =
-                                    (LocalConfiguration.current.screenWidthDp.dp / 2.1f)
-                                FlowRow(
-                                    mainAxisSize = SizeMode.Expand,
-                                    mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
-                                ) {
-                                    for (i in 0 until categoryWiseResponse.data?.list?.get(
-                                        it
-                                    )!!.ls?.size!!) {
-                                        CateoryWiseItems(
-                                            categoryWiseResponse.data?.list?.get(it)!!.ls?.get(
-                                                i
-                                            )!!,
-                                            context, navcontroller, viewModal, itemSize
-                                        )
                                     }
 
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    val itemSize: Dp =
+                                        (LocalConfiguration.current.screenWidthDp.dp / 2.1f)
+                                    FlowRow(
+                                        mainAxisSize = SizeMode.Expand,
+                                        mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
+                                    ) {
+                                        for (i in 0 until categoryWiseResponse.data?.list?.get(
+                                            it
+                                        )!!.ls?.size!!) {
+                                            CateoryWiseItems(
+                                                categoryWiseResponse.data?.list?.get(it)!!.ls?.get(
+                                                    i
+                                                )!!,
+                                                context, navcontroller, viewModal, itemSize
+                                            )
+                                        }
+
+                                    }
+                                    Spacer(modifier = Modifier.height(20.dp))
                                 }
-                                Spacer(modifier = Modifier.height(20.dp))
+
+
                             }
-
-
                         }
+                        Spacer(modifier = Modifier.height(30.dp))
                     }
-                    Spacer(modifier = Modifier.height(30.dp))
-                }
-
+            } else {
+                NoAvaibiltyScreen()
+            }
         }
+
+
     }
-    else if(commonResponse.data?.statusCode==201){
-        isDialog=false
-        NoAvaibiltyScreen()
-    }
+
 
 }
 
@@ -810,7 +810,7 @@ fun SearchBar(
 fun HeaderDeliveryTime(
     viewModal: HomeAllProductsViewModal,
     navcontroller: NavHostController,
-    scroll: ScrollState, lazyListState: LazyListState, call:()->Unit
+    scroll: ScrollState, lazyListState: LazyListState, call: () -> Unit
 ) {
 
     Column(modifier = Modifier.height(height = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT)) {
@@ -874,7 +874,7 @@ fun HeaderDeliveryTime(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Banner(
-    url:String,call: () -> Unit
+    url: String, call: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -1045,7 +1045,7 @@ fun CateoryWiseItems(
                     Alignment.End
                 ),
 
-            )
+                )
             Image(
                 painter = rememberImagePainter(data.productImage1),
                 contentDescription = "splash image",
@@ -1161,7 +1161,7 @@ fun BestOffers(
                     Alignment.End
                 ),
 
-            )
+                )
 
             Image(
 
@@ -1277,7 +1277,6 @@ fun GroceriesItems(
         ) {
 
 
-
             Image(
                 painter = rememberImagePainter(drawable),
                 contentDescription = "splash image",
@@ -1293,9 +1292,8 @@ fun GroceriesItems(
                         .align(Alignment.CenterHorizontally),
 
 
-                )
+                    )
             }
-
 
 
         }
@@ -1332,6 +1330,7 @@ fun ShimmerItem(
     brush: Brush
 ) {
     Column(modifier = Modifier.padding(10.dp)) {
+
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
@@ -1342,6 +1341,42 @@ fun ShimmerItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(30.dp)
+                .padding(vertical = 8.dp)
+                .background(brush = brush)
+        )
+    }
+}
+@Composable
+fun ShimmerItemHeader(
+
+) {
+    val transition = rememberInfiniteTransition()
+    val translateAnim by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+            RepeatMode.Reverse
+        )
+    )
+
+    val brush = Brush.linearGradient(
+        colors = ShimmerColorShades,
+        start = Offset(10f, 10f),
+        end = Offset(translateAnim, translateAnim)
+    )
+    Column(modifier = Modifier.padding(10.dp)) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .background(brush = brush)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
                 .padding(vertical = 8.dp)
                 .background(brush = brush)
         )
@@ -1361,67 +1396,136 @@ fun cardviewAddtoCart(
         shape = RoundedCornerShape(10.dp),
         backgroundColor = seallcolor, modifier = modifier
             .fillMaxWidth()
-            .height(65.dp)
-            .padding(5.dp)
+            .height(85.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp)
+
             .clickable {
                 navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
             }
+            .border(
+                width = 1.dp, // Border width
+                color = greyLightColor, // Border color
+                shape = RoundedCornerShape(10.dp) // Match the card's shape
+            )
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
     ) {
-        Box(
+        Column(
             modifier = Modifier
-
+                .fillMaxWidth()
+                .background(whiteColor)
         ) {
-            ConstraintLayout(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(2.dp)
-            ) {
-                var (l0, l1, l2) = createRefs()
-                Image(
-                    painter = painterResource(id = R.drawable.cart_icon),
-                    contentDescription = "Carrot Icon",
-                    alignment = Alignment.Center,
-                    modifier = Modifier
-                        .width(40.dp)
-                        .padding(top = 10.dp)
-                        .height(40.dp)
-                        .constrainAs(l0) {
-                            start.linkTo(parent.start)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        }
+            if (viewmodal.getitempriceState.value < 100) {
+                Row(modifier = Modifier) {
+                    Image(
+                        painter = painterResource(id = com.grocery.mandixpress.R.drawable.bike_delivery),
 
-                )
-                Column(Modifier.constrainAs(l1) {
-                    start.linkTo(l0.end)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                }) {
-                    Text12_body1(
-                        text = "${viewmodal.getitemcountState.value.toString()} items",
-                        color = Color.White
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding()
+                            .width(30.dp)
+                            .height(30.dp)
+                            .padding(start = 10.dp)
+
+
                     )
-                    Text12_body1(
-                        text = "₹ ${viewmodal.getitempriceState.value.toString()}",
-                        color = Color.White
-                    )
-
-
+                    Column() {
+                        Text10_h2(
+                            text = "Free Delivery",
+                            color = Purple700,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                        Text10_h2(
+                            text = "Add item worth ${100 - viewmodal.getitempriceState.value}",
+                            color = headingColor,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
                 }
 
-                Text13_body1(
-                    text = "view cart >",
-                    color = Color.White,
-                    modifier = Modifier.constrainAs(l2) {
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
+            } else {
+                Row(modifier = Modifier.padding(start = 10.dp)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.unlocked),
+
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding()
+                            .width(20.dp)
+                            .height(20.dp)
+                    )
+                    Column() {
+                        Text10_h2(
+                            text = "whoo! got free delivery",
+                            color = Purple700,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                        Text10_h2(
+                            text = "No coupons Required",
+                            color = headingColor,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
+                }
+
+
+            }
+            Box(
+                modifier = Modifier.background(color = seallcolor)
+
+            ) {
+                ConstraintLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(2.dp)
+                ) {
+                    var (l0, l1, l2) = createRefs()
+                    Image(
+                        painter = painterResource(id = R.drawable.cart_icon),
+                        contentDescription = "Carrot Icon",
+                        alignment = Alignment.Center,
+                        modifier = Modifier
+                            .width(40.dp)
+                            .padding(top = 10.dp)
+                            .height(40.dp)
+                            .constrainAs(l0) {
+                                start.linkTo(parent.start)
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                            }
+
+                    )
+                    Column(Modifier.constrainAs(l1) {
+                        start.linkTo(l0.end)
                         top.linkTo(parent.top)
-                    })
+                        bottom.linkTo(parent.bottom)
+                    }) {
+                        Text12_body1(
+                            text = "${viewmodal.getitemcountState.value.toString()} items",
+                            color = Color.White
+                        )
+                        Text12_body1(
+                            text = "₹ ${viewmodal.getitempriceState.value.toString()}",
+                            color = Color.White
+                        )
+
+
+                    }
+
+                    Text13_body1(
+                        text = "view cart >",
+                        color = Color.White,
+                        modifier = Modifier.constrainAs(l2) {
+                            end.linkTo(parent.end)
+                            bottom.linkTo(parent.bottom)
+                            top.linkTo(parent.top)
+                        })
+
+                }
 
             }
 
         }
+
     }
 }
 

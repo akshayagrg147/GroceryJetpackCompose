@@ -7,25 +7,41 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text10_h2
+import com.grocery.mandixpress.Utils.launchActivity
 import com.grocery.mandixpress.features.Home.ui.ui.theme.seallcolor
 import com.grocery.mandixpress.features.Home.ui.ui.theme.whiteColor
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun onlineconnection(call:(Boolean)->Unit) {
+    val retryclicked= remember {
+        mutableStateOf(false)
+    }
+    if(retryclicked.value){
+        LocalContext.current.launchActivity<LoginActivity>() {
+
+
+        }
+
+    }
     Card(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier.padding(10.dp,5.dp,10.dp,10.dp),
         elevation = 8.dp
     ){
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier
+                .padding(20.dp)
                 .background(whiteColor),
 
         ) {
@@ -49,12 +65,14 @@ fun onlineconnection(call:(Boolean)->Unit) {
                     .padding(top = 20.dp),
                 backgroundColor = seallcolor
             ){
-                call(true)
+                retryclicked.value=true
             }
 
             Text10_h2(
                 text = "Please check your internet connection",
-                modifier = Modifier.padding(top = 20.dp).align(CenterHorizontally)
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .align(CenterHorizontally)
             )
         }
     }

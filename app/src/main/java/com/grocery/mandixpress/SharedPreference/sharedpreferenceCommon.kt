@@ -28,7 +28,7 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     }
 
     fun setPinCode(picode: String): Any {
-        return mPrefs.edit().putString(AppConstant.pincode, picode).apply()
+        return mPrefs.edit().putString(AppConstant.pincode, "136027").apply()
     }
 
     fun setCombineAddress(comibineAddress: String): Any {

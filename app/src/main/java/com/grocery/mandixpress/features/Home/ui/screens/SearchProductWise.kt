@@ -212,9 +212,8 @@ fun SearchScreenProducts(
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search,
                 keyboardType = KeyboardType.Text // Set keyboard type to Text
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
+                        ),
+            modifier = Modifier.fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
                 .padding(start = 10.dp, end = 10.dp, top = 10.dp)
                 .focusRequester(focusRequester = focusRequester),
@@ -229,7 +228,7 @@ fun SearchScreenProducts(
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.Transparent,
+                cursorColor = Color.LightGray,
                 trailingIconColor = titleColor,
                 backgroundColor = greycolor,
                 disabledIndicatorColor = Color.Transparent

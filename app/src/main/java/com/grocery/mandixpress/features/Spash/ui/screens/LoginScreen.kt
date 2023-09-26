@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -111,71 +112,51 @@ fun loginScreen(
 
 
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.White),
+    Box(modifier = Modifier.fillMaxSize().background(color = Color.White),
         contentAlignment = Alignment.TopCenter
     ){
        // CurvedBackground()
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-
-//            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-
-                contentDescription = "splash image",
-                modifier = Modifier
-                    .fillMaxWidth().
-                        size(100.dp)
-
-                    .align(Alignment.CenterHorizontally)
-
-            )
-            Text18_h1(
-                text = "Shop Smart, Shop Quick", color = headingColor,
-                modifier = Modifier.padding(bottom = 5.dp, top = 15.dp, start = 10.dp).fillMaxWidth().align(Alignment.CenterHorizontally)
-            )
-
-            if (!isCompleted)
-            {
+        Column(modifier = Modifier.fillMaxSize().padding(20.dp),) {
+            Image(painter = painterResource(id = R.drawable.logo), contentDescription = "splash image", modifier = Modifier.fillMaxWidth().size(100.dp).align(Alignment.CenterHorizontally))
+            Text18_h1(text = "Shop Smart, Shop Quick", color = headingColor, modifier = Modifier.padding(bottom = 5.dp, top = 15.dp, start = 10.dp).fillMaxWidth().align(Alignment.CenterHorizontally))
+            if (!isCompleted) {
                 Text12_body1(
-                    text = "Log in or Sign Up. ", color = headingColor,
+                    text = "Log in or Sign Up. ",
+                    color = headingColor,
                     modifier = Modifier.padding(bottom = 5.dp, top = 2.dp, start = 10.dp)
                 )
 
-                OutlinedTextField(value = mobile,
-
-
-                    keyboardOptions = KeyboardOptions .Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                OutlinedTextField(
+                    value = mobile,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
                     onValueChange = {
                         mobile = it
                     },
-                    leadingIcon =  { Text("+91") },
+                    leadingIcon = { Text("+91") },
                     label = { Text(text = "Enter Mobile  no.") }, modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
-                , shape = RoundedCornerShape(16.dp)
+                        .padding(10.dp), shape = RoundedCornerShape(16.dp)
                 )
                 Spacer(modifier = Modifier.height(5.dp))
-                Column(Modifier.fillMaxWidth()) {
+                Column(
+                    Modifier.fillMaxSize(),
+                ) {
 
-                    Row(verticalAlignment = Alignment.Bottom) {
+                    Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom,) {
                         CommonButton(
                             text = "Continue",
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 10.dp,end=10.dp),
+                                .fillMaxWidth().align(Alignment.Bottom)
+                                .padding(start = 10.dp, end = 10.dp),
                             backgroundColor = titleColor,
                             color = Color.White,
-                            enabled = mobile.length==10
+                            enabled = mobile.length == 10
 
                         ) {
-                            if(mobile.length!=10)
+                            if (mobile.length != 10)
                                 return@CommonButton
                             scope.launch(Dispatchers.Main) {
                                 viewModal.createUserWithPhone(
@@ -188,10 +169,12 @@ fun loginScreen(
                                             context.showMsg(it.data)
                                             isCompleted = true
                                         }
+
                                         is ApiState.Failure -> {
                                             isDialog = false
                                             context.showMsg(it.msg.toString())
                                         }
+
                                         ApiState.Loading -> {
                                             isDialog = true
                                         }
@@ -200,14 +183,14 @@ fun loginScreen(
                             }
 
                         }
+
+
                     }
 
                 }
-
             }
             else{
-
-                    Text12_body1(
+                  Text12_body1(
                         text = "Please Enter 6 digit code sent on +91${mobile}", color = fadedTextColor,
                         modifier = Modifier.padding( start = 10.dp)
                     )
@@ -216,7 +199,7 @@ fun loginScreen(
                         otp = it
                     }
                     Spacer(modifier = Modifier.height(20.dp))
-                resendTimer(){
+                    resendTimer(){
                     if(it){
                         scope.launch(Dispatchers.Main) {
                             viewModal.createUserWithPhone(
@@ -241,29 +224,21 @@ fun loginScreen(
                         }
                     }
                 }
-                    CommonButton(
-                        text = "Submit Otp",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        backgroundColor = titleColor,
-                        color = Color.White,
-                        enabled = otp.length==6
-
-
-                    ) {
-
-
-                        scope.launch(Dispatchers.Main) {
+                Column(modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Bottom
+                    ){
+                        CommonButton(text = "Submit Otp", modifier = Modifier.fillMaxWidth().padding(10.dp),
+                            backgroundColor = titleColor,
+                            color = Color.White,
+                            enabled = otp.length==6) {
+                            scope.launch(Dispatchers.Main) {
                                 viewModal.signWithCredential(
                                     otp
                                 ).collect {
                                     when (it) {
                                         is ApiState.Success -> {
                                             context.showMsg(it.data)
-
                                             loginResponse=true
-
                                         }
                                         is ApiState.Failure -> {
                                             isDialog = false
@@ -277,18 +252,19 @@ fun loginScreen(
                                 }
                             }
 
-                    }
 
+                        }
+                    Text13_body1(
+                        text = "By Continuing in our T&C",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+
+                    )
+
+                }
 
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ){
-                Text10_h2(text = "By Continuing in our T&C",  modifier = Modifier.align(
-                    Alignment.BottomCenter))
-            }
+
 
 
         }

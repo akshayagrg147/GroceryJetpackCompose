@@ -64,10 +64,8 @@ val context= LocalContext.current.getActivity()
                     .height(10.dp)
             )
 
-            Row(
-                modifier = Modifier.padding(vertical = 10.dp)
-            ) {
-                Column (){
+            Row(modifier = Modifier.padding(vertical = 10.dp)) {
+                Column (modifier = Modifier.padding(5.dp)){
                     val namestate = remember {
                         mutableStateOf(true)
                     }
@@ -83,21 +81,11 @@ val context= LocalContext.current.getActivity()
                             color = redColor,
                             modifier = Modifier.align(Alignment.End)
                         )
-
-                }
-            }
-
-            Row(
-                modifier = Modifier.padding(vertical = 10.dp)
-            ) {
-                Column() {
+                    Spacer(modifier  = Modifier.height(10.dp))
                     val phonenumberstate = remember {
                         mutableStateOf(true)
                     }
-                    CommonNumberField(
-                        text = phonenumber,
-                        placeholder = stringResource(id =com.grocery.mandixpress. R.string.phone_number)
-                    ) {
+                    CommonNumberField(text = phonenumber, placeholder = stringResource(id =com.grocery.mandixpress.R.string.phone_number)) {
                         phonenumberstate.value = it.length == 10
                     }
                     if (!phonenumberstate.value)
@@ -106,20 +94,11 @@ val context= LocalContext.current.getActivity()
                             color = redColor,
                             modifier = Modifier.align(Alignment.End)
                         )
-
-                }
-            }
-            Row(
-                modifier = Modifier.padding(vertical = 10.dp)
-            ) {
-                Column() {
+                    Spacer(modifier  = Modifier.height(10.dp))
                     val pincodelocal = remember {
                         mutableStateOf(true)
                     }
-                    CommonNumberField(
-                        text = pincode,
-                        placeholder = stringResource(id = com.grocery.mandixpress.R.string.pincode)
-                    ) {
+                    CommonNumberField(text = pincode, placeholder = stringResource(id = com.grocery.mandixpress.R.string.pincode)) {
                         pincodelocal.value = it.length == 6
 
                         when (it) {
@@ -144,33 +123,20 @@ val context= LocalContext.current.getActivity()
 
                     }
 
-                            if(pincode.value== "136027" || pincode.value== "122505"|| pincode.value== ""){
+                    if(pincode.value== "136027" || pincode.value== "122505"|| pincode.value== ""){
 
-                            }else{
-                                if (pincode.value.length>5){
-                                    Text12_body1(
-                                        text = "Not available in your city",
-                                        color = redColor,
-                                        modifier = Modifier.align(Alignment.End)
-                                    )
-                                }
+                    }else{
+                        if (pincode.value.length>5){
+                            Text12_body1(
+                                text = "Not available in your city",
+                                color = redColor,
+                                modifier = Modifier.align(Alignment.End)
+                            )
+                        }
 
-                            }
-
-
-
-
-
-
-
-                }
-            }
-
-
-            Row(
-                modifier = Modifier.padding(vertical = 10.dp)
-            ) {
-                Column() {
+                    }
+                    Spacer(modifier =  Modifier.height(10.dp
+                    ))
                     val address = remember {
                         mutableStateOf(true)
                     }
@@ -188,29 +154,14 @@ val context= LocalContext.current.getActivity()
                             color = redColor,
                             modifier = Modifier.align(Alignment.End)
                         )
-
-                }
-            }
-            Row(
-                modifier = Modifier.padding(vertical = 10.dp)
-            ) {
-                Column() {
-
+                    Spacer(modifier = Modifier.height(10.dp))
                     CommonTextFieldNonEditable(
                         text = city,
                         placeholder = stringResource(id = com.grocery.mandixpress.R.string.city)
                     ) {
 
                     }
-
-
-
-                }
-            }
-            Row(
-                modifier = Modifier.padding(vertical = 10.dp)
-            ) {
-                Column() {
+                    Spacer(modifier = Modifier.height(10.dp))
                     val landmarkstate = remember {
                         mutableStateOf(true)
                     }

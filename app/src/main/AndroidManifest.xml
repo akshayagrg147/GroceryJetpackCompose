@@ -31,11 +31,13 @@
         <activity
             android:name="com.grocery.mandixpress.features.Home.ui.screens.ListItemsActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_list_items"
             android:theme="@style/Theme.GroceryApp" />
         <activity
             android:name="com.grocery.mandixpress.LoginActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustNothing"
             android:label="@string/app_name"
             android:theme="@style/Theme.GroceryApp">
             <intent-filter>
@@ -50,6 +52,7 @@
         <activity
             android:name="com.grocery.mandixpress.features.Home.ui.screens.HomeActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_home_screen"
             android:theme="@style/Theme.GroceryApp">
 

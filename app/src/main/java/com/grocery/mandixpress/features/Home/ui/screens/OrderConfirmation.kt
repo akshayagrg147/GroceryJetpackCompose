@@ -52,28 +52,13 @@ fun OrderConfirmation(
 
     }
     if (data.statusCode == 200){
+
         showNotification(LocalContext.current,"Order Placed")
         Column(modifier = Modifier.fillMaxSize()) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(), verticalArrangement = Arrangement.Center
-
-            ) {
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 viewModal.deleteCartItems()
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(20.dp),
-                    shape = RoundedCornerShape(8.dp), elevation = 10.dp
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .background(whiteColor)
-                            .padding(20.dp)
-                            .clickable { }
-                    ) {
+                Card(modifier = Modifier.fillMaxWidth().padding(20.dp), shape = RoundedCornerShape(8.dp), elevation = 10.dp) {
+                    Column(modifier = Modifier.background(whiteColor).padding(20.dp).clickable { }) {
                         Box(modifier = Modifier.fillMaxWidth(), Alignment.Center) {
                             Image(
                                 painter = rememberImagePainter(
@@ -160,18 +145,19 @@ fun OrderConfirmation(
                                 .padding(vertical = 5.dp)
                         )
 
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 10.dp), Arrangement.SpaceBetween
                         ) {
                             Text13_body1(
-                                text = "Deliver Address:",
+                                text = "Order Date:",
                                 modifier = Modifier
-                                    .padding(vertical = 5.dp)
+
                             )
                             Text12_body1(
-                                text = "${data.productResponse?.address}",
+                                text = "${data.productResponse?.createdDate}",
                                 modifier = Modifier
                                     .padding(vertical = 5.dp)
                             )
@@ -179,9 +165,7 @@ fun OrderConfirmation(
                         }
 
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp), Arrangement.SpaceBetween
                         ) {
                             Text13_body1(
                                 text = "Contact Number:",
@@ -201,12 +185,12 @@ fun OrderConfirmation(
                                 .padding(horizontal = 10.dp), Arrangement.SpaceBetween
                         ) {
                             Text13_body1(
-                                text = "Order Date:",
+                                text = "Deliver Address:",
                                 modifier = Modifier
                                     .padding(vertical = 5.dp)
                             )
                             Text12_body1(
-                                text = "${data.productResponse?.createdDate}",
+                                text = "${data.productResponse?.address}",
                                 modifier = Modifier
                                     .padding(vertical = 5.dp)
                             )
@@ -214,30 +198,20 @@ fun OrderConfirmation(
                         }
 
 
+
                     }
                 }
 
             }
-
-
         }
     }
 
     else
         Column(modifier = Modifier.fillMaxSize()) {
-
             Column(
-                modifier = Modifier
-                    .fillMaxSize(), verticalArrangement = Arrangement.Center
-
-            ) {
-
-
+                modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(20.dp),
+                    modifier = Modifier.fillMaxWidth().padding(20.dp),
                     shape = RoundedCornerShape(8.dp), elevation = 10.dp
                 ) {
                     Column(
@@ -293,8 +267,6 @@ fun OrderConfirmation(
                 }
 
             }
-
-
         }
 
 

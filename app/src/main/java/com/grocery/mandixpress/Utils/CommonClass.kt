@@ -1,6 +1,7 @@
 package com.grocery.mandixpress.Utils
 
 import android.annotation.SuppressLint
+import android.text.Layout
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -87,8 +90,8 @@ fun Text14_h2(text: String, color: Color = headingColor, modifier: Modifier = Mo
     Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 14.sp,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
 @Composable
-fun Text10_h2(text: String, color: Color = headingColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 10.sp,maxLines = 2,overflow = TextOverflow.Ellipsis )
+fun Text10_h2(text: String, color: Color = headingColor, modifier: Modifier = Modifier, ) {
+    Text(text = text, style = loginTypography.h2, color = color, modifier = modifier,fontSize = 10.sp,maxLines = 2,overflow = TextOverflow.Ellipsis)
 }
 
 @Composable
@@ -199,40 +202,40 @@ fun CommonNumberField(
     onClick: (String) -> Unit = {}
 
 ) {
-    TextField(
-        value = text.value,
-        onValueChange = { text.value=it
+    OutlinedTextField(value = text.value, onValueChange = { text.value=it
             onClick(it)},
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.White,
-            focusedLabelColor = fadedTextColor,
-            textColor = headingColor,
-            unfocusedLabelColor = fadedTextColor,
-            unfocusedIndicatorColor = Color.Transparent, // Remove unfocused underline
-            focusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = fadedTextColor,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.White,
+                focusedLabelColor = fadedTextColor,
+                textColor = headingColor,
+                unfocusedLabelColor = fadedTextColor,
+                unfocusedIndicatorColor = Color.LightGray, // Remove unfocused underline
+                focusedIndicatorColor = Color.LightGray,
+                disabledIndicatorColor = fadedTextColor,
 
-        ),
-        label = { Text(text = placeholder) },
-        trailingIcon = {
-            Icon(
-                painter = painterResource(id = trailingIcon),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(size),
-                tint = iconColor,
+                ),
+            label = { Text(text = placeholder) },
+            trailingIcon = {
+                Icon(
+                    painter = painterResource(id = trailingIcon),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(size),
+                    tint = iconColor,
+                )
+            },
+            modifier = modifier
+                .fillMaxWidth().border(1.dp, Color.Transparent, shape = RoundedCornerShape(4.dp))
+                .clickable { onClick(text.value) },
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            enabled = enable,
+            textStyle = TextStyle(
+                color = Color.Black
             )
-        },
-        modifier = modifier
-            .fillMaxWidth().border(1.dp, Color.Transparent, shape = RoundedCornerShape(4.dp))
-            .clickable { onClick(text.value) },
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        enabled = enable,
-        textStyle = TextStyle(
-            color = Color.Black
         )
-    )
-}
+    }
+
+
 @Composable
 fun CommonTextField(
     text: MutableState<String>,
@@ -246,28 +249,21 @@ fun CommonTextField(
     onClick: (String) -> Unit = {}
 
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .border(1.dp, borderColor, androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
-            .background(Color.White, androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
-            .clickable(enabled = enable) { /* Handle click if needed */ }
-    ) {
-
-
-        TextField(
+    OutlinedTextField(
             value = text.value,
             onValueChange = {
                 text.value = it
                 onClick(it)
             },
+        // Use the `textFieldColors` parameter to set the outline color
+
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 focusedLabelColor = fadedTextColor,
                 textColor = headingColor,
                 unfocusedLabelColor = fadedTextColor,
-                unfocusedIndicatorColor = Color.Transparent, // Remove unfocused underline
-                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.LightGray, // Remove unfocused underline
+                focusedIndicatorColor = Color.LightGray,
                 disabledIndicatorColor = fadedTextColor
             ),
             label = { Text(text = placeholder) },
@@ -289,8 +285,8 @@ fun CommonTextField(
                 color = Color.Black
             )
         )
-    }
 }
+
 
 
 @Composable
@@ -306,16 +302,10 @@ fun CommonTextFieldNonEditable(
     onClick: (String) -> Unit = {}
 
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .border(1.dp, borderColor, androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
-            .background(Color.White, androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
-            .clickable(enabled = enable) { /* Handle click if needed */ }
-    ) {
 
 
-    TextField(
+
+   OutlinedTextField(
         value = text.value,
         onValueChange = {
             text.value = it
@@ -326,8 +316,8 @@ fun CommonTextFieldNonEditable(
             focusedLabelColor = fadedTextColor,
             textColor = headingColor,
             unfocusedLabelColor = fadedTextColor,
-            unfocusedIndicatorColor = Color.Transparent, // Remove unfocused underline
-            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.LightGray, // Remove unfocused underline
+            focusedIndicatorColor = Color.LightGray,
             disabledIndicatorColor = fadedTextColor,
 
         ),
@@ -351,4 +341,4 @@ fun CommonTextFieldNonEditable(
         )
     )
 }
-}
+

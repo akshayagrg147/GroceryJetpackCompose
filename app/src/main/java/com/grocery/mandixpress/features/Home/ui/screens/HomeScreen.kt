@@ -86,10 +86,10 @@ fun homescreen(
     val scope = rememberCoroutineScope()
     val address = remember { mutableStateOf("") }
     LaunchedEffect(key1 = Unit) {
-//        viewModal.onEvent(
-//            HomeEvent.AreaAvailibilityEventFlow
-//
-//        )
+        viewModal.onEvent(
+            HomeEvent.adminDetailsEventFlow
+
+        )
         viewModal.onEvent(
             HomeEvent.BannerImageEventFlow
         )
@@ -219,10 +219,12 @@ fun homescreen(
 
                     LazyColumn {
                         items(predictions) { prediction ->
-                            Log.d("checkdata", "${prediction.getFullText(null)}")
 
                             PredictionItem(prediction = prediction) {
                                 sharedpreferenceCommon.setSearchAddress(it)
+                                Log.d("pincodeExtrct", "${it}")
+
+//                                sharedpreferenceCommon.setPinCode(it)
                                 val intent = Intent(context, HomeActivity::class.java)
                                 intent.flags =
                                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -254,7 +256,7 @@ fun homescreen(
                 SearchBar() {
                     navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
                 }
-            if (viewModal.getitemcountState.value >= 1)
+            if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
                 cardviewAddtoCart(
                     viewModal,
                     navcontroller,
@@ -285,9 +287,15 @@ fun homescreen(
 
 @Composable
 fun NoAvaibiltyScreen() {
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,horizontalAlignment = Alignment.CenterHorizontally ) {
+        Image(
+            painter =  painterResource(id = R.drawable.not_available),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.size(200.dp)
+        )
         Text18_h1(
-            text = "Not Available in your area",
+            text = "we will available soon in your area \uD83D\uDE0A",
 
             color = greyLightColor,
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -317,7 +325,6 @@ fun BodyDashboard(
     val categoryWiseResponse by viewModal.categoryWiseResponse.collectAsState()
     val getProductCategory by viewModal.getProductCategory.collectAsState()
     val bestSelling by viewModal.bestSelling.collectAsState()
-    val commonResponse by viewModal._availibilityCheck.collectAsState()
     val bannerImage by viewModal._bannerImage.collectAsState()
 
     Column(
@@ -710,9 +717,9 @@ fun BodyDashboard(
                                                     "${categoryWiseResponse.data}"
                                                 )
                                                 viewModal.setcategory(
-                                                    categoryWiseResponse.data?.list?.get(
+                                                    "${categoryWiseResponse.data?.list?.get(
                                                         it
-                                                    )?.categoryTitle ?: ""
+                                                    )?.categoryTitle}"
                                                 )
                                                 navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
                                             }
@@ -1414,7 +1421,7 @@ fun cardviewAddtoCart(
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
-            if (viewmodal.getitempriceState.value < 100) {
+            if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice().toInt()) {
                 Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = com.grocery.mandixpress.R.drawable.bike_delivery),
@@ -1435,7 +1442,7 @@ fun cardviewAddtoCart(
                             modifier = Modifier.padding(start = 10.dp)
                         )
                         Text10_h2(
-                            text = "Add item worth ${100 - viewmodal.getitempriceState.value}",
+                            text = "Add item worth ${viewmodal.getFreeDeliveryMinPrice().toInt() - viewmodal.getitempriceState.value}",
                             color = headingColor,
                             modifier = Modifier.padding(start = 10.dp)
                         )

@@ -123,7 +123,7 @@ val context= LocalContext.current.getActivity()
 
                     }
 
-                    if(pincode.value== "136027" || pincode.value== "122505"|| pincode.value== ""){
+                    if(viewModal.getAllAvailablePostalCodes().contains(pincode.value)||(pincode.value=="")){
 
                     }else{
                         if (pincode.value.length>5){

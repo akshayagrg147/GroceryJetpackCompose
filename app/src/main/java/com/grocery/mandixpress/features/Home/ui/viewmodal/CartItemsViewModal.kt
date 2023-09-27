@@ -63,6 +63,9 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
         emitProductId.tryEmit(product_id)
         callingItemsCollectionsId(emitProductId)
     }
+    fun getFreeDeliveryMinPrice():String{
+        return sharedpreferenceCommon.getMinimumDeliveryAmount()
+    }
 
     fun getAllAddressItems() = viewModelScope.launch {
         repo.getAddressItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }.collect {

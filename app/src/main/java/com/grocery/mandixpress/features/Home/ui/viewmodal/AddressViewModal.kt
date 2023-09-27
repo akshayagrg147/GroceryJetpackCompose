@@ -10,6 +10,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.grocery.mandixpress.RoomDatabase.CartItems
 import com.grocery.mandixpress.RoomDatabase.Dao
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,12 +21,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class   AddressViewModal @Inject constructor(val dao: Dao):ViewModel() {
+class   AddressViewModal @Inject constructor(val dao: Dao,val sharedpreferenceCommon: sharedpreferenceCommon):ViewModel() {
     private val live:MutableState<List<CartItems>> = mutableStateOf(emptyList())
     val responseLiveData:MutableState<List<CartItems>> =live
     val predictions: MutableStateFlow<List<AutocompletePrediction>> = MutableStateFlow(emptyList())
 
-
+fun getAllAvailablePostalCodes():String{
+    return sharedpreferenceCommon.getAvailablePinCode()
+}
 
     fun searchAddress(query: String,placesClient: PlacesClient): Flow<List<AutocompletePrediction>> {
         val request = FindAutocompletePredictionsRequest.builder()

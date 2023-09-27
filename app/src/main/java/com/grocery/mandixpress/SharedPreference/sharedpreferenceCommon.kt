@@ -99,5 +99,20 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         return mPrefs.edit().clear().commit()
     }
 
+    fun setAvailablePinCode(pincode: String) {
+        return mPrefs.edit().putString(AppConstant.availablePinCode, pincode).apply()
+
+    }
+    fun setMinimumDeliveryAmount(pincode: String) {
+        return mPrefs.edit().putString(AppConstant.minimumAmountDelivery, pincode).apply()
+
+    }
+    fun getMinimumDeliveryAmount():String{
+        return mPrefs.getString(AppConstant.minimumAmountDelivery,"").toString()
+    }
+    fun getAvailablePinCode():String{
+        return mPrefs.getString(AppConstant.availablePinCode,"").toString()
+    }
+
 
 }

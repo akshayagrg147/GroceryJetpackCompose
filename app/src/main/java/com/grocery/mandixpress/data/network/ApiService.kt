@@ -36,6 +36,7 @@ interface ApiService {
     @GET(Constants.SearchAllProductsSearch)
     suspend fun getHomeAllProductsSearch(
         @Query("query") character: String,
+        @Query("pincode")  pincode: String,
     ): Response<HomeAllProductsResponse>
 
     @POST(Constants.allCoupons)
@@ -70,7 +71,8 @@ interface ApiService {
 
     @POST(Constants.ItemsCollections)
     suspend fun getItemsCollections(@Body productIdIdModal: ProductIdIdModal): Response<ItemsCollectionsResponse>
-
+    @POST(Constants.getAdminDetails)
+    suspend fun getAdminDetails(): Response<AdminResponse>
     @POST(Constants.checkMobileNumberExist)
     suspend fun checkMobileNumberExist(@Body registerLoginRequest: RegisterLoginRequest): Response<CheckNumberExistResponse>
     @GET(Constants.callBannerImage)

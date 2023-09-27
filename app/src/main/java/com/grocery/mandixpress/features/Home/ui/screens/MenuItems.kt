@@ -18,6 +18,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +41,7 @@ import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartItemsViewModal
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import java.text.DecimalFormat
 
 @Composable
@@ -254,12 +256,35 @@ fun     menuitems(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
     viewModal.getCartItem()
-    ModalBottomSheetLayout(
-        sheetContent = {
+    ModalBottomSheetLayout(sheetElevation = 0.dp, sheetBackgroundColor = Color.Transparent, sheetContent = {
+            Box(modifier = Modifier
+                .fillMaxWidth().height(70.dp)
+                .background(Color.Unspecified),
+                contentAlignment = Alignment.Center,
+                content = {
+                    Image(
+                        painter = painterResource(id = R.drawable.close_button), // Replace with your image resource
+                        contentDescription = "Cross Button",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(bottom = 10.dp).clickable {
+                                scope.launch {
+                                  modalBottomSheetState.hide()
+                                }
+
+                            }, // Adjust the size as needed
+                        contentScale = ContentScale.Fit
+                    )
+
+                },
+
+
+
+                )
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (l1, l2) = createRefs()
                 Box(modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().background(Color.White)
                     .constrainAs(l1) {
                         top.linkTo(parent.top)
 

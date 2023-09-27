@@ -76,8 +76,7 @@ fun ListItems(
 
     viewModal.setList(ls)
 
-    val modalBottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val modalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
     var filterclicked by remember { mutableStateOf(false) }
@@ -87,13 +86,15 @@ fun ListItems(
         mutableStateOf(HomeAllProductsResponse.HomeResponse())
     }
     ModalBottomSheetLayout(
-
+        sheetElevation = 0.dp,
+        sheetBackgroundColor = Color.Transparent,
         sheetContent = {
+
              if (filterclicked)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(500.dp)
+                        .height(500.dp).background(Color.White)
                         .padding(top = 10.dp), Arrangement.SpaceEvenly
                 ) {
                     val ls: MutableList<FilterOptions> = ArrayList()
@@ -235,13 +236,13 @@ fun ListItems(
                 }
             else if(productClicked){
                 Log.d("productclicked","${productClicked} }")
-                showItemDescription(productdetail)
+                showItemDescription(productdetail, modalBottomSheetState)
             }
             else
                 Column(
                     modifier = Modifier
                         .padding(start = 10.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth().background(Color.White)
                         .align(Alignment.CenterHorizontally)
                 ) {
                     Text13_body1(text = "Asending(A-Z)", modifier = Modifier
@@ -363,16 +364,43 @@ fun ListItems(
 
 
 }
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun showItemDescription(productdetail: MutableState<HomeAllProductsResponse.HomeResponse>) {
+fun showItemDescription(
+    productdetail: MutableState<HomeAllProductsResponse.HomeResponse>,
+    modalBottomSheetState: ModalBottomSheetState
+) {
 
     val scope = rememberCoroutineScope()
     val pager = rememberPagerState(pageCount = 3)
+    Box(modifier = Modifier
+        .fillMaxWidth().height(70.dp)
+        .background(Color.Unspecified),
+        contentAlignment = Alignment.Center,
+        content = {
+            Image(
+                painter = painterResource(id = R.drawable.close_button), // Replace with your image resource
+                contentDescription = "Cross Button",
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(bottom = 10.dp).clickable {
+                        scope.launch {
+                            modalBottomSheetState.hide()
+                        }
+
+                    }, // Adjust the size as needed
+                contentScale = ContentScale.Fit
+            )
+
+        },
+
+
+
+        )
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (l1, l2) = createRefs()
         Box(modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().background(Color.White)
             .constrainAs(l1) {
                 top.linkTo(parent.top)
 
@@ -425,12 +453,14 @@ fun showItemDescription(productdetail: MutableState<HomeAllProductsResponse.Home
                     }
                 }
                 Spacer(modifier = Modifier.height(5.dp))
-                Text13_body1(text = "Product Detail", modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp))
-                Spacer(modifier = Modifier.height(5.dp))
                 Text12_body1(
                     text = productdetail.value.productDescription ?: "",
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
                 )
+
+                Spacer(modifier = Modifier.height(5.dp))
+                Text13_body1(text = "Product Detail", modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp))
+
 
 
             }

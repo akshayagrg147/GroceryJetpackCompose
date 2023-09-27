@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -80,11 +81,35 @@ fun CategoryWiseDashboardAllData(
 
 
     ModalBottomSheetLayout(
+        sheetElevation = 0.dp ,
+        sheetBackgroundColor = Color.Transparent,
         sheetContent = {
+            Box(modifier = Modifier
+                .fillMaxWidth().height(70.dp)
+                .background(Color.Unspecified),
+                contentAlignment = Alignment.Center,
+                content = {
+                    Image(
+                        painter = painterResource(id = R.drawable.close_button), // Replace with your image resource
+                        contentDescription = "Cross Button",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(bottom = 10.dp).clickable {
+                                scope.launch {
+                                    modalBottomSheetState.hide()
+                                }
+
+                            }, // Adjust the size as needed
+                        contentScale = ContentScale.Fit
+                    )
+
+                },
+
+                )
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (l1, l2) = createRefs()
                 Box(modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().background(Color.White)
                     .constrainAs(l1) {
                         top.linkTo(parent.top)
 

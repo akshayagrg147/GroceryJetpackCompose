@@ -130,6 +130,8 @@ fun CartScreen(
 
 
     ModalBottomSheetLayout(
+        sheetElevation = 0.dp,
+
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()
               ){

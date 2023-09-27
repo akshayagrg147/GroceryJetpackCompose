@@ -126,8 +126,9 @@ class ProfileViewModal @Inject constructor(
         }
     }
 
-    fun clearSharedPreference() {
-        shared.clearSharePreference()
+    fun clearSharedPreference() :Boolean{
+        return shared.clearSharePreference()
+
 
     }
 

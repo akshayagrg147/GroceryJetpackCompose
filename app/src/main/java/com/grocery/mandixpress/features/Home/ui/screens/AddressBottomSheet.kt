@@ -1,19 +1,24 @@
 package com.grocery.mandixpress.features.Home.ui.screens
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -32,9 +37,13 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.CommonTextField
+import com.grocery.mandixpress.Utils.Text11_body2
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text12_h1
 import com.grocery.mandixpress.Utils.Text16_h1
+import com.grocery.mandixpress.features.Home.ui.ui.theme.availColor
+import com.grocery.mandixpress.features.Home.ui.ui.theme.titleColor
+import com.grocery.mandixpress.features.Home.ui.ui.theme.whiteColor
 import com.grocery.mandixpress.features.Home.ui.viewmodal.AddressViewModal
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartItemsViewModal
 import kotlinx.coroutines.flow.collect
@@ -44,9 +53,23 @@ import kotlin.math.roundToInt
 
 @Composable
 fun PredictionItem(prediction: AutocompletePrediction,click:(String)->Unit) {
-    Text12_body1(text = prediction.getFullText(null).toString(), modifier = Modifier.padding(8.dp).clickable{
-        click(prediction.getFullText(null).toString())
-    })
+    Card(modifier = Modifier.fillMaxWidth().height(70.dp).padding(top = 10.dp).background(color = whiteColor).clickable {},) {
+        Row(modifier = Modifier.fillMaxSize().padding(start = 10.dp),
+            verticalAlignment = Alignment.CenterVertically){
+            Image(
+                painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
+                contentDescription = "Location Icon",
+                modifier = Modifier
+                    .size(24.dp)
+
+                )
+            Text12_body1(text = prediction.getFullText(null).toString(), modifier = Modifier.padding(8.dp).clickable{
+                click(prediction.getFullText(null).toString())
+            })
+        }
+
+    }
+
 }
 
 @OptIn( ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
@@ -65,6 +88,7 @@ fun CurvedBottomSheetWithButton(viewModel: AddressViewModal = hiltViewModel(),) 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetBackgroundColor = Color.Transparent,
+        sheetElevation = 0.dp,
         sheetContent = {
             Column(
                 modifier = Modifier

@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
+import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.Text13_body1
@@ -326,11 +327,14 @@ fun profileScreen(
                             modifier = Modifier
                                 .padding(start = 15.dp, top = 5.dp)
                                 .clickable {
-                                    viewModal.clearSharedPreference()
-                                    val intent = Intent(context, HomeActivity::class.java)
-                                    intent.flags =
-                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    context.startActivity(intent)
+
+                                    if( viewModal.clearSharedPreference()){
+                                        val intent = Intent(context, LoginActivity::class.java)
+                                        intent.flags =
+                                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        context.startActivity(intent)
+                                    }
+
                                 }
                         )
                     }

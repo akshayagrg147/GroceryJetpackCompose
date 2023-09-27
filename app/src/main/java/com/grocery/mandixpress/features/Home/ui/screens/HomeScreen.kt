@@ -112,36 +112,47 @@ fun homescreen(
 
     }
     var searchvisibility by remember { mutableStateOf(false) }
-    ModalBottomSheetLayout(
-        sheetState = bottomSheetState,
-        sheetBackgroundColor = Color.Transparent,
-        sheetContent = {
+    ModalBottomSheetLayout(sheetState = bottomSheetState,
+        sheetElevation = 0.dp,
+        sheetBackgroundColor = Color.Transparent, sheetContent = {
+            Box(modifier = Modifier
+                    .fillMaxWidth().height(100.dp)
+                    .background(Color.Unspecified),
+                contentAlignment = Alignment.Center,
+                content = {
+                   Image(
+                       painter = painterResource(id = R.drawable.close_button), // Replace with your image resource
+                       contentDescription = "Cross Button",
+                       modifier = Modifier
+                           .size(50.dp)
+                           .padding(bottom = 10.dp).clickable {
+                               scope.launch {
+                                   bottomSheetState.hide()
+                               }
+
+                           }, // Adjust the size as needed
+                       contentScale = ContentScale.Fit
+                   )
+
+               },
+
+
+
+            )
+
+
+
+
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .requiredHeight(400.dp)
+                    .requiredHeight(400.dp).background(Color.Transparent)
 
             ) {
 
                 // Curved background for the sheet
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Transparent),
-                    contentAlignment = Alignment.Center
-                )
-                {
-                    Image(
-                        painter = painterResource(id = R.drawable.close_button), // Replace with your image resource
-                        contentDescription = "Cross Button",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(bottom = 10.dp), // Adjust the size as needed
-                        contentScale = ContentScale.Fit
-                    )
 
-
-                }
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -186,7 +197,7 @@ fun homescreen(
                             contentDescription = "Location Icon",
                             modifier = Modifier
                                 .size(24.dp)
-                                .alignByBaseline(),
+
 //                            colorFilter = ColorFilter.tint(seallcolor)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -251,8 +262,7 @@ fun homescreen(
 
 
             }
-        }
-    ) {
+        }) {
         val coroutineScope = rememberCoroutineScope()
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -1438,7 +1448,6 @@ fun cardviewAddtoCart(
                 Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = com.grocery.mandixpress.R.drawable.bike_delivery),
-
                         contentDescription = "",
                         modifier = Modifier
                             .padding()

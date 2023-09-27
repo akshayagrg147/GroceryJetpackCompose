@@ -122,19 +122,20 @@ val context= LocalContext.current.getActivity()
                         )
 
                     }
+val filterList=viewModal.getAllAvailablePostalCodes().filter { it.pincode==pincode.value }
+                        if(filterList.isNotEmpty()){
+                            city.value=filterList[0].city
 
-                    if(viewModal.getAllAvailablePostalCodes().contains(pincode.value)||(pincode.value=="")){
+                        }else{
+                            if (pincode.value.length>5){
+                                Text12_body1(
+                                    text = "Not available in your city",
+                                    color = redColor,
+                                    modifier = Modifier.align(Alignment.End)
+                                )
+                            }
 
-                    }else{
-                        if (pincode.value.length>5){
-                            Text12_body1(
-                                text = "Not available in your city",
-                                color = redColor,
-                                modifier = Modifier.align(Alignment.End)
-                            )
                         }
-
-                    }
                     Spacer(modifier =  Modifier.height(10.dp
                     ))
                     val address = remember {

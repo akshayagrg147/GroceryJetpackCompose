@@ -11,6 +11,8 @@ data class AdminResponse(
 ) {
     data class ItemData(
         val pincode: String,
-        val price: String
+        val price: String,
+        val city: String?
+        ,val deliveryContactNumber:String
     )
 }

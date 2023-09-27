@@ -131,6 +131,12 @@ class ProfileViewModal @Inject constructor(
 
     }
 
+    fun getDeliveryBoyNumber(): String {
+        Log.d("numberCall", "${shared.getDeliveryContactNumber()}")
+        return shared.getDeliveryContactNumber()
+
+    }
+
 
 }
 

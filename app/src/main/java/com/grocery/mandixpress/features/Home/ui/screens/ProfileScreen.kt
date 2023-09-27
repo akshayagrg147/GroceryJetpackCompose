@@ -181,7 +181,7 @@ fun profileScreen(
                 Spacer(modifier = Modifier.height(10.dp))
                 Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray).padding(start = 5.dp, end = 20.dp))*/
               if(callClicked.value){
-                  AutoRequestCallPermission("9630493906")
+                  AutoRequestCallPermission(viewModal.getDeliveryBoyNumber())
               }
                 Row(modifier = Modifier
                     .fillMaxWidth()
@@ -602,6 +602,7 @@ fun AutoRequestCallPermission(phoneNumber: String) {
         } else {
             // Permission is already granted
             isPermissionGranted.value = true
+            makeCall(context, phoneNumber)
         }
     }
 

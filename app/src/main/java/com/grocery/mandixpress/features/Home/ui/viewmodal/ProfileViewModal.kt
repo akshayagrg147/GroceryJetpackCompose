@@ -108,7 +108,7 @@ class ProfileViewModal @Inject constructor(
             }
           is  ProfileEvent.callingUserProfile->viewModelScope.launch {
               Log.d("profileResponse","called1")
-                repository.getUserResponse(shared.getMobileNumber())
+                repository.getUserResponse(shared.getMobileNumber(),shared.getPostalCode())
                     .doOnSuccess {
                         Log.d("profileResponse","called11")
                         userProfileResponse.value= CommonUiObjectResponse(data=it)

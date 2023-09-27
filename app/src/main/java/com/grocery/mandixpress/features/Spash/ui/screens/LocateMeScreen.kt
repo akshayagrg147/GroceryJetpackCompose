@@ -24,6 +24,7 @@ import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text14_h1
 import com.grocery.mandixpress.Utils.showMsg
 import com.grocery.mandixpress.common.CommonProgressBar
+import com.grocery.mandixpress.common.Utils.Companion.extractSixDigitNumber
 import com.grocery.mandixpress.features.Home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.Home.ui.ui.theme.greyLightColor
 import com.grocery.mandixpress.features.Home.ui.ui.theme.headingColor
@@ -138,11 +139,7 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
     }
 
 }
-fun extractSixDigitNumber(input: String): String? {
-    val regex = Regex("\\b\\d{6}\\b") // Matches 6 digits surrounded by word boundaries
-    val matchResult = regex.find(input)
-    return matchResult?.value
-}
+
 fun getAddressFromLatLng(
     context: Context, latitude: Double, longitude: Double,
     mapScreenViewModal: MapScreenViewModal,

@@ -126,6 +126,11 @@ class ProfileViewModal @Inject constructor(
         }
     }
 
+    fun clearSharedPreference() {
+        shared.clearSharePreference()
+
+    }
+
 
 }
 

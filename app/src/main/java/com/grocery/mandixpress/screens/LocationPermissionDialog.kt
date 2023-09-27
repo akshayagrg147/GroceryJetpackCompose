@@ -1,4 +1,4 @@
-package vtsen.hashnode.dev.simplegooglemapapp.ui.screens
+package com.grocery.mandixpress.screens
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -25,3 +25,26 @@ fun LocationPermissionsDialog(
         requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 }
+
+@Composable
+fun PhoneCallDialog(
+    onPermissionGranted: () -> Unit,
+    onPermissionDenied: () -> Unit,
+) {
+    val requestLocationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+
+        if (isGranted) {
+            onPermissionGranted()
+        } else {
+            onPermissionDenied()
+        }
+    }
+
+    SideEffect {
+        requestLocationPermissionLauncher.launch(Manifest.permission.CALL_PHONE)
+    }
+}
+
+
+

@@ -2,6 +2,7 @@ package com.grocery.mandixpress.features.Home.Modal
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 
 import android.graphics.ImageDecoder
@@ -32,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -47,6 +49,7 @@ import com.grocery.mandixpress.features.Home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.ProfileEvent
 import com.grocery.mandixpress.features.Home.ui.viewmodal.ProfileViewModal
+import java.util.jar.Manifest
 
 
 @Composable
@@ -57,6 +60,9 @@ fun profileScreen(
 ) {
     Log.d("profileScreen", "profileScreen: ${sharedpreferenceCommon.getImageUri()} ")
     var selectedImage by remember { mutableStateOf<Uri?>(Uri.parse(sharedpreferenceCommon.getImageUri())) }
+    val callClicked=remember{
+        mutableStateOf(false)
+    }
     val profileResponse by viewModal.responseLiveData.collectAsState()
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
@@ -154,11 +160,7 @@ fun profileScreen(
                         .background(Color.LightGray)
                         .padding(start = 5.dp, end = 20.dp)
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween
-                ) {
+              /*  Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween) {
                     Row() {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_paymentmethod),
@@ -177,18 +179,13 @@ fun profileScreen(
 
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(Color.LightGray)
-                        .padding(start = 5.dp, end = 20.dp)
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween
-                ) {
+                Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.LightGray).padding(start = 5.dp, end = 20.dp))*/
+              if(callClicked.value){
+                  AutoRequestCallPermission("9630493906")
+              }
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween) {
                     Row(modifier = Modifier.clickable {
                         val applicationNameId = context.applicationInfo.labelRes
                         val appPackageName = context.packageName
@@ -201,7 +198,7 @@ fun profileScreen(
                         context.startActivity(Intent.createChooser(i, "Share link:"))
                     }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_promocode),
+                            painter = painterResource(id = R.drawable.share),
                             contentDescription = "",
                             modifier = Modifier
                                 .size(22.dp)
@@ -231,15 +228,11 @@ fun profileScreen(
                         .padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween
                 ) {
                     Row(modifier = Modifier.clickable {
-                        val intent = Intent(Intent.ACTION_SEND)
-                        intent.type = "plain/text"
-                        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@suprixsolution.in"))
-                        intent.putExtra(Intent.EXTRA_SUBJECT, "subject")
-                        intent.putExtra(Intent.EXTRA_TEXT, "mail body")
-                        context.startActivity(Intent.createChooser(intent, ""))
+                     callClicked.value = true
+
                     }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_promocode),
+                            painter = painterResource(id = R.drawable.contact_us),
                             contentDescription = "",
                             modifier = Modifier
                                 .size(22.dp)
@@ -269,7 +262,7 @@ fun profileScreen(
                 ) {
                     Row(modifier = Modifier.clickable { navController.navigate(DashBoardNavRoute.PrivacyPolicyScreen.screen_route) }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_promocode),
+                            painter = painterResource(id = R.drawable.terms_and_conditions),
                             contentDescription = "",
                             modifier = Modifier
                                 .size(22.dp)
@@ -292,11 +285,7 @@ fun profileScreen(
                         .background(Color.LightGray)
                         .padding(start = 5.dp, end = 20.dp)
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween
-                ) {
+  /*              Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween) {
                     Row(modifier = Modifier.clickable { navController.navigate(DashBoardNavRoute.PrivacyPolicyScreen.screen_route) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_promocode),
@@ -311,8 +300,40 @@ fun profileScreen(
                             modifier = Modifier.padding(start = 15.dp, top = 5.dp)
                         )
                     }
-
-
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.LightGray)
+                        .padding(start = 5.dp, end = 20.dp)
+                )*/
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, bottom = 10.dp), Arrangement.SpaceBetween) {
+                    Row(modifier = Modifier.clickable { navController.navigate(DashBoardNavRoute.PrivacyPolicyScreen.screen_route) }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.log_out),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(22.dp)
+                                .padding(start = 10.dp, top = 5.dp),
+                            tint = blackColor
+                        )
+                        Text13_body1(
+                            text = "Log out", color = headingColor,
+                            modifier = Modifier
+                                .padding(start = 15.dp, top = 5.dp)
+                                .clickable {
+                                    viewModal.clearSharedPreference()
+                                    val intent = Intent(context, HomeActivity::class.java)
+                                    intent.flags =
+                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    context.startActivity(intent)
+                                }
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
@@ -422,6 +443,7 @@ fun StatSection(modifier: Modifier = Modifier, navController: NavController, dat
     }
 }
 
+
 @Composable
 fun ProfileStat(
     numberText: String,
@@ -470,7 +492,9 @@ fun ShimmerItem(
     brush: Brush
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Row(modifier = Modifier.padding(start = 50.dp).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(50.dp)) {
+        Row(modifier = Modifier
+            .padding(start = 50.dp)
+            .fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(50.dp)) {
             Spacer(
                 modifier = Modifier
                     .size(50.dp)
@@ -479,13 +503,15 @@ fun ShimmerItem(
 Column() {
     Spacer(
         modifier = Modifier
-            .width(  90.dp).height(20.dp)
+            .width(90.dp)
+            .height(20.dp)
             .background(brush = brush)
     )
     Spacer(modifier = Modifier.height(10.dp))
     Spacer(
         modifier = Modifier
-            .width(  90.dp).height(20.dp)
+            .width(90.dp)
+            .height(20.dp)
             .background(brush = brush)
     )
 }
@@ -515,6 +541,12 @@ Column() {
 
 }
 
+
+
+
+
+
+
 @Composable
 fun ProfileDescription(
     displayName: String,
@@ -537,5 +569,58 @@ fun ProfileDescription(
             text = description,color= bodyTextColor
 
             )
+    }
+}
+
+
+
+@Composable
+fun AutoRequestCallPermission(phoneNumber: String) {
+    val context = LocalContext.current
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // Permission granted, you can make the call
+            makeCall(context, phoneNumber)
+        } else {
+            // Permission denied, handle the denial or show an explanation
+
+        }
+    }
+
+    val isPermissionGranted = remember { mutableStateOf(false) }
+
+    LaunchedEffect(true) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.CALL_PHONE
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            // Request the CALL_PHONE permission
+            requestPermissionLauncher.launch(android.Manifest.permission.CALL_PHONE)
+        } else {
+            // Permission is already granted
+            isPermissionGranted.value = true
+        }
+    }
+
+
+}
+
+fun makeCall(context: Context, phoneNumber: String) {
+    val intent = Intent(Intent.ACTION_CALL)
+    intent.data = Uri.parse("tel:$phoneNumber")
+
+    // Check if the app has the CALL_PHONE permission before launching the call
+    if (ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.CALL_PHONE
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        context.startActivity(intent)
+    } else {
+        // Handle the case where the app does not have the CALL_PHONE permission
+
     }
 }

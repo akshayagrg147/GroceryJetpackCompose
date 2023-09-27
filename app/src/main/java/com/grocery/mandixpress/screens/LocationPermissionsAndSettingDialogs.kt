@@ -2,6 +2,7 @@ package vtsen.hashnode.dev.simplegooglemapapp.ui.screens
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import com.grocery.mandixpress.screens.LocationPermissionsDialog
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
 
 @Composable

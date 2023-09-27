@@ -126,7 +126,7 @@ fun ListItems(
                         val threehundredone = remember { mutableStateOf(false) }
                         val fivehundredone = remember { mutableStateOf(false) }
                         Text12_h1(
-                            text = "FILTER & SORT",   color= titleColor,
+                            text = "FILTER & SORT",   color= headingColor,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
 
@@ -337,7 +337,7 @@ fun ListItems(
                     Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text14_h1(text = "Sort", modifier = Modifier.clickable {
+                    Text14_h1(text = "Sort", color= headingColor, modifier = Modifier.clickable {
                         filterclicked = false
                         productClicked=false
                         scope.launch { modalBottomSheetState.show() }
@@ -348,7 +348,7 @@ fun ListItems(
                             .height(20.dp)
                             .width(1.dp)
                     )
-                    Text14_h1(text = "Filter", modifier = Modifier.clickable {
+                    Text14_h1(text = "Filter", color= headingColor,modifier = Modifier.clickable {
                         filterclicked = true
                         productClicked=false
                         scope.launch { modalBottomSheetState.show() }

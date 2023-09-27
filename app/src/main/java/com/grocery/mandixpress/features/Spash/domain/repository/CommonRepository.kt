@@ -39,7 +39,7 @@ class CommonRepository @Inject constructor(
     }
      fun availibilityCheck(pincode:String)= toResultFlow { apiService.availibilityCheck(pincode = pincode) }
 
-    fun getUserResponse( mobileNumber:String) = toResultFlow { apiService.getuserdetails(RegisterLoginRequest(null,null,mobileNumber)) }
+    fun getUserResponse( mobileNumber:String,pincode: String) = toResultFlow { apiService.getuserdetails(RegisterLoginRequest( phone = mobileNumber,pincode = pincode)) }
 
     fun callBestProductById(productIdIdModal: ProductIdIdModal
     ) = toResultFlow {
@@ -55,7 +55,7 @@ class CommonRepository @Inject constructor(
     }
     fun getAllOrders(string: String
     ) = toResultFlow {
-        apiService.AllOrders(string+"@"+sharedPreferences.getMobileNumber())
+        apiService.AllOrders(string+"@"+sharedPreferences.getMobileNumber()+"@"+sharedPreferences.getPostalCode())
     }
     fun GetRelatedSearch(obj:RelatedSearchRequest
     ) = toResultFlow {

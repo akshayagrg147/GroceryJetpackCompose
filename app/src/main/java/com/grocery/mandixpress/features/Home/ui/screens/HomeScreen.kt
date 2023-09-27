@@ -52,6 +52,7 @@ import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.common.Utils
+import com.grocery.mandixpress.common.Utils.Companion.extractSixDigitNumber
 import com.grocery.mandixpress.common.Utils.Companion.vibrator
 import com.grocery.mandixpress.data.modal.BannerImageResponse
 import com.grocery.mandixpress.data.modal.CategoryWiseDashboardResponse
@@ -164,7 +165,7 @@ fun homescreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     // Text inside the curved background
-                    CommonTextField(
+                    CommonNumberField(
                         trailingIcon = com.bumptech.glide.R.drawable.abc_ic_search_api_material,
                         iconColor = Color.LightGray,
                         text = address,
@@ -221,14 +222,26 @@ fun homescreen(
                         items(predictions) { prediction ->
 
                             PredictionItem(prediction = prediction) {
-                                sharedpreferenceCommon.setSearchAddress(it)
-                                Log.d("pincodeExtrct", "${it}")
+                                val pincode=extractSixDigitNumber(it).toString()
+                                if(pincode.length>4) {
+                                    sharedpreferenceCommon.setSearchAddress(it)
+                                    Log.d("pincodeExtrct", "${it}")
 
-//                                sharedpreferenceCommon.setPinCode(it)
-                                val intent = Intent(context, HomeActivity::class.java)
-                                intent.flags =
-                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                context.startActivity(intent)
+                                    sharedpreferenceCommon.setPinCode(pincode)
+                                    val intent = Intent(context, HomeActivity::class.java)
+                                    intent.flags =
+                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    context.startActivity(intent)
+                                }
+                                else{
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Please select with pincode",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                }
                             }
                         }
 

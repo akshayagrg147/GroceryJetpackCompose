@@ -26,7 +26,7 @@ class   AddressViewModal @Inject constructor(val dao: Dao,val sharedpreferenceCo
     val responseLiveData:MutableState<List<CartItems>> =live
     val predictions: MutableStateFlow<List<AutocompletePrediction>> = MutableStateFlow(emptyList())
 
-fun getAllAvailablePostalCodes():String{
+fun getAllAvailablePostalCodes():List<PinCodeStateModal>{
     return sharedpreferenceCommon.getAvailablePinCode()
 }
 

@@ -26,6 +26,11 @@ class Utils {
             }
 
         }
+        fun extractSixDigitNumber(input: String): String? {
+            val regex = Regex("\\b\\d{6}\\b") // Matches 6 digits surrounded by word boundaries
+            val matchResult = regex.find(input)
+            return matchResult?.value
+        }
 
         fun showNotification(context: Context, message: String) {
             // declaring variables

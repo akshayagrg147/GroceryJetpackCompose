@@ -2,6 +2,10 @@ package com.grocery.mandixpress.SharedPreference
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.grocery.mandixpress.features.Home.ui.viewmodal.PinCodeStateModal
 import com.orders.resturantorder.SharedPreference.AppConstant
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -28,7 +32,7 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     }
 
     fun setPinCode(picode: String): Any {
-        return mPrefs.edit().putString(AppConstant.pincode, "136027").apply()
+        return mPrefs.edit().putString(AppConstant.pincode, picode).apply()
     }
 
     fun setCombineAddress(comibineAddress: String): Any {
@@ -99,19 +103,38 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         return mPrefs.edit().clear().commit()
     }
 
-    fun setAvailablePinCode(pincode: String) {
-        return mPrefs.edit().putString(AppConstant.availablePinCode, pincode).apply()
+    fun setAvailablePinCode(pincode: MutableList<PinCodeStateModal>) {
+        val jsonPincodeList = convertListToJson(pincode)
+        return  mPrefs.edit().putString(AppConstant.availablePinCode, jsonPincodeList).apply()
 
+
+    }
+    fun convertListToJson(pincodeList: List<PinCodeStateModal>): String {
+        val gson = Gson()
+        return gson.toJson(pincodeList)
     }
     fun setMinimumDeliveryAmount(pincode: String) {
         return mPrefs.edit().putString(AppConstant.minimumAmountDelivery, pincode).apply()
 
     }
+    fun setDeliveryContactNumber(phone: String) {
+        return mPrefs.edit().putString(AppConstant.deliveryContactNumber, phone).apply()
+
+    }
+    fun getDeliveryContactNumber():String{
+        return mPrefs.getString(AppConstant.deliveryContactNumber,"").toString()
+    }
     fun getMinimumDeliveryAmount():String{
         return mPrefs.getString(AppConstant.minimumAmountDelivery,"").toString()
     }
-    fun getAvailablePinCode():String{
-        return mPrefs.getString(AppConstant.availablePinCode,"").toString()
+
+    fun getAvailablePinCode(): List<PinCodeStateModal> {
+        val jsonPincodeList = mPrefs.getString(AppConstant.availablePinCode, "")
+        Log.d("jsonPincodeList","${jsonPincodeList}")
+        val gson = Gson()
+        val type = object : TypeToken<List<PinCodeStateModal>>() {}.type
+
+        return gson.fromJson(jsonPincodeList, type) ?: emptyList()
     }
 
 

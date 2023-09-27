@@ -296,14 +296,16 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
                             }
                             is ApiState.Success->{
-                                var pincode:String=""
+                                val listPinCodeStateModal= mutableListOf<PinCodeStateModal>()
                                 for(modal in it.data.itemData){
                                     if(sharedPreferences.getPostalCode()==modal.pincode){
                                         sharedPreferences.setMinimumDeliveryAmount(modal.price)
+                                        sharedPreferences.setDeliveryContactNumber(modal.deliveryContactNumber)
                                     }
-                                    pincode += modal.pincode+" "
+                                    listPinCodeStateModal.add(PinCodeStateModal(modal.pincode,modal.city?:""))
                                 }
-                           sharedPreferences.setAvailablePinCode(pincode)
+                           sharedPreferences.setAvailablePinCode(listPinCodeStateModal)
+
                             }
                             is ApiState.Failure->{
 

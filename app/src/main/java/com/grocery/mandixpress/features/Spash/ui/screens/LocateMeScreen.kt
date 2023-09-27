@@ -26,6 +26,7 @@ import com.grocery.mandixpress.Utils.showMsg
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.features.Home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.Home.ui.ui.theme.greyLightColor
+import com.grocery.mandixpress.features.Home.ui.ui.theme.headingColor
 import com.grocery.mandixpress.features.Home.ui.ui.theme.titleColor
 import com.grocery.mandixpress.features.Spash.ui.viewmodel.MapScreenViewModal
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
@@ -91,10 +92,12 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                 )
                 Text14_h1(
                         text = "Get our service in nearby of your locations",
+                    color= headingColor,
+
                         modifier = Modifier.padding(top = 20.dp, bottom = 15.dp)
                     )
             Text14_h1(
-                text = "$combinedaddress",
+                text = combinedaddress,
                 color= greyLightColor,
                 modifier = Modifier.padding(top = 20.dp, bottom = 15.dp)
             )

@@ -18,6 +18,7 @@ class Constants {
      const val ApiEnd_login ="login"
         const val gettingjwt ="gettingJwt"
         const val getuserdetails="Customers/getUserDetails"
+        const val getAdminDetails="Customers/getAdminDetails"
         const val checkMobileNumberExist="Customers/checkMobileNumberExist"
         const val  callBannerImage="Customers/getBannerCategory"
         const val CreateOrderId="Customers/CreateOrderId"

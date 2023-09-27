@@ -14,6 +14,8 @@ class AppConstant {
         const val serarchSelection = "serarchSelection"
         const val mobilenumber = "mobilenumber"
         const val imageuri = "imageuri"
+        const val availablePinCode = "availablePinCode"
+        const val minimumAmountDelivery = "minimumAmountDelivery"
 
 
     }

@@ -74,12 +74,7 @@ class HomeAllProductsViewModal @Inject constructor(
     var categoryWiseResponse = _categoryWiseResponse.asStateFlow()
         private set
 
-    private val availibilityCheck: MutableStateFlow<ComposeUiResponse<commonResponse>> =
-        MutableStateFlow(
-            ComposeUiResponse()
-        )
-    var _availibilityCheck = availibilityCheck.asStateFlow()
-        private set
+
 
     private val bannerImage: MutableStateFlow<ComposeUiResponse<BannerImageResponse>> =
         MutableStateFlow(
@@ -137,7 +132,7 @@ class HomeAllProductsViewModal @Inject constructor(
         }
         .distinctUntilChanged()
         .flatMapLatest {
-            repository.HomeAllProducts(it)
+            repository.HomeAllProducts(it,sharedPreferences.getPostalCode())
         }
 
 
@@ -146,6 +141,9 @@ class HomeAllProductsViewModal @Inject constructor(
         listMutable.value = response
         globalmutablelist.value = response
 
+    }
+    fun getFreeDeliveryMinPrice():String{
+        return sharedPreferences.getMinimumDeliveryAmount()
     }
 
     fun setvalue(str: String) {
@@ -290,26 +288,32 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
         }
 
 }
-            HomeEvent.AreaAvailibilityEventFlow->viewModelScope.launch {
-                Log.d("postalcode","${sharedPreferences.getPostalCode()}")
-                repository.availibilityCheck(sharedPreferences.getPostalCode())
+            HomeEvent.adminDetailsEventFlow->viewModelScope.launch {
+                repository.getAdminDetails()
                     .collectLatest {
                         when(it){
                             is ApiState.Loading->{
-                                availibilityCheck.value = ComposeUiResponse( isLoading = true)
+
                             }
                             is ApiState.Success->{
-                                availibilityCheck.value = ComposeUiResponse(data = it.data)
+                                var pincode:String=""
+                                for(modal in it.data.itemData){
+                                    if(sharedPreferences.getPostalCode()==modal.pincode){
+                                        sharedPreferences.setMinimumDeliveryAmount(modal.price)
+                                    }
+                                    pincode += modal.pincode+" "
+                                }
+                           sharedPreferences.setAvailablePinCode(pincode)
                             }
                             is ApiState.Failure->{
-                                availibilityCheck.value = ComposeUiResponse( error = it?.msg.toString())
+
                             }
                         }
                     }
 
             }
           is  HomeEvent.BannerCategoryEventFlow->viewModelScope.launch {
-                repository.ItemsCollections(ProductIdIdModal(event.subcategoryName)).collectLatest {
+                repository.ItemsCollections(ProductIdIdModal(event.subcategoryName,sharedPreferences.getPostalCode())).collectLatest {
                     when (it) {
                         is ApiState.Success -> {
                             bannerCategoryResponse.value = ComposeUiResponse(data = it.data)
@@ -424,7 +428,7 @@ sealed class HomeEvent {
     object ItemCategoryEventFlow:HomeEvent()
     object CategoryWiseEventFlow:HomeEvent()
 
-    object AreaAvailibilityEventFlow : HomeEvent()
+    object adminDetailsEventFlow : HomeEvent()
     object BannerImageEventFlow : HomeEvent()
     data class BannerCategoryEventFlow(val subcategoryName:String) : HomeEvent()
 

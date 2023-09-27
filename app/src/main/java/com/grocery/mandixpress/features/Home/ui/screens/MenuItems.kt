@@ -93,7 +93,7 @@ fun cardViewAddtoCart(
         Column(modifier = Modifier
             .fillMaxWidth()
             .background(whiteColor)) {
-            if(viewmodal.totalPriceState.value<100) {
+            if(viewmodal.totalPriceState.value<(viewmodal.getFreeDeliveryMinPrice().toInt())) {
                 Row(  modifier = Modifier){
                     Image(
                         painter = painterResource(id = com.grocery.mandixpress.R.drawable.bike_delivery),
@@ -114,7 +114,7 @@ fun cardViewAddtoCart(
                             modifier = Modifier.padding(start = 10.dp)
                         )
                         Text10_h2(
-                            text = "Add item worth ${100 - viewmodal.totalPriceState.value}",
+                            text = "Add item worth ${viewmodal.getFreeDeliveryMinPrice().toInt() - viewmodal.totalPriceState.value}",
                             color = headingColor,
                             modifier = Modifier.padding(start = 10.dp)
                         )

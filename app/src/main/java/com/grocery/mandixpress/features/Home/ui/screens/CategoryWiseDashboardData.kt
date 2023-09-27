@@ -66,8 +66,9 @@ fun CategoryWiseDashboardAllData(
 
    val itemBasedCategory by viewModal._bannerCategoryResponse.collectAsState()
     LaunchedEffect(key1 = Unit){
+        if(bundle.second?.subCategoryList?.isNotEmpty()==true)
         viewModal.onEvent(HomeEvent.BannerCategoryEventFlow(
-            bundle.second?.subCategoryList?.get(0)?.name ?:""))
+            bundle.second.subCategoryList.get(0).name ?:""))
     }
     val productdetail = remember {
         mutableStateOf(ItemsCollectionsResponse.SubItems())
@@ -168,7 +169,7 @@ fun CategoryWiseDashboardAllData(
             if(bundle.index==0)
             Box(modifier = Modifier.fillMaxSize()){
                 Column(modifier = Modifier.fillMaxSize()) {
-                    CommonHeader(text = viewModal.getcategory(), color = headingColor) {
+                    CommonHeader(text = viewModal.getcategory().split("__")[0], color = headingColor) {
                         navController.popBackStack()
                     }
                     ScrollingImageRow(size = 70.dp, bundle.second.subCategoryList,value=0) {
@@ -227,7 +228,7 @@ fun CategoryWiseDashboardAllData(
                                 .padding(horizontal = 10.dp, vertical = 10.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            CommonHeader(text = viewModal.getcategory(), color = headingColor) {
+                            CommonHeader(text = viewModal.getcategory().split("__")[0], color = headingColor) {
                                 navController.popBackStack()
                             }
 
@@ -311,7 +312,7 @@ fun CategoryWiseDashboardAllData(
                             .padding(horizontal = 10.dp, vertical = 10.dp),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        CommonHeader(text = viewModal.getcategory(), color = headingColor) {
+                        CommonHeader(text = viewModal.getcategory().split("__")[0], color = headingColor) {
                             navController.popBackStack()
                         }
 

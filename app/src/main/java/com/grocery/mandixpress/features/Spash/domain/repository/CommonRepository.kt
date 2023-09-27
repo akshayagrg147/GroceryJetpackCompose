@@ -16,9 +16,9 @@ class CommonRepository @Inject constructor(
         apiService.RegisterUser(addUser)
     }
 
-    fun HomeAllProducts(ss:String
+    fun HomeAllProducts(searchCharacter:String,pincode: String
     ) = toResultFlow {
-            apiService.getHomeAllProductsSearch(ss)
+            apiService.getHomeAllProductsSearch(searchCharacter,pincode)
     }
 
     fun getAppCoupons(
@@ -64,6 +64,7 @@ class CommonRepository @Inject constructor(
     fun getProductCategory(postalCode: String) = toResultFlow { apiService.getProductCategory(postalCode) }
     fun gettingJwt()= toResultFlow {apiService.gettingJwtToken()  }
     fun checkMobileNumberExist(registerLoginRequest: RegisterLoginRequest) = toResultFlow { apiService.checkMobileNumberExist(registerLoginRequest) }
+    fun getAdminDetails() = toResultFlow { apiService.getAdminDetails() }
     fun bannerImageApiCall(postalCode: String) = toResultFlow {
         apiService.callBannerImage(postalCode)
     }

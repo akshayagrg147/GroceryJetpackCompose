@@ -164,6 +164,9 @@ class ProductByIdViewModal @Inject constructor(
 
         }
     }
+    fun getFreeDeliveryMinPrice():String{
+        return sharedpreferenceCommon.getMinimumDeliveryAmount()
+    }
 
 }
 

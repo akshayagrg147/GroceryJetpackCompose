@@ -45,8 +45,8 @@ class LoginActivity : ComponentActivity() {
 
     private fun initAppIntegrity() {
 
-//        FirebaseAuth.getInstance().getFirebaseAuthSettings()
-//            .setAppVerificationDisabledForTesting(true)
+        FirebaseAuth.getInstance().getFirebaseAuthSettings()
+            .setAppVerificationDisabledForTesting(true)
         FirebaseApp.initializeApp(this)
         val firebaseApp=FirebaseAppCheck.getInstance()
         firebaseApp.installAppCheckProviderFactory(

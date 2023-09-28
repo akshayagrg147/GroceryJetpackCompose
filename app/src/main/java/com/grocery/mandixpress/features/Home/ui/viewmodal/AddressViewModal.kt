@@ -21,42 +21,47 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class   AddressViewModal @Inject constructor(val dao: Dao,val sharedpreferenceCommon: sharedpreferenceCommon):ViewModel() {
-    private val live:MutableState<List<CartItems>> = mutableStateOf(emptyList())
-    val responseLiveData:MutableState<List<CartItems>> =live
+class AddressViewModal @Inject constructor(
+    val dao: Dao,
+    val sharedpreferenceCommon: sharedpreferenceCommon
+) : ViewModel() {
     val predictions: MutableStateFlow<List<AutocompletePrediction>> = MutableStateFlow(emptyList())
 
-fun getAllAvailablePostalCodes():List<PinCodeStateModal>{
-    return sharedpreferenceCommon.getAvailablePinCode()
-}
+    fun getAllAvailablePostalCodes(): List<PinCodeStateModal> {
+        return sharedpreferenceCommon.getAvailablePinCode()
+    }
 
-    fun searchAddress(query: String,placesClient: PlacesClient): Flow<List<AutocompletePrediction>> {
+    fun searchAddress(
+        query: String,
+        placesClient: PlacesClient
+    ): Flow<List<AutocompletePrediction>> {
         val request = FindAutocompletePredictionsRequest.builder()
             .setQuery(query)
             .build()
-
-
-            placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
-                viewModelScope.launch {
-                 predictions.emit(response.autocompletePredictions)
+        placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
+            viewModelScope.launch {
+                predictions.emit(response.autocompletePredictions)
             }
         }
-        return  predictions
+        return predictions
     }
 
-    fun saveAddress(address: AddressItems)=viewModelScope.launch(Dispatchers.IO){
+    fun saveAddress(address: AddressItems) = viewModelScope.launch(Dispatchers.IO) {
         dao.insertAddressItem(address)
     }
-    fun UpdateAddress(address: AddressItems)=viewModelScope.launch(Dispatchers.IO){
-        dao.updateAddressItem(
-            address.customer_name,address.customer_PhoneNumber,address.PinCode,address.Address1,address.Address2,address.LandMark,address.id)
 
+    fun UpdateAddress(address: AddressItems) = viewModelScope.launch(Dispatchers.IO) {
+        dao.updateAddressItem(
+            address.customer_name,
+            address.customer_PhoneNumber,
+            address.PinCode,
+            address.Address1,
+            address.Address2,
+            address.LandMark,
+            address.id
+        )
 
     }
-
-
-
-
 
 
 }

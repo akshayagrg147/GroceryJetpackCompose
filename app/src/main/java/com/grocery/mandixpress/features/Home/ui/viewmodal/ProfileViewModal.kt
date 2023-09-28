@@ -31,7 +31,6 @@ class ProfileViewModal @Inject constructor(
     val shared: sharedpreferenceCommon
 ) : ViewModel() {
 
-
     private val userProfileResponse: MutableStateFlow<CommonUiObjectResponse<UserResponse>> =
         MutableStateFlow(CommonUiObjectResponse())
     var responseLiveData = userProfileResponse.asStateFlow()
@@ -156,8 +155,3 @@ data class CommonUiObjectResponse<T>(
     val isLoading:Boolean = false
 )
 
-data class CommonUiListResponse<T>(
-    val data:List<T> = emptyList(),
-    val error:String = "",
-    val isLoading:Boolean = false
-)

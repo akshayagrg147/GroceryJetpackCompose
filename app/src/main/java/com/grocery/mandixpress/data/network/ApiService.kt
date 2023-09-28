@@ -39,10 +39,8 @@ interface ApiService {
         @Query("pincode")  pincode: String,
     ): Response<HomeAllProductsResponse>
 
-    @POST(Constants.allCoupons)
-    suspend fun getAllCoupons(
-
-    ): Response<CouponResponse>
+    @GET(Constants.allCoupons)
+    suspend fun getAllCoupons(@Query("pincode") pincode: String): Response<CouponResponse>
 
 
     @GET(Constants.categorywise_collectionProducts)

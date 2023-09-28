@@ -21,9 +21,8 @@ class CommonRepository @Inject constructor(
             apiService.getHomeAllProductsSearch(searchCharacter,pincode)
     }
 
-    fun getAppCoupons(
-    ) = toResultFlow {
-        apiService.getAllCoupons()
+    fun getAppCoupons(postalCode: String) = toResultFlow {
+        apiService.getAllCoupons(postalCode)
 
     }
 

@@ -207,7 +207,7 @@ fun OrderConfirmation(
         }
     }
 
-    else
+    else if (data.statusCode == 401)
         Column(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
@@ -258,7 +258,7 @@ fun OrderConfirmation(
                                     .padding(vertical = 5.dp)
                             )
                             Text12_body1(
-                                text = "Bk12H1121",
+                                text = "OD${System.currentTimeMillis()}",
                                 modifier = Modifier
                                     .padding(vertical = 5.dp)
                             )

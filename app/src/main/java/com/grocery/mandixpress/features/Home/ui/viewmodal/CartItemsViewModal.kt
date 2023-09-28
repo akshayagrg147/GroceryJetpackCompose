@@ -149,7 +149,7 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
 
     fun callingItemsCollectionsId(productIdIdModal: MutableSharedFlow<ProductIdIdModal>) =
         viewModelScope.launch {
-            repository.ItemsCollections(productIdIdModal.first()).collectLatest {
+            repository.ItemsCollections(productIdIdModal.first(),sharedpreferenceCommon.getPostalCode()).collectLatest {
                 when (it) {
                     is ApiState.Success -> {
                         itemsCollection.value = it.data

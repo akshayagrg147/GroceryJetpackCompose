@@ -45,9 +45,9 @@ class CommonRepository @Inject constructor(
     ) = toResultFlow {
         apiService.getBestProductById(productIdIdModal)
     }
-    fun ItemsCollections(productIdIdModal: ProductIdIdModal
+    fun ItemsCollections(productIdIdModal: ProductIdIdModal,postalCode: String
     ) = toResultFlow {
-        apiService.getItemsCollections(productIdIdModal)
+        apiService.getItemsCollections(ProductIdIdModal(productIdIdModal.productId,postalCode))
     }
     fun OrderIdRequest(productIdIdModal: OrderIdCreateRequest
     ) = toResultFlow {

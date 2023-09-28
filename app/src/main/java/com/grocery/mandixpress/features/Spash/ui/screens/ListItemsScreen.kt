@@ -78,7 +78,6 @@ fun ListItems(
 
     val modalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-
     var filterclicked by remember { mutableStateOf(false) }
     var productClicked by remember { mutableStateOf(false) }
     var selectedIndex = remember { mutableStateOf(1) }
@@ -86,6 +85,7 @@ fun ListItems(
         mutableStateOf(HomeAllProductsResponse.HomeResponse())
     }
     ModalBottomSheetLayout(
+
         sheetElevation = 0.dp,
         sheetBackgroundColor = Color.Transparent,
         sheetContent = {
@@ -406,7 +406,13 @@ fun showItemDescription(
 
             }
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth().background(color = Color.White,
+                shape = RoundedCornerShape(
+                topStart = 16.dp,
+                topEnd = 16.dp,
+                bottomStart = 0.dp,
+                bottomEnd = 0.dp
+            ))) {
                 Card(
                     elevation = 2.dp,
                     shape = RoundedCornerShape(20.dp),

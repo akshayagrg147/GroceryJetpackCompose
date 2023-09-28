@@ -109,13 +109,23 @@ fun CategoryWiseDashboardAllData(
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (l1, l2) = createRefs()
                 Box(modifier = Modifier
-                    .fillMaxWidth().background(Color.White)
+                    .fillMaxWidth().background(Color.White,
+                        shape = RoundedCornerShape(
+                            topStart = 16.dp,
+                            topEnd = 16.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp
+                        )
+                        )
                     .constrainAs(l1) {
                         top.linkTo(parent.top)
 
                     }
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.fillMaxWidth().background(color =
+                    Color.White,
+                       
+                    )) {
                         Card(
                             elevation = 2.dp,
                             shape = RoundedCornerShape(20.dp),

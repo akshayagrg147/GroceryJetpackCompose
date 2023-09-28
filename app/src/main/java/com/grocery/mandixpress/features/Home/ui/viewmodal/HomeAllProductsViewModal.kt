@@ -315,7 +315,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
             }
           is  HomeEvent.BannerCategoryEventFlow->viewModelScope.launch {
-                repository.ItemsCollections(ProductIdIdModal(event.subcategoryName,sharedPreferences.getPostalCode())).collectLatest {
+                repository.ItemsCollections(ProductIdIdModal(event.subcategoryName),sharedPreferences.getPostalCode()).collectLatest {
                     when (it) {
                         is ApiState.Success -> {
                             bannerCategoryResponse.value = ComposeUiResponse(data = it.data)

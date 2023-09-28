@@ -46,10 +46,6 @@ fun SignUpScreen(
     mobileNumber:String,
     viewModal: RegisterLoginViewModal = hiltViewModel()
 ) {
-    val scope = rememberCoroutineScope()
-    var filteredFavData: List<Country>
-    val countries = remember { countryList(context) }
-    val isCompleted = remember { mutableStateOf("") }
     var isDialog by remember { mutableStateOf(false) }
 
     if (isDialog)
@@ -69,6 +65,7 @@ fun SignUpScreen(
         viewModal.registerEventFlow.collectLatest {
         isDialog  =  when(it){
                 is ApiState.Success ->{
+                    sharedPreferences.setMobileNumber(contactNum.value)
                     sharedPreferences.setJwtToken(it.data.token!!)
                     navController.navigate(ScreenRoute.LocateMeScreen.route)
                     false

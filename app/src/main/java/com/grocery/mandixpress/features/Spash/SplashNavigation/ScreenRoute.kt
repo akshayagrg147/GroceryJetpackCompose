@@ -1,8 +1,13 @@
 package com.grocery.mandixpress.features.Spash.SplashNavigation
 
+import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
+
 sealed class ScreenRoute(val route: String) {
     object SplashScreen : ScreenRoute("splashscreen")
-    object SignUpScreen : ScreenRoute("signupscreen")
+    object SignUpScreen : ScreenRoute("{data}/signupscreen"){
+        fun senddata(data:String)="$data/signupscreen"
+
+    }
     object LoginScreen : ScreenRoute("loginscreen")
     object LocateMeScreen: ScreenRoute("locateMeScreen")
     object MapScreen: ScreenRoute("mapscreen")

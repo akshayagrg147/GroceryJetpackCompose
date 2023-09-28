@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
@@ -93,7 +94,7 @@ fun loginScreen(
                 navController.currentBackStackEntry?.arguments?.apply {
                     putString("mobileNumber", "+91${mobile}")
                 }
-                navController.navigate(ScreenRoute.SignUpScreen.route) {
+                navController.navigate(ScreenRoute.SignUpScreen.senddata("+91${mobile}")) {
                     popUpTo(ScreenRoute.SplashScreen.route) {
                         inclusive = true
                     }

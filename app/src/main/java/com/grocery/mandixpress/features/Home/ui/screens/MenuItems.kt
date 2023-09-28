@@ -284,7 +284,7 @@ fun     menuitems(
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (l1, l2) = createRefs()
                 Box(modifier = Modifier
-                    .fillMaxWidth().background(Color.White)
+                    .fillMaxWidth().background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd =  16.dp))
                     .constrainAs(l1) {
                         top.linkTo(parent.top)
 

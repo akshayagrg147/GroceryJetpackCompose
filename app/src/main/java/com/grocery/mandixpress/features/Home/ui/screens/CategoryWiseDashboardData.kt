@@ -123,9 +123,12 @@ fun CategoryWiseDashboardAllData(
                     }
                 ) {
                     Column(modifier = Modifier.fillMaxWidth().background(color =
-                    Color.White,
-                       
-                    )) {
+                    Color.White,  shape = RoundedCornerShape(
+                        topStart = 16.dp,
+                        topEnd = 16.dp,
+                        bottomStart = 0.dp,
+                        bottomEnd = 0.dp
+                    ))) {
                         Card(
                             elevation = 2.dp,
                             shape = RoundedCornerShape(20.dp),

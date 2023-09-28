@@ -17,12 +17,12 @@ fun PageHeader() {
     val imageSize = 0.3f // Modify this value to adjust the height of the image
 
     // Replace 'R.drawable.friendship' with the actual resource ID of the image
-    val image: Painter = painterResource(id = com.grocery.mandixpress.R.drawable.friendship)
+    val image: Painter = painterResource(id = com.grocery.mandixpress.R.drawable.logo)
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(300.dp)
     ) {
         Image(
             painter = image,

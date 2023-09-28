@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.grocery.mandixpress.data.modal.RegisterLoginRequest
 import com.grocery.mandixpress.R
@@ -24,6 +25,7 @@ import com.grocery.mandixpress.features.Spash.domain.Modal.Country
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.CommonProgressBar
+import com.grocery.mandixpress.features.Home.ui.screens.PassParceableBanner
 import com.grocery.mandixpress.features.Home.ui.ui.theme.headingColor
 import com.grocery.mandixpress.features.Spash.SplashNavigation.ScreenRoute
 import com.grocery.mandixpress.features.Spash.ui.viewmodel.RegisterEvent
@@ -41,6 +43,7 @@ val emailPattern = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
 fun SignUpScreen(
     navController: NavHostController,
     context: Context, sharedPreferences: sharedpreferenceCommon,
+    mobileNumber:String,
     viewModal: RegisterLoginViewModal = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
@@ -52,12 +55,7 @@ fun SignUpScreen(
     if (isDialog)
         CommonProgressBar()
 
-    val contactNum = remember {
-        mutableStateOf(
-            navController.previousBackStackEntry?.arguments?.getString("mobileNumber")
-                ?: ""
-        )
-    }
+    val contactNum = remember { mutableStateOf<String>(mobileNumber) }
     val name = remember {
         mutableStateOf("")
     }
@@ -101,8 +99,9 @@ fun SignUpScreen(
         ) {
             PageHeader()
 
-            Column(
-                modifier = Modifier.fillMaxSize().background(Color.White)
+            Column(modifier = Modifier.fillMaxSize().background(Color.White, RoundedCornerShape(
+                    topStart = 16.dp, topEnd = 16.dp
+                ))
                     .clip(RoundedCornerShape(46.dp))
                     .padding(horizontal = 16.dp, vertical = 24.dp)
             ) {

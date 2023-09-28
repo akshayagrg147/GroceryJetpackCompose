@@ -1,6 +1,7 @@
 package com.grocery.mandixpress.features.Spash
 
 import android.app.Activity
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +24,9 @@ fun splashScreenNavigation(
             SplashScreen(navController, context,sharedPreferences)
         }
         composable(ScreenRoute.SignUpScreen.route) {
-            SignUpScreen(navController, context,sharedPreferences)
+            val mobileNumber = it.arguments?.getString("data") ?: ""
+            Log.d("contactNumberSplash", mobileNumber)
+            SignUpScreen(navController, context,sharedPreferences,mobileNumber)
         }
         composable(ScreenRoute.LoginScreen.route) {
             loginScreen(navController, context,sharedPreferences)

@@ -87,6 +87,7 @@ fun homescreen(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val address = remember { mutableStateOf("") }
+    val isExpandedBottomSheet = remember{ mutableStateOf(false) }
     LaunchedEffect(key1 = Unit) {
         viewModal.onEvent(
             HomeEvent.adminDetailsEventFlow
@@ -113,12 +114,8 @@ fun homescreen(
 
     }
     var searchvisibility by remember { mutableStateOf(false) }
-    ModalBottomSheetLayout(sheetState = bottomSheetState,
-        sheetElevation = 0.dp,
-        sheetBackgroundColor = Color.Transparent, sheetContent = {
-            Box(modifier = Modifier
-                    .fillMaxWidth().height(100.dp)
-                    .background(Color.Unspecified),
+    ModalBottomSheetLayout(sheetState = bottomSheetState, sheetElevation = 0.dp,   sheetBackgroundColor = Color.Transparent, sheetContent = {
+            Box(modifier = Modifier.fillMaxWidth().height(100.dp).background(Color.Unspecified),
                 contentAlignment = Alignment.Center,
                 content = {
                    Image(
@@ -135,20 +132,11 @@ fun homescreen(
                        contentScale = ContentScale.Fit
                    )
 
-               },
-
-
-
-            )
-
-
-
-
-
-            Column(
+               },)
+        Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .requiredHeight(400.dp).background(Color.Transparent)
+                    .height(800.dp).background(Color.Transparent)
 
             ) {
 
@@ -184,6 +172,7 @@ fun homescreen(
                         placeholder = stringResource(id = R.string.address),
                         modifier = Modifier.padding(horizontal = 10.dp)
                     ) {
+                        isExpandedBottomSheet.value = true
                         viewModal.searchAddress(it, placesClient)
                         // namestate.value = it.length >= 3
                     }
@@ -265,16 +254,13 @@ fun homescreen(
             }
         }) {
         val coroutineScope = rememberCoroutineScope()
-
         Box(modifier = Modifier.fillMaxSize()) {
             HeaderDeliveryTime(viewModal, navcontroller, scroll, lazyListState) {
                 coroutineScope.launch {
                     bottomSheetState.show()
                 }
-
             }
             BodyDashboard(scroll, viewModal, navcontroller, lazyListState, context) {
-
             }
             if (searchvisibility)
                 SearchBar() {

@@ -111,6 +111,7 @@ fun CommonButton(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp),
         border = BorderStroke(1.dp, strokeColor),
+        elevation = 0.dp
     ) {
         Box(
             modifier = Modifier

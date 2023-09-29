@@ -40,7 +40,6 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
     val savingAmountState: State<Int> = savingAmountMutable
     private val itemsCollection: MutableState<ItemsCollectionsResponse> = mutableStateOf(ItemsCollectionsResponse(null, null, null))
     val _itemsCollection: State<ItemsCollectionsResponse> = itemsCollection
-    val _res: MutableSharedFlow<OrderIdCreateRequest> = MutableSharedFlow(1)
     private val totalCount: MutableState<Int> = mutableStateOf(0)
     val totalCountState: State<Int> = totalCount
     private val totalPrice: MutableState<Int> =
@@ -50,8 +49,8 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
     private val addresslist: MutableState<List<AddressItems>> = mutableStateOf(emptyList())
     val addresslistState: State<List<AddressItems>> = addresslist
 
-    private val flow:MutableStateFlow<CommonUiObjectResponse<OrderIdResponse>> =  MutableStateFlow(CommonUiObjectResponse())
-    var sharedFlow=flow.asStateFlow()
+    private val createOrderIdMS:MutableStateFlow<CommonUiObjectResponse<OrderIdResponse>> =  MutableStateFlow(CommonUiObjectResponse())
+    var createOrderIdState=createOrderIdMS.asStateFlow()
     private set
 
     init {
@@ -173,14 +172,14 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
                  viewModelScope.launch {
                      event.request.pincode=sharedpreferenceCommon.getPostalCode()
                      repository.OrderIdRequest(event.request).doOnLoading {
-                         flow.value = CommonUiObjectResponse(isLoading = true,)
+                         createOrderIdMS.value = CommonUiObjectResponse(isLoading = true,)
 
 
                      }.doOnSuccess {
-                         flow.value = CommonUiObjectResponse(data = it,)
+                         createOrderIdMS.value = CommonUiObjectResponse(data = it,)
 
                      }.doOnFailure {
-                         flow.value = CommonUiObjectResponse(error = it?.message?:"something went wrong",)
+                         createOrderIdMS.value = CommonUiObjectResponse(error = it?.message?:"something went wrong",)
                      }.collect()
                  }
 

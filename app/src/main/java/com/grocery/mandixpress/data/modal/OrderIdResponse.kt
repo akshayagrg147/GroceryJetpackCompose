@@ -16,7 +16,7 @@ data class OrderIdResponse(
     @Json(name = "ProductResponse")
     val productResponse: ProductResponse?=null,
     @Json(name = "statusCode")
-    val statusCode: Int?=404
+    val statusCode: Int?=0
 ):Parcelable {
     @Parcelize
     @JsonClass(generateAdapter = true)

@@ -31,6 +31,7 @@ import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.data.modal.RelatedSearchRequest
 import com.grocery.mandixpress.features.Home.domain.modal.Coupon
 import com.grocery.mandixpress.features.Home.domain.modal.CouponResponse
+import com.grocery.mandixpress.features.Home.ui.noHistoryAvailable
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CouponEvents
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CouponViewModel
 import com.grocery.mandixpress.features.Home.ui.viewmodal.ProductEvents
@@ -50,9 +51,13 @@ fun ApplyCoupons(navController: NavController, viewModel: CouponViewModel = hilt
         )
 
     }
+    if(commonResponse.data?.itemData?.isNotEmpty()==true)
     Column {
         SearchBar(searchText = searchText, onSearchTextChanged = { searchText = it })
         CouponList(navController=navController,coupons = commonResponse.data?.itemData?.filter { it.couponTitle.contains(searchText, ignoreCase = true) }?: emptyList())
+    }
+    else{
+        noHistoryAvailable("No Coupons available")
     }
 }
 

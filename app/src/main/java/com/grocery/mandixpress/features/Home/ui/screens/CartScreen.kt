@@ -35,13 +35,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -105,7 +101,7 @@ fun CartScreen(
 
 
 
-    val orderIDResponse by viewModal.sharedFlow.collectAsState()
+    val orderIDResponse by viewModal.createOrderIdState.collectAsState()
     if(orderIDResponse.data?.statusCode==200){
         Log.d("ordercreation","called ${orderIDResponse.data} ")
         isDialog=false
@@ -204,23 +200,7 @@ fun CartScreen(
                             )
                         }
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text10_h2(
-                                text = "Service Charges",
-                                color = headingColor,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                            Text10_h2(
-                                text = "₹ ${String.format("%.2f",viewModal.totalPriceState.value * 0.09)}",
-                                color = headingColor,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
+
 
                         Row(
                             modifier = Modifier
@@ -237,8 +217,8 @@ fun CartScreen(
                                 )
 
                             Text12_with_strikethrough(
-                                text1 = if (viewModal.totalPriceState.value.toInt() < 100) "Free" else "₹ 30",
-                                text2 = if (viewModal.totalPriceState.value.toInt() < 100) "₹ 30" else "Free",
+                                text1 = if (viewModal.totalPriceState.value.toInt() < viewModal.getFreeDeliveryMinPrice().toInt()) "Free" else "₹ 30",
+                                text2 = if (viewModal.totalPriceState.value.toInt() < viewModal.getFreeDeliveryMinPrice().toInt()) "₹ 30" else "Free",
                                 color = headingColor,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
@@ -251,10 +231,10 @@ fun CartScreen(
                             navController.currentBackStackEntry?.savedStateHandle?.let {
                                 it.get<Bundle>("passCoupon")
                             }
-                        val grandTotal = if (viewModal.totalPriceState.value.toInt() < 100) {
-                            "₹ " + ((30) + (viewModal.totalPriceState.value.toDouble()+viewModal.totalPriceState.value .toDouble() * 0.09))
+                        val grandTotal = if (viewModal.totalPriceState.value.toInt() < viewModal.getFreeDeliveryMinPrice().toInt()) {
+                            "₹ " + ((30) + (viewModal.totalPriceState.value.toDouble()))
                         } else {
-                            "₹ ${(viewModal.totalPriceState.value.toDouble()+viewModal.totalPriceState.value .toDouble() * 0.09)}"
+                            "₹ ${(viewModal.totalPriceState.value.toDouble())}"
                         }
                         if (passCoupon) {
                             if ((backBundleData?.get("CouponPercent") != null))
@@ -586,7 +566,7 @@ fun Body(
 
 
         if (viewModal.allCartItemsState.value.isEmpty())
-            noHistoryAvailable()
+            noHistoryAvailable("No order available")
         else {
 
             for (item in viewModal.allCartItemsState.value) {
@@ -850,10 +830,10 @@ fun AppliedCupon(title: String?, percenage: Int?, clickOnRemove: (Boolean) -> Un
 
 
 @Composable
-fun noHistoryAvailable() {
+fun noHistoryAvailable(text:String) {
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(250.dp))
-        Text12_body1(text = "No order available", modifier = Modifier.align(Alignment.Center))
+        Text12_body1(text = text, modifier = Modifier.align(Alignment.Center))
 
 
     }

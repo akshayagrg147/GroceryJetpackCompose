@@ -122,8 +122,6 @@ class HomeAllProductsViewModal @Inject constructor(
 
     val predictions: MutableStateFlow<List<AutocompletePrediction>> = MutableStateFlow(emptyList())
 
-    var filterlist: List<HomeAllProductsResponse.HomeResponse>? = null
-
 
     val repo = getitemcount11
         .debounce(300)

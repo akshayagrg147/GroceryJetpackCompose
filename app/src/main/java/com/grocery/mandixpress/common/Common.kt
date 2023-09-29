@@ -48,14 +48,15 @@ import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommonProgressBar(text: String="Easy shop with Us") {
+fun CommonProgressBar(text: String = "Easy shop with Us") {
 
 
-    Dialog(onDismissRequest = {}, properties = DialogProperties(
-        dismissOnClickOutside = false,
+    Dialog(
+        onDismissRequest = {}, properties = DialogProperties(
+            dismissOnClickOutside = false,
 
-        // Apply custom properties here if needed
-    )
+            // Apply custom properties here if needed
+        )
     ) {
 
         Box(
@@ -63,63 +64,64 @@ fun CommonProgressBar(text: String="Easy shop with Us") {
                 .size(170.dp)
 
                 .border(
-                    1.dp,
-                    borderColor,
-                    androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                    1.dp, borderColor, androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                 )
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(Color.Transparent, Color(0xAA000000)),
-                    ))
+                    )
+                )
 
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colors.background)
-                    .padding(10.dp)
-                  ,
+                    .padding(10.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                CircularProgressIndicator(color= headingColor)
+                CircularProgressIndicator(color = headingColor)
                 Spacer(Modifier.height(10.dp))
-                Text12_h1(text = text,color= headingColor)
+                Text12_h1(text = text, color = headingColor)
 
 
             }
         }
 
-}}
-    @Composable
-    fun AppButtonComponent(
-        text: String,
-        color: Color = Color.White,
-        @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
-        shape: Shape = RoundedCornerShape(100.dp),
-        elevation: ButtonElevation = ButtonDefaults.elevation(0.dp),
-        background: Color =  Color.White,
-        onClick: () -> Unit
-    ) {
-        Button(
-            onClick = onClick,
-            modifier = modifier
-                .fillMaxWidth()
-                .background(background)
-                .height(35.dp),
-            elevation = elevation,
-            shape = shape,
+    }
+}
+
+@Composable
+fun AppButtonComponent(
+    text: String,
+    color: Color = Color.White,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(100.dp),
+    elevation: ButtonElevation = ButtonDefaults.elevation(0.dp),
+    background: Color = Color.White,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(background)
+            .height(35.dp),
+        elevation = elevation,
+        shape = shape,
 
         ) {
-            Text12_h1(
-                text = text,color=Color.White)
-        }
+        Text12_h1(
+            text = text, color = Color.White
+        )
     }
+}
 
 @Composable
 fun LoadingBar() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator()
     }
 }
@@ -145,18 +147,13 @@ fun OtpView(
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
     onOtpTextChange: (String) -> Unit
 ) {
-    BasicTextField(
-        modifier = modifier,
-        value = otpText,
+    BasicTextField(modifier = modifier, value = otpText,
 
         onValueChange = {
             if (it.length <= otpCount) {
                 onOtpTextChange.invoke(it)
             }
-        },
-        enabled = enabled,
-        keyboardOptions = keyboardOptions,
-        decorationBox = {
+        }, enabled = enabled, keyboardOptions = keyboardOptions, decorationBox = {
             Row(horizontalArrangement = Arrangement.SpaceAround) {
                 repeat(otpCount) { index ->
                     Spacer(modifier = Modifier.width(2.dp))
@@ -193,9 +190,7 @@ private fun CharView(
         Modifier
             .size(containerSize)
             .border(
-                width = 1.dp,
-                color = charColor,
-                shape = MaterialTheme.shapes.medium
+                width = 1.dp, color = charColor, shape = MaterialTheme.shapes.medium
             )
             .padding(bottom = 4.dp)
             .background(charBackground)
@@ -235,7 +230,7 @@ private fun CharView(
 @Composable
 fun AppCustomChips(
     modifier: Modifier = Modifier,
-    index:Int,
+    index: Int,
     selected: Boolean,
     title: String,
     unSelectedBackgroundColor: Color = Color.White,

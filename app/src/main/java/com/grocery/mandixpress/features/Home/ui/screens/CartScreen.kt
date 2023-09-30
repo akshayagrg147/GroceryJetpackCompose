@@ -147,9 +147,7 @@ fun CartScreen(
     }
 
 
-    ModalBottomSheetLayout(
-        sheetElevation = 0.dp,
-        sheetContent = {
+    ModalBottomSheetLayout(sheetElevation = 0.dp, sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()){
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Image(painter = painterResource(id = R.drawable.close_button), contentDescription = "Cross Button", modifier = Modifier, contentScale = ContentScale.Fit)
@@ -415,13 +413,7 @@ if(addressvalue?.isEmpty()==true){
                 }
 
             }}
-        },
-        sheetBackgroundColor = Color.White.copy(alpha = 0.0f),
-        sheetState = modalBottomSheetState,
-        )
-
-    {
-
+        }, sheetBackgroundColor = Color.White.copy(alpha = 0.0f), sheetState = modalBottomSheetState,) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxSize()) {
                 ConstraintLayout(
@@ -484,44 +476,7 @@ if(addressvalue?.isEmpty()==true){
 
     }
 }
-/*@Composable
-fun BottomCurvedShape(): Shape = androidx.compose.ui.draw.clip(CurvedShape())
 
-@Composable
-fun CurvedShape() =CustomShape()*/
-
-/*@Composable
-fun CustomShape() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(20.dp)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.White
-                        )
-                    )
-                )
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(20.dp)
-            )
-        }
-    }
-}*/
 
 
 

@@ -320,7 +320,7 @@ fun ListItems(
                         scope.launch { modalBottomSheetState.show() }
                     }
                     Toolbar(scroll, headerHeightPx, toolbarHeightPx)
-                    Title(ls?.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
+                    Title(ls.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
                 }
 
             }
@@ -670,7 +670,7 @@ private fun Header(
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color(0xAA000000)),
+                        colors = listOf(Color.Transparent, whiteColor),
                         startY = 3 * headerHeightPx / 4 // Gradient applied to wrap the title only
                     )
                 )
@@ -690,17 +690,17 @@ private fun Body(
     when (viewModal.responseLiveData.value) {
 
         "asc" -> {
-            ls = viewModal.globalmutablelist1.value.list?.sortedBy { it?.productName?.lowercase() }
+            ls = viewModal.globalmutablelist1.value.list?.sortedBy { it.productName?.lowercase() }
         }
 
         "dsc" -> {
-            ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it?.productName?.lowercase() }
+            ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it.productName?.lowercase() }
         }
         "high" -> {
             ls = viewModal.globalmutablelist1.value.list?.sortedBy { it.selling_price?.toInt() }
         }
         "low" -> {
-            ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it?.selling_price?.toInt() }
+            ls = viewModal.globalmutablelist1.value.list?.sortedByDescending { it.selling_price?.toInt() }
         }
         "filter" -> {
             ls = viewModal.listState.value.list
@@ -794,11 +794,9 @@ private fun Title(
 
     Text16_h1(
         text = str,
-        color= blackColor,
+        color= headingColor,
         modifier = Modifier
             .graphicsLayer {
-
-
                 val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
 
                 val collapseFraction: Float =    (scroll.value / collapseRange).coerceIn(0f, 1f)

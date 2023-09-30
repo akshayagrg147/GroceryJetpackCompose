@@ -196,6 +196,7 @@ fun OrderHistoryRow(
                     Icon(
                         painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
                         contentDescription = "Location Icon",
+                        tint = Color.Unspecified,
 
                         modifier = Modifier.size(24.dp)
                     )

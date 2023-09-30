@@ -40,31 +40,42 @@ fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>,call:(Addr
 
     Card(
         elevation = 1.dp,
-        shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Color.LightGray),
-        backgroundColor = if(selectedIndex.value==data.id.toInt()) Color.LightGray else Color.White ,modifier = Modifier
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (selectedIndex.value == data.id.toInt()) Color.LightGray else whiteColor // Set the border color based on the condition
+        ),
+       modifier = Modifier
             .fillMaxWidth()
 
-            .padding(15.dp)
-            .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
+
+            .clip(RoundedCornerShape(1.dp, 1.dp, 1.dp, 1.dp))
             .clickable {
                 selectedIndex.value = data.id.toInt()
 
             }
 
     ){
-        Row( modifier = Modifier.fillMaxSize().padding(all = 10.dp),
+        Row( modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween){
+Box(modifier = Modifier.background(buttonDisableColor).padding(10.dp)) {
+    Icon(
+        painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
+        contentDescription = "Location Icon",
+        tint = Color.Unspecified,
+        modifier = Modifier.size(17.dp)
+    )
+    
+}
 
-            Icon(
-                painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
-                contentDescription = "Location Icon",
-
-                modifier = Modifier.size(24.dp)
-            )
-            Column(modifier = Modifier .weight(1f).padding(horizontal = 5.dp)) {
-                Text10_h2(text = "Home:"+data.customer_name, modifier = Modifier)
-                Text11_body2(text = "${data.Address1},${data.Address2}, ${data.PinCode},${data.LandMark}", modifier = Modifier.fillMaxWidth())
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 5.dp)) {
+                Text12_h1(text = "Home:"+data.customer_name, modifier = Modifier, color = headingColor)
+                Text10_h2(text = "${data.Address1},${data.Address2}, ${data.PinCode},${data.LandMark}", modifier = Modifier.fillMaxWidth(), color = bodyTextColor)
 
             }
 
@@ -92,7 +103,7 @@ fun AllAddress(navHostController: NavHostController,context: Context) {
 
     var selected by remember { mutableStateOf(0) }
 
-    Column() {
+    Column(modifier = Modifier.background(color = lineColor)) {
         CommonHeader(text = "Address", color = Color.Black) {
             navHostController.popBackStack()
         }
@@ -102,8 +113,8 @@ fun AllAddress(navHostController: NavHostController,context: Context) {
                     selected = index == selected,
                     index = index,
                     title = s,
-                    unSelectedBackgroundColor = Color.LightGray,
-                    borderStroke = BorderStroke(0.dp, Color.Transparent)
+                    unSelectedBackgroundColor = lineColor,
+                    borderStroke = BorderStroke(1.dp,Color.LightGray)
                 ) { data ->
                     selected = data
                 }
@@ -138,7 +149,6 @@ fun allAddress(navHostController: NavHostController,viewModal: HomeAllProductsVi
         // .height(260.dp)
     ) {
         item {
-
             if(viewModal.list.value.isEmpty())
                 noAddressAvailable()
 
@@ -219,12 +229,13 @@ fun allAddress(navHostController: NavHostController,viewModal: HomeAllProductsVi
                 dismissContent = {
 
                     Card(
+                        shape = RoundedCornerShape(10.dp),
                         elevation = animateDpAsState(
                             if (dismissState.dismissDirection != null) 4.dp else 0.dp
                         ).value,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(alignment = Alignment.CenterVertically)
+                            .align(alignment = Alignment.CenterVertically).background(color=lineColor).padding(10.dp)
                             .animateItemPlacement(animationSpec = tween(durationMillis = 600))
                     ) {
                         AddressFiled(item, selectedIndex, call = {

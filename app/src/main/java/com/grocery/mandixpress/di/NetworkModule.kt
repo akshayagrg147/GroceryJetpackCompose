@@ -16,10 +16,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.File
 import javax.inject.Singleton
 
 @Module
@@ -69,13 +71,17 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesOkHttp(oAuthInterceptor: OAuthInterceptor): OkHttpClient {
+    fun providesOkHttp(oAuthInterceptor: OAuthInterceptor,@ApplicationContext applicationContext: Context): OkHttpClient {
+        val cacheDir = File(applicationContext.cacheDir, "http-cache")
+        val cacheSize = 10 * 1024 * 1024
+        val cache = Cache(cacheDir, cacheSize.toLong())
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder().addInterceptor(interceptor)
             .addInterceptor(
                 oAuthInterceptor
             )
+            .cache(cache)
             .build()
     }
 }

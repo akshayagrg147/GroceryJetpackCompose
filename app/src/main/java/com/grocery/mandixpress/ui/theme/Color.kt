@@ -42,7 +42,7 @@ val blackColor = Color(0XFF1E2329)
 val grey = Color(0XFF666666)
 val faqColor = Color(0XFF212529)
 val faqIconColor = Color(0XFF292D32)
-val lineColor = Color(0XFFEFEFEF)
+val lineColor = Color(0xFFF5F5F5)
 val strokeColor = Color(0XFFF0F0F0)
 val ShimmerColorShades = listOf(
 

@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.grocery.mandixpress.R
+import com.grocery.mandixpress.Utils.Text11_body2
 import com.grocery.mandixpress.Utils.Text16_h1
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 
@@ -242,15 +243,15 @@ fun AppCustomChips(
         onClick = { onValueChange(index) },
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = if (selected) Color.Black else unSelectedBackgroundColor,
+            backgroundColor = if (selected) headingColor else unSelectedBackgroundColor,
             contentColor = if (selected) Color.White else Color.Black
         ),
         elevation = ButtonDefaults.elevation(0.dp),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
         modifier = modifier.padding(end = 10.dp),
-        border = if (!selected) borderStroke else null
+        border = if (!selected) borderStroke else borderStroke
     ) {
-        Text12_body1(
+        Text11_body2(
             text = title, if (selected) Color.White else Color.Black,
         )
     }

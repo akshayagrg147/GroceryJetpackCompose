@@ -85,7 +85,8 @@ fun CategoryWiseDashboardAllData(
         sheetBackgroundColor = Color.Transparent,
         sheetContent = {
             Box(modifier = Modifier
-                .fillMaxWidth().height(70.dp)
+                .fillMaxWidth()
+                .height(70.dp)
                 .background(Color.Unspecified),
                 contentAlignment = Alignment.Center,
                 content = {
@@ -94,7 +95,8 @@ fun CategoryWiseDashboardAllData(
                         contentDescription = "Cross Button",
                         modifier = Modifier
                             .size(50.dp)
-                            .padding(bottom = 10.dp).clickable {
+                            .padding(bottom = 10.dp)
+                            .clickable {
                                 scope.launch {
                                     modalBottomSheetState.hide()
                                 }
@@ -109,26 +111,32 @@ fun CategoryWiseDashboardAllData(
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (l1, l2) = createRefs()
                 Box(modifier = Modifier
-                    .fillMaxWidth().background(Color.White,
+                    .fillMaxWidth()
+                    .background(
+                        Color.White,
                         shape = RoundedCornerShape(
                             topStart = 16.dp,
                             topEnd = 16.dp,
                             bottomStart = 0.dp,
                             bottomEnd = 0.dp
                         )
-                        )
+                    )
                     .constrainAs(l1) {
                         top.linkTo(parent.top)
 
                     }
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth().background(color =
-                    Color.White,  shape = RoundedCornerShape(
-                        topStart = 16.dp,
-                        topEnd = 16.dp,
-                        bottomStart = 0.dp,
-                        bottomEnd = 0.dp
-                    ))) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color =
+                            Color.White, shape = RoundedCornerShape(
+                                topStart = 16.dp,
+                                topEnd = 16.dp,
+                                bottomStart = 0.dp,
+                                bottomEnd = 0.dp
+                            )
+                        )) {
                         Card(
                             elevation = 2.dp,
                             shape = RoundedCornerShape(20.dp),
@@ -214,8 +222,8 @@ fun CategoryWiseDashboardAllData(
                         viewModal.onEvent(HomeEvent.BannerCategoryEventFlow(it))
                     }
                     Image(
-                        painter = rememberImagePainter(bundle.second?.imageUrl1), null, modifier = Modifier
-                            .width(150.dp)
+                        painter = rememberImagePainter(bundle.second.imageUrl1), null, modifier = Modifier
+                            .fillMaxWidth()
                             .height(100.dp)
                     )
                     Log.d("gggddd", "previous1:- ${itemBasedCategory.data?.statusCode}")
@@ -514,23 +522,31 @@ fun ScrollingImageRow(
     ) {
         itemsIndexed(ls!!) { index, item ->
             val isSelected = selectedItemIndex == index
+Column() {
+    Image(
+        painter = rememberImagePainter(item.subCategoryUrl),
+        contentDescription = null, contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .padding(8.dp)
+            .size(size)
 
-            Image(
-                painter = rememberImagePainter(item.subCategoryUrl),
-                contentDescription = null, contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(size)
+            .background(if (isSelected) greyLightColor else whiteColor)
+            .clip(CircleShape)
+            .let { if (isSelected) it.clip(CircleShape) else it }
 
-                    .background(if (isSelected) greyLightColor else whiteColor)
-                    .clip(CircleShape)
-                    .let { if (isSelected) it.clip(CircleShape) else it }
+            .clickable {
+                selectedItemIndex = index
+                call(item.name)
+            }
+    )
+    Text10_h2(
+        text = "${item.name}", color = headingColor,
+        modifier = Modifier
 
-                    .clickable {
-                        selectedItemIndex = index
-                        call(item.name)
-                    }
-            )
+            .align(Alignment.CenterHorizontally)
+    )
+}
+
 
         }
     }
@@ -550,17 +566,17 @@ fun ProductWiseRow(data: HomeAllProductsResponse.HomeResponse, productdetail: Mu
             .width(150.dp)
             .clickable {
                 productdetail.value = ItemsCollectionsResponse.SubItems(
-                    orignal_price = data.orignal_price?:"",
+                    orignal_price = data.orignal_price ?: "",
                     item_category_name = "",
-                    selling_price = data.selling_price?:"",
-                    productDescription = data.productDescription?:"",
-                    productId = data.ProductId?:"",
-                    productImage1 =data.productImage1?:"",
-                    productImage2 = data.productImage2?:"",
-                    productImage3 = data.productImage3?:"",
-                    productName =data.productName?:"",
-                    quantity = data.quantity?:"",
-                    quantityInstructionController=data.quantityInstructionController?:"",
+                    selling_price = data.selling_price ?: "",
+                    productDescription = data.productDescription ?: "",
+                    productId = data.ProductId ?: "",
+                    productImage1 = data.productImage1 ?: "",
+                    productImage2 = data.productImage2 ?: "",
+                    productImage3 = data.productImage3 ?: "",
+                    productName = data.productName ?: "",
+                    quantity = data.quantity ?: "",
+                    quantityInstructionController = data.quantityInstructionController ?: "",
                 )
                 scope.launch { modalBottomSheetState.show() }
 //                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))

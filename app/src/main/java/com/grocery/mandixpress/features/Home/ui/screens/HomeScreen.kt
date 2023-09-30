@@ -89,25 +89,7 @@ fun homescreen(
     val address = remember { mutableStateOf("") }
     LaunchedEffect(key1 = Unit) {
         viewModal.onEvent(
-            HomeEvent.adminDetailsEventFlow
-
-        )
-        viewModal.onEvent(
             HomeEvent.BannerImageEventFlow
-        )
-        viewModal.onEvent(
-            HomeEvent.CategoryWiseEventFlow
-
-        )
-        viewModal.onEvent(
-            HomeEvent.ExclusiveEventFlow
-
-        )
-        viewModal.onEvent(
-            HomeEvent.BestSellingEventFlow
-        )
-        viewModal.onEvent(
-            HomeEvent.ItemCategoryEventFlow
         )
 
 
@@ -117,8 +99,9 @@ fun homescreen(
         sheetElevation = 0.dp,
         sheetBackgroundColor = Color.Transparent, sheetContent = {
             Box(modifier = Modifier
-                    .fillMaxWidth().height(100.dp)
-                    .background(Color.Unspecified),
+                .fillMaxWidth()
+                .height(100.dp)
+                .background(Color.Unspecified),
                 contentAlignment = Alignment.Center,
                 content = {
                    Image(
@@ -126,7 +109,8 @@ fun homescreen(
                        contentDescription = "Cross Button",
                        modifier = Modifier
                            .size(50.dp)
-                           .padding(bottom = 10.dp).clickable {
+                           .padding(bottom = 10.dp)
+                           .clickable {
                                scope.launch {
                                    bottomSheetState.hide()
                                }
@@ -148,7 +132,8 @@ fun homescreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .requiredHeight(400.dp).background(Color.Transparent)
+                    .requiredHeight(400.dp)
+                    .background(Color.Transparent)
 
             ) {
 
@@ -359,114 +344,108 @@ fun BodyDashboard(
     ) {
 
         if (bannerImage.data?.statusCode == 200) {
+            if(bannerImage.data?.itemData?.isNotEmpty()==true) {
+                LaunchedEffect(key1 = Unit) {
+                    viewModal.onEvent(
+                        HomeEvent.adminDetailsEventFlow
 
-            val imageUrls: MutableList<Pair<String, BannerImageResponse.ItemData>> =
-                mutableListOf()
-            bannerImage.data!!.itemData.forEach { item ->
-                Log.d(
-                    "image_for_banner",
-                    "${item.bannercategory1 != null}  ${item.bannercategory2 != null}  ${item.bannercategory3 != null}"
-                )
-                if (item.bannercategory1?.isNotEmpty() == true) {
-                    imageUrls.add(Pair(item.imageUrl1 ?: "", item))
-                }
-                if (item.bannercategory2 != null) {
-                    imageUrls.add(Pair(item.imageUrl2 ?: "", item))
-                }
-                if (item.bannercategory3 != null) {
-                    imageUrls.add(Pair(item.imageUrl3 ?: "", item))
-                }
-            }
-            if (imageUrls.isNotEmpty()) {
-                TextField(
-                    value = "",
-                    shape = RoundedCornerShape(8.dp),
-                    enabled = false,
-                    onValueChange = {
+                    )
 
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(24.dp))
-                        .clickable {
-                            navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
-                        }
-                        .padding(start = 10.dp, end = 10.dp),
-                    placeholder = {
-                        Text12_body1(
-                            text = "Search Store",
-                            color = bodyTextColor,
-                        )
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = Color.Transparent,
-                        trailingIconColor = titleColor,
-                        backgroundColor = greycolor,
-                        disabledIndicatorColor = Color.Transparent
-                    ),
-                    leadingIcon = {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                Icons.Default.Search, contentDescription = "",
+                    viewModal.onEvent(
+                        HomeEvent.CategoryWiseEventFlow
+
+                    )
+                    viewModal.onEvent(
+                        HomeEvent.ExclusiveEventFlow
+
+                    )
+                    viewModal.onEvent(
+                        HomeEvent.BestSellingEventFlow
+                    )
+                    viewModal.onEvent(
+                        HomeEvent.ItemCategoryEventFlow
+                    )
+                }
+
+                val imageUrls: MutableList<Pair<String, BannerImageResponse.ItemData>> =
+                    mutableListOf()
+                bannerImage.data!!.itemData.forEach { item ->
+                    Log.d(
+                        "image_for_banner",
+                        "${item.bannercategory1 != null}  ${item.bannercategory2 != null}  ${item.bannercategory3 != null}"
+                    )
+                    if (item.bannercategory1?.isNotEmpty() == true) {
+                        imageUrls.add(Pair(item.imageUrl1 ?: "", item))
+                    }
+                    if (item.bannercategory2 != null) {
+                        imageUrls.add(Pair(item.imageUrl2 ?: "", item))
+                    }
+                    if (item.bannercategory3 != null) {
+                        imageUrls.add(Pair(item.imageUrl3 ?: "", item))
+                    }
+                }
+                if (imageUrls.isNotEmpty()) {
+                    TextField(
+                        value = "",
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = false,
+                        onValueChange = {
+
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable {
+                                navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
+                            }
+                            .padding(start = 10.dp, end = 10.dp),
+                        placeholder = {
+                            Text12_body1(
+                                text = "Search Store",
+                                color = bodyTextColor,
+                            )
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = Color.Transparent,
+                            trailingIconColor = titleColor,
+                            backgroundColor = greycolor,
+                            disabledIndicatorColor = Color.Transparent
+                        ),
+                        leadingIcon = {
+                            IconButton(onClick = {}) {
+                                Icon(
+                                    Icons.Default.Search, contentDescription = "",
+                                )
+                            }
+                        },
+                        singleLine = true,
+                    )
+
+                    val pagerState = rememberPagerState(pageCount = imageUrls.size)
+
+                    // Auto-scroll coroutine
+                    LaunchedEffect(Unit) {
+                        while (true) {
+
+                            delay(2000)
+                            pagerState.animateScrollToPage(
+                                page = (pagerState.currentPage + 1) % (pagerState.pageCount),
+                                animationSpec = tween(600)
                             )
                         }
-                    },
-                    singleLine = true,
-                )
-
-                val pagerState = rememberPagerState(pageCount = imageUrls.size)
-
-                // Auto-scroll coroutine
-                LaunchedEffect(Unit) {
-                    while (true) {
-
-                        delay(2000)
-                        pagerState.animateScrollToPage(
-                            page = (pagerState.currentPage + 1) % (pagerState.pageCount),
-                            animationSpec = tween(600)
-                        )
                     }
-                }
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
-                ) { index ->
-                    Banner(url = imageUrls[index].first) {
-                        viewModal.setItemDataClass(
-                            imageUrls[index].second, index
-                        )
-
-                        val parceable = PassParceableBanner(index, imageUrls[index].second)
-
-                        navcontroller.currentBackStackEntry?.savedStateHandle?.set(
-                            "data",
-                            parceable
-                        )
-
-                        navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
-
-
-                    }
-                }
-                if (bannerImage.data!!.itemData[0].bannercategory1?.isNotEmpty() == true) {
-                    Box(
-                        modifier = Modifier.background(color = whiteColor),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text14_h2(
-                            text = "${bannerImage.data!!.itemData.get(0).bannercategory1} Special",
-                            color = pendingColor
-                        )
-                        Spacer(modifier = Modifier.height(25.dp))
-                        ScrollingImageRow(size = 100.dp, imageUrls[0].second.subCategoryList) {
-
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { index ->
+                        Banner(url = imageUrls[index].first) {
                             viewModal.setItemDataClass(
-                                imageUrls[0].second, 0
+                                imageUrls[index].second, index
                             )
-                            val parceable = PassParceableBanner(0, imageUrls[0].second)
+
+                            val parceable = PassParceableBanner(index, imageUrls[index].second)
 
                             navcontroller.currentBackStackEntry?.savedStateHandle?.set(
                                 "data",
@@ -478,8 +457,40 @@ fun BodyDashboard(
 
                         }
                     }
+                    if (bannerImage.data!!.itemData[0].bannercategory1?.isNotEmpty() == true) {
+                        Box(
+                            modifier = Modifier.background(color = whiteColor),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text14_h2(
+                                text = "${bannerImage.data!!.itemData.get(0).bannercategory1} Special",
+                                color = pendingColor
+                            )
+                            Spacer(modifier = Modifier.height(25.dp))
+                            ScrollingImageRow(size = 100.dp, imageUrls[0].second.subCategoryList) {
 
+                                viewModal.setItemDataClass(
+                                    imageUrls[0].second, 0
+                                )
+                                val parceable = PassParceableBanner(0, imageUrls[0].second)
+
+                                navcontroller.currentBackStackEntry?.savedStateHandle?.set(
+                                    "data",
+                                    parceable
+                                )
+
+                                navcontroller.navigate(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route)
+
+
+                            }
+                        }
+
+                    }
                 }
+            }
+            else{
+                NoAvaibiltyScreen()
             }
         }
         else if (bannerImage.isLoading)
@@ -692,30 +703,20 @@ fun BodyDashboard(
                                     .fillMaxWidth()
                                     .padding(horizontal = 10.dp), Arrangement.SpaceBetween
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 10.dp),
-                                    Arrangement.spacedBy(10.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Home,
-                                        contentDescription = null,
-                                        tint = Color.LightGray,
-                                    )
-                                    Column() {
-                                        Text14_h1(
-                                            text = categoryWiseResponse.data?.list?.get(
-                                                it
-                                            )?.categoryTitle ?: "", color = headingColor,
-                                            modifier = Modifier
+                                Column() {
+                                    Text14_h1(
+                                        text = categoryWiseResponse.data?.list?.get(
+                                            it
+                                        )?.categoryTitle ?: "", color = headingColor,
+                                        modifier = Modifier
 
-                                        )
-                                        Text13_body1(
-                                            text = categoryWiseResponse.data?.list?.get(
-                                                it
-                                            )?.category ?: "", color = greyLightColor,
-                                            modifier = Modifier
-                                        )
-                                    }
+                                    )
+                                    Text13_body1(
+                                        text = categoryWiseResponse.data?.list?.get(
+                                            it
+                                        )?.category ?: "", color = greyLightColor,
+                                        modifier = Modifier
+                                    )
                                 }
                                 Icon(
                                     imageVector = Icons.Default.ArrowForward,

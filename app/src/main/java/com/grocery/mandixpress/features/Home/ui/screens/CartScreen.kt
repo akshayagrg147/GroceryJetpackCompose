@@ -899,16 +899,7 @@ fun noHistoryAvailable(text:String) {
 @Composable
 fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>, address: (String) -> Unit) {
 
-    Card(
-        elevation = 0.dp,
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, Color.LightGray),
-        backgroundColor = if (selectedIndex.value == data.id.toInt()) greyLightColor else Color.White,
-        modifier = Modifier
-            .fillMaxWidth().padding(start = 5.dp)
-            .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
-            .clickable {
-                selectedIndex.value = data.id.toInt()
+    Card(elevation = 0.dp, shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Color.LightGray), backgroundColor = if (selectedIndex.value == data.id.toInt()) greyLightColor else Color.White, modifier = Modifier.fillMaxWidth().padding(start = 5.dp).clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp)).clickable { selectedIndex.value = data.id.toInt()
                 address("${data.customer_name}\n ${data.Address1}\n ${data.Address2} \n${data.PinCode} \n${data.LandMark}")
 
 

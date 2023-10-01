@@ -15,23 +15,21 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.Canvas
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
+
 
 
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.CircleShape
+
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -44,10 +42,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ModalBottomSheetLayout
+
+import androidx.compose.runtime.remember
+
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.inset
+import androidx.compose.ui.graphics.drawscope.withTransform
+
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
+import kotlin.math.min
+import kotlin.math.tan
+
+
+
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -55,9 +74,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Density
+
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+
 import androidx.compose.ui.unit.lerp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -73,16 +92,22 @@ import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.data.modal.OrderIdCreateRequest
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
+import com.grocery.mandixpress.features.Home.ui.screens.BottomCurvedShape
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartEvent
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartItemsViewModal
 import com.grocery.mandixpress.features.Spash.SplashNavigation.ScreenRoute
 import kotlinx.coroutines.launch
 
+
+
 private val headerHeight = 150.dp
 private val toolbarHeight = 56.dp
 
 private val paddingMedium = 16.dp
+
+
+
 
 private val titlePaddingStart = 16.dp
 private val titlePaddingEnd = 72.dp
@@ -147,7 +172,7 @@ fun CartScreen(
     }
 
 
-    ModalBottomSheetLayout(sheetElevation = 0.dp, sheetContent = {
+    ModalBottomSheetLayout(sheetElevation = 0.dp,  sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()){
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Image(painter = painterResource(id = R.drawable.close_button), contentDescription = "Cross Button", modifier = Modifier, contentScale = ContentScale.Fit)
@@ -156,16 +181,12 @@ fun CartScreen(
                     .fillMaxSize()
                     .background(
                         color = Color.White,
-                        shape = RoundedCornerShape(
-                            topStart = 16.dp,
-                            topEnd = 16.dp,
-                            bottomStart = 0.dp,
-                            bottomEnd = 0.dp
-                        )
+
                     )){
                 Card(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp), elevation = 4.dp) {
+                    .padding(16.dp), elevation = 4.dp,
+                    shape = BottomCurvedShape()) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()

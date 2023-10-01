@@ -15,21 +15,23 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 
-
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.dp
-
+import androidx.compose.ui.tooling.preview.Preview
 
 
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
-
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -40,43 +42,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ModalBottomSheetLayout
-
-import androidx.compose.runtime.remember
-
-
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.inset
-import androidx.compose.ui.graphics.drawscope.withTransform
 
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.dp
-import kotlin.math.min
-import kotlin.math.tan
-
-
-
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -92,22 +70,16 @@ import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.data.modal.OrderIdCreateRequest
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
-import com.grocery.mandixpress.features.Home.ui.screens.BottomCurvedShape
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartEvent
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartItemsViewModal
 import com.grocery.mandixpress.features.Spash.SplashNavigation.ScreenRoute
 import kotlinx.coroutines.launch
 
-
-
 private val headerHeight = 150.dp
 private val toolbarHeight = 56.dp
 
 private val paddingMedium = 16.dp
-
-
-
 
 private val titlePaddingStart = 16.dp
 private val titlePaddingEnd = 72.dp
@@ -170,9 +142,14 @@ fun CartScreen(
         isDialog=false
         Toast.makeText(context, orderIDResponse.error, Toast.LENGTH_SHORT).show()
     }
+    val stroke = Stroke(width = 2f,
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+    )
 
 
-    ModalBottomSheetLayout(sheetElevation = 0.dp,  sheetContent = {
+    ModalBottomSheetLayout(
+        sheetElevation = 0.dp,
+        sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()){
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Image(painter = painterResource(id = R.drawable.close_button), contentDescription = "Cross Button", modifier = Modifier, contentScale = ContentScale.Fit)
@@ -181,23 +158,33 @@ fun CartScreen(
                     .fillMaxSize()
                     .background(
                         color = Color.White,
-
+                        shape = RoundedCornerShape(
+                            topStart = 16.dp,
+                            topEnd = 16.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp
+                        )
                     )){
-                Card(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp), elevation = 4.dp,
-                    shape = BottomCurvedShape()) {
+                    Box(
+                        modifier = Modifier
+                            .padding(15.dp)
+                            .fillMaxWidth()
+                            .background(whiteColor)
+                            .drawBehind {
+                                drawRoundRect(color = headingColor, style = stroke)
+                            },
+                        )
+                {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+
                     ) {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 20.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            ) {
                             Text14_h1(text = "Bill details", color = Color.Black)
                         }
 
@@ -219,8 +206,6 @@ fun CartScreen(
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
                         }
-
-
 
                         Row(
                             modifier = Modifier
@@ -356,22 +341,32 @@ fun CartScreen(
 
 
                         }
-                        else {
+                       Row(modifier = Modifier
+                           .fillMaxWidth().padding(top=10.dp)
+                           .height(20.dp).background(sec20timer), horizontalArrangement = Arrangement.Center,) {
+                           Text10_h2(text = "We are accepting upi also", color = whiteColor)
 
-                        }
+                       }
 
                     }
                 }
-                    Card(onClick = { navController.navigate(DashBoardNavRoute.ApplyCoupons.screen_route) }, modifier = Modifier.fillMaxWidth().height(50.dp).padding(start = 10.dp, top = 20.dp, end = 10.dp).background(Color.White).border(
-                        width = 1.dp,
-                        color = Color.White,
-                        shape = RoundedCornerShape(30.dp) // Set the corner radius here
-                    )) {
+                    Card(onClick = { navController.navigate(DashBoardNavRoute.ApplyCoupons.screen_route) }, modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(start = 10.dp, top = 20.dp, end = 10.dp)
+                        .background(Color.White)
+                        .border(
+                            width = 1.dp,
+                            color = whiteColor,
+                            shape = RoundedCornerShape(30.dp) // Set the corner radius here
+                        )) {
                         Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically){
                             Image(
                                 painter = painterResource(id = R.drawable.discount), // Replace with your image resource
                                 contentDescription = "Discount",
-                                modifier = Modifier.size(30.dp).padding(start = 10.dp), // Adjust the size as needed
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .padding(start = 10.dp), // Adjust the size as needed
 
                             )
                             Text12_h1(text = "Use  Coupons",color= blackColor,
@@ -380,7 +375,9 @@ fun CartScreen(
                             Image(
                                 painter = painterResource(id = R.drawable.back) ,
                                 contentDescription = "back_arrow",
-                                modifier = Modifier.size(30.dp).padding(end = 20.dp),
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .padding(end = 20.dp),
 
                                 )
                         }
@@ -434,7 +431,13 @@ if(addressvalue?.isEmpty()==true){
                 }
 
             }}
-        }, sheetBackgroundColor = Color.White.copy(alpha = 0.0f), sheetState = modalBottomSheetState,) {
+        },
+        sheetBackgroundColor = Color.White.copy(alpha = 0.0f),
+        sheetState = modalBottomSheetState,
+        )
+
+    {
+
         Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxSize()) {
                 ConstraintLayout(
@@ -497,7 +500,44 @@ if(addressvalue?.isEmpty()==true){
 
     }
 }
+/*@Composable
+fun BottomCurvedShape(): Shape = androidx.compose.ui.draw.clip(CurvedShape())
 
+@Composable
+fun CurvedShape() =CustomShape()*/
+
+/*@Composable
+fun CustomShape() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White
+                        )
+                    )
+                )
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
+            )
+        }
+    }
+}*/
 
 
 
@@ -875,11 +915,16 @@ fun noHistoryAvailable(text:String) {
 @Composable
 fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>, address: (String) -> Unit) {
 
-    Card(elevation = 0.dp, shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Color.LightGray), backgroundColor = if (selectedIndex.value == data.id.toInt()) greyLightColor else Color.White, modifier = Modifier.fillMaxWidth().padding(start = 5.dp).clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp)).clickable { selectedIndex.value = data.id.toInt()
-                address("${data.customer_name}\n ${data.Address1}\n ${data.Address2} \n${data.PinCode} \n${data.LandMark}")
+    Card(elevation = 0.dp, shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Color.LightGray), backgroundColor = if (selectedIndex.value == data.id.toInt()) greyLightColor else Color.White, modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 5.dp)
+        .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
+        .clickable {
+            selectedIndex.value = data.id.toInt()
+            address("${data.customer_name}\n ${data.Address1}\n ${data.Address2} \n${data.PinCode} \n${data.LandMark}")
 
 
-            }
+        }
 
     ) {
         Box(
@@ -1048,7 +1093,10 @@ fun ItemEachRow(
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.Gray))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(Color.Gray))
 
     }
 

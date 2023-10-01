@@ -42,6 +42,8 @@ import com.google.accompanist.flowlayout.SizeMode
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.Utils
@@ -49,6 +51,8 @@ import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.Home.domain.modal.FilterOptions
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
+import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeEvent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
@@ -710,34 +714,47 @@ private fun Body(
         }
 
     }
+    var refreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(refreshing) {
+        if (refreshing) {
+            delay(3000)
+            refreshing = false
+        }
+    }
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing = refreshing),
+        onRefresh = { refreshing = true },
+    ){
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
+                .verticalScroll(scroll)
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-            .clip(RoundedCornerShape(25.dp, 25.dp, 0.dp, 0.dp))
-            .verticalScroll(scroll)
-
-    ) {
-
-        Spacer(Modifier.height(headerHeight))
-        val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2)
-        FlowRow(
-            mainAxisSize = SizeMode.Expand,
-            mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
         ) {
-            if (ls != null) {
-                for (item in ls) {
-                    SubItems(item, viewModal, context, ){
-                       passclicked(it)
+
+            Spacer(Modifier.height(headerHeight))
+            val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2)
+            FlowRow(
+                mainAxisSize = SizeMode.Expand,
+                mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
+            ) {
+                if (ls != null) {
+                    for (item in ls) {
+                        SubItems(item, viewModal, context, ){
+                            passclicked(it)
+                        }
                     }
                 }
+
             }
 
+
+            Spacer(modifier = Modifier.height(70.dp))
+
         }
-
-
-        Spacer(modifier = Modifier.height(70.dp))
-
     }
+
+
 }
 
 @Composable

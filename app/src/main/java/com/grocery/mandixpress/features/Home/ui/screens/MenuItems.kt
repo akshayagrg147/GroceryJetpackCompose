@@ -27,6 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.*
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
 
 
@@ -40,6 +42,7 @@ import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
 
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartItemsViewModal
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
 import java.text.DecimalFormat
@@ -80,7 +83,8 @@ fun cardViewAddtoCart(
         shape = RoundedCornerShape(10.dp),
         backgroundColor = seallcolor, modifier = modifier
             .fillMaxWidth()
-            .height(85.dp).padding(horizontal = 10.dp, vertical = 8.dp)
+            .height(85.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp)
 
             .clickable {
                 navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
@@ -104,7 +108,8 @@ fun cardViewAddtoCart(
                         modifier = Modifier
                             .padding()
                             .width(30.dp)
-                            .height(30.dp).padding(start = 10.dp)
+                            .height(30.dp)
+                            .padding(start = 10.dp)
 
 
 
@@ -258,7 +263,8 @@ fun     menuitems(
     viewModal.getCartItem()
     ModalBottomSheetLayout(sheetElevation = 0.dp, sheetBackgroundColor = Color.Transparent, sheetContent = {
             Box(modifier = Modifier
-                .fillMaxWidth().height(70.dp)
+                .fillMaxWidth()
+                .height(70.dp)
                 .background(Color.Unspecified),
                 contentAlignment = Alignment.Center,
                 content = {
@@ -267,9 +273,10 @@ fun     menuitems(
                         contentDescription = "Cross Button",
                         modifier = Modifier
                             .size(50.dp)
-                            .padding(bottom = 10.dp).clickable {
+                            .padding(bottom = 10.dp)
+                            .clickable {
                                 scope.launch {
-                                  modalBottomSheetState.hide()
+                                    modalBottomSheetState.hide()
                                 }
 
                             }, // Adjust the size as needed
@@ -284,7 +291,11 @@ fun     menuitems(
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (l1, l2) = createRefs()
                 Box(modifier = Modifier
-                    .fillMaxWidth().background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd =  16.dp))
+                    .fillMaxWidth()
+                    .background(
+                        Color.White,
+                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                    )
                     .constrainAs(l1) {
                         top.linkTo(parent.top)
 
@@ -295,7 +306,8 @@ fun     menuitems(
                             elevation = 2.dp,
                             shape = RoundedCornerShape(20.dp),
                             modifier = Modifier
-                                .fillMaxWidth().padding(top=20.dp)
+                                .fillMaxWidth()
+                                .padding(top = 20.dp)
 
                         ) {
                             HorizontalPager(state = pager) { index ->
@@ -337,11 +349,15 @@ fun     menuitems(
                             }
                         }
                         Spacer(modifier = Modifier.height(5.dp))
-                        Text13_body1(text = "Product Detail", modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp))
+                        Text13_body1(text = "Product Detail", modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp))
                         Spacer(modifier = Modifier.height(5.dp))
                         Text12_body1(
                             text = productdetail.value.productDescription ?: "",
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
                         )
 
 
@@ -359,6 +375,13 @@ fun     menuitems(
             topStart = 20.dp, topEnd = 20.dp
         )
     ) {
+        var refreshing by remember { mutableStateOf(false) }
+        LaunchedEffect(refreshing) {
+            if (refreshing) {
+                delay(3000)
+                refreshing = false
+            }
+        }
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -394,33 +417,40 @@ fun     menuitems(
                         }
 
                     }
-                    LazyColumn(
-                        modifier = Modifier.background(MaterialTheme.colors.background),
-                        contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
 
-                        if (viewModal._itemsCollection.value.statusCode == 200) {
-                            if(viewModal._itemsCollection.value.list?.isNotEmpty()==true)
-                            gridItems(
-                                data = viewModal._itemsCollection.value.list!!,
-                                columnCount = 2,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier = Modifier.padding(horizontal = 1.dp)
-                            ) { itemData ->
-                                MenuItemGrid(itemData, context) { passvalue ->
-                                    productdetail.value = passvalue
-                                    scope.launch { modalBottomSheetState.show() }
+                    SwipeRefresh(
+                        state = rememberSwipeRefreshState(isRefreshing = refreshing),
+                        onRefresh = { refreshing = true },
+                    )
+                    {
+                        LazyColumn(
+                            modifier = Modifier.background(MaterialTheme.colors.background),
+                            contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+
+                            if (viewModal._itemsCollection.value.statusCode == 200) {
+                                if (viewModal._itemsCollection.value.list?.isNotEmpty() == true)
+                                    gridItems(
+                                        data = viewModal._itemsCollection.value.list!!,
+                                        columnCount = 2,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        modifier = Modifier.padding(horizontal = 1.dp)
+                                    ) { itemData ->
+                                        MenuItemGrid(itemData, context) { passvalue ->
+                                            productdetail.value = passvalue
+                                            scope.launch { modalBottomSheetState.show() }
+                                        }
+                                    }
+                                else {
+
                                 }
-                            }
-                            else{
+                            } else {
+                                repeat(5) {
+                                    item {
+                                        ShimmerAnimation()
 
-                            }
-                        } else {
-                            repeat(5) {
-                                item {
-                                    ShimmerAnimation()
-
+                                    }
                                 }
                             }
                         }

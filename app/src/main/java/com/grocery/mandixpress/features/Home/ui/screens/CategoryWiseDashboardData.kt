@@ -40,6 +40,8 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.grocery.mandixpress.R
 
 import com.grocery.mandixpress.Utils.*
@@ -51,6 +53,7 @@ import com.grocery.mandixpress.data.modal.ItemsCollectionsResponse
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeEvent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
@@ -210,63 +213,182 @@ fun CategoryWiseDashboardAllData(
             topStart = 20.dp, topEnd = 20.dp
         )
     ){
-        Log.d("getdatabundle","${viewModal.getcategory()}---${bundle.second?.bannercategory1}  ${bundle.second?.bannercategory1?.isNotEmpty()==true}")
-        if(bundle.second?.bannercategory1?.isNotEmpty()==true){
-            if(bundle.index==0)
-            Box(modifier = Modifier.fillMaxSize()){
-                Column(modifier = Modifier.fillMaxSize()) {
-                    CommonHeader(text = viewModal.getcategory().split("__")[0], color = headingColor) {
-                        navController.popBackStack()
-                    }
-                    ScrollingImageRow(size = 70.dp, bundle.second.subCategoryList,value=0) {
-                        viewModal.onEvent(HomeEvent.BannerCategoryEventFlow(it))
-                    }
-                    Image(
-                        painter = rememberImagePainter(bundle.second.imageUrl1), null, modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                    )
-                    Log.d("gggddd", "previous1:- ${itemBasedCategory.data?.statusCode}")
-
-
-                    if (itemBasedCategory.data?.statusCode == 200) {
-                        bodyDashboard(itemBasedCategory.data!!.list, context, viewModal,productdetail,modalBottomSheetState)
-                    }
-                    else  {
-                        val transition = rememberInfiniteTransition()
-                        val translateAnim by transition.animateFloat(
-                            initialValue = 0f,
-                            targetValue = 1000f,
-                            animationSpec = infiniteRepeatable(
-                                tween(durationMillis = 1200, easing = FastOutSlowInEasing),
-                                RepeatMode.Reverse
-                            )
-                        )
-                        val brush = Brush.linearGradient(
-                            colors = ShimmerColorShades,
-                            start = Offset(10f, 10f),
-                            end = Offset(translateAnim, translateAnim)
-                        )
-                        ShimmerItem(brush = brush)
-                    }
-
-                }
-                if(viewModal.getitemcountState.value>=1)
-                    cardviewAddtoCart(
-                        viewModal,
-                        navController,
-                        context!!,
-                        modifier = Modifier.align(Alignment.BottomCenter)
-                    )
-
-
+        var refreshing by remember { mutableStateOf(false) }
+        LaunchedEffect(refreshing) {
+            if (refreshing) {
+                delay(3000)
+                refreshing = false
             }
-            else{
-                val list= viewModal.allresponse.collectAsLazyPagingItems()
+        }
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = refreshing),
+            onRefresh = { refreshing = true },
+        )
+        {
+            if (bundle.second?.bannercategory1?.isNotEmpty() == true) {
+                if (bundle.index == 0)
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            CommonHeader(
+                                text = viewModal.getcategory().split("__")[0],
+                                color = headingColor
+                            ) {
+                                navController.popBackStack()
+                            }
+                            ScrollingImageRow(
+                                size = 70.dp,
+                                bundle.second.subCategoryList,
+                                value = 0
+                            ) {
+                                viewModal.onEvent(HomeEvent.BannerCategoryEventFlow(it))
+                            }
+                            Image(
+                                painter = rememberImagePainter(bundle.second.imageUrl1),
+                                null,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp)
+                            )
+                            Log.d("gggddd", "previous1:- ${itemBasedCategory.data?.statusCode}")
+
+
+                            if (itemBasedCategory.data?.statusCode == 200) {
+                                bodyDashboard(
+                                    itemBasedCategory.data!!.list,
+                                    context,
+                                    viewModal,
+                                    productdetail,
+                                    modalBottomSheetState
+                                )
+                            } else {
+                                val transition = rememberInfiniteTransition()
+                                val translateAnim by transition.animateFloat(
+                                    initialValue = 0f,
+                                    targetValue = 1000f,
+                                    animationSpec = infiniteRepeatable(
+                                        tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+                                        RepeatMode.Reverse
+                                    )
+                                )
+                                val brush = Brush.linearGradient(
+                                    colors = ShimmerColorShades,
+                                    start = Offset(10f, 10f),
+                                    end = Offset(translateAnim, translateAnim)
+                                )
+                                ShimmerItem(brush = brush)
+                            }
+
+                        }
+                        if (viewModal.getitemcountState.value >= 1)
+                            cardviewAddtoCart(
+                                viewModal,
+                                navController,
+                                context!!,
+                                modifier = Modifier.align(Alignment.BottomCenter)
+                            )
+
+
+                    }
+                else {
+                    val list = viewModal.allresponse.collectAsLazyPagingItems()
+                    if (list.loadState.refresh is LoadState.Loading) {
+                        LoadingBar()
+                    }
+                    if (list.loadState.refresh is LoadState.NotLoading) {
+                        Box(modifier = Modifier.fillMaxSize())
+                        {
+                            Column(
+                                modifier = Modifier
+                                    .padding(horizontal = 10.dp, vertical = 10.dp),
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                CommonHeader(
+                                    text = viewModal.getcategory().split("__")[0],
+                                    color = headingColor
+                                ) {
+                                    navController.popBackStack()
+                                }
+
+                                Column(
+                                    modifier = Modifier
+                                        .padding(top = 5.dp)
+                                    // .height(400.dp)
+                                ) {
+                                    LazyVerticalGrid(
+                                        columns = GridCells.Fixed(2),
+                                        modifier = Modifier.padding(10.dp)
+                                    ) {
+                                        // on below line we are displaying our
+                                        // items upto the size of the list.
+                                        items(list.snapshot().items.size) {
+                                            ProductWiseRow(
+                                                list.peek(it)!!,
+                                                productdetail,
+                                                modalBottomSheetState
+                                            ) { data ->
+                                                // response="called"
+                                                viewModal.insertCartItem(
+                                                    data.ProductId ?: "",
+                                                    data.productImage1 ?: "",
+                                                    data.selling_price?.toInt() ?: 0,
+                                                    data.productName ?: "",
+                                                    data.orignal_price ?: ""
+                                                )
+                                                viewModal.getItemCount()
+                                                viewModal.getItemPrice()
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Added to cart",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+
+                                                Utils.vibrator(context)
+                                            }
+//                    if(it==list.itemCount-1)
+//                        Spacer(modifier = Modifier.height(80.dp))
+                                        }
+                                    }
+                                }
+
+
+                            }
+                            if (viewModal.getitemcountState.value >= 1)
+                                cardviewAddtoCart(
+                                    viewModal,
+                                    navController,
+                                    context!!,
+                                    modifier = Modifier.align(Alignment.BottomCenter)
+
+                                )
+                        }
+                    }
+                    if (list.loadState.refresh is LoadState.Error) {
+                        context.showMsg("error occured")
+                    }
+
+                    if (list.loadState.append is LoadState.Loading) {
+                        LoadingBar()
+                    }
+                    if (list.loadState.append is LoadState.Error) {
+                        context.showMsg("error occured")
+                    }
+                    if (list.loadState.prepend is LoadState.Loading) {
+                        LoadingBar()
+                    }
+                    if (list.loadState.prepend is LoadState.Error) {
+                        context.showMsg("error occured")
+                    }
+                }
+
+
+            } else {
+                val list = viewModal.allresponse.collectAsLazyPagingItems()
                 if (list.loadState.refresh is LoadState.Loading) {
                     LoadingBar()
                 }
-                if(list.loadState.refresh is LoadState.NotLoading){
+                if (list.loadState.refresh is LoadState.NotLoading) {
                     Box(modifier = Modifier.fillMaxSize())
                     {
                         Column(
@@ -274,7 +396,10 @@ fun CategoryWiseDashboardAllData(
                                 .padding(horizontal = 10.dp, vertical = 10.dp),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            CommonHeader(text = viewModal.getcategory().split("__")[0], color = headingColor) {
+                            CommonHeader(
+                                text = viewModal.getcategory().split("__")[0],
+                                color = headingColor
+                            ) {
                                 navController.popBackStack()
                             }
 
@@ -290,7 +415,11 @@ fun CategoryWiseDashboardAllData(
                                     // on below line we are displaying our
                                     // items upto the size of the list.
                                     items(list.snapshot().items.size) {
-                                        ProductWiseRow(list.peek(it)!!,productdetail,modalBottomSheetState) { data ->
+                                        ProductWiseRow(
+                                            list.peek(it)!!,
+                                            productdetail,
+                                            modalBottomSheetState
+                                        ) { data ->
                                             // response="called"
                                             viewModal.insertCartItem(
                                                 data.ProductId ?: "",
@@ -302,7 +431,11 @@ fun CategoryWiseDashboardAllData(
                                             viewModal.getItemCount()
                                             viewModal.getItemPrice()
                                             Toast
-                                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
+                                                .makeText(
+                                                    context,
+                                                    "Added to cart",
+                                                    Toast.LENGTH_SHORT
+                                                )
                                                 .show()
 
                                             Utils.vibrator(context)
@@ -325,105 +458,22 @@ fun CategoryWiseDashboardAllData(
                             )
                     }
                 }
-                if(list.loadState.refresh is LoadState.Error){
+                if (list.loadState.refresh is LoadState.Error) {
                     context.showMsg("error occured")
                 }
 
-                if(list.loadState.append is LoadState.Loading){
+                if (list.loadState.append is LoadState.Loading) {
                     LoadingBar()
                 }
-                if(list.loadState.append is LoadState.Error){
+                if (list.loadState.append is LoadState.Error) {
                     context.showMsg("error occured")
                 }
-                if(list.loadState.prepend is LoadState.Loading){
+                if (list.loadState.prepend is LoadState.Loading) {
                     LoadingBar()
                 }
-                if(list.loadState.prepend is LoadState.Error){
+                if (list.loadState.prepend is LoadState.Error) {
                     context.showMsg("error occured")
                 }
-            }
-
-
-        }
-        else{
-            val list= viewModal.allresponse.collectAsLazyPagingItems()
-            if (list.loadState.refresh is LoadState.Loading) {
-                LoadingBar()
-            }
-            if(list.loadState.refresh is LoadState.NotLoading){
-                Box(modifier = Modifier.fillMaxSize())
-                {
-                    Column(
-                        modifier = Modifier
-                            .padding(horizontal = 10.dp, vertical = 10.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        CommonHeader(text = viewModal.getcategory().split("__")[0], color = headingColor) {
-                            navController.popBackStack()
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .padding(top = 5.dp)
-                            // .height(400.dp)
-                        ) {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
-                                modifier = Modifier.padding(10.dp)
-                            ) {
-                                // on below line we are displaying our
-                                // items upto the size of the list.
-                                items(list.snapshot().items.size) {
-                                    ProductWiseRow(list.peek(it)!!,productdetail,modalBottomSheetState) { data ->
-                                        // response="called"
-                                        viewModal.insertCartItem(
-                                            data.ProductId ?: "",
-                                            data.productImage1 ?: "",
-                                            data.selling_price?.toInt() ?: 0,
-                                            data.productName ?: "",
-                                            data.orignal_price ?: ""
-                                        )
-                                        viewModal.getItemCount()
-                                        viewModal.getItemPrice()
-                                        Toast
-                                            .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
-                                            .show()
-
-                                        Utils.vibrator(context)
-                                    }
-//                    if(it==list.itemCount-1)
-//                        Spacer(modifier = Modifier.height(80.dp))
-                                }
-                            }
-                        }
-
-
-                    }
-                    if (viewModal.getitemcountState.value >= 1)
-                        cardviewAddtoCart(
-                            viewModal,
-                            navController,
-                            context!!,
-                            modifier = Modifier.align(Alignment.BottomCenter)
-
-                        )
-                }
-            }
-            if(list.loadState.refresh is LoadState.Error){
-                context.showMsg("error occured")
-            }
-
-            if(list.loadState.append is LoadState.Loading){
-                LoadingBar()
-            }
-            if(list.loadState.append is LoadState.Error){
-                context.showMsg("error occured")
-            }
-            if(list.loadState.prepend is LoadState.Loading){
-                LoadingBar()
-            }
-            if(list.loadState.prepend is LoadState.Error){
-                context.showMsg("error occured")
             }
         }
     }

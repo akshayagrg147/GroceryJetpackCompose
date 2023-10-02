@@ -158,6 +158,9 @@ dependencies {
 //    implementation 'com.github.imagekit-developer:imagekit-android:2.0.0'
     implementation 'com.google.accompanist:accompanist-swiperefresh:0.24.13-rc'
 
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
+
+
 
 
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Layout
 import android.util.Log
 import android.util.Size
+import android.view.View
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -52,6 +53,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -68,6 +70,7 @@ import com.grocery.mandixpress.RoomDatabase.CartItems
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
+import com.grocery.mandixpress.common.SwipeButton
 import com.grocery.mandixpress.data.modal.OrderIdCreateRequest
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
@@ -75,6 +78,7 @@ import com.grocery.mandixpress.features.Home.ui.viewmodal.CartEvent
 import com.grocery.mandixpress.features.Home.ui.viewmodal.CartItemsViewModal
 import com.grocery.mandixpress.features.Spash.SplashNavigation.ScreenRoute
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.Box as Box1
 
 private val headerHeight = 150.dp
 private val toolbarHeight = 56.dp
@@ -151,7 +155,7 @@ fun CartScreen(
         sheetElevation = 0.dp,
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()){
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box1(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Image(painter = painterResource(id = R.drawable.close_button), contentDescription = "Cross Button", modifier = Modifier, contentScale = ContentScale.Fit)
                 }
                 Column(modifier = Modifier
@@ -163,9 +167,10 @@ fun CartScreen(
                             topEnd = 16.dp,
                             bottomStart = 0.dp,
                             bottomEnd = 0.dp
-                        )
-                    )){
-                    Box(
+                        ),
+                    )
+                    .padding(bottom = 10.dp)){
+                    Box1(
                         modifier = Modifier
                             .padding(15.dp)
                             .fillMaxWidth()
@@ -191,7 +196,7 @@ fun CartScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 10.dp),
+                                .padding(start = 10.dp, end = 10.dp, top = 5.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
 
@@ -279,7 +284,7 @@ fun CartScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 10.dp),
+                                    .padding(start = 10.dp, end = 10.dp, top = 5.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text14_h1(
@@ -341,9 +346,10 @@ fun CartScreen(
 
 
                         }
-                       Row(modifier = Modifier
-                           .fillMaxWidth().padding(top=10.dp)
-                           .height(20.dp).background(sec20timer), horizontalArrangement = Arrangement.Center,) {
+                       Column(modifier = Modifier
+                           .fillMaxWidth()
+                           .height(24.dp)
+                           .background(sec20timer), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                            Text10_h2(text = "We are accepting upi also", color = whiteColor)
 
                        }
@@ -353,7 +359,7 @@ fun CartScreen(
                     Card(onClick = { navController.navigate(DashBoardNavRoute.ApplyCoupons.screen_route) }, modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
-                        .padding(start = 10.dp, top = 20.dp, end = 10.dp)
+                        .padding(start = 10.dp, top = 5.dp, end = 10.dp)
                         .background(Color.White)
                         .border(
                             width = 1.dp,
@@ -397,17 +403,16 @@ fun CartScreen(
                         .padding(start = 10.dp),
                 ) {
 
-                    AddressComponent(viewModal, navController, {
+                    AddressComponent(viewModal, navController,{firstAddress->
+                        addressvalue=firstAddress
+
+                    }, {
                         when (it) {
                             "containsData" -> {
                                 choose.value = true
                             }
                             "ProceedButton" -> {
                                 isDialog = true
-if(addressvalue?.isEmpty()==true){
-
-    addressvalue= " ${viewModal.addresslistState.value[0].customer_name}\n${viewModal.addresslistState.value[0].Address1}\n${viewModal.addresslistState.value[0].Address2}\n${viewModal.addresslistState.value[0].PinCode}\n${viewModal.addresslistState.value[0].LandMark}"
-}
                                 val request = OrderIdCreateRequest(
                                     orderList = order,
                                     address = addressvalue,
@@ -421,6 +426,10 @@ if(addressvalue?.isEmpty()==true){
 
 
                             }
+                            "addressEmpty"->{
+                                navController.navigate(ScreenRoute.AddressScreen.route)
+                            }
+
                             else -> {
                                 choose.value = false
                             }
@@ -439,7 +448,7 @@ if(addressvalue?.isEmpty()==true){
     {
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box1(modifier = Modifier.fillMaxSize()) {
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -452,7 +461,7 @@ if(addressvalue?.isEmpty()==true){
                     val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
 
                     val (l1, l2, l3) = createRefs()
-                    Box(modifier = Modifier
+                    Box1(modifier = Modifier
                         .fillMaxWidth()
                         .constrainAs(l1) {
                             top.linkTo(parent.top)
@@ -549,7 +558,7 @@ private fun Header(
     viewModal: CartItemsViewModal,
 
     ) {
-    Box(modifier = Modifier
+    Box1(modifier = Modifier
         .fillMaxWidth()
         .graphicsLayer {
             translationY = -scroll.value.toFloat() / 2f // Parallax effect
@@ -577,7 +586,7 @@ private fun Header(
             Card(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(10.dp),
-                backgroundColor = titleColor, modifier = Modifier
+                backgroundColor = Teal200, modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxWidth()
                     .height(30.dp)
@@ -780,22 +789,41 @@ fun Header(scroll: Unit, headerHeightPx: Unit) {
 fun AddressComponent(
     viewModal: CartItemsViewModal,
     navController: NavHostController,
+    firstAddress: (String) -> Unit,
     call: (String) -> Unit, passingaddress: (String) -> Unit
 ) {
 
-
-    var selectedIndex = remember { mutableStateOf(1) }
+    val coroutineScope = rememberCoroutineScope()
+    val (isComplete, setIsComplete) = remember {
+        mutableStateOf(false)
+    }
+    val selectedIndex = remember { mutableStateOf( 1)}
     Column(modifier = Modifier.fillMaxSize()) {
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
             // .height(260.dp)
         ) {
-            if (viewModal.addresslistState.value.isNotEmpty()) {
+            if (viewModal.addresslistState.value.size>1) {
+                firstAddress( " ${viewModal.addresslistState.value[0].customer_name}\n${viewModal.addresslistState.value[0].Address1}\n${viewModal.addresslistState.value[0].Address2}\n${viewModal.addresslistState.value[0].PinCode}\n${viewModal.addresslistState.value[0].LandMark}"
+                )
+                selectedIndex.value=viewModal.addresslistState.value.first().id.toInt()
                 call("containsData")
                 items(viewModal.addresslistState.value) { data ->
-                    AddressFiled(data, selectedIndex) {
-                        passingaddress(it)
+                    if(data.PinCode==1){
+                        AddAddress(){
+                            navController.navigate(ScreenRoute.AddressScreen.route)
+                        }
+                    }
+                    else {
+                        val bool =
+                            selectedIndex.value == data.id.toInt()// Define the text color conditionally
+
+                        AddressFiled(data,bool) {
+                            Log.d("hdhdhh","${selectedIndex.value}  ${data.id.toInt()}")
+                            selectedIndex.value=data.id.toInt()
+                            passingaddress(it)
+                        }
                     }
                 }
             } else {
@@ -807,34 +835,26 @@ fun AddressComponent(
 
 
 
-
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .align(Alignment.CenterHorizontally)
-            .clickable {
-                navController.navigate(ScreenRoute.AddressScreen.route)
-            }) {
-            Text13_body1(
-                text = "Add Address+", modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
-                    .align(Alignment.Center), color = navdrawerColor
-            )
-
-        }
-
-
-        Spacer(modifier = Modifier.height((20.dp)))
+        if(viewModal.addresslistState.value.size>1)
+        SwipeButton(
+            text = "Swipe with cod",
+            isComplete = isComplete,
+            backgroundColor= seallcolor,
+            onSwipe = {
+                call("ProceedButton")
+            },
+        )
+        else
         CommonButton(
-            enabled = viewModal.addresslistState.value.isNotEmpty(),
-            text = "Proceed to payment",
+            text = "Proceed to address",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         )
-        {
-            if (it)
-                call("ProceedButton")
+        {if(it)
+               call("addressEmpty")
+
+
         }
 
 
@@ -902,7 +922,7 @@ fun AppliedCupon(title: String?, percenage: Int?, clickOnRemove: (Boolean) -> Un
 
 @Composable
 fun noHistoryAvailable(text:String) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box1(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(250.dp))
         Text12_body1(text = text, modifier = Modifier.align(Alignment.Center))
 
@@ -913,79 +933,85 @@ fun noHistoryAvailable(text:String) {
 
 
 @Composable
-fun AddressFiled(data: AddressItems, selectedIndex: MutableState<Int>, address: (String) -> Unit) {
-
-    Card(elevation = 0.dp, shape = RoundedCornerShape(20.dp), border = BorderStroke(1.dp, Color.LightGray), backgroundColor = if (selectedIndex.value == data.id.toInt()) greyLightColor else Color.White, modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 5.dp)
-        .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
-        .clickable {
-            selectedIndex.value = data.id.toInt()
-            address("${data.customer_name}\n ${data.Address1}\n ${data.Address2} \n${data.PinCode} \n${data.LandMark}")
-
-
-        }
-
-    ) {
-        Box(
-            modifier = Modifier
-
-        ) {
-            Column(modifier = Modifier.padding(10.dp)) {
-                Text12_h1(text = data.customer_name,color= if (selectedIndex.value == data.id.toInt()) whiteColor else blackColor,)
-                Text12_h1(text = data.Address1,color= if (selectedIndex.value == data.id.toInt()) whiteColor else blackColor)
-                Text12_h1(text = "${data.Address2}, ${data.PinCode},",color= if (selectedIndex.value == data.id.toInt()) whiteColor else blackColor)
-                Text12_h1(text = data.LandMark,color= if (selectedIndex.value == data.id.toInt()) whiteColor else blackColor)
-
+fun AddressFiled(
+    data: AddressItems,
+    isSelected: Boolean,
+    onAddressClick: (String) -> Unit
+) {
+    Card(
+        elevation = 0.dp,
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.dp, Color.LightGray),
+        backgroundColor = Color.White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 5.dp)
+            .clip(RoundedCornerShape(1.dp))
+            .clickable {
+                onAddressClick(
+                    "${data.customer_name}\n ${data.Address1}\n ${data.Address2} \n${data.PinCode} \n${data.LandMark}"
+                )
             }
+    ) {
+        Column(modifier = Modifier.padding(10.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(130.dp)
+            ) {
+                Text12_h1(
+                    text = data.customer_name,
+                    color = headingColor, modifier = Modifier.fillMaxWidth()
+                )
+                if(isSelected)
+                    Text12_h1(
+                        text = "you're here",modifier = Modifier.fillMaxWidth(),
+                        color = Purple700
+                    )
+            }
+            Text11_body2(text = data.Address1, greyLightColor)
+            Text11_body2(text = "${data.Address2}, ${data.PinCode},", greyLightColor)
+            Text11_body2(text = data.LandMark, greyLightColor)
+
         }
     }
-
-
 }
 
 
 @Composable
-fun SimpleRadioButtonComponent() {
-    val radioOptions = listOf("DSA", "Java", "C++")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[2]) }
-    Column(
+fun AddAddress(call:(Boolean)->Unit ) {
+    val stroke = Stroke(width = 2f,
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+    )
+    androidx.compose.foundation.layout.Box(
+
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Column {
-            radioOptions.forEach { text ->
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .selectable(
-                            selected = (text == selectedOption),
-                            onClick = { onOptionSelected(text) })
-                        .padding(horizontal = 16.dp)
-                ) {
-                    val context = LocalContext.current
-                    RadioButton(
+            .padding(horizontal = 5.dp)
+            .width(140.dp)
+            .height(80.dp)
+            .background(whiteColor)
+            .drawBehind {
 
-                        selected = (text == selectedOption),
-                        modifier = Modifier.padding(all = Dp(value = 8F)),
-                        onClick = {
+                drawRoundRect(color = greyLightColor, style = stroke)
 
-                            onOptionSelected(text)
-                            context.showMsg(text)
-                        }
-                    )
-                    Text11_body2(
-                        text = text,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
-            }
+            }.clickable{
+                call(true)
+
+            },
+
+
+        ) {
+        Column(
+            modifier = Modifier
+                .padding(10.dp)
+                .width(150.dp)
+                .height(60.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text11_body2(text = "Add new Address+", color = headingColor)
+
         }
     }
-
 }
 
 @SuppressLint("UnrememberedMutableState")
@@ -1093,7 +1119,7 @@ fun ItemEachRow(
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        Box(modifier = Modifier
+        Box1(modifier = Modifier
             .fillMaxWidth()
             .height(1.dp)
             .background(Color.Gray))

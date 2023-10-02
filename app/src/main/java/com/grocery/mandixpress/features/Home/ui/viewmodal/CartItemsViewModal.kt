@@ -67,8 +67,13 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
     }
 
     fun getAllAddressItems() = viewModelScope.launch {
-        repo.getAddressItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }.collect {
-            addresslist.value = it
+        repo.getAddressItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }
+            .collect {
+                val customAddress = "Custom Address"
+
+                val updatedList = mutableListOf<AddressItems>(AddressItems("","",1,"","",""))
+                updatedList.addAll(it)
+            addresslist.value = updatedList.reversed()
         }
 
     }

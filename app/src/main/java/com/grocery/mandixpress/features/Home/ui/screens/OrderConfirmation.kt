@@ -12,6 +12,9 @@ import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +30,7 @@ import com.grocery.mandixpress.Utils.Text13_body1
 
 import com.grocery.mandixpress.common.Utils.Companion.showNotification
 import com.grocery.mandixpress.data.modal.OrderIdResponse
+import com.grocery.mandixpress.features.Home.ui.ui.theme.headingColor
 import com.grocery.mandixpress.features.Home.ui.ui.theme.whiteColor
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 
@@ -53,7 +57,9 @@ fun OrderConfirmation(
 
     }
     if (data.statusCode == 200){
-
+        val stroke = Stroke(width = 2f,
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+        )
         showNotification(LocalContext.current,"Order Placed")
          Column(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
@@ -115,7 +121,7 @@ fun OrderConfirmation(
                                     .padding(vertical = 5.dp)
                             )
                             Text12_body1(
-                                text = "${data.productResponse?.totalOrderValue}",
+                                text = " ₹ ${data.productResponse?.totalOrderValue}",
                                 modifier = Modifier
                                     .padding(vertical = 5.dp)
                             )
@@ -126,12 +132,14 @@ fun OrderConfirmation(
                     }
                 }
 
-                Card(
+                Box(
                     modifier = Modifier
+                        .padding(15.dp)
                         .fillMaxWidth()
-                        .height(250.dp)
-                        .padding(20.dp),
-                    shape = RoundedCornerShape(8.dp), elevation = 10.dp
+                        .background(whiteColor)
+                        .drawBehind {
+                            drawRoundRect(color = headingColor, style = stroke)
+                        },
                 ) {
                     Column(
                         modifier = Modifier
@@ -141,7 +149,7 @@ fun OrderConfirmation(
 
                     ) {
                         Text13_body1(
-                            text = "Delivery by Wed,Sept 7th 22",
+                            text = "Delivery by today by 10:00 pm",
                             modifier = Modifier
                                 .padding(vertical = 5.dp)
                         )

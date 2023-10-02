@@ -103,8 +103,6 @@ class CallingCategoryWiseData {
         postalCode: String
     ){
         bannerItemData=bannerItemDat
-
-Log.d("itemcategory","${bannerItemDat.bannercategory1?.isNotEmpty()==true}  $index  ")
             if(bannerItemDat.bannercategory1?.isNotEmpty()==true){
                 if(index==0){
                 settingData(bannerItemData.bannercategory1?:"",postalCode)

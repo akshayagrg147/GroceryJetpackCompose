@@ -130,7 +130,6 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
 
     fun getAvailablePinCode(): List<PinCodeStateModal> {
         val jsonPincodeList = mPrefs.getString(AppConstant.availablePinCode, "")
-        Log.d("jsonPincodeList","${jsonPincodeList}")
         val gson = Gson()
         val type = object : TypeToken<List<PinCodeStateModal>>() {}.type
 

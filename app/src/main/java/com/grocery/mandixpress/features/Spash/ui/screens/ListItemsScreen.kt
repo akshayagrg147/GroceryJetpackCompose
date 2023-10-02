@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -52,6 +53,7 @@ import com.grocery.mandixpress.features.Home.domain.modal.FilterOptions
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeEvent
+import com.grocery.mandixpress.features.Spash.cardviewAddtoCart
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -239,7 +241,6 @@ fun ListItems(
                     }
                 }
             else if(productClicked){
-                Log.d("productclicked","${productClicked} }")
                 showItemDescription(productdetail, modalBottomSheetState)
             }
             else
@@ -298,71 +299,86 @@ fun ListItems(
             topStart = 20.dp, topEnd = 20.dp
         )
     ) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (l3) = createRefs()
-            var createguidlinefromtop = createGuidelineFromBottom(70.dp)
+        Box(modifier = Modifier.fillMaxSize()) {
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                val (l3) = createRefs()
+                var createguidlinefromtop = createGuidelineFromBottom(70.dp)
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-            ) {
-                val scroll: ScrollState = rememberScrollState(0)
-
-                val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
-                val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
-
-                Box(
-                    modifier = Modifier.fillMaxSize()
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
                 ) {
-                    Header(scroll, headerHeightPx)
-                    Body(scroll, viewModal, context){
+                    val scroll: ScrollState = rememberScrollState(0)
 
-                        productClicked=true
-                        filterclicked=false
-                        productdetail.value=it
-                        scope.launch { modalBottomSheetState.show() }
+                    val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
+                    val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
+
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Header(scroll, headerHeightPx)
+                        Body(scroll, viewModal, context) {
+
+                            productClicked = true
+                            filterclicked = false
+                            productdetail.value = it
+                            scope.launch { modalBottomSheetState.show() }
+                        }
+                        Toolbar(scroll, headerHeightPx, toolbarHeightPx)
+                        Title(ls.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
                     }
-                    Toolbar(scroll, headerHeightPx, toolbarHeightPx)
-                    Title(ls.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
+
                 }
 
-            }
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .constrainAs(l3) {
-                        this.top.linkTo(createguidlinefromtop)
-                        this.bottom.linkTo(parent.bottom)
-                    }, backgroundColor = Color.White
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 50.dp),
-                    Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .constrainAs(l3) {
+                            this.top.linkTo(createguidlinefromtop)
+                            this.bottom.linkTo(parent.bottom)
+                        }, backgroundColor = Color.White
                 ) {
-                    Text14_h1(text = "Sort", color= headingColor, modifier = Modifier.clickable {
-                        filterclicked = false
-                        productClicked=false
-                        scope.launch { modalBottomSheetState.show() }
+                    Row(
+                        modifier = Modifier.padding(horizontal = 50.dp),
+                        Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text14_h1(
+                            text = "Sort",
+                            color = headingColor,
+                            modifier = Modifier.clickable {
+                                filterclicked = false
+                                productClicked = false
+                                scope.launch { modalBottomSheetState.show() }
 
-                    })
-                    Divider(
-                        color = Color.Blue, modifier = Modifier
-                            .height(20.dp)
-                            .width(1.dp)
-                    )
-                    Text14_h1(text = "Filter", color= headingColor,modifier = Modifier.clickable {
-                        filterclicked = true
-                        productClicked=false
-                        scope.launch { modalBottomSheetState.show() }
-                    })
+                            })
+                        Divider(
+                            color = Color.Blue, modifier = Modifier
+                                .height(20.dp)
+                                .width(1.dp)
+                        )
+                        Text14_h1(
+                            text = "Filter",
+                            color = headingColor,
+                            modifier = Modifier.clickable {
+                                filterclicked = true
+                                productClicked = false
+                                scope.launch { modalBottomSheetState.show() }
+                            })
+                    }
+
+
                 }
 
-
             }
-
+//            if (viewModal.getitemcountState.value >= 1)
+//                cardviewAddtoCart(
+//                    navController,
+//                    context,
+//                    modifier = Modifier.align(Alignment.BottomCenter)
+  //              )
         }
     }
 

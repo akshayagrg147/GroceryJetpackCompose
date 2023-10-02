@@ -40,7 +40,6 @@ class PaginSoucrce @Inject constructor(
                     // ensure we're not requesting duplicating items, at the 2nd request
                     position + 1
                 }
-                Log.d("pagination_Call"," ${ homeproduts.body()?.list}\n \n akkk\n ${((position - 1) * Constants.NETWORK_PAGE_SIZE) + 1}    ${INITIAL_LOAD_SIZE}")
 
                 LoadResult.Page(
                     data = homeproduts.body()?.list ?: emptyList(),

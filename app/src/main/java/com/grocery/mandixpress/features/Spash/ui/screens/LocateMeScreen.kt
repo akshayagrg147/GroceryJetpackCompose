@@ -46,7 +46,6 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
     if (isDialog)
         CommonProgressBar(text = "Fetching Location....")
     if (requestLocationUpdate) {
-        Log.d("latitudeandlongitude","call1")
 
         LocationPermissionsAndSettingDialogs(
             updateCurrentLocation = {
@@ -56,7 +55,6 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                     locationResult.lastLocation?.let { location ->
                         latitude = location.latitude
                         longitude = location.longitude
-                        Log.d("latitudeandlongitude","call3")
                         getAddressFromLatLng(
                             context,
                             latitude!!,
@@ -147,7 +145,6 @@ fun getAddressFromLatLng(
 
     ) {
     val gcd = Geocoder(context, Locale.getDefault())
-    Log.d("latitudeandlongitude","$latitude $longitude")
     mapScreenViewModal.ConvertLatLngToAddress(latitude,longitude,gcd){
         if(it.isNotEmpty()){
             callback(

@@ -236,7 +236,6 @@ class HomeAllProductsViewModal @Inject constructor(
 
             }
              HomeEvent.ItemCategoryEventFlow -> viewModelScope.launch {
-                Log.d("checkResponse", "onEvent: called")
                 repository.getProductCategory(sharedPreferences.getPostalCode())
                     .collectLatest {
                         when(it){
@@ -340,7 +339,6 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
         roomrespo.getTotalProductItems().catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }
             .collect {
                 totalcount.value = it ?: 0
-                Log.d("dmdndnd", totalcount.value.toString())
             }
 
     }
@@ -349,7 +347,6 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
         roomrespo.getTotalProductItemsPrice()
             .catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }.collect {
                 totalprice.value = it ?: 0
-                Log.d("dmdndnd", totalprice.value.toString())
             }
     }
 

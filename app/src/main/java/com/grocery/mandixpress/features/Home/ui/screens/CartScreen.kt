@@ -126,7 +126,6 @@ fun CartScreen(
 
     val orderIDResponse by viewModal.createOrderIdState.collectAsState()
     if(orderIDResponse.data?.statusCode==200){
-        Log.d("ordercreation","called ${orderIDResponse.data} ")
         isDialog=false
         LaunchedEffect(key1 = Unit){
             navController.currentBackStackEntry?.arguments?.putParcelable(
@@ -421,7 +420,6 @@ fun CartScreen(
                                     mobilenumber = sharedpreferenceCommon.getMobileNumber(),
                                     pincode = sharedpreferenceCommon.getPostalCode()
                                 )
-                                Log.d("messagepassing", "${Gson().toJson(request)}")
                                 viewModal.onEvent(CartEvent.createOrderId(request))
 
 

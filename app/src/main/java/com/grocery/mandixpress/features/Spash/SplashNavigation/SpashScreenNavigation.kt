@@ -25,7 +25,6 @@ fun splashScreenNavigation(
         }
         composable(ScreenRoute.SignUpScreen.route) {
             val mobileNumber = it.arguments?.getString("data") ?: ""
-            Log.d("contactNumberSplash", mobileNumber)
             SignUpScreen(navController, context,sharedPreferences,mobileNumber)
         }
         composable(ScreenRoute.LoginScreen.route) {

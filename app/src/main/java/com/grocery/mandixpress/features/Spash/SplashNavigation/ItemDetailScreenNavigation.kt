@@ -494,6 +494,7 @@ fun ItemDetailsScreen(
 
         }
         //view cart
+        if (viewModal.totalPriceState.value >= 1)
         cardviewAddtoCart(
              navController,
             context,

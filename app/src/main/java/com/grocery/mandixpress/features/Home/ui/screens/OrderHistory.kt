@@ -137,7 +137,6 @@ fun OrderHistoryRow(
     data: AllOrdersHistoryList.Orders,
     call: (AllOrdersHistoryList.Orders) -> Unit
 ) {
-    Log.d("datafromorderhistory","${data.createdDate}")
     Box(modifier = Modifier
         .padding(top = 7.dp)
         .background(Color.White, RoundedCornerShape(8.dp))

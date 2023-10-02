@@ -63,7 +63,6 @@ fun MapScreen1(fusedLocationProviderClient: FusedLocationProviderClient,@Applica
         requestLocationUpdate = true
     }
     DebugOverlay(cameraPositionState){
-        Log.d("callingmap","callingmap")
        // address= getAddress(context,it)
     }
 

@@ -59,7 +59,6 @@ fun profileScreen(
     context: HomeActivity, sharedpreferenceCommon: sharedpreferenceCommon,
     viewModal: ProfileViewModal = hiltViewModel()
 ) {
-    Log.d("profileScreen", "profileScreen: ${sharedpreferenceCommon.getImageUri()} ")
     var selectedImage by remember { mutableStateOf<Uri?>(Uri.parse(sharedpreferenceCommon.getImageUri())) }
     val callClicked=remember{
         mutableStateOf(false)

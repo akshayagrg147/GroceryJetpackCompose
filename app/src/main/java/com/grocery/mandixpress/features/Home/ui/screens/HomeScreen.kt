@@ -225,7 +225,6 @@ fun homescreen(
                                 val pincode=extractSixDigitNumber(it).toString()
                                 if(pincode.length>4) {
                                     sharedpreferenceCommon.setSearchAddress(it)
-                                    Log.d("pincodeExtrct", "${it}")
 
                                     sharedpreferenceCommon.setPinCode(pincode)
                                     val intent = Intent(context, HomeActivity::class.java)
@@ -759,10 +758,6 @@ fun BodyDashboard(
                                         contentDescription = null,
                                         tint = Color.LightGray,
                                         modifier = Modifier.clickable {
-                                            Log.d(
-                                                "categorydata",
-                                                "${categoryWiseResponse.data}"
-                                            )
                                             viewModal.setcategory(
                                                 "${
                                                     categoryWiseResponse.data?.list?.get(
@@ -878,7 +873,7 @@ fun HeaderDeliveryTime(
                 .padding(10.dp), Arrangement.SpaceBetween
         ) {
             Column {
-                Text14_h2(text = "Delivery in 10 minutes", color = Purple500)
+                Text14_h2(text = "Delivery by 10:00 pm", color = Purple500)
                 Spacer(modifier = Modifier.height(4.dp))
                 Row() {
                     Image(
@@ -1191,7 +1186,6 @@ fun BestOffers(
     context: Context,
     viewModal: HomeAllProductsViewModal
 ) {
-    Log.d("repetationcall", "call15")
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),

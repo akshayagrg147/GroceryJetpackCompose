@@ -40,7 +40,6 @@ fun OrderConfirmation(
     data: OrderIdResponse,
     navController: NavHostController, viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
-    Log.d("printOrderConfirmation","$data")
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .componentRegistry {
             if (Build.VERSION.SDK_INT >= 28) {

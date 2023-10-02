@@ -69,7 +69,6 @@ fun loginScreen(
         CommonProgressBar("Hold for a moment")
 
     LaunchedEffect(key1 = loginResponse){
-        Log.d("loginViewModal", "checkMobileNumberExist: not exist")
         if(loginResponse)
         viewModal.onEvent(LoginEvent.LoginResponse("+91${mobile}"))
 
@@ -81,7 +80,6 @@ fun loginScreen(
             Log.d("loginViewModal", "checkMobileNumberExist: loading")
         }
         else if (mobileRegisterResponse.data != null) {
-            Log.d("loginViewModal", "checkMobileNumberExist: loadinged")
             isDialog = false
 
             if (mobileRegisterResponse.data!!.isMobileExist == true) {
@@ -90,7 +88,6 @@ fun loginScreen(
                 sharedPreferences.setMobileNumber("+91${mobile}")
                 navController.navigate(ScreenRoute.LocateMeScreen.route)
             } else {
-                Log.d("loginViewModal", "checkMobileNumberExist: loardinged rr")
                 navController.currentBackStackEntry?.arguments?.apply {
                     putString("mobileNumber", "+91${mobile}")
                 }
@@ -243,8 +240,7 @@ fun loginScreen(
                                         }
                                         is ApiState.Failure -> {
                                             isDialog = false
-                                            Log.d("errormsg","${it.msg}")
-                                            context.showMsg("something went wrong")
+                                           context.showMsg("something went wrong")
                                         }
                                         ApiState.Loading -> {
                                             isDialog = true

@@ -21,7 +21,6 @@ import javax.inject.Inject
             val jwtToken = sharedPreference.getJwtToken()
 
             // Logging the JWT token
-            Log.d("main", "JWT Token: $jwtToken")
 
             // Include the Bearer token if available
             if (jwtToken.isNotEmpty()) {

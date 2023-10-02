@@ -83,7 +83,6 @@ fun AutoUpdateScreen(
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // Handle successful update
-                    Log.d("groceryApp", "SplashScreen:${sharedpreferenceCommon.getJwtToken()} ")
                     if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
                         if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty())
                             context.startActivity(Intent(context, HomeActivity::class.java))

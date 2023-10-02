@@ -153,7 +153,6 @@ fun CurvedBottomSheetWithButton(viewModel: AddressViewModal = hiltViewModel(),) 
                     LazyColumn {
                                items(predictions) {
                                         prediction ->
-                                    Log.d("checkdata","${prediction.getFullText(null)}")
 
                                     PredictionItem(prediction = prediction){
 

@@ -106,14 +106,12 @@ class ProfileViewModal @Inject constructor(
                     .collect()
             }
           is  ProfileEvent.callingUserProfile->viewModelScope.launch {
-              Log.d("profileResponse","called1")
                 repository.getUserResponse(shared.getMobileNumber(),shared.getPostalCode())
                     .doOnSuccess {
                         Log.d("profileResponse","called11")
                         userProfileResponse.value= CommonUiObjectResponse(data=it)
                     }
                     .doOnFailure {
-                        Log.d("profileResponse","called1 ${it?.message}")
                         userProfileResponse.value=CommonUiObjectResponse(error=it?.message?:"something went wrong")
                     }
                     .doOnLoading {
@@ -132,7 +130,6 @@ class ProfileViewModal @Inject constructor(
     }
 
     fun getDeliveryBoyNumber(): String {
-        Log.d("numberCall", "${shared.getDeliveryContactNumber()}")
         return shared.getDeliveryContactNumber()
 
     }

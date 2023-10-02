@@ -38,7 +38,6 @@ fun onEvent(mobile: LoginEvent) {
     when(mobile){
       is  LoginEvent.LoginResponse->{
             viewModelScope.launch {
-                Log.d("loginViewModal", "checkMobileNumberExist: test11")
                 commonRepository.checkMobileNumberExist(
                     RegisterLoginRequest(null,null,mobile.mobileNumber)
                 ) .collectLatest {

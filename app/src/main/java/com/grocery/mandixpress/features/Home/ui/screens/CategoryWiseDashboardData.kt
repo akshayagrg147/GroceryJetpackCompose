@@ -249,7 +249,6 @@ fun CategoryWiseDashboardAllData(
                                     .fillMaxWidth()
                                     .height(100.dp)
                             )
-                            Log.d("gggddd", "previous1:- ${itemBasedCategory.data?.statusCode}")
 
 
                             if (itemBasedCategory.data?.statusCode == 200) {
@@ -503,7 +502,6 @@ fun bodyDashboard(
                 // on below line we are displaying our
                 // items upto the size of the list.
                 items(list ) { item ->
-                    Log.d("gggddd","item:- ${item}")
 
                     ProductWiseRowBanner(item,productdetail,modalBottomSheetState) { data ->
 

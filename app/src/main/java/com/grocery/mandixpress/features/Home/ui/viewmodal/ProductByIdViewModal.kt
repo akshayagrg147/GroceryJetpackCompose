@@ -70,7 +70,6 @@ class ProductByIdViewModal @Inject constructor(
 
     fun insertCartItem(value: ProductByIdResponseModal) = viewModelScope.launch(Dispatchers.IO) {
         val intger: Int = repo.getProductBasedIdCount(value.homeproducts?.productId!!).first() ?: 0
-        Log.d("insertCartItem", "insertCartItem:${Gson().toJson(value)} ")
         if (intger == 0) {
             val data = CartItems(
                 value.homeproducts.productId,
@@ -95,7 +94,6 @@ class ProductByIdViewModal @Inject constructor(
         repo.getTotalProductItemsPrice().catch { e ->
             Log.d("main", "Exception: ${e.message} ") }
             .collect {
-                Log.d("getTotalProtemsPrice", "value getTotalProductItemsPrice : ${it} ")
                 totalPrice.value = it ?: 0
 
             }

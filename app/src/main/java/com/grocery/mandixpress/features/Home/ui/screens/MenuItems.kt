@@ -409,7 +409,6 @@ fun     menuitems(
                                 item,
                                 selectedIndex
                             ) {  selectedvalue ->
-                                Log.d("productidgetting", "$selectedvalue")
                                 viewModal.setProductId(ProductIdIdModal(selectedvalue))
                                 selectedIndex.value = selectedvalue
 

@@ -32,12 +32,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.grocery.mandixpress.R
+
 import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.Utils.Text11_body2
 import com.grocery.mandixpress.Utils.Text12_h1
@@ -311,7 +314,7 @@ fun SwipeButton(
             .animateContentSize()
             .then(
                 if (swipeComplete) {
-                    Modifier.width(64.dp)
+                    Modifier.fillMaxWidth()
                 } else {
                     Modifier.fillMaxWidth()
                 }
@@ -335,39 +338,39 @@ fun SwipeButton(
                 ),
             backgroundColor = backgroundColor,
         )
-        Text12_h1(
-            text = text,
-            color = whiteColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(alpha)
-                .padding(
-                    horizontal = 80.dp,
-                )
-                .offset {
-                    IntOffset(swipeableState.offset.value.roundToInt(), 0)
-                },
-        )
-        AnimatedVisibility(
-            visible = swipeComplete && !isComplete,
-        ) {
-            Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(14.dp),
-
-        ){
-            CircularProgressIndicator(
-                color = whiteColor,
-                strokeWidth = 3.dp,
+        AnimatedVisibility(visible = swipeComplete || !isComplete) {
+            Text(
+                text = text,
+                color = Color.White,
                 modifier = Modifier
-                    .fillMaxSize()
-
+                    .fillMaxWidth()
+                    .alpha(alpha)
+                    .padding(
+                        horizontal = 80.dp,
+                    )
+                    .offset {
+                        IntOffset(swipeableState.offset.value.roundToInt(), 0)
+                    },
+                textAlign = TextAlign.Center
             )
         }
 
-        }
-        AnimatedVisibility(
+   /*     AnimatedVisibility(
+            visible = swipeComplete && !isComplete,
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(14.dp),
+            ) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }*/
+      /*  AnimatedVisibility(
             visible = isComplete,
             enter = fadeIn(),
             exit = fadeOut(),
@@ -375,14 +378,15 @@ fun SwipeButton(
             Icon(
                 imageVector = doneImageVector,
                 contentDescription = null,
-                tint = whiteColor,
+                tint = Color.White,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(44.dp),
             )
-        }
+        }*/
     }
 }
+
 @Composable
 fun SwipeIndicator(
     modifier: Modifier = Modifier,
@@ -400,11 +404,8 @@ fun SwipeIndicator(
             )
             .background(Color.White),
     ) {
-        Icon(
-            imageVector = Icons.Rounded.ArrowForward,
-            contentDescription = null,
-            tint = backgroundColor,
-            modifier = Modifier.size(36.dp),
-        )
+        Image(painter = painterResource(id = R.drawable.swipe_button), contentDescription = "swipe button",
+            modifier = Modifier.size(36.dp))
+
     }
 }

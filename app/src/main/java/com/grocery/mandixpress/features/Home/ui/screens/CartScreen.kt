@@ -155,7 +155,7 @@ fun CartScreen(
         sheetElevation = 0.dp,
         sheetContent = {
             Column(modifier = Modifier.fillMaxWidth()){
-                Box1(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box1(modifier = Modifier.fillMaxWidth().height(70.dp), contentAlignment = Alignment.Center) {
                     Image(painter = painterResource(id = R.drawable.close_button), contentDescription = "Cross Button", modifier = Modifier, contentScale = ContentScale.Fit)
                 }
                 Column(modifier = Modifier

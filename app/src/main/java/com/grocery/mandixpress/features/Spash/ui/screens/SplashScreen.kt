@@ -118,10 +118,13 @@ fun AutoUpdateScreen(
                 delay(500)
                 Log.d("groceryApp", "SplashScreen:${sharedpreferenceCommon.getJwtToken()} ")
                 if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
-                    if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty())
-                        context.startActivity(Intent(context, HomeActivity::class.java))
+                    if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty()) {
+                        val intent = Intent(context, HomeActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        context.startActivity(intent)
+//                        finish()
+                    }
                     else {
-
                         navController.navigate(ScreenRoute.LocateMeScreen.route)
                     }
                 }

@@ -2,6 +2,9 @@
     <string name="app_name">GroceryApp</string>
     <string name="name">Enter your name</string>
     <string name="address">Search with your pincode..</string>
+    <string name="exit_confirmation_title">Confirm Exit</string>
+    <string name="exit_confirmation_message">Are you sure you want to exit the app?</string>
+
     <string name="phone_number">Enter Phone Number</string>
     <string name="landmark">LandMark</string>
     <string name="address1">Address</string>

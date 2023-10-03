@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -254,6 +255,7 @@ fun homescreen(
 
             }
         }) {
+        BackPressSample(navcontroller)
         val coroutineScope = rememberCoroutineScope()
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -340,6 +342,7 @@ fun BodyDashboard(
     val bestSelling by viewModal.bestSelling.collectAsState()
     val bannerImage by viewModal._bannerImage.collectAsState()
     var refreshing by remember { mutableStateOf(false) }
+    Log.d("homescreenstate_call","${bannerImage.data?.statusCode}")
     LaunchedEffect(refreshing) {
         if (refreshing) {
 
@@ -531,7 +534,7 @@ fun BodyDashboard(
                 } else {
                     NoAvaibiltyScreen()
                 }
-            } else if (bannerImage.isLoading)
+            } else
                 ShimmerItemHeader()
 
             //exclusive
@@ -1435,7 +1438,79 @@ fun ShimmerItemHeader(
         )
     }
 }
+sealed class BackPress {
+    object Idle : BackPress()
+    object InitialTouch : BackPress()
+}
 
+@Composable
+private fun BackPressSample(navcontroller: NavHostController,) {
+
+    var backPressState by remember { mutableStateOf<BackPress>(BackPress.Idle) }
+    val context = LocalContext.current
+
+    BackHandler(backPressState == BackPress.Idle) {
+        backPressState = BackPress.InitialTouch
+
+
+    }
+    LaunchedEffect(key1 = backPressState) {
+        delay(2000)
+        backPressState = BackPress.Idle
+    }
+
+    if (backPressState == BackPress.InitialTouch) {
+        ExitConfirmationDialog(
+            showDialog = true,
+            onDismiss = {
+                // Handle dialog dismiss if needed
+            },
+            onConfirmExit = {
+                val activity = context as? Activity
+                activity?.finish()
+
+            //  context.finish()
+            })
+
+    }
+}
+@Composable
+fun ExitConfirmationDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirmExit: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            title = {
+                Text12_body1(text = stringResource(id = R.string.exit_confirmation_title))
+            },
+            text = {
+                Text12_body1(text = stringResource(id = R.string.exit_confirmation_message))
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDismiss()
+                        onConfirmExit()
+                    }
+                ) {
+                    Text11_body2(text ="Yes",color= whiteColor)
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        onDismiss()
+                    }
+                ) {
+                    Text11_body2(text = "No",color= whiteColor)
+                }
+            }
+        )
+    }
+}
 
 
 val TOP_BAR_HEIGHT = 76.dp

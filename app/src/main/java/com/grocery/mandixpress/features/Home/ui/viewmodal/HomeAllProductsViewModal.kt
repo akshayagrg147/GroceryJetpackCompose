@@ -2,9 +2,7 @@ package com.grocery.mandixpress.features.Home.ui.viewmodal
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
@@ -51,7 +49,7 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
     //events object
-
+    var myParcelableData: HomeAllProductsResponse? by mutableStateOf(HomeAllProductsResponse())
     private val _bestSelling: MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> =
         MutableStateFlow(
             ComposeUiResponse()

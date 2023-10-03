@@ -16,7 +16,7 @@ class ListItemsActivity : ComponentActivity() {
             ConnectivityStatus()
             val data = intent.getParcelableExtra<HomeAllProductsResponse>("parced")
             com.grocery.mandixpress.features.Home.ui.ui.theme.GroceryAppTheme {
-                ListItems(this,data!!,)
+//                ListItems(this,data!!,)
             }
 
         }

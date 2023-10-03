@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -38,6 +39,7 @@ import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.Utils
+import com.grocery.mandixpress.common.addToCartCardView
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.Home.Navigator.gridItems
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
@@ -60,7 +62,7 @@ fun SearchResult(
             .padding(horizontal = 4.dp, vertical = 4.dp)
             .width(150.dp)
             .clickable {
-               // navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
+                // navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
             }
 
     ) {
@@ -195,101 +197,127 @@ fun SearchScreenProducts(
             }
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
-        val focusRequester = FocusRequester()
-        DisposableEffect(Unit) {
-            focusRequester.requestFocus()
-            onDispose { }
-        }
-
-        TextField(
-            value = search.value,
-            shape = RoundedCornerShape(8.dp),
-            onValueChange = {
-                search.value = it
-                viewModal.setupFlow(search.value)
-            },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search,
-                keyboardType = KeyboardType.Text // Set keyboard type to Text
-                        ),
-            modifier = Modifier.fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
-                .padding(start = 10.dp, end = 10.dp, top = 10.dp)
-                .focusRequester(focusRequester = focusRequester),
-            placeholder = {
-                Text12_body1(
-                    text = "Search Store",
-                    color = bodyTextColor,
-                )
-            },
-
-
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.LightGray,
-                trailingIconColor = titleColor,
-                backgroundColor = greycolor,
-                disabledIndicatorColor = Color.Transparent
-            ),
-            trailingIcon = {
-                if (search.value != "") {
-                    IconButton(onClick = {
-                        search.value = ""
-
-                        responseData.value = HomeAllProductsResponse()
-                    }) {
-                        Icon(
-                            Icons.Default.Close, contentDescription = "",
-                        )
-                    }
-                }
-            },
-            leadingIcon = {
-                IconButton(onClick = { responseData.value = HomeAllProductsResponse() }) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            val focusRequester = FocusRequester()
+            DisposableEffect(Unit) {
+                focusRequester.requestFocus()
+                onDispose { }
+            }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                IconButton(
+                    onClick = { navHostController.popBackStack() },
+                    modifier = Modifier.padding(end = 0.dp,top=6.dp)
+                ) {
                     Icon(
-                        Icons.Default.Search, contentDescription = "",
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "",
+                        tint = Color.Black // Customize the color as needed
                     )
                 }
-            },
-            singleLine = true,
-        )
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(20.dp)
-        )
-        if(search.value.isNotEmpty())
-        Text13_body1(
-            text = "Results finds ${responseData.value.list?.size}",
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-        else{
-            Text13_body1(
-                text = "Results finds 0",
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-        }
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(top = 10.dp)
-                .fillMaxSize()
-        ) {
-            gridItems(
-                data = responseData.value.list!!,
-                columnCount = 2,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(horizontal = 1.dp)
-            ) { itemData ->
-                if(search.value.isNotEmpty())
-                SearchResult(itemData, viewModal, context, navHostController)
+
+
+                TextField(
+                    value = search.value,
+                    shape = RoundedCornerShape(8.dp),
+                    onValueChange = {
+                        search.value = it
+                        viewModal.setupFlow(search.value)
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Search,
+                        keyboardType = KeyboardType.Text // Set keyboard type to Text
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .padding(start = 5.dp, end = 10.dp, top = 10.dp)
+                        .focusRequester(focusRequester = focusRequester),
+                    placeholder = {
+                        Text12_body1(
+                            text = "Search Product",
+                            color = bodyTextColor,
+                        )
+                    },
+
+
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = Color.LightGray,
+                        trailingIconColor = titleColor,
+                        backgroundColor = greycolor,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    trailingIcon = {
+                        if (search.value != "") {
+                            IconButton(onClick = {
+                                search.value = ""
+
+                                responseData.value = HomeAllProductsResponse()
+                            }) {
+                                Icon(
+                                    Icons.Default.Close, contentDescription = "",
+                                )
+                            }
+                        }
+                    },
+                    leadingIcon = {
+                        IconButton(onClick = {
+                            responseData.value = HomeAllProductsResponse()
+                        }) {
+                            Icon(
+                                Icons.Default.Search, contentDescription = "",
+                            )
+                        }
+                    },
+                    singleLine = true,
+                )
+            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(20.dp)
+            )
+            if (search.value.isNotEmpty())
+                Text13_body1(
+                    text = "Results finds ${responseData.value.list?.size}",
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            else {
+                Text13_body1(
+                    text = "Results finds 0",
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxSize()
+            ) {
+                gridItems(
+                    data = responseData.value.list!!,
+                    columnCount = 2,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(horizontal = 1.dp)
+                ) { itemData ->
+                    if (search.value.isNotEmpty())
+                        SearchResult(itemData, viewModal, context, navHostController)
+                }
             }
         }
+        if (viewModal.getitemcountState.value >= 1)
+            addToCartCardView(
+                viewModal,
+                navHostController,
+                context,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+
+
     }
-
-
 }
 
 

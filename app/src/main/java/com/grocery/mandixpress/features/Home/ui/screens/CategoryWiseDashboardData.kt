@@ -47,6 +47,7 @@ import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.LoadingBar
 import com.grocery.mandixpress.common.Utils
+import com.grocery.mandixpress.common.addToCartCardView
 import com.grocery.mandixpress.data.modal.BannerImageResponse
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.data.modal.ItemsCollectionsResponse
@@ -69,6 +70,7 @@ fun CategoryWiseDashboardAllData(
     val bundle = navController.previousBackStackEntry?.savedStateHandle?.get<PassParceableBanner>("data") ?: PassParceableBanner()
 
    val itemBasedCategory by viewModal._bannerCategoryResponse.collectAsState()
+    Log.d("CategoryWiseDashboard",bundle.second.toString())
     LaunchedEffect(key1 = Unit){
         if(bundle.second?.subCategoryList?.isNotEmpty()==true)
         viewModal.onEvent(HomeEvent.BannerCategoryEventFlow(
@@ -279,7 +281,7 @@ fun CategoryWiseDashboardAllData(
 
                         }
                         if (viewModal.getitemcountState.value >= 1)
-                            cardviewAddtoCart(
+                            addToCartCardView(
                                 viewModal,
                                 navController,
                                 context!!,
@@ -354,7 +356,7 @@ fun CategoryWiseDashboardAllData(
 
                             }
                             if (viewModal.getitemcountState.value >= 1)
-                                cardviewAddtoCart(
+                                addToCartCardView(
                                     viewModal,
                                     navController,
                                     context!!,
@@ -448,7 +450,7 @@ fun CategoryWiseDashboardAllData(
 
                         }
                         if (viewModal.getitemcountState.value >= 1)
-                            cardviewAddtoCart(
+                            addToCartCardView(
                                 viewModal,
                                 navController,
                                 context!!,
@@ -488,7 +490,6 @@ fun bodyDashboard(
     modalBottomSheetState: ModalBottomSheetState
 ) {
     if(list?.isNotEmpty()==true) {
-        Log.d("gggddd","list:- ${list}")
 
         Column(
             modifier = Modifier

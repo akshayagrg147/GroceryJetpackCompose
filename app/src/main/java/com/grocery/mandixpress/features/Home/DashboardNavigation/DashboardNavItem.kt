@@ -24,6 +24,7 @@ sealed class DashBoardNavRoute( var screen_route:String=""){
     object AddnewAddressScreen : DashBoardNavRoute("AddnewAddressScreen")
 
     object OrderDetail : DashBoardNavRoute("OrderDetail")
+    object SeeAllScreen : DashBoardNavRoute("seeAllScreen")
 
     object MapScreen : DashBoardNavRoute("MapScreen")
     object AddBottomSearch:DashBoardNavRoute("AddBottomSearch")

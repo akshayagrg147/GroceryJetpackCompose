@@ -15,6 +15,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +28,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -45,15 +49,16 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.Utils
+import com.grocery.mandixpress.common.addToCartCardView
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.Home.domain.modal.FilterOptions
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
+import com.grocery.mandixpress.features.Home.ui.viewmodal.CartItemsViewModal
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
-import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeEvent
-import com.grocery.mandixpress.features.Spash.cardviewAddtoCart
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -72,15 +77,18 @@ private const val titleFontScaleStart = 1f
 private const val titleFontScaleEnd = 0.66f
 
 
+
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ListItems(
+    navController: NavHostController,
     context: Context,
-    ls: HomeAllProductsResponse,
-    viewModal: HomeAllProductsViewModal = hiltViewModel()
-) {
+    viewModal: HomeAllProductsViewModal,
 
-    viewModal.setList(ls)
+    ) {
+
+    viewModal.setList(viewModal.myParcelableData!!)
 
     val modalBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -100,7 +108,8 @@ fun ListItems(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(500.dp).background(Color.White)
+                        .height(500.dp)
+                        .background(Color.White)
                         .padding(top = 10.dp), Arrangement.SpaceEvenly
                 ) {
                     val ls: MutableList<FilterOptions> = ArrayList()
@@ -241,13 +250,14 @@ fun ListItems(
                     }
                 }
             else if(productClicked){
-                showItemDescription(productdetail, modalBottomSheetState)
+                showItemDescription(navController,productdetail, modalBottomSheetState)
             }
             else
                 Column(
                     modifier = Modifier
                         .padding(start = 10.dp)
-                        .fillMaxWidth().background(Color.White)
+                        .fillMaxWidth()
+                        .background(Color.White)
                         .align(Alignment.CenterHorizontally)
                 ) {
                     Text13_body1(text = "Asending(A-Z)", modifier = Modifier
@@ -325,60 +335,45 @@ fun ListItems(
                             productdetail.value = it
                             scope.launch { modalBottomSheetState.show() }
                         }
-                        Toolbar(scroll, headerHeightPx, toolbarHeightPx)
-                        Title(ls.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
-                    }
-
-                }
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .constrainAs(l3) {
-                            this.top.linkTo(createguidlinefromtop)
-                            this.bottom.linkTo(parent.bottom)
-                        }, backgroundColor = Color.White
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 50.dp),
-                        Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text14_h1(
-                            text = "Sort",
-                            color = headingColor,
-                            modifier = Modifier.clickable {
+                        Toolbar(scroll, headerHeightPx, toolbarHeightPx,{sort->
+                            if(sort) {
                                 filterclicked = false
                                 productClicked = false
                                 scope.launch { modalBottomSheetState.show() }
+                            }
 
-                            })
-                        Divider(
-                            color = Color.Blue, modifier = Modifier
-                                .height(20.dp)
-                                .width(1.dp)
-                        )
-                        Text14_h1(
-                            text = "Filter",
-                            color = headingColor,
-                            modifier = Modifier.clickable {
+                        },{ filter->
+                            if(filter){
                                 filterclicked = true
                                 productClicked = false
                                 scope.launch { modalBottomSheetState.show() }
-                            })
+
+
+                            }
+
+
+                        })
+                        Title(viewModal.myParcelableData!!.message ?: "none", scroll, headerHeightPx, toolbarHeightPx)
                     }
 
-
                 }
+                if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
+                    addToCartCardView(
+                        viewModal,
+                        navController,
+                        context!!,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .constrainAs(l3) {
+                                this.top.linkTo(createguidlinefromtop)
+                                this.bottom.linkTo(parent.bottom)
+                            }
+                    )
 
             }
-//            if (viewModal.getitemcountState.value >= 1)
-//                cardviewAddtoCart(
-//                    navController,
-//                    context,
-//                    modifier = Modifier.align(Alignment.BottomCenter)
-  //              )
+
+
+
         }
     }
 
@@ -386,7 +381,7 @@ fun ListItems(
 }
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun showItemDescription(
+fun showItemDescription(navController: NavHostController,
     productdetail: MutableState<HomeAllProductsResponse.HomeResponse>,
     modalBottomSheetState: ModalBottomSheetState
 ) {
@@ -394,7 +389,8 @@ fun showItemDescription(
     val scope = rememberCoroutineScope()
     val pager = rememberPagerState(pageCount = 3)
     Box(modifier = Modifier
-        .fillMaxWidth().height(70.dp)
+        .fillMaxWidth()
+        .height(70.dp)
         .background(Color.Unspecified),
         contentAlignment = Alignment.Center,
         content = {
@@ -403,7 +399,8 @@ fun showItemDescription(
                 contentDescription = "Cross Button",
                 modifier = Modifier
                     .size(50.dp)
-                    .padding(bottom = 10.dp).clickable {
+                    .padding(bottom = 10.dp)
+                    .clickable {
                         scope.launch {
                             modalBottomSheetState.hide()
                         }
@@ -420,24 +417,30 @@ fun showItemDescription(
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (l1, l2) = createRefs()
         Box(modifier = Modifier
-            .fillMaxWidth().background(Color.White)
+            .fillMaxWidth()
+            .background(Color.White)
             .constrainAs(l1) {
                 top.linkTo(parent.top)
 
             }
         ) {
-            Column(modifier = Modifier.fillMaxWidth().background(color = Color.White,
-                shape = RoundedCornerShape(
-                topStart = 16.dp,
-                topEnd = 16.dp,
-                bottomStart = 0.dp,
-                bottomEnd = 0.dp
-            ))) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(
+                        topStart = 16.dp,
+                        topEnd = 16.dp,
+                        bottomStart = 0.dp,
+                        bottomEnd = 0.dp
+                    )
+                )) {
                 Card(
                     elevation = 2.dp,
                     shape = RoundedCornerShape(20.dp),
                     modifier = Modifier
-                        .fillMaxWidth().padding(top=20.dp)
+                        .fillMaxWidth()
+                        .padding(top = 20.dp)
 
                 ) {
                     HorizontalPager( state = pager) { index ->
@@ -481,11 +484,15 @@ fun showItemDescription(
                 Spacer(modifier = Modifier.height(5.dp))
                 Text12_body1(
                     text = productdetail.value.productDescription ?: "",
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
                 )
 
                 Spacer(modifier = Modifier.height(5.dp))
-                Text13_body1(text = "Product Detail", modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp))
+                Text13_body1(text = "Product Detail", modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp))
 
 
 
@@ -496,7 +503,11 @@ fun showItemDescription(
 
 
     }
+
 }
+
+
+
 
 
 @Composable
@@ -774,7 +785,7 @@ private fun Body(
 }
 
 @Composable
-private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float) {
+private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float, callSort: (Boolean) -> Unit,callFilter:(Boolean)->Unit) {
     val toolbarBottom = headerHeightPx - toolbarHeightPx
     val showToolbar by remember {
         derivedStateOf {
@@ -793,6 +804,40 @@ private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx:
                     listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
                 )
             ),
+            actions = {
+                IconButton(onClick = {
+                    callSort(true)
+
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.sort),
+
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding()
+                            .width(15.dp)
+                            .height(15.dp)
+                    )
+
+                }
+
+                // lock icon
+                IconButton(onClick = {
+                    callFilter(true)
+
+                }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.filter),
+
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding()
+                            .width(15.dp)
+                            .height(15.dp)
+                    )
+
+                }
+            },
             navigationIcon = {
                 IconButton(
                     onClick = {},
@@ -800,9 +845,20 @@ private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx:
                         .padding(16.dp)
                         .size(24.dp)
                 ) {
+
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "",
+                        tint = Color.Black
+                    )
+                }
+                IconButton(
+                    onClick = { /* Handle second icon click */ },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menu",
                         tint = Color.Black
                     )
                 }
@@ -832,7 +888,7 @@ private fun Title(
             .graphicsLayer {
                 val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
 
-                val collapseFraction: Float =    (scroll.value / collapseRange).coerceIn(0f, 1f)
+                val collapseFraction: Float = (scroll.value / collapseRange).coerceIn(0f, 1f)
 
                 val scaleXY = lerp(
                     titleFontScaleStart.dp,

@@ -58,13 +58,16 @@ import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.common.Utils.Companion.extractSixDigitNumber
 import com.grocery.mandixpress.common.Utils.Companion.vibrator
+import com.grocery.mandixpress.common.addToCartCardView
 import com.grocery.mandixpress.data.modal.BannerImageResponse
 import com.grocery.mandixpress.data.modal.CategoryWiseDashboardResponse
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
+import com.grocery.mandixpress.features.Home.ui.viewmodal.CommonUiObjectResponse
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeEvent
+import com.grocery.mandixpress.features.Spash.cardviewAddtoCart
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
@@ -76,7 +79,7 @@ import java.text.DecimalFormat
 @Composable
 fun homescreen(
     navcontroller: NavHostController, sharedpreferenceCommon: sharedpreferenceCommon,
-    viewModal: HomeAllProductsViewModal = hiltViewModel()
+    viewModal: HomeAllProductsViewModal
 ) {
     val lazyListState = rememberLazyListState()
     val context = LocalContext.current.getActivity()
@@ -268,7 +271,7 @@ fun homescreen(
                     navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
                 }
             if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
-                cardviewAddtoCart(
+                addToCartCardView(
                     viewModal,
                     navcontroller,
                     context!!,
@@ -435,7 +438,7 @@ fun BodyDashboard(
                                 .padding(start = 10.dp, end = 10.dp),
                             placeholder = {
                                 Text12_body1(
-                                    text = "Search Store",
+                                    text = "Search Product",
                                     color = bodyTextColor,
                                 )
                             },
@@ -554,18 +557,15 @@ fun BodyDashboard(
                             .padding(top = 5.dp, end = 20.dp)
                             .clickable {
                                 if (exlusiveResponse.data?.statusCode == 200) {
-                                    val list1 = exlusiveResponse.data?.list
-                                    context.launchActivity<ListItemsActivity>() {
-                                        putExtra(
-                                            "parced",
-                                            HomeAllProductsResponse(
-                                                list1,
-                                                "Exclusive Offers",
-                                                200
-                                            )
-                                        )
 
-                                    }
+                                    val list1 = exlusiveResponse.data?.list
+                                    viewModal.myParcelableData=  HomeAllProductsResponse(
+                                        list1,
+                                        "Exclusive Offers",
+                                        200
+                                    )
+
+                                    navcontroller.navigate(DashBoardNavRoute.SeeAllScreen.screen_route)
                                 }
                             }
                     )
@@ -624,12 +624,14 @@ fun BodyDashboard(
                             .clickable {
                                 if (bestSelling.data?.statusCode == 200) {
                                     val list1 = bestSelling.data?.list
-                                    context.launchActivity<ListItemsActivity>() {
-                                        putExtra(
-                                            "parced",
-                                            HomeAllProductsResponse(list1, "Best Selling", 200)
-                                        )
-                                    }
+                                    viewModal.myParcelableData=  HomeAllProductsResponse(
+                                        list1,
+                                        "Best Selling",
+                                        200
+                                    )
+
+                                    navcontroller.navigate(DashBoardNavRoute.SeeAllScreen.screen_route)
+
                                 }
 
                             }
@@ -831,7 +833,7 @@ fun SearchBar(
             .padding(start = 0.dp, end = 2.dp),
         placeholder = {
             Text10_h2(
-                text = "Search Store",
+                text = "Search Product",
                 color = bodyTextColor,
             )
         },
@@ -1434,150 +1436,7 @@ fun ShimmerItemHeader(
     }
 }
 
-@Composable
-fun cardviewAddtoCart(
-    viewmodal: HomeAllProductsViewModal,
-    navController: NavHostController,
-    context: Context,
-    modifier: Modifier
-) {
-    Log.d("repetationcall", "call11")
-    Card(
-        elevation = 2.dp,
-        shape = RoundedCornerShape(10.dp),
-        backgroundColor = seallcolor, modifier = modifier
-            .fillMaxWidth()
-            .height(85.dp)
-            .padding(horizontal = 10.dp, vertical = 8.dp)
 
-            .clickable {
-                navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
-            }
-            .border(
-                width = 1.dp, // Border width
-                color = greyLightColor, // Border color
-                shape = RoundedCornerShape(10.dp) // Match the card's shape
-            )
-            .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(whiteColor)
-        ) {
-            if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice().toInt()) {
-                Row(modifier = Modifier) {
-                    Image(
-                        painter = painterResource(id = com.grocery.mandixpress.R.drawable.bike_delivery),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding()
-                            .width(30.dp)
-                            .height(30.dp)
-                            .padding(start = 10.dp)
-
-
-                    )
-                    Column() {
-                        Text10_h2(
-                            text = "Free Delivery",
-                            color = Purple700,
-                            modifier = Modifier.padding(start = 10.dp)
-                        )
-                        Text10_h2(
-                            text = "Add item worth ${viewmodal.getFreeDeliveryMinPrice().toInt() - viewmodal.getitempriceState.value}",
-                            color = headingColor,
-                            modifier = Modifier.padding(start = 10.dp)
-                        )
-                    }
-                }
-
-            } else {
-                Row(modifier = Modifier.padding(start = 10.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.unlocked),
-
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding()
-                            .width(20.dp)
-                            .height(20.dp)
-                    )
-                    Column() {
-                        Text10_h2(
-                            text = "whoo! got free delivery",
-                            color = Purple700,
-                            modifier = Modifier.padding(start = 10.dp)
-                        )
-                        Text10_h2(
-                            text = "No coupons Required",
-                            color = headingColor,
-                            modifier = Modifier.padding(start = 10.dp)
-                        )
-                    }
-                }
-
-
-            }
-            Box(
-                modifier = Modifier.background(color = seallcolor)
-
-            ) {
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(2.dp)
-                ) {
-                    var (l0, l1, l2) = createRefs()
-                    Image(
-                        painter = painterResource(id = R.drawable.cart_icon),
-                        contentDescription = "Carrot Icon",
-                        alignment = Alignment.Center,
-                        modifier = Modifier
-                            .width(40.dp)
-                            .padding(top = 10.dp)
-                            .height(40.dp)
-                            .constrainAs(l0) {
-                                start.linkTo(parent.start)
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                            }
-
-                    )
-                    Column(Modifier.constrainAs(l1) {
-                        start.linkTo(l0.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }) {
-                        Text12_body1(
-                            text = "${viewmodal.getitemcountState.value.toString()} items",
-                            color = Color.White
-                        )
-                        Text12_body1(
-                            text = "₹ ${viewmodal.getitempriceState.value.toString()}",
-                            color = Color.White
-                        )
-
-
-                    }
-
-                    Text13_body1(
-                        text = "view cart >",
-                        color = Color.White,
-                        modifier = Modifier.constrainAs(l2) {
-                            end.linkTo(parent.end)
-                            bottom.linkTo(parent.bottom)
-                            top.linkTo(parent.top)
-                        })
-
-                }
-
-            }
-
-        }
-
-    }
-}
 
 val TOP_BAR_HEIGHT = 76.dp
 val LazyListState.isScrolled: Boolean

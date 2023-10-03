@@ -1,7 +1,7 @@
 package com.grocery.mandixpress.DashBoardNavRouteNavigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,12 +19,15 @@ import com.grocery.mandixpress.features.Spash.ui.screens.MapScreen
 import com.grocery.mandixpress.features.Spash.ui.screens.menuitems
 import com.grocery.mandixpress.data.modal.PassingAddress
 import com.grocery.mandixpress.features.Home.ui.screens.CategoryWiseDashboardAllData
+import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.features.Spash.ItemScreenNavigation
+import com.grocery.mandixpress.features.Spash.ui.screens.ListItems
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NavigationGraph(
+    viewModal: HomeAllProductsViewModal,
     navController: NavHostController,
     context: HomeActivity,
     sharedPreferences: sharedpreferenceCommon
@@ -33,7 +36,7 @@ fun NavigationGraph(
 
     NavHost(navController, startDestination = DashBoardNavRoute.Home.screen_route) {
         composable(DashBoardNavRoute.Home.screen_route) {
-            homescreen(navController,sharedPreferences)
+            homescreen(navController,sharedPreferences,viewModal)
         }
         composable(DashBoardNavRoute.DashBoardCategoryWisePagination.screen_route) {
 
@@ -65,6 +68,12 @@ fun NavigationGraph(
             if(model!=null)
             orderDetil(data = model, navController)
         }
+
+        composable(DashBoardNavRoute.SeeAllScreen.screen_route) {
+            ListItems(navController,LocalContext.current, viewModal)
+
+        }
+
         composable(DashBoardNavRoute.AllOrderHistory.screen_route) {
 
             ProfileScreenNavigation(navController, context)

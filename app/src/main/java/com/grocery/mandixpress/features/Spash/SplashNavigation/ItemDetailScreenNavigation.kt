@@ -125,7 +125,7 @@ fun RelatedSearchItem(
                     Alignment.End
                 ),
 
-            )
+                )
 
             Image(
 
@@ -134,7 +134,8 @@ fun RelatedSearchItem(
                 modifier = Modifier
                     .width(150.dp)
                     .height(100.dp)
-                    .align(alignment = Alignment.CenterHorizontally))
+                    .align(alignment = Alignment.CenterHorizontally)
+            )
             Text12_h1(
                 text = data.productName!!, color = headingColor,
                 modifier = Modifier
@@ -212,7 +213,7 @@ fun ItemDetailsScreen(
         "Description",
         "Reviews"
     )
-    val pagerState: PagerState = rememberPagerState( 3)
+    val pagerState: PagerState = rememberPagerState(3)
     val coroutineScope = rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
@@ -271,7 +272,7 @@ fun ItemDetailsScreen(
                                     .fillMaxWidth()
 
                             ) {
-                                HorizontalPager( state = pager) { index ->
+                                HorizontalPager(state = pager) { index ->
                                     if (index == 0)
                                         Banner(
                                             pagerState = pager,
@@ -302,7 +303,7 @@ fun ItemDetailsScreen(
                                     text = value.homeproducts?.productName ?: "",
                                     color = headingColor,
 
-                                )
+                                    )
 //                                Text12_body1(
 //                                    text = value.homeproducts?.quantity ?: "", modifier = Modifier
 //                                        .padding(top = 5.dp)
@@ -432,7 +433,7 @@ fun ItemDetailsScreen(
 //tab layout for description and reviews
                     item {
                         HorizontalPager(
-                            state = rememberPagerState( 1),
+                            state = rememberPagerState(1),
                         ) { page: Int ->
                             when (page) {
                                 0 -> TabContentScreen(
@@ -472,7 +473,7 @@ fun ItemDetailsScreen(
                                 val relatedresponse = relatedSearch.data
                                 if (relatedresponse?.statusCode == 200) {
                                     val list1 = relatedresponse.list
-                                    items(list1?: emptyList()) { data ->
+                                    items(list1 ?: emptyList()) { data ->
                                         RelatedSearchItem(data, context, navController)
                                     }
 
@@ -495,11 +496,11 @@ fun ItemDetailsScreen(
         }
         //view cart
         if (viewModal.totalPriceState.value >= 1)
-        cardviewAddtoCart(
-             navController,
-            context,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+            cardviewAddtoCart(
+                navController,
+                context,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
     }
 
 
@@ -510,14 +511,15 @@ fun cardviewAddtoCart(
 
     navController: NavHostController,
     context: Context,
-    modifier: Modifier,viewmodal: ProductByIdViewModal = hiltViewModel(),
+    modifier: Modifier, viewmodal: ProductByIdViewModal = hiltViewModel(),
 ) {
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
         backgroundColor = seallcolor, modifier = modifier
             .fillMaxWidth()
-            .height(85.dp).padding(horizontal = 10.dp, vertical = 8.dp)
+            .height(85.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp)
 
             .clickable {
                 navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
@@ -529,11 +531,13 @@ fun cardviewAddtoCart(
             )
             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
     ) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .background(whiteColor)) {
-            if(viewmodal.totalPriceState.value<(viewmodal.getFreeDeliveryMinPrice().toInt())) {
-                Row(  modifier = Modifier){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(whiteColor)
+        ) {
+            if (viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice().toInt())) {
+                Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = com.grocery.mandixpress.R.drawable.bike_delivery),
 
@@ -541,8 +545,8 @@ fun cardviewAddtoCart(
                         modifier = Modifier
                             .padding()
                             .width(30.dp)
-                            .height(30.dp).padding(start = 10.dp)
-
+                            .height(30.dp)
+                            .padding(start = 10.dp)
 
 
                     )
@@ -553,16 +557,18 @@ fun cardviewAddtoCart(
                             modifier = Modifier.padding(start = 10.dp)
                         )
                         Text10_h2(
-                            text = "Add item worth ${viewmodal.getFreeDeliveryMinPrice().toInt()- viewmodal.totalPriceState.value}",
+                            text = "Add item worth ${
+                                viewmodal.getFreeDeliveryMinPrice()
+                                    .toInt() - viewmodal.totalPriceState.value
+                            }",
                             color = headingColor,
                             modifier = Modifier.padding(start = 10.dp)
                         )
                     }
                 }
 
-            }
-            else{
-                Row(  modifier = Modifier.padding(start = 10.dp)) {
+            } else {
+                Row(modifier = Modifier.padding(start = 10.dp)) {
                     Image(
                         painter = painterResource(id = R.drawable.unlocked),
 
@@ -589,7 +595,7 @@ fun cardviewAddtoCart(
 
             }
             Box(
-                modifier = Modifier.background(color= seallcolor)
+                modifier = Modifier.background(color = seallcolor)
 
             ) {
                 ConstraintLayout(
@@ -677,7 +683,9 @@ fun Banner(
 fun TabContentScreen(data: String) {
     Column(
 
-        modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

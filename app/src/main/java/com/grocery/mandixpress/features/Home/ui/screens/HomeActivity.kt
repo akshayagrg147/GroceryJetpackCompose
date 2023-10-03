@@ -17,14 +17,11 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.grocery.mandixpress.DashBoardNavRouteNavigation.NavigationGraph
-import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
-import com.grocery.mandixpress.Utils.launchActivity
 import com.grocery.mandixpress.connectionState.ConnectionState
 import com.grocery.mandixpress.connectionState.currentConnectivityState
 import com.grocery.mandixpress.connectionState.observeConnectivityAsFlow
 import com.grocery.mandixpress.connectionState.ui.onlineconnection
-import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.Home.ui.ui.theme.GroceryAppTheme
 import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,7 +47,7 @@ class HomeActivity() : ComponentActivity() {
                     //    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
                 ) {
                     ConnectivityStatus()
-                    NavigationGraph(
+                    NavigationGraph(viewModal,
                         navController = navController,
                         this@HomeActivity,
                         sharedpreferenceCommon

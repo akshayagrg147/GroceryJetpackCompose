@@ -255,7 +255,6 @@ fun CartScreen(
                                             "₹ ",
                                             ""
                                         ).toDoubleOrNull()!!)) / 100)
-                            Log.d("cupondiscount", cuponDiscount.toString())
 
 
                             Row(
@@ -818,7 +817,6 @@ fun AddressComponent(
                             selectedIndex.value == data.id.toInt()// Define the text color conditionally
 
                         AddressFiled(data,bool) {
-                            Log.d("hdhdhh","${selectedIndex.value}  ${data.id.toInt()}")
                             selectedIndex.value=data.id.toInt()
                             passingaddress(it)
                         }

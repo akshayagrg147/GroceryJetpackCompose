@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -59,6 +60,11 @@ fun Text12_with_strikethrough(text1: String,text2:String, color: Color = bodyTex
 fun Text14_h1(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp,maxLines = 2,overflow = TextOverflow.Ellipsis )
 }
+@Composable
+fun Text14_h2_(text: String, color: Color = titleColor, modifier: Modifier = Modifier, textAlign: TextAlign) {
+    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp , textAlign = TextAlign.Center)
+}
+
 @Composable
 fun Text14_h1_(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
     Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp )

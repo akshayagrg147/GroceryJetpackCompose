@@ -1,8 +1,10 @@
 package com.grocery.mandixpress.common
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -39,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.grocery.mandixpress.HiltApplication.Companion.context
 import com.grocery.mandixpress.R
 
 import com.grocery.mandixpress.Utils.Text10_h2
@@ -259,6 +262,7 @@ fun AppCustomChips(
 
 }
 
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeButton(
@@ -281,23 +285,21 @@ fun SwipeButton(
     val (swipeComplete, setSwipeComplete) = remember {
         mutableStateOf(false)
     }
-    val alpha: Float by animateFloatAsState(
-        targetValue = if (swipeComplete) {
-            0F
-        } else {
-            1F
-        },
-        animationSpec = tween(
-            durationMillis = 300,
-            easing = LinearEasing,
-        )
-    )
+    val (startSwipe, setStartSwipe) = remember {
+        mutableStateOf(false)
+    }
+    val indicatorPosition =  rememberSwipeableState(0)
 
-    LaunchedEffect(
-        key1 = swipeableState.currentValue,
-    ) {
+
+    LaunchedEffect(key1 = swipeableState.currentValue) {
         if (swipeableState.currentValue == 1) {
             setSwipeComplete(true)
+            onSwipe()
+        }
+    }
+    LaunchedEffect(key1 = indicatorPosition.currentValue) {
+        if (indicatorPosition.currentValue == 1) {
+            setStartSwipe(true)
             onSwipe()
         }
     }
@@ -305,10 +307,7 @@ fun SwipeButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .padding(
-                horizontal = 5.dp,
-                vertical = 16.dp,
-            )
+            .padding(horizontal = 5.dp, vertical = 16.dp)
             .clip(CircleShape)
             .background(backgroundColor)
             .animateContentSize()
@@ -319,12 +318,12 @@ fun SwipeButton(
                     Modifier.fillMaxWidth()
                 }
             )
-            .requiredHeight(44.dp),
+            .requiredHeight(44.dp)
     ) {
         SwipeIndicator(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .alpha(alpha)
+                .alpha(if (swipeComplete) 0F else 1F)
                 .offset {
                     IntOffset(swipeableState.offset.value.roundToInt(), 0)
                 }
@@ -338,54 +337,37 @@ fun SwipeButton(
                 ),
             backgroundColor = backgroundColor,
         )
-        AnimatedVisibility(visible = swipeComplete || !isComplete) {
-            Text(
-                text = text,
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(alpha)
-                    .padding(
-                        horizontal = 80.dp,
-                    )
-                    .offset {
-                        IntOffset(swipeableState.offset.value.roundToInt(), 0)
-                    },
-                textAlign = TextAlign.Center
-            )
-        }
 
-   /*     AnimatedVisibility(
-            visible = swipeComplete && !isComplete,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(14.dp),
-            ) {
-                CircularProgressIndicator(
-                    color = Color.White,
-                    strokeWidth = 3.dp,
-                    modifier = Modifier.fillMaxSize()
+        if (!isComplete) {
+            // Display text if not complete
+            AnimatedVisibility(visible = true) {
+                Text(text = text, color = Color.White, modifier = Modifier.fillMaxWidth().alpha(if (swipeComplete) 1F else 1F).padding(horizontal = 80.dp),
+                    textAlign = TextAlign.Center
                 )
             }
-        }*/
-      /*  AnimatedVisibility(
-            visible = isComplete,
-            enter = fadeIn(),
-            exit = fadeOut(),
-        ) {
-            Icon(
-                imageVector = doneImageVector,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(44.dp),
+        }
+        if (swipeComplete  || startSwipe) {
+            // Display a button to start swiping again
+            SwipeIndicator(
+                modifier = Modifier.align(Alignment.CenterStart).alpha(if (swipeComplete) 1F else 1F).offset {
+                        IntOffset(indicatorPosition.offset.value.roundToInt(), 0)
+                    }
+                    .swipeable(
+                        state = indicatorPosition,
+                        anchors = anchors,
+                        thresholds = { _, _ ->
+                            FractionalThreshold(0.3F)
+                        },
+                        orientation = Orientation.Horizontal,
+                    ),
+                backgroundColor = backgroundColor,
             )
-        }*/
+
+        }
+
     }
 }
+
 
 @Composable
 fun SwipeIndicator(

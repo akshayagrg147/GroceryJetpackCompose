@@ -94,8 +94,7 @@ private const val titleFontScaleEnd = 0.66f
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CartScreen(
-    navController: NavHostController,
+fun CartScreen(navController: NavHostController,
     context: Activity,
     sharedpreferenceCommon: sharedpreferenceCommon,
     viewModal: CartItemsViewModal = hiltViewModel()
@@ -549,15 +548,9 @@ fun CustomShape() {
 
 
 @Composable
-private fun Header(
-    scroll: ScrollState,
-    headerHeightPx: Float,
-    viewModal: CartItemsViewModal,
-
-    ) {
+private fun Header(scroll: ScrollState, headerHeightPx: Float, viewModal: CartItemsViewModal, ) {
     Box1(modifier = Modifier
-        .fillMaxWidth()
-        .graphicsLayer {
+        .fillMaxWidth().graphicsLayer {
             translationY = -scroll.value.toFloat() / 2f // Parallax effect
             alpha = (-1f / headerHeightPx) * scroll.value + 1
         }) {
@@ -583,15 +576,10 @@ private fun Header(
             Card(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(10.dp),
-                backgroundColor = Teal200, modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxWidth()
+                backgroundColor = Teal200, modifier = Modifier.fillMaxWidth().fillMaxWidth()
                     .height(30.dp)
                     .padding(horizontal = 10.dp)
-                    .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
-
-
-            ) {
+                    .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))) {
 
 
                 Row(
@@ -680,7 +668,7 @@ private fun bottomButton(scroll: ScrollState, headerHeightPx: Float, toolbarHeig
                 brush = Brush.horizontalGradient(
                     listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
                 )
-            ),
+            ).fillMaxWidth(),
             navigationIcon = {
                 IconButton(
                     onClick = {},
@@ -695,7 +683,7 @@ private fun bottomButton(scroll: ScrollState, headerHeightPx: Float, toolbarHeig
                     )
                 }
             },
-            title = { "Checkout" },
+            title = { Text14_h2_("Checkout", color = Color.Black, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
             backgroundColor = Color.Transparent,
             elevation = 0.dp
         )
@@ -843,14 +831,10 @@ fun AddressComponent(
         else
         CommonButton(
             text = "Proceed to address",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        )
-        {if(it)
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp))
+        {
+            if(it)
                call("addressEmpty")
-
-
         }
 
 

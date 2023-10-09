@@ -131,6 +131,8 @@ fun CartScreen(navController: NavHostController,
                 "orderstatus",
                 orderIDResponse.data
             )
+            Log.d("fcm_toke","${orderIDResponse.data?.productResponse?.fcm_token?:""}")
+            viewModal.sendNotification(orderIDResponse.data?.productResponse?.fcm_token?:"")
             navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route) {
 //                popUpTo(DashBoardNavRoute.Home.screen_route) {
 //                    inclusive = true
@@ -416,7 +418,10 @@ fun CartScreen(navController: NavHostController,
                                     paymentmode = "COD",
                                     totalOrderValue = viewModal.totalPriceState.value.toString(),
                                     mobilenumber = sharedpreferenceCommon.getMobileNumber(),
-                                    pincode = sharedpreferenceCommon.getPostalCode()
+                                    pincode = sharedpreferenceCommon.getPostalCode(),
+
+
+
                                 )
                                 viewModal.onEvent(CartEvent.createOrderId(request))
 
@@ -678,96 +683,19 @@ private fun bottomButton(scroll: ScrollState, headerHeightPx: Float, toolbarHeig
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Checkout",
+                        contentDescription = "",
                         tint = Color.Black
                     )
                 }
             },
-            title = { Text14_h2_("Checkout", color = Color.Black, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()) },
+            title = { Text14_h2("Checkout", color = Color.Black) },
             backgroundColor = Color.Transparent,
             elevation = 0.dp
         )
     }
 }
 
-@Composable
-private fun Title1(
-    str: String,
-    scroll: ScrollState,
-    headerHeightPx: Float,
-    toolbarHeightPx: Float
-) {
-    var titleHeightPx by remember { mutableStateOf(0f) }
-    var titleWidthPx by remember { mutableStateOf(0f) }
 
-    Text16_h1(
-        text = str,
-        modifier = Modifier
-            .graphicsLayer {
-                val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
-                val collapseFraction: Float = (scroll.value / collapseRange).coerceIn(0f, 1f)
-
-                val scaleXY = lerp(
-                    titleFontScaleStart.dp,
-                    titleFontScaleEnd.dp,
-                    collapseFraction
-                )
-
-                val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 2f
-
-                val titleYFirstInterpolatedPoint = lerp(
-                    headerHeight - titleHeightPx.toDp() - paddingMedium,
-                    headerHeight / 2,
-                    collapseFraction
-                )
-
-                val titleXFirstInterpolatedPoint = lerp(
-                    titlePaddingStart,
-                    (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
-                    collapseFraction
-                )
-
-                val titleYSecondInterpolatedPoint = lerp(
-                    headerHeight / 2,
-                    toolbarHeight / 2 - titleHeightPx.toDp() / 2,
-                    collapseFraction
-                )
-
-                val titleXSecondInterpolatedPoint = lerp(
-                    (titlePaddingEnd - titleExtraStartPadding) * 5 / 4,
-                    titlePaddingEnd - titleExtraStartPadding,
-                    collapseFraction
-                )
-
-                val titleY = lerp(
-                    titleYFirstInterpolatedPoint,
-                    titleYSecondInterpolatedPoint,
-                    collapseFraction
-                )
-
-                val titleX = lerp(
-                    titleXFirstInterpolatedPoint,
-                    titleXSecondInterpolatedPoint,
-                    collapseFraction
-                )
-
-                translationY = titleY.toPx()
-                translationX = titleX.toPx()
-                scaleX = scaleXY.value
-                scaleY = scaleXY.value
-            }
-            .onGloballyPositioned {
-                titleHeightPx = it.size.height.toFloat()
-                titleWidthPx = it.size.width.toFloat()
-            }
-    )
-}
-
-
-@Composable
-fun Header(scroll: Unit, headerHeightPx: Unit) {
-
-}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

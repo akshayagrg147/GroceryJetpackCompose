@@ -10,3 +10,7 @@ annotation class TokenApiService
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class CommonApiService
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class FCMApiService

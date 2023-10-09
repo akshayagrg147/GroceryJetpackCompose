@@ -10,6 +10,7 @@ import com.grocery.mandixpress.RoomDatabase.CartItems
 import com.grocery.mandixpress.RoomDatabase.Dao
 import com.grocery.mandixpress.RoomDatabase.RoomRepository
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
@@ -20,6 +21,8 @@ import com.grocery.mandixpress.data.modal.OrderIdResponse
 import com.grocery.mandixpress.data.modal.ProductIdIdModal
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
+import com.grocery.mandixpress.notification.model.NotificationDataModel
+import com.grocery.mandixpress.notification.model.NotificationModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -176,6 +179,7 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
              is CartEvent.createOrderId->{
                  viewModelScope.launch {
                      event.request.pincode=sharedpreferenceCommon.getPostalCode()
+                     event.request.fcm_token=sharedpreferenceCommon.getFcmToken()
                      repository.OrderIdRequest(event.request).doOnLoading {
                          createOrderIdMS.value = CommonUiObjectResponse(isLoading = true,)
 
@@ -190,6 +194,31 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
 
         }
 
+
+        }
+
+    }
+
+
+    fun sendNotification (fcm:String) {
+        viewModelScope.launch {
+            repository.postNotification(
+                NotificationModel(
+                    data = NotificationDataModel(
+                        title = "Order Received",
+                        message = "check your order list"
+                    ),
+                    to = fcm.ifBlank { Constants.TOPIC }
+                )).collectLatest {
+                when (it) {
+                    is ApiState.Success -> {
+                        Log.d("notificationsend", "sent")
+                    }
+                    is ApiState.Failure -> {
+                        Log.d("notificationsend", "${it.msg}")
+                    }
+                }
+            }
         }
 
     }

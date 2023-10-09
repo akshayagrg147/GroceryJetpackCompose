@@ -1,13 +1,16 @@
 package com.grocery.mandixpress.features.Spash.domain.repository
 
+import android.util.Log
+import com.grocery.mandixpress.FCMApiService
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.ApiService
+import com.grocery.mandixpress.notification.model.NotificationModel
 import com.grocery.mandixpress.toResultFlow
 import javax.inject.Inject
 
 class CommonRepository @Inject constructor(
-    private val apiService: ApiService,  var sharedPreferences: sharedpreferenceCommon
+    @FCMApiService private val fcmService: ApiService,  private val apiService: ApiService,  var sharedPreferences: sharedpreferenceCommon
 ) {
 
     fun registerUser(
@@ -66,6 +69,14 @@ class CommonRepository @Inject constructor(
     fun getAdminDetails() = toResultFlow { apiService.getAdminDetails() }
     fun bannerImageApiCall(postalCode: String) = toResultFlow {
         apiService.callBannerImage(postalCode)
+    }
+
+    suspend fun postNotification(notificationModel: NotificationModel)= toResultFlow {
+        fcmService.postNotification(notificationModel)
+    }
+
+    fun registerUserToken(newToken: String?,mobile: String?) = toResultFlow{
+         apiService.registerToken(newToken?:"",mobile?:"")
     }
 
 

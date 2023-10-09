@@ -13,7 +13,12 @@ data class RegisterLoginRequest(
     @Json(name = "phone")
     val phone: String?=null,
     @Json(name = "pincode")
-    val pincode: String?=null
+    val pincode: String?=null,
+    @Json(name = "fcmtoken")
+    val fcmtoken: String?=null,
+    @Json(name = "changetime")
+    val changetime: String?=null,
+
 )
 @JsonClass(generateAdapter = true)
 data class ExclusiveOfferRequest(

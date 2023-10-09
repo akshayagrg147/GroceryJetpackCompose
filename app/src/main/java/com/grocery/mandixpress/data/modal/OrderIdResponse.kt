@@ -34,7 +34,9 @@ data class OrderIdResponse(
         @Json(name = "paymentmode")
         val paymentmode: String?=null,
         @Json(name = "totalOrderValue")
-        val totalOrderValue: String?=null
+        val totalOrderValue: String?=null,
+        @Json(name = "fcm_token")
+        var fcm_token:String?=null
     ) :Parcelable{
         @Parcelize
         @JsonClass(generateAdapter = true)

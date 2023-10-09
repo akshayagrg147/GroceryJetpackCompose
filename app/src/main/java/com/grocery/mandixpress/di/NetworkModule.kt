@@ -2,6 +2,7 @@ package com.grocery.mandixpress.di
 
 import android.content.Context
 import androidx.room.Room
+import com.grocery.mandixpress.FCMApiService
 
 import com.grocery.mandixpress.RoomDatabase.AppDatabase
 import com.grocery.mandixpress.Utils.Constants
@@ -17,6 +18,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -71,17 +73,45 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesOkHttp(oAuthInterceptor: OAuthInterceptor,@ApplicationContext applicationContext: Context): OkHttpClient {
+    @FCMApiService
+    fun providesApiServicewithFcmUrl(moshi: Moshi, client: OkHttpClient): ApiService =
+        Retrofit
+            .Builder()
+            .run {
+                baseUrl(Constants.BASE_URLFCM)
+                addConverterFactory(MoshiConverterFactory.create(moshi))
+
+                client(client)
+                build()
+            }.create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesOkHttp(oAuthInterceptor: OAuthInterceptor, @ApplicationContext applicationContext: Context): OkHttpClient {
         val cacheDir = File(applicationContext.cacheDir, "http-cache")
         val cacheSize = 10 * 1024 * 1024
         val cache = Cache(cacheDir, cacheSize.toLong())
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
-        return OkHttpClient.Builder().addInterceptor(interceptor)
-            .addInterceptor(
-                oAuthInterceptor
-            )
-            .cache(cache)
+
+        val additionalHeadersInterceptor = Interceptor { chain ->
+            val originalRequest = chain.request()
+            val modifiedRequest = originalRequest.newBuilder()
+                .header("Content-Type", "application/json")
+                .header(
+                    "Authorization",
+                    "key=AAAAggbJZcU:APA91bEAccbSATPsjn9Zh1mRcnLZJgqjWzoiBFfaTa9nDHiLXAM6BAEHgA_3IZro9h44_DjJgfyAZrNqUQS4Xrfp7kESJk91RbnJkUJHxL1KaO27mJewQpUPii5MOmhBgrASzRcz2VmD"
+                )
+                .build()
+            chain.proceed(modifiedRequest)
+        }
+
+        return OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .addInterceptor(oAuthInterceptor)
+            .addInterceptor(additionalHeadersInterceptor)
+
             .build()
     }
+
 }

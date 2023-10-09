@@ -1,6 +1,12 @@
 package com.grocery.mandixpress
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -11,6 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
@@ -43,6 +50,8 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
+
+
     private fun initAppIntegrity() {
 
         FirebaseAuth.getInstance().getFirebaseAuthSettings()
@@ -53,6 +62,7 @@ class LoginActivity : ComponentActivity() {
             PlayIntegrityAppCheckProviderFactory.getInstance()
         )
     }
+
 }
 
 @Composable

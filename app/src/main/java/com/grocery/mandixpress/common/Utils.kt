@@ -32,7 +32,7 @@ class Utils {
             return matchResult?.value
         }
 
-        fun showNotification(context: Context, message: String) {
+        fun showNotification(context: Context, title: String,subtitle: String) {
             // declaring variables
             lateinit var notificationManager: NotificationManager
             lateinit var notificationChannel: NotificationChannel
@@ -66,7 +66,8 @@ class Utils {
                 builder = Notification.Builder(context, channelId)
 
                     .setSmallIcon(R.drawable.logo)
-                    .setContentTitle(message)
+                    .setContentTitle(title)
+                    .setContentText(subtitle)
 
                     .setContentIntent(pendingIntent)
             } else {

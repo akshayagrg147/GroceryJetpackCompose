@@ -18,7 +18,10 @@ data class OrderIdCreateRequest(
     @Json(name = "totalOrderValue")
     val totalOrderValue: String?,
     @Json(name = "pincode")
-    var pincode: String?
+    var pincode: String?,
+    @Json(name = "fcm_token")
+    var fcm_token: String?=null,
+
 ) {
     @JsonClass(generateAdapter = true)
     data class Order(

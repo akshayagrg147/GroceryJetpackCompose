@@ -66,6 +66,10 @@ fun onEvent(mobile: LoginEvent) {
 
 
     fun gettingJwtToken()=commonRepository.gettingJwt()
+    fun showmsg(message: String) {
+        Log.d("showinggetfcmtoken","$message")
+
+    }
 }
 sealed class LoginEvent{
     data class LoginResponse(val mobileNumber:String): LoginEvent()

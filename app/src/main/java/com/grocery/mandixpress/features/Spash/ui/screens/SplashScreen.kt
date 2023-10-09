@@ -18,6 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.Spash.SplashNavigation.ScreenRoute
 import com.grocery.mandixpress.appUpdate.InAppUpdateManager
@@ -136,4 +138,6 @@ fun AutoUpdateScreen(
             }
         }
     }
+
 }
+

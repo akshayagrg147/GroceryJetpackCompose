@@ -35,6 +35,15 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         return mPrefs.edit().putString(AppConstant.pincode, picode).apply()
     }
 
+    fun setFcmToken(fcm_token: String): Any {
+        Log.d("showinggetfcmtoken"," get $fcm_token")
+        return mPrefs.edit().putString("fcm_Token", fcm_token).apply()
+    }
+    fun getFcmToken(): String {
+        Log.d("showinggetfcmtoken","take ${ mPrefs.getString("fcm_Token", "")}")
+        return mPrefs.getString("fcm_Token", "").toString()
+    }
+
     fun setCombineAddress(comibineAddress: String): Any {
         return mPrefs.edit().putString(AppConstant.combine, comibineAddress).apply()
     }

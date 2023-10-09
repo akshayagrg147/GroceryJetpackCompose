@@ -5,10 +5,15 @@ import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.features.Home.domain.modal.CouponResponse
 import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
+import com.grocery.mandixpress.notification.model.NotificationModel
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
+    companion object {
+        private const val CONTENT_TYPE = "application/json"
+    }
 
     @POST(Constants.ApiEnd_register)
     suspend fun RegisterUser(
@@ -21,9 +26,15 @@ interface ApiService {
     @GET(Constants.exclusive_collectionProducts)
     suspend fun getExclusiveProducts(@Query("pincode") pincode: String): Response<HomeAllProductsResponse>
 
-
+    @POST("fcm/send")
+    suspend fun postNotification(
+        @Body notification: NotificationModel
+    ): Response<ResponseBody>
     @GET(Constants.BestSelling_collectionProducts)
     suspend fun getBestSellingProducts(@Query("pincode") pincode: String): Response<HomeAllProductsResponse>
+
+    @GET(Constants.registertoken)
+    suspend fun registerToken(@Query("token") token: String,@Query("mobile") mobile: String): Response<commonResponse>
 
 
     @GET(Constants.HomeAllProducts)

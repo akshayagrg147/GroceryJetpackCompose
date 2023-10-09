@@ -14,6 +14,7 @@ import com.grocery.mandixpress.RoomDatabase.CartItems
 import com.grocery.mandixpress.RoomDatabase.Dao
 import com.grocery.mandixpress.RoomDatabase.RoomRepository
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
@@ -21,6 +22,8 @@ import com.grocery.mandixpress.data.pagingsource.PaginSoucrce
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
+import com.grocery.mandixpress.notification.model.NotificationDataModel
+import com.grocery.mandixpress.notification.model.NotificationModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.android.parcel.RawValue
@@ -42,6 +45,7 @@ class HomeAllProductsViewModal @Inject constructor(
     val cat: CallingCategoryWiseData
 ) : ViewModel() {
     init {
+        registerFcmToken()
         getItemCount()
         getItemPrice()
 
@@ -149,6 +153,30 @@ class HomeAllProductsViewModal @Inject constructor(
 
     }
 
+    fun registerFcmToken() {
+        Log.d("sharedreference", "success ${sharedPreferences.getMobileNumber()}")
+
+        viewModelScope.launch {
+
+
+            repository.registerUserToken(
+                sharedPreferences.getFcmToken(),
+                sharedPreferences.getMobileNumber().replace("+","")
+            ).collectLatest {
+                when (it) {
+                    is ApiState.Success -> {
+                        Log.d("sharedreference", "success")
+                    }
+                    is ApiState.Failure -> {
+                        Log.d("sharedreference", "failure ${it.msg}")
+                    }
+                }
+            }
+
+        }
+    }
+
+
     fun searchAddress(
         query: String,
         placesClient: PlacesClient
@@ -196,6 +224,7 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
     fun onEvent(event: HomeEvent) {
+        Log.d("showinggetfcmtoken","${sharedPreferences.getFcmToken()}")
         when (event) {
             is  HomeEvent.BestSellingEventFlow -> viewModelScope.launch {
                 repository.BestSellingProducts(sharedPreferences.getPostalCode())

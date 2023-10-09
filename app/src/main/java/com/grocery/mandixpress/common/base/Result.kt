@@ -1,5 +1,7 @@
 package com.grocery.mandixpress
 
+import android.util.Log
+import com.google.gson.Gson
 import com.grocery.mandixpress.common.ApiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +21,7 @@ fun <T> toResultFlow(call: suspend () -> Response<T>): Flow<ApiState<T>> = flow 
             }
         } else {
             response.errorBody()?.let { error ->
+                Log.d("errormessage","${error}")
                 error.close()
                 emit(ApiState.Failure(Throwable(error.toString())))
             }

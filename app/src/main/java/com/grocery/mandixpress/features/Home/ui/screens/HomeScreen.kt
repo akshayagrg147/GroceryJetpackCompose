@@ -101,6 +101,7 @@ fun homescreen(
 
 
     }
+
     var searchvisibility by remember { mutableStateOf(false) }
     ModalBottomSheetLayout(sheetState = bottomSheetState,
         sheetElevation = 0.dp,
@@ -1445,6 +1446,7 @@ sealed class BackPress {
 
 @Composable
 private fun BackPressSample(navcontroller: NavHostController,) {
+    var showDialog by remember { mutableStateOf(false) }
 
     var backPressState by remember { mutableStateOf<BackPress>(BackPress.Idle) }
     val context = LocalContext.current
@@ -1460,9 +1462,11 @@ private fun BackPressSample(navcontroller: NavHostController,) {
     }
 
     if (backPressState == BackPress.InitialTouch) {
+        showDialog=true
         ExitConfirmationDialog(
-            showDialog = true,
+            showDialog = showDialog,
             onDismiss = {
+                showDialog=false
                 // Handle dialog dismiss if needed
             },
             onConfirmExit = {

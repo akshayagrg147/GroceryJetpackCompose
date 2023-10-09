@@ -341,7 +341,7 @@ fun SwipeButton(
         if (!isComplete) {
             // Display text if not complete
             AnimatedVisibility(visible = true) {
-                Text(text = text, color = Color.White, modifier = Modifier.fillMaxWidth().alpha(if (swipeComplete) 1F else 1F).padding(horizontal = 80.dp),
+                Text12_h1(text = text, color = Color.White, modifier = Modifier.fillMaxWidth().alpha(if (swipeComplete) 1F else 1F).padding(horizontal = 80.dp),
                     textAlign = TextAlign.Center
                 )
             }

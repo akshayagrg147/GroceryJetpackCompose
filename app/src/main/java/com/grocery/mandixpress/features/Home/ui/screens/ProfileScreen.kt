@@ -21,6 +21,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,18 +34,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil.ImageLoader
 import coil.compose.rememberImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
-import com.grocery.mandixpress.Utils.Text13_body1
-import com.grocery.mandixpress.Utils.Text16_h1
+import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.data.modal.UserResponse
 import com.grocery.mandixpress.features.Home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.Home.ui.ui.theme.*
@@ -64,6 +69,8 @@ fun profileScreen(
         mutableStateOf(false)
     }
     val profileResponse by viewModal.responseLiveData.collectAsState()
+    val cancelResponse by rememberUpdatedState(newValue = viewModal.cancelResponseLiveData)
+Log.d("cancelled","cancelled ${cancelResponse.value?.data}  ${profileResponse.data}")
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
             selectedImage = uri
@@ -75,9 +82,20 @@ fun profileScreen(
         viewModal.onEvent(ProfileEvent.callingUserProfile(sharedpreferenceCommon.getMobileNumber()))
 
     }
+
     Column() {
         Spacer(modifier = Modifier.height(10.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
+
+            if(cancelResponse.value?.data?.statusCode==200){
+                 CustomDialog(title = "Order Deleted", description = "Your order has been deleted successfully",
+                    onDismiss = {
+
+                    }, onPositiveClick = {
+
+                    })
+            }
+
             if (profileResponse.data?.statusCode == 200) {
 
                 ProfileSection(
@@ -93,7 +111,8 @@ fun profileScreen(
                     description = "Valueable Customer",
 
                     )
-            } else {
+            }
+            else {
                 ShimmerAnimation()
 
             }
@@ -327,7 +346,7 @@ fun profileScreen(
                                 .padding(start = 15.dp, top = 5.dp)
                                 .clickable {
 
-                                    if( viewModal.clearSharedPreference()){
+                                    if (viewModal.clearSharedPreference()) {
                                         val intent = Intent(context, LoginActivity::class.java)
                                         intent.flags =
                                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -575,7 +594,54 @@ fun ProfileDescription(
     }
 }
 
+@Composable
+fun CustomDialog(
+    title: String,
+    description: String,
+    onDismiss: () -> Unit,
+    onPositiveClick: () -> Unit
+) {
+    val imageLoader = ImageLoader.Builder(LocalContext.current)
+        .componentRegistry {
+            if (Build.VERSION.SDK_INT >= 28) {
+                add(ImageDecoderDecoder(LocalContext.current))
+            } else {
+                add(GifDecoder())
+            }
+        }
+        .build()
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Image(
+                    painter = rememberImagePainter(
+                        imageLoader = imageLoader,
+                        data = com.grocery.mandixpress.R.drawable.success,
+                        builder = {
+                        },
+                    ),
+                    alignment = Alignment.TopCenter,
+                    contentDescription = null,
+                    modifier = Modifier.size(60.dp)
+                )
+                Text14_h2(text =title )
+                Text11_body2(
+                    text = description,
+                )
 
+            }
+        }
+    }
+}
 
 @Composable
 fun AutoRequestCallPermission(phoneNumber: String) {

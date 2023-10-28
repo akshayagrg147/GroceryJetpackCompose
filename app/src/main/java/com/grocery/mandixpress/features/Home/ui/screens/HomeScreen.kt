@@ -91,16 +91,12 @@ fun homescreen(
     val placesClient: PlacesClient = Places.createClient(LocalContext.current)
 
     val bottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+        rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            skipHalfExpanded = true,    )
     val scope = rememberCoroutineScope()
     val address = remember { mutableStateOf("") }
-    LaunchedEffect(key1 = Unit) {
-        viewModal.onEvent(
-            HomeEvent.BannerImageEventFlow
-        )
 
-
-    }
 
     var searchvisibility by remember { mutableStateOf(false) }
     ModalBottomSheetLayout(sheetState = bottomSheetState,
@@ -108,7 +104,6 @@ fun homescreen(
         sheetBackgroundColor = Color.Transparent, sheetContent = {
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
                 .background(Color.Unspecified),
                 contentAlignment = Alignment.Center,
                 content = {
@@ -128,19 +123,10 @@ fun homescreen(
                     )
 
                 },
-
-
-
                 )
-
-
-
-
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .requiredHeight(400.dp)
                     .background(Color.Transparent)
 
             ) {
@@ -196,7 +182,11 @@ fun homescreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Column(modifier = Modifier.clickable {
-                            sharedpreferenceCommon.getCombinedAddress()
+
+                            scope.launch {  viewModal.clearDatabase() }
+                            sharedpreferenceCommon.setSearchAddress(sharedpreferenceCommon.getCombinedAddress())
+
+                            sharedpreferenceCommon.setPinCode(extractSixDigitNumber( sharedpreferenceCommon.getCombinedAddress())?:"")
                             val intent = Intent(context, HomeActivity::class.java)
                             intent.flags =
                                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -263,6 +253,7 @@ fun homescreen(
             HeaderDeliveryTime(viewModal, navcontroller, scroll, lazyListState) {
                 coroutineScope.launch {
                     bottomSheetState.show()
+
                 }
 
             }
@@ -277,7 +268,7 @@ fun homescreen(
                 addToCartCardView(
                     viewModal,
                     navcontroller,
-                    context!!,
+                    context,
                     modifier = Modifier.align(Alignment.BottomCenter)
                 )
 
@@ -343,6 +334,16 @@ fun BodyDashboard(
     val bestSelling by viewModal.bestSelling.collectAsState()
     val bannerImage by viewModal._bannerImage.collectAsState()
     var refreshing by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = Unit) {
+        if(bannerImage.data?.statusCode!=200) {
+                viewModal.onEvent(
+                    HomeEvent.BannerImageEventFlow)
+
+        }
+
+
+    }
     Log.d("homescreenstate_call","${bannerImage.data?.statusCode}")
     LaunchedEffect(refreshing) {
         if (refreshing) {
@@ -563,7 +564,7 @@ fun BodyDashboard(
                                 if (exlusiveResponse.data?.statusCode == 200) {
 
                                     val list1 = exlusiveResponse.data?.list
-                                    viewModal.myParcelableData=  HomeAllProductsResponse(
+                                    viewModal.myParcelableData = HomeAllProductsResponse(
                                         list1,
                                         "Exclusive Offers",
                                         200
@@ -628,7 +629,7 @@ fun BodyDashboard(
                             .clickable {
                                 if (bestSelling.data?.statusCode == 200) {
                                     val list1 = bestSelling.data?.list
-                                    viewModal.myParcelableData=  HomeAllProductsResponse(
+                                    viewModal.myParcelableData = HomeAllProductsResponse(
                                         list1,
                                         "Best Selling",
                                         200

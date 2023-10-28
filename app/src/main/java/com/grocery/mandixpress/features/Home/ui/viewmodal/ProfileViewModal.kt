@@ -1,11 +1,8 @@
 package com.grocery.mandixpress.features.Home.ui.viewmodal
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -16,10 +13,11 @@ import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
 import com.grocery.mandixpress.common.doOnSuccess
 import com.grocery.mandixpress.data.modal.AllOrdersHistoryList
+import com.grocery.mandixpress.data.modal.OrderStatusRequest
 import com.grocery.mandixpress.data.modal.UserResponse
+import com.grocery.mandixpress.data.modal.commonResponse
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,12 +34,20 @@ class ProfileViewModal @Inject constructor(
     var responseLiveData = userProfileResponse.asStateFlow()
     private set
 
+    private val cancelResponse = MutableLiveData<CommonUiObjectResponse<commonResponse>>()
+    val cancelResponseLiveData: LiveData<CommonUiObjectResponse<commonResponse>> = cancelResponse
+
     private val orderhistory: MutableStateFlow<CommonUiObjectResponse<AllOrdersHistoryList>> =
         MutableStateFlow(CommonUiObjectResponse())
     var orderhistorydata = orderhistory.asStateFlow()
     private set
 
+fun callingOrderStatus(orderRequest: OrderStatusRequest) {
+    Log.d("callingOrderStatus","true")
+    onEvent(ProfileEvent.cancelOrder(orderRequest))
 
+
+}
 
 
 
@@ -108,16 +114,35 @@ class ProfileViewModal @Inject constructor(
           is  ProfileEvent.callingUserProfile->viewModelScope.launch {
                 repository.getUserResponse(shared.getMobileNumber(),shared.getPostalCode())
                     .doOnSuccess {
-                        Log.d("profileResponse","called11")
                         userProfileResponse.value= CommonUiObjectResponse(data=it)
                     }
                     .doOnFailure {
                         userProfileResponse.value=CommonUiObjectResponse(error=it?.message?:"something went wrong")
                     }
                     .doOnLoading {
-                        Log.d("profileResponse","called1 loading")
                         userProfileResponse.value=CommonUiObjectResponse(isLoading = true)
                     }.collect()
+            }
+            is  ProfileEvent.cancelOrder->viewModelScope.launch {
+                repository.cancelOrder(event.data)
+                    .collectLatest {
+                        when(it){
+                            is ApiState.Success->{
+                                Log.d("callingOrderStatus","true1")
+                                cancelResponse.value= CommonUiObjectResponse(data=it.data)
+
+                            }
+                            is ApiState.Failure->{
+                                Log.d("callingOrderStatus","true2")
+                                cancelResponse.value=CommonUiObjectResponse(error=it.msg.message?:"something went wrong")
+                            }
+                            is ApiState.Loading->{
+                                Log.d("callingOrderStatus","true3")
+                                cancelResponse.value=CommonUiObjectResponse(isLoading = true)
+                            }
+                        }
+                    }
+
             }
 
         }
@@ -135,6 +160,7 @@ class ProfileViewModal @Inject constructor(
     }
 
 
+
 }
 
 sealed class ProfileEvent{
@@ -142,6 +168,7 @@ sealed class ProfileEvent{
     data class DeliverEvent ( val str:String): ProfileEvent()
     data class CancelEvent( val str:String) : ProfileEvent()
     data class callingUserProfile( val str:String):ProfileEvent()
+    data class cancelOrder( val data: OrderStatusRequest):ProfileEvent()
 
 }
 

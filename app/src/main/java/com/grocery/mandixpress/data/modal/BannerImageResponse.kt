@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 data class BannerImageResponse(
     val itemData: List<ItemData>,
     val message: String,
-    val statusCode: Int
+    val statusCode: Int=400
 ):Parcelable {
     @Parcelize
     data class ItemData(

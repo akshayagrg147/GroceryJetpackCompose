@@ -1,6 +1,5 @@
 package com.grocery.mandixpress.features.Spash.domain.repository
 
-import android.util.Log
 import com.grocery.mandixpress.FCMApiService
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.data.modal.*
@@ -77,6 +76,10 @@ class CommonRepository @Inject constructor(
 
     fun registerUserToken(newToken: String?,mobile: String?) = toResultFlow{
          apiService.registerToken(newToken?:"",mobile?:"")
+    }
+
+    fun cancelOrder(data: OrderStatusRequest) = toResultFlow{
+        apiService.cancelOrder(data)
     }
 
 

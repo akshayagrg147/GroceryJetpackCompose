@@ -19,6 +19,7 @@ import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
 import com.grocery.mandixpress.data.pagingsource.PaginSoucrce
+import com.grocery.mandixpress.di.NetworkModule
 import com.grocery.mandixpress.features.Home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.Spash.domain.repository.CommonRepository
@@ -38,6 +39,7 @@ class HomeAllProductsViewModal @Inject constructor(
     private val pagingDataSource: PaginSoucrce,
     val roomrespo: RoomRepository,
     val repository: CommonRepository,
+    var databaseClearer: NetworkModule.DatabaseClearer,
     val
     sharedPreferences: sharedpreferenceCommon,
     val dao: Dao,
@@ -200,9 +202,7 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
     fun gettingAddres(): String {
-        val address = if (sharedPreferences.getSearchAddress()
-                .isNotEmpty()
-        ) sharedPreferences.getSearchAddress() else sharedPreferences.getCombinedAddress()
+        val address = sharedPreferences.getSearchAddress().ifEmpty { sharedPreferences.getCombinedAddress() }
         return address
     }
 
@@ -425,6 +425,10 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
     fun setFilterList(filterlist: List<HomeAllProductsResponse.HomeResponse>?) {
         Log.d("kdkkdk", "skksk ${Gson().toJson(filterlist)}")
         listMutable.value = HomeAllProductsResponse(filterlist)
+    }
+
+    suspend fun clearDatabase() {
+        databaseClearer.clearDatabase()
     }
 
 

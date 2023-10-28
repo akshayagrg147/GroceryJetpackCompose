@@ -106,10 +106,7 @@ fun CartScreen(navController: NavHostController,
     var isDialog by remember { mutableStateOf(false) }
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden, // Initial state (e.g., Closed, Hidden)
-        confirmStateChange = {
-            // Provide an anchor for the initial state (e.g., 0f, 0.5f, 1f)
-            it == ModalBottomSheetValue.Hidden || it == ModalBottomSheetValue.Expanded
-        }
+      skipHalfExpanded = true
     )
 
     val choose: MutableState<Boolean> = remember { mutableStateOf(false) }

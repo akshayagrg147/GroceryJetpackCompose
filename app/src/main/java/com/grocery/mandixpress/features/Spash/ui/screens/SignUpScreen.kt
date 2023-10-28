@@ -102,11 +102,11 @@ fun SignUpScreen(
                     .clip(RoundedCornerShape(46.dp))
                     .padding(horizontal = 16.dp, vertical = 24.dp)
             ) {
-                Text14_h2(
-                    text = stringResource(id = R.string.sign_up),
-                    color = headingColor,
-                    modifier = Modifier.padding(bottom = 16.dp, start = 5.dp)
-                )
+//                Text14_h2(
+//                    text = stringResource(id = R.string.sign_up),
+//                    color = headingColor,
+//                    modifier = Modifier.padding(bottom = 16.dp, start = 5.dp)
+//                )
                 CommonTextField(text = name, placeholder = stringResource(id = R.string.name))
                 Spacer(modifier = Modifier.height(16.dp)) // Add some vertical spacing between the rows
                 CommonTextField(

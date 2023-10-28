@@ -3,11 +3,13 @@ package com.grocery.mandixpress.di
 import android.content.Context
 import androidx.room.Room
 import com.grocery.mandixpress.FCMApiService
+import com.grocery.mandixpress.NotificationHeader
 
 import com.grocery.mandixpress.RoomDatabase.AppDatabase
 import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.data.network.ApiService
 import com.grocery.mandixpress.RoomDatabase.Dao
+import com.grocery.mandixpress.WithoutNotificationHeader
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
 import com.grocery.mandixpress.data.network.OAuthInterceptor
 import com.squareup.moshi.Moshi
@@ -17,6 +19,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -39,7 +43,20 @@ object NetworkModule {
                 add(KotlinJsonAdapterFactory())
                 build()
             }
+    @Provides
+    @Singleton
+    fun provideDatabaseClearer(appDatabase: AppDatabase): DatabaseClearer {
+        return DatabaseClearer(appDatabase)
+    }
 
+    // Create a DatabaseClearer class
+    class DatabaseClearer(private val appDatabase: AppDatabase) {
+        suspend fun clearDatabase() {
+            withContext(Dispatchers.IO) {
+                appDatabase.clearAllTables()
+            }
+        }
+    }
     @Singleton // Tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationCompenent (i.e. everywhere in the application)
     @Provides
     fun provideYourDatabase(
@@ -61,7 +78,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesApiServicewithToken(moshi: Moshi, client: OkHttpClient): ApiService =
+    fun providesApiServicewithToken(moshi: Moshi, @WithoutNotificationHeader client: OkHttpClient): ApiService =
         Retrofit
             .Builder()
             .run {
@@ -74,7 +91,7 @@ object NetworkModule {
     @Provides
     @Singleton
     @FCMApiService
-    fun providesApiServicewithFcmUrl(moshi: Moshi, client: OkHttpClient): ApiService =
+    fun providesApiServicewithFcmUrl(moshi: Moshi, @NotificationHeader client: OkHttpClient): ApiService =
         Retrofit
             .Builder()
             .run {
@@ -87,6 +104,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @NotificationHeader
     fun providesOkHttp(oAuthInterceptor: OAuthInterceptor, @ApplicationContext applicationContext: Context): OkHttpClient {
         val cacheDir = File(applicationContext.cacheDir, "http-cache")
         val cacheSize = 10 * 1024 * 1024
@@ -114,4 +132,21 @@ object NetworkModule {
             .build()
     }
 
+    @Provides
+    @Singleton
+    @WithoutNotificationHeader
+    fun providesOkHttp1(oAuthInterceptor: OAuthInterceptor, @ApplicationContext applicationContext: Context): OkHttpClient {
+        val cacheDir = File(applicationContext.cacheDir, "http-cache")
+        val cacheSize = 10 * 1024 * 1024
+        val cache = Cache(cacheDir, cacheSize.toLong())
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        return OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .addInterceptor(oAuthInterceptor)
+
+            .build()
+    }
+
 }
+

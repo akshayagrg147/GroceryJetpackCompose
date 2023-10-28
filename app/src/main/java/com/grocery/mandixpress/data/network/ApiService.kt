@@ -5,6 +5,7 @@ import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.features.Home.domain.modal.CouponResponse
 import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
+import com.grocery.mandixpress.features.Home.ui.viewmodal.CommonUiObjectResponse
 import com.grocery.mandixpress.notification.model.NotificationModel
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -36,6 +37,8 @@ interface ApiService {
     @GET(Constants.registertoken)
     suspend fun registerToken(@Query("token") token: String,@Query("mobile") mobile: String): Response<commonResponse>
 
+    @POST(Constants.cancelOrder)
+    suspend fun cancelOrder(@Body data: OrderStatusRequest): Response<commonResponse>
 
     @GET(Constants.HomeAllProducts)
     suspend fun getHomeAllProducts(

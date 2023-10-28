@@ -85,7 +85,7 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     }
 
     fun getCombinedAddress(): String {
-        return mPrefs.getString(AppConstant.combine, "null").toString()
+        return mPrefs.getString(AppConstant.combine, "").toString()
     }
 
     fun getJwtToken(): String {

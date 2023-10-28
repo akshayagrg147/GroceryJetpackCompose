@@ -287,7 +287,7 @@ fun CommonTextField(
             modifier = modifier
                 .fillMaxWidth().border(1.dp, Color.Transparent, shape = RoundedCornerShape(4.dp))
                 .clickable { onClick(text.value) },
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Done),
             enabled = enable,
             textStyle = TextStyle(
                 color = Color.Black

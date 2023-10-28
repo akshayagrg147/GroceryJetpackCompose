@@ -16,29 +16,21 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
 import com.google.accompanist.flowlayout.FlowRow
 import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.AppButtonComponent
 import com.grocery.mandixpress.common.AppCustomChips
-import com.grocery.mandixpress.common.CommonProgressBar
-import com.grocery.mandixpress.common.LoadingBar
 import com.grocery.mandixpress.data.modal.AllOrdersHistoryList
-import com.grocery.mandixpress.features.Home.ui.ui.theme.ShimmerColorShades
-import com.grocery.mandixpress.features.Home.ui.ui.theme.faqColor
-import com.grocery.mandixpress.features.Home.ui.ui.theme.headingColor
+import com.grocery.mandixpress.data.modal.OrderStatusRequest
+import com.grocery.mandixpress.features.Home.ui.ui.theme.*
 import com.grocery.mandixpress.features.Home.ui.viewmodal.ProfileEvent
 import com.grocery.mandixpress.features.Home.ui.viewmodal.ProfileViewModal
-import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -55,20 +47,20 @@ fun OrderHistoryScreen(
     navController: NavHostController,
     viewModal: ProfileViewModal = hiltViewModel()
 ) {
-   val scope= rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     var selected by remember { mutableStateOf(0) }
 
     val orderListResponse by viewModal.orderhistorydata.collectAsState()
 
-LaunchedEffect(key1 = selected ){
-    if(selected==0)
-        viewModal.onEvent(ProfileEvent.OrderEvent("Ordered"))
-    else if(selected==1)
-        viewModal.onEvent(ProfileEvent.DeliverEvent("Delivered"))
-    else  if(selected==2)
-        viewModal.onEvent(ProfileEvent.CancelEvent("Cancelled"))
+    LaunchedEffect(key1 = selected) {
+        if (selected == 0)
+            viewModal.onEvent(ProfileEvent.OrderEvent("Ordered"))
+        else if (selected == 1)
+            viewModal.onEvent(ProfileEvent.DeliverEvent("Delivered"))
+        else if (selected == 2)
+            viewModal.onEvent(ProfileEvent.CancelEvent("Cancelled"))
 
-}
+    }
 
 
 
@@ -80,10 +72,10 @@ LaunchedEffect(key1 = selected ){
     ) {
 
         CommonHeader(text = "Order History", color = Color.Black) {
-         navController.popBackStack()
+            navController.popBackStack()
         }
         FlowRow {
-            listOf<String>("Ordered","Delivered","Cancelled").forEachIndexed { index, s ->
+            listOf<String>("Ordered", "Delivered", "Cancelled").forEachIndexed { index, s ->
                 AppCustomChips(
                     selected = index == selected,
                     index = index,
@@ -98,32 +90,57 @@ LaunchedEffect(key1 = selected ){
 
 
         // Observe the order history data state
-        if(orderListResponse.isLoading){
-            repeat(5){
+        if (orderListResponse.isLoading) {
+            repeat(5) {
                 ShimmerLayout()
             }
 
         }
-        if(orderListResponse.data != null)
-            if(orderListResponse.data?.list?.isNotEmpty() == true)
-            {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 15.dp)
-            ) {
-                items(orderListResponse.data?.list ?: emptyList(), key = {it.orderId!!}){
-                            OrderHistoryRow(it) {data->
-                                navController.currentBackStackEntry?.arguments?.putParcelable(
-                                    "orderDetail",
-                                    data
+        if (orderListResponse.data != null)
+            if (orderListResponse.data?.list?.isNotEmpty() == true) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 15.dp)
+                ) {
+                    items(orderListResponse.data?.list ?: emptyList(), key = { it.orderId!! }) {
+                        OrderHistoryRow(selected,it, { data ->
+                            navController.currentBackStackEntry?.arguments?.putParcelable(
+                                "orderDetail",
+                                data
+                            )
+                            navController.navigate(DashBoardNavRoute.OrderDetail.screen_route)
+                        }, { data ->
+
+                            val orderList = data.orderList?.map {
+                                OrderStatusRequest.Orders(
+                                    productId = it?.productId.toString(),
+                                    productName = it?.productName.toString(),
+                                    productprice = it?.productprice.toString(),
+                                    quantity = it?.quantity.toString()
                                 )
-                                navController.navigate(DashBoardNavRoute.OrderDetail.screen_route)
-                            }
-                        }
+                            } ?: emptyList()
+                            val orderRequest = OrderStatusRequest(
+                                totalOrderValue = data.totalOrderValue.toString(),
+                                orderList = ArrayList(orderList),
+
+                                paymentmode = data.totalOrderValue.toString(),
+                                address = data.address.toString(),
+                                mobilenumber = data.mobilenumber.toString(),
+                                createdDate = data.createdDate.toString(),
+                                orderId = data.orderId.toString(),
+                                orderStatus = "Cancelled",
+
+                                fcm_token = data.totalOrderValue.toString(),
+                                changeTime = 0L, pincode = "136027"
+                            )
+                            viewModal.callingOrderStatus(orderRequest)
+
+
+                        })
                     }
-            }
-        else{
+                }
+            } else {
                 noItemound()
             }
 
@@ -133,40 +150,43 @@ LaunchedEffect(key1 = selected ){
 
 
 @Composable
-fun OrderHistoryRow(
+fun OrderHistoryRow(selected:Int,
     data: AllOrdersHistoryList.Orders,
-    call: (AllOrdersHistoryList.Orders) -> Unit
+    call: (AllOrdersHistoryList.Orders) -> Unit,
+    cancelOrder: (AllOrdersHistoryList.Orders) -> Unit
 ) {
-    Box(modifier = Modifier
-        .padding(top = 7.dp)
-        .background(Color.White, RoundedCornerShape(8.dp))
-        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+    Box(
+        modifier = Modifier
+            .padding(top = 7.dp)
+            .background(Color.White, RoundedCornerShape(8.dp))
+            .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
 
-        .fillMaxWidth()){
+            .fillMaxWidth()
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween
             ) {
                 Text12_body1(
                     text = data.createdDate?.split(" ")?.get(0) ?: "",
 
-                )
+                    )
                 Text12_body1(
-                    text = data.createdDate?.split(" ")?.get(1) ?: "nn" ,
+                    text = data.createdDate?.split(" ")?.get(1) ?: "nn",
                 )
             }
             Spacer(Modifier.height(5.dp))
             Divider()
             Row(
-                modifier = Modifier.fillMaxWidth(),Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(), Arrangement.SpaceBetween
             ) {
                 Text14_h2(
-                        text = "${data.orderId}",color= headingColor
-                    )
+                    text = "${data.orderId}", color = headingColor
+                )
                 Image(
                     painter = painterResource(id = com.grocery.mandixpress.R.drawable.order_icon),
                     contentDescription = "",
@@ -182,14 +202,17 @@ fun OrderHistoryRow(
                 Column(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.Start
-                ) {Spacer(modifier = Modifier.height(8.dp))
+                ) {
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text12_body1(text = "Total Amount", modifier = Modifier, color = Color.Black)
                     Text12_body1(text = "₹ ${data.totalOrderValue}", modifier = Modifier)
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.padding(end = 8.dp).weight(1f)
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .weight(1f)
                 ) {
 
                     Icon(
@@ -200,25 +223,28 @@ fun OrderHistoryRow(
                         modifier = Modifier.size(24.dp)
                     )
                     Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.Start
-                ) {
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
 
 
                         Text12_h1(
                             text = "Delivery Address",
                             color = Color.Black,
                         )
-                        Text12_body1( text = "   ${data.address?.take(20)}..", modifier = Modifier.padding(start = 10.dp))
+                        Text12_body1(
+                            text = "   ${data.address?.take(20)}..",
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
 
                     }
-
-                    }
-
 
                 }
+
+
+            }
             Spacer(Modifier.height(5.dp))
             Text12_body1(
                 text = "items \n ${data.orderList?.size} "
@@ -226,12 +252,21 @@ fun OrderHistoryRow(
 
             Spacer(modifier = Modifier.height(5.dp))
 
-            AppButtonComponent(text="View Details"){
+            AppButtonComponent(text = "View Details", background = lightBlueColor) {
 
                 call(data)
 
             }
-            }
+
+if(selected==0) {
+    Spacer(modifier = Modifier.height(5.dp))
+    AppButtonComponent(text = "Cancel Order", background = lightred) {
+        cancelOrder(data)
+
+    }
+}
+
+        }
 
     }
 
@@ -255,7 +290,7 @@ fun formatDate(inputDate: String): String {
 
 @Composable
 fun noItemound() {
-    Column(modifier = Modifier.fillMaxSize(),Arrangement.Center) {
+    Column(modifier = Modifier.fillMaxSize(), Arrangement.Center) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -280,6 +315,7 @@ fun noItemound() {
     }
 
 }
+
 @Composable
 fun ShimmerLayout() {
     Box(

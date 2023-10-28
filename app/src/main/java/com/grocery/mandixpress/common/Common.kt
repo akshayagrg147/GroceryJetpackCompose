@@ -108,20 +108,25 @@ fun AppButtonComponent(
     background: Color = Color.White,
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(background)
-            .height(35.dp),
-        elevation = elevation,
-        shape = shape,
 
-        ) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(background, shape = shape),
+        verticalArrangement = Arrangement.Center
+    ) {
         Text12_h1(
-            text = text, color = Color.White
+            text = text,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(10.dp).clickable {
+                onClick()
+            }
+            // Add padding if necessary
         )
     }
+
 }
 
 @Composable

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -260,7 +261,7 @@ fun ItemDetailsScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
 
-                                        .padding(start = 10.dp, top = 15.dp, bottom = 10.dp),
+                                        .padding(start = 10.dp),
                                     color = navdrawerColor
                                 )
                             }
@@ -268,137 +269,147 @@ fun ItemDetailsScreen(
                             Card(
                                 elevation = 1.dp,
                                 shape = RoundedCornerShape(20.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
+                                modifier = Modifier.padding(horizontal = 10.dp)
 
                             ) {
-                                HorizontalPager(state = pager) { index ->
-                                    if (index == 0)
-                                        Banner(
-                                            pagerState = pager,
-                                            value.homeproducts?.productImage1 ?: ""
-                                        )
-                                    if (index == 1)
-                                        Banner(
-                                            pagerState = pager,
-                                            value.homeproducts?.productImage2 ?: ""
-                                        )
-                                    if (index == 2)
-                                        Banner(
-                                            pagerState = pager,
-                                            value.homeproducts?.productImage3 ?: ""
-                                        )
-                                }
-
-                            }
-
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 20.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text14_h1_(
-                                    text = value.homeproducts?.productName ?: "",
-                                    color = headingColor,
-
+                                Column (modifier = Modifier.padding(10.dp)
+                                    ){
+                                    HorizontalPager(state = pager) { index ->
+                                        if (index == 0)
+                                            Banner(
+                                                pagerState = pager,
+                                                value.homeproducts?.productImage1 ?: ""
+                                            )
+                                        if (index == 1)
+                                            Banner(
+                                                pagerState = pager,
+                                                value.homeproducts?.productImage2 ?: ""
+                                            )
+                                        if (index == 2)
+                                            Banner(
+                                                pagerState = pager,
+                                                value.homeproducts?.productImage3 ?: ""
+                                            )
+                                    }
+                                    PagerDots(
+                                        currentPage = pager.currentPage,
+                                        pageCount = pager.pageCount,
+                                        modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).then(Modifier.horizontalScroll(rememberScrollState()))
                                     )
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 20.dp,top=5.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text14_h1_(
+                                            text = value.homeproducts?.productName ?: "",
+                                            color = headingColor,
+
+                                            )
 //                                Text12_body1(
 //                                    text = value.homeproducts?.quantity ?: "", modifier = Modifier
 //                                        .padding(top = 5.dp)
 //                                )
 
-                            }
-                            Spacer(modifier = Modifier.height(2.dp))
-
-
-                            Row(
-                                modifier = Modifier.padding(start = 20.dp),
+                                    }
+                                    Spacer(modifier = Modifier.height(2.dp))
+                                    Row(
+                                        modifier = Modifier.padding(start = 20.dp),
 //                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-
-                                Text12_body1(
-                                    text = "₹ ${value.homeproducts?.selling_price}",
-                                    color = headingColor
-                                    //  modifier= Modifier.weight(0.5F)
-                                )
-                                Text(
-                                    text = "₹${value.homeproducts?.orignalprice ?: "0.00"}",
-                                    fontSize = 12.sp,
-                                    color = bodyTextColor1,
-                                    modifier = Modifier.padding(start = 5.dp),
-                                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
-                            //add button
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 20.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-
-
-                                if (cartcount.value > 0)
-                                    Row {
-                                        CommonMathButton(icon = R.drawable.minus) {
-                                            viewModal.deleteCartItems(value)
-                                        }
+                                    ) {
 
                                         Text12_body1(
-                                            text = cartcount.value.toString(),
-                                            modifier = Modifier
-                                                .align(Alignment.CenterVertically)
-                                                .padding(horizontal = 20.dp),
-                                            color = Color.Black
+                                            text = "₹ ${value.homeproducts?.selling_price}",
+                                            color = headingColor
+                                            //  modifier= Modifier.weight(0.5F)
                                         )
-                                        CommonMathButton(icon = R.drawable.add) {
-                                            viewModal.insertCartItem(value)
-
-
-                                        }
+                                        Text(
+                                            text = "₹${value.homeproducts?.orignalprice ?: "0.00"}",
+                                            fontSize = 12.sp,
+                                            color = bodyTextColor1,
+                                            modifier = Modifier.padding(start = 5.dp),
+                                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                                        )
                                     }
-                                else {
-                                    Card(
-                                        border = BorderStroke(1.dp, titleColor),
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    //add button
+                                    Row(
                                         modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 20.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
 
-                                            .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-                                            .padding(start = 20.dp)
 
-                                            .background(color = whiteColor)
-                                            .clickable {
-                                                // response="called"
-                                                viewModal.insertCartItem(value)
-                                                Toast
-                                                    .makeText(
-                                                        context,
-                                                        "Added to cart",
-                                                        Toast.LENGTH_SHORT
+                                        if (cartcount.value > 0)
+                                            Row {
+                                                CommonMathButton(icon = R.drawable.minus) {
+                                                    viewModal.deleteCartItems(value)
+                                                }
+
+                                                Text12_body1(
+                                                    text = cartcount.value.toString(),
+                                                    modifier = Modifier
+                                                        .align(Alignment.CenterVertically)
+                                                        .padding(horizontal = 20.dp),
+                                                    color = Color.Black
+                                                )
+                                                CommonMathButton(icon = R.drawable.add) {
+                                                    viewModal.insertCartItem(value)
+
+
+                                                }
+                                            }
+                                        else {
+                                            Card(
+                                                border = BorderStroke(1.dp, titleColor),
+                                                modifier = Modifier
+
+                                                    .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                                                    .padding(start = 20.dp)
+
+                                                    .background(color = whiteColor)
+                                                    .clickable {
+                                                        // response="called"
+                                                        viewModal.insertCartItem(value)
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Added to cart",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
+
+                                                        Utils.vibrator(context)
+
+                                                    },
+
+                                                ) {
+                                                Text11_body2(
+                                                    text = "ADD",
+                                                    availColor,
+                                                    modifier = Modifier.padding(
+                                                        vertical = 5.dp,
+                                                        horizontal = 10.dp
                                                     )
-                                                    .show()
+                                                )
+                                            }
+                                        }
 
-                                                Utils.vibrator(context)
 
-                                            },
-
-                                        ) {
-                                        Text11_body2(
-                                            text = "ADD",
-                                            availColor,
-                                            modifier = Modifier.padding(
-                                                vertical = 5.dp,
-                                                horizontal = 10.dp
-                                            )
-                                        )
                                     }
+
                                 }
 
-
                             }
+
+
+
                             Spacer(modifier = Modifier.height(10.dp))
+                            TabContentScreen(
+                                data = value.homeproducts?.ProductDescription ?: "null"
+                            )
 
 
                             //    TabLayout(value)
@@ -406,43 +417,7 @@ fun ItemDetailsScreen(
 
                         }
                     }
-//horizental tab heder
-                    stickyHeader {
-                        TabRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            backgroundColor = Color.White,
-                            contentColor = Color.Black,
-                            selectedTabIndex = pagerState.currentPage,
-                            // Override the indicator, using the provided pagerTabIndicatorOffset modifier
-                            indicator = {
-                            }
-                        ) {
-                            tabList.forEachIndexed { index, title ->
-                                Tab(
-                                    text = { Text(title) },
-                                    selected = pagerState.currentPage == index,
-                                    onClick = {
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(index)
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                    }
-//tab layout for description and reviews
-                    item {
-                        HorizontalPager(
-                            state = rememberPagerState(1),
-                        ) { page: Int ->
-                            when (page) {
-                                0 -> TabContentScreen(
-                                    data = value.homeproducts?.ProductDescription ?: "null"
-                                )
-                                1 -> ReviewsCollection(value)
-                            }
-                        }
-                    }
+
                     //related search list
                     item {
 
@@ -505,6 +480,29 @@ fun ItemDetailsScreen(
 
 
 }
+
+@Composable
+fun PagerDots(
+    currentPage: Int,
+    pageCount: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        for (page in 0 until pageCount) {
+            val color = if (page == currentPage) Color.Black else Color.Gray
+            Box(
+                modifier = Modifier
+                    .size(10.dp)
+                    .background(color)
+                    .clip(CircleShape)
+            )
+        }
+    }
+}
+
 
 @Composable
 fun cardviewAddtoCart(
@@ -689,7 +687,7 @@ fun TabContentScreen(data: String) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text13_body1(text = data, color = greyLightColor)
+        Text12_body1(text = data, color = greyLightColor)
 
     }
 }

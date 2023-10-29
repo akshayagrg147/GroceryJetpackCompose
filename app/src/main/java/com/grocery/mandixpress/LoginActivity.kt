@@ -1,31 +1,20 @@
 package com.grocery.mandixpress
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
-import com.grocery.mandixpress.features.Spash.splashScreenNavigation
-import com.grocery.mandixpress.features.Home.ui.ui.theme.GroceryAppTheme
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.RegisterLoginViewModal
+import com.grocery.mandixpress.features.splash.splashnavigation.splashScreenNavigation
+import com.grocery.mandixpress.features.home.ui.ui.theme.GroceryAppTheme
+import com.grocery.mandixpress.features.splash.ui.viewmodel.RegisterLoginViewModal
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -39,13 +28,8 @@ class LoginActivity : ComponentActivity() {
         initAppIntegrity()
         setContent {
             GroceryAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    splashScreenNavigation(this,sharedPreferences)
-                }
+                splashScreenNavigation(this,sharedPreferences)
+
             }
         }
     }

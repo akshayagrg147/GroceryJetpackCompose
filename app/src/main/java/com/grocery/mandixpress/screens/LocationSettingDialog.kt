@@ -1,4 +1,4 @@
-package vtsen.hashnode.dev.simplegooglemapapp.ui.screens
+package com.grocery.mandixpress.screens
 
 import android.app.Activity
 import android.content.Context

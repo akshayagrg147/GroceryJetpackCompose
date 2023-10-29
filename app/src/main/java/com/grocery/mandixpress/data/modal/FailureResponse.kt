@@ -7,8 +7,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class FailureResponse(
     @Json(name = "statusCode")
-    val statusCode: String?=null,
+    val statusCode: String? = null,
     @Json(name = "message")
-    val message: String?=null,
+    val message: String? = null,
 
-)
+    )

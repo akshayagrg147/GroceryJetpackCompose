@@ -5,8 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.grocery.mandixpress.features.Home.ui.viewmodal.PinCodeStateModal
-import com.orders.resturantorder.SharedPreference.AppConstant
+import com.grocery.mandixpress.features.home.ui.viewmodal.PinCodeStateModal
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 import javax.inject.Inject
@@ -40,7 +39,6 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         return mPrefs.edit().putString("fcm_Token", fcm_token).apply()
     }
     fun getFcmToken(): String {
-        Log.d("showinggetfcmtoken","take ${ mPrefs.getString("fcm_Token", "")}")
         return mPrefs.getString("fcm_Token", "").toString()
     }
 

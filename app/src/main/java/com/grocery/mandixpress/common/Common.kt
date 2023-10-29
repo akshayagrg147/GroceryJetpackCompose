@@ -1,15 +1,8 @@
 package com.grocery.mandixpress.common
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
@@ -19,13 +12,9 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.Home
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -35,23 +24,18 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.grocery.mandixpress.HiltApplication.Companion.context
 import com.grocery.mandixpress.R
-
-import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.Utils.Text11_body2
 import com.grocery.mandixpress.Utils.Text12_h1
-import com.grocery.mandixpress.features.Home.ui.ui.theme.*
+import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import kotlin.math.roundToInt
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CommonProgressBar(text: String = "Easy shop with Us") {
 
@@ -120,9 +104,12 @@ fun AppButtonComponent(
             text = text,
             color = Color.White,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(10.dp).clickable {
-                onClick()
-            }
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .clickable {
+                    onClick()
+                }
             // Add padding if necessary
         )
     }
@@ -293,7 +280,7 @@ fun SwipeButton(
     val (startSwipe, setStartSwipe) = remember {
         mutableStateOf(false)
     }
-    val indicatorPosition =  rememberSwipeableState(0)
+    val indicatorPosition = rememberSwipeableState(0)
 
 
     LaunchedEffect(key1 = swipeableState.currentValue) {
@@ -346,15 +333,24 @@ fun SwipeButton(
         if (!isComplete) {
             // Display text if not complete
             AnimatedVisibility(visible = true) {
-                Text12_h1(text = text, color = Color.White, modifier = Modifier.fillMaxWidth().alpha(if (swipeComplete) 1F else 1F).padding(horizontal = 80.dp),
+                Text12_h1(
+                    text = text,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(if (swipeComplete) 1F else 1F)
+                        .padding(horizontal = 80.dp),
                     textAlign = TextAlign.Center
                 )
             }
         }
-        if (swipeComplete  || startSwipe) {
+        if (swipeComplete || startSwipe) {
             // Display a button to start swiping again
             SwipeIndicator(
-                modifier = Modifier.align(Alignment.CenterStart).alpha(if (swipeComplete) 1F else 1F).offset {
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .alpha(if (swipeComplete) 1F else 1F)
+                    .offset {
                         IntOffset(indicatorPosition.offset.value.roundToInt(), 0)
                     }
                     .swipeable(
@@ -391,8 +387,11 @@ fun SwipeIndicator(
             )
             .background(Color.White),
     ) {
-        Image(painter = painterResource(id = R.drawable.swipe_button), contentDescription = "swipe button",
-            modifier = Modifier.size(36.dp))
+        Image(
+            painter = painterResource(id = R.drawable.swipe_button),
+            contentDescription = "swipe button",
+            modifier = Modifier.size(36.dp)
+        )
 
     }
 }

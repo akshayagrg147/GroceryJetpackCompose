@@ -1,9 +1,7 @@
-package vtsen.hashnode.dev.simplegooglemapapp.ui.screens
+package com.grocery.mandixpress.screens
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import com.grocery.mandixpress.screens.LocationPermissionsDialog
-import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
 
 @Composable
 fun LocationPermissionsAndSettingDialogs(

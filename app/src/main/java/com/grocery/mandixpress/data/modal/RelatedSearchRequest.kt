@@ -4,10 +4,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class RelatedSearchRequest (
+data class RelatedSearchRequest(
     @Json(name = "Price")
-    val Price:String?=null,
+    val Price: String? = null,
     @Json(name = "category")
-    val category:String?=null,
-@Json(name = "pincode")
-    var pincode:String?=null)
+    val category: String? = null,
+    @Json(name = "pincode")
+    var pincode: String? = null
+)

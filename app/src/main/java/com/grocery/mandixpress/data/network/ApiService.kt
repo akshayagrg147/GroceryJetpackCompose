@@ -1,11 +1,9 @@
 package com.grocery.mandixpress.data.network
 
-import android.util.Log
 import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.data.modal.*
-import com.grocery.mandixpress.features.Home.domain.modal.CouponResponse
-import com.grocery.mandixpress.features.Home.domain.modal.getProductCategory
-import com.grocery.mandixpress.features.Home.ui.viewmodal.CommonUiObjectResponse
+import com.grocery.mandixpress.features.home.domain.modal.CouponResponse
+import com.grocery.mandixpress.features.home.domain.modal.getProductCategory
 import com.grocery.mandixpress.notification.model.NotificationModel
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -21,9 +19,6 @@ interface ApiService {
         @Body addUser: RegisterLoginRequest,
     ): Response<RegisterLoginResponse>
 
-    //    @POST(Constants.getuserdetails)
-//    suspend fun getUserDetails():Response<>
-
     @GET(Constants.exclusive_collectionProducts)
     suspend fun getExclusiveProducts(@Query("pincode") pincode: String): Response<HomeAllProductsResponse>
 
@@ -31,11 +26,15 @@ interface ApiService {
     suspend fun postNotification(
         @Body notification: NotificationModel
     ): Response<ResponseBody>
+
     @GET(Constants.BestSelling_collectionProducts)
     suspend fun getBestSellingProducts(@Query("pincode") pincode: String): Response<HomeAllProductsResponse>
 
     @GET(Constants.registertoken)
-    suspend fun registerToken(@Query("token") token: String,@Query("mobile") mobile: String): Response<commonResponse>
+    suspend fun registerToken(
+        @Query("token") token: String,
+        @Query("mobile") mobile: String
+    ): Response<commonResponse>
 
     @POST(Constants.cancelOrder)
     suspend fun cancelOrder(@Body data: OrderStatusRequest): Response<commonResponse>
@@ -50,7 +49,7 @@ interface ApiService {
     @GET(Constants.SearchAllProductsSearch)
     suspend fun getHomeAllProductsSearch(
         @Query("query") character: String,
-        @Query("pincode")  pincode: String,
+        @Query("pincode") pincode: String,
     ): Response<HomeAllProductsResponse>
 
     @GET(Constants.allCoupons)
@@ -58,10 +57,10 @@ interface ApiService {
 
 
     @GET(Constants.categorywise_collectionProducts)
-    suspend fun categorywise_collectionProducts( @Query("pincode") pincode: String): Response<CategoryWiseDashboardResponse>
+    suspend fun categorywise_collectionProducts(@Query("pincode") pincode: String): Response<CategoryWiseDashboardResponse>
 
     @POST(Constants.availibilityCheck)
-    suspend fun availibilityCheck(@Body pincode:String):Response<commonResponse>
+    suspend fun availibilityCheck(@Body pincode: String): Response<commonResponse>
 
     @POST(Constants.GetBestProductById)
     suspend fun getBestProductById(@Body productIdIdModal: ProductIdIdModal): Response<ProductByIdResponseModal>
@@ -83,10 +82,13 @@ interface ApiService {
 
     @POST(Constants.ItemsCollections)
     suspend fun getItemsCollections(@Body productIdIdModal: ProductIdIdModal): Response<ItemsCollectionsResponse>
+
     @POST(Constants.getAdminDetails)
     suspend fun getAdminDetails(): Response<AdminResponse>
+
     @POST(Constants.checkMobileNumberExist)
     suspend fun checkMobileNumberExist(@Body registerLoginRequest: RegisterLoginRequest): Response<CheckNumberExistResponse>
+
     @GET(Constants.callBannerImage)
     suspend fun callBannerImage(@Query("pincode") pincode: String): Response<BannerImageResponse>
 
@@ -107,41 +109,39 @@ interface ApiService {
 
 class CallingCategoryWiseData {
     var data = ""
-    var bannerItemData:BannerImageResponse.ItemData=BannerImageResponse.ItemData()
-    fun settingData(ss: String,postalCode:String) {
-        data = ss+"__"+postalCode
+    var bannerItemData: BannerImageResponse.ItemData = BannerImageResponse.ItemData()
+    fun settingData(ss: String, postalCode: String) {
+        data = ss + "__" + postalCode
     }
+
     fun setItemDataClass(
         bannerItemDat: BannerImageResponse.ItemData,
         index: Int,
         postalCode: String
-    ){
-        bannerItemData=bannerItemDat
-            if(bannerItemDat.bannercategory1?.isNotEmpty()==true){
-                if(index==0){
-                settingData(bannerItemData.bannercategory1?:"",postalCode)
+    ) {
+        bannerItemData = bannerItemDat
+        if (bannerItemDat.bannercategory1?.isNotEmpty() == true) {
+            if (index == 0) {
+                settingData(bannerItemData.bannercategory1 ?: "", postalCode)
+            } else if (index == 1) {
+                settingData(bannerItemData.bannercategory2 ?: "", postalCode)
+            } else {
+                settingData(bannerItemData.bannercategory3 ?: "", postalCode)
             }
-                else if(index==1){
-                    settingData(bannerItemData.bannercategory2?:"",postalCode)
-                }
-                else{
-                    settingData(bannerItemData.bannercategory3?:"",postalCode)
-                }
 
 
+        } else {
+            if (index == 0) {
+                settingData(bannerItemData.bannercategory2 ?: "", postalCode)
+            } else {
+                settingData(bannerItemData.bannercategory3 ?: "", postalCode)
+            }
         }
-        else{
-                 if(index==0){
-                    settingData(bannerItemData.bannercategory2?:"",postalCode)
-                }
-                else{
-                    settingData(bannerItemData.bannercategory3?:"",postalCode)
-                }
-            }
 
 
     }
-    fun getItemDataClass():BannerImageResponse.ItemData{
+
+    fun getItemDataClass(): BannerImageResponse.ItemData {
         return bannerItemData
     }
 

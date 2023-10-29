@@ -20,8 +20,6 @@ import javax.inject.Inject
             var request = chain.request()
             val jwtToken = sharedPreference.getJwtToken()
 
-            // Logging the JWT token
-
             // Include the Bearer token if available
             if (jwtToken.isNotEmpty()) {
                 request = request.newBuilder()

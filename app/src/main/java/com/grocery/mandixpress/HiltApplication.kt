@@ -16,7 +16,7 @@ class HiltApplication:Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Places.initialize(applicationContext, "AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U")
+        Places.initialize(applicationContext, BuildConfig.api_key)
         instance = this
         createNotificationChannel()
         subscribeTopic()

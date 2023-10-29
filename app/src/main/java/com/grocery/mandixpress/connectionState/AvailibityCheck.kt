@@ -43,6 +43,7 @@ fun NetworkCallback(callback: (ConnectionState) -> Unit): ConnectivityManager.Ne
         }
     }
 }
+
 val Context.currentConnectivityState: ConnectionState
     get() {
         val connectivityManager =

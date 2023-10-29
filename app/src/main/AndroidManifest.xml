@@ -46,7 +46,7 @@
 
 
         <activity
-            android:name="com.grocery.mandixpress.features.Home.ui.screens.HomeActivity"
+            android:name="com.grocery.mandixpress.features.home.ui.screens.HomeActivity"
             android:exported="true"
 
             android:label="@string/title_activity_home_screen"

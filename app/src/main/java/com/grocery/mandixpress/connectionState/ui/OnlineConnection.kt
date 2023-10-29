@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,33 +17,30 @@ import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.Utils.launchActivity
-import com.grocery.mandixpress.features.Home.ui.ui.theme.seallcolor
-import com.grocery.mandixpress.features.Home.ui.ui.theme.whiteColor
+import com.grocery.mandixpress.features.home.ui.ui.theme.seallcolor
+import com.grocery.mandixpress.features.home.ui.ui.theme.whiteColor
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun onlineconnection(call:(Boolean)->Unit) {
-    val retryclicked= remember {
+fun onlineconnection(call: (Boolean) -> Unit) {
+    val retryclicked = remember {
         mutableStateOf(false)
     }
-    if(retryclicked.value){
+    if (retryclicked.value) {
         LocalContext.current.launchActivity<LoginActivity>() {
-
-
         }
 
     }
     Card(
         shape = RoundedCornerShape(10.dp),
-        modifier = Modifier.padding(10.dp,5.dp,10.dp,10.dp),
+        modifier = Modifier.padding(10.dp, 5.dp, 10.dp, 10.dp),
         elevation = 8.dp
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .padding(20.dp)
                 .background(whiteColor),
 
-        ) {
+            ) {
 
             Image(
                 painter = painterResource(id = com.grocery.mandixpress.R.drawable.ic_baseline_wifi_off_24),
@@ -64,8 +60,8 @@ fun onlineconnection(call:(Boolean)->Unit) {
                     .fillMaxWidth()
                     .padding(top = 20.dp),
                 backgroundColor = seallcolor
-            ){
-                retryclicked.value=true
+            ) {
+                retryclicked.value = true
             }
 
             Text10_h2(
@@ -76,7 +72,6 @@ fun onlineconnection(call:(Boolean)->Unit) {
             )
         }
     }
-
 
 
 }

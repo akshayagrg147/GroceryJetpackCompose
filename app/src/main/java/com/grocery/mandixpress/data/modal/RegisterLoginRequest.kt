@@ -7,24 +7,25 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RegisterLoginRequest(
     @Json(name = "email")
-    val email: String?=null,
+    val email: String? = null,
     @Json(name = "name")
-    val name: String?=null,
+    val name: String? = null,
     @Json(name = "phone")
-    val phone: String?=null,
+    val phone: String? = null,
     @Json(name = "pincode")
-    val pincode: String?=null,
+    val pincode: String? = null,
     @Json(name = "fcmtoken")
-    val fcmtoken: String?=null,
+    val fcmtoken: String? = null,
     @Json(name = "changetime")
-    val changetime: String?=null,
+    val changetime: String? = null,
 
-)
+    )
+
 @JsonClass(generateAdapter = true)
 data class ExclusiveOfferRequest(
     @Json(name = "city")
-    val city: String?=null,
+    val city: String? = null,
     @Json(name = "pincode")
-    val pincode: String?=null,
+    val pincode: String? = null,
 
-)
+    )

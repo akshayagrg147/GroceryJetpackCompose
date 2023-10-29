@@ -1,6 +1,6 @@
 package com.grocery.mandixpress.connectionState
 
-sealed class ConnectionState{
+sealed class ConnectionState {
     object Available : ConnectionState()
     object Unavailable : ConnectionState()
 }

@@ -1,7 +1,6 @@
-package com.grocery.mandixpress.features.Home.ui.ui.theme
+package com.grocery.mandixpress.features.home.ui.ui.theme
 
 import androidx.compose.material.Typography
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight

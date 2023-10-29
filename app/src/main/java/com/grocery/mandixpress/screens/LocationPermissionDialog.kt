@@ -12,7 +12,8 @@ fun LocationPermissionsDialog(
     onPermissionDenied: () -> Unit,
 ) {
     val requestLocationPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
 
         if (isGranted) {
             onPermissionGranted()
@@ -32,7 +33,8 @@ fun PhoneCallDialog(
     onPermissionDenied: () -> Unit,
 ) {
     val requestLocationPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
 
         if (isGranted) {
             onPermissionGranted()

@@ -10,12 +10,12 @@ import kotlinx.android.parcel.Parcelize
 @JsonClass(generateAdapter = true)
 data class AllOrdersHistoryList(
     @Json(name = "itemData")
-    val list: List<Orders>?= emptyList(),
+    val list: List<Orders>? = emptyList(),
     @Json(name = "message")
-    val message: String?=null,
+    val message: String? = null,
     @Json(name = "statusCode")
-    val statusCode: Int?=0
-):Parcelable {
+    val statusCode: Int? = 0
+) : Parcelable {
     @Parcelize
     @JsonClass(generateAdapter = true)
     data class Orders(
@@ -33,7 +33,7 @@ data class AllOrdersHistoryList(
         val paymentmode: String?,
         @Json(name = "totalOrderValue")
         val totalOrderValue: String?
-    ):Parcelable {
+    ) : Parcelable {
         @Parcelize
         @JsonClass(generateAdapter = true)
         data class Order(
@@ -45,6 +45,6 @@ data class AllOrdersHistoryList(
             val productprice: String?,
             @Json(name = "quantity")
             val quantity: String?
-        ):Parcelable
+        ) : Parcelable
     }
 }

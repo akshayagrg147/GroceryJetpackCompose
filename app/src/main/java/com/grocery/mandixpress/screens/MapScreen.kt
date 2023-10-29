@@ -1,4 +1,4 @@
-package vtsen.hashnode.dev.simplegooglemapapp.ui.screens
+package com.grocery.mandixpress.screens
 
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
@@ -34,10 +34,9 @@ import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text14_h1
-import com.grocery.mandixpress.features.Home.ui.screens.HomeActivity
-import com.grocery.mandixpress.features.Spash.ui.viewmodel.RegisterLoginViewModal
+import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
+import com.grocery.mandixpress.features.splash.ui.viewmodel.RegisterLoginViewModal
 import dagger.hilt.android.qualifiers.ApplicationContext
-import vtsen.hashnode.dev.simplegooglemapapp.ui.LocationUtils
 import java.util.*
 
 @SuppressLint("MissingPermission")

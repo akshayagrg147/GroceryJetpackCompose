@@ -1,6 +1,6 @@
 package com.grocery.mandixpress.di
 
-import com.grocery.mandixpress.features.Spash.domain.repository.AuthRepository
+import com.grocery.mandixpress.features.splash.domain.repository.AuthRepository
 import com.grocery.mandixpress.data.repository.AuthRepositoryImpl
 import dagger.Binds
 import dagger.Module

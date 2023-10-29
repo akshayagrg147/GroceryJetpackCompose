@@ -4,7 +4,7 @@ package com.grocery.mandixpress.Utils
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.grocery.mandixpress.features.Spash.domain.Modal.Country
+import com.grocery.mandixpress.features.splash.domain.modal.Country
 import java.io.IOException
 
 fun countryList(context: Context): MutableList<Country> {

@@ -8,7 +8,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.grocery.mandixpress.common.ApiState
-import com.grocery.mandixpress.features.Spash.domain.repository.AuthRepository
+import com.grocery.mandixpress.features.splash.domain.repository.AuthRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

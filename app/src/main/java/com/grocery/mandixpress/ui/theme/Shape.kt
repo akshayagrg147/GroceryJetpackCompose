@@ -1,4 +1,4 @@
-package com.grocery.mandixpress.features.Home.ui.ui.theme
+package com.grocery.mandixpress.features.home.ui.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

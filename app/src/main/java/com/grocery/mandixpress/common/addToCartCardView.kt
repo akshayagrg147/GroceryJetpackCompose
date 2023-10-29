@@ -1,7 +1,6 @@
 package com.grocery.mandixpress.common
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,16 +17,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
-import com.grocery.mandixpress.DashBoardNavRouteNavigation.DashBoardNavRoute
+import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text13_body1
-import com.grocery.mandixpress.features.Home.ui.ui.theme.*
-import com.grocery.mandixpress.features.Home.ui.viewmodal.HomeAllProductsViewModal
+import com.grocery.mandixpress.features.home.ui.ui.theme.*
+import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
 
 @Composable
-fun addToCartCardView(
+fun AddToCartCardView(
     viewmodal: HomeAllProductsViewModal,
     navController: NavHostController,
     context: Context,

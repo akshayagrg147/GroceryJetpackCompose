@@ -1,4 +1,4 @@
-package com.orders.resturantorder.SharedPreference
+package com.grocery.mandixpress.SharedPreference
 
 class AppConstant {
     companion object{

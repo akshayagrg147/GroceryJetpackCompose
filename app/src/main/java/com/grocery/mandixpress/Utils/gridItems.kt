@@ -1,4 +1,4 @@
-package com.grocery.mandixpress.features.Home.Navigator
+package com.grocery.mandixpress.features.home.Navigator
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListScope

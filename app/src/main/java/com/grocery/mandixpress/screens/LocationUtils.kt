@@ -1,4 +1,4 @@
-package vtsen.hashnode.dev.simplegooglemapapp.ui
+package com.grocery.mandixpress.screens
 
 import android.Manifest
 import android.annotation.SuppressLint

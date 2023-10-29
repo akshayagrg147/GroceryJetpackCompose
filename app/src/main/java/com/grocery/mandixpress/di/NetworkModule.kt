@@ -2,13 +2,14 @@ package com.grocery.mandixpress.di
 
 import android.content.Context
 import androidx.room.Room
+import com.grocery.mandixpress.BuildConfig
 import com.grocery.mandixpress.FCMApiService
 import com.grocery.mandixpress.NotificationHeader
 
-import com.grocery.mandixpress.RoomDatabase.AppDatabase
+import com.grocery.mandixpress.roomdatabase.AppDatabase
 import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.data.network.ApiService
-import com.grocery.mandixpress.RoomDatabase.Dao
+import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.WithoutNotificationHeader
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
 import com.grocery.mandixpress.data.network.OAuthInterceptor
@@ -82,7 +83,7 @@ object NetworkModule {
         Retrofit
             .Builder()
             .run {
-                baseUrl(Constants.AppUrl)
+                baseUrl( BuildConfig.base_url)
                 addConverterFactory(MoshiConverterFactory.create(moshi))
                 client(client)
                 build()

@@ -20,9 +20,9 @@ data class OrderIdCreateRequest(
     @Json(name = "pincode")
     var pincode: String?,
     @Json(name = "fcm_token")
-    var fcm_token: String?=null,
+    var fcm_token: String? = null,
 
-) {
+    ) {
     @JsonClass(generateAdapter = true)
     data class Order(
         @Json(name = "productId")

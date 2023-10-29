@@ -1,16 +1,18 @@
-package com.grocery.mandixpress.features.Home.ui.ui.theme
+package com.grocery.mandixpress.features.home.ui.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
     primaryVariant = Purple700,
     secondary = Teal200
 )
+
 
 private val LightColorPalette = lightColors(
     primary = Purple500,
@@ -29,12 +31,13 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun GroceryAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    val systemUiController = rememberSystemUiController()
     val colors = if (darkTheme) {
         LightColorPalette
     } else {
         LightColorPalette
     }
-
+    systemUiController.setSystemBarsColor(whiteColor)
     MaterialTheme(
         colors = colors,
         typography = Typography,

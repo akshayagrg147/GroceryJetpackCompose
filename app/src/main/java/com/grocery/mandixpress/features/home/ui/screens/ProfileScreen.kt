@@ -69,28 +69,6 @@ fun profileScreen(
         mutableStateOf(false)
     }
     val profileResponse by viewModal.responseLiveData.collectAsState()
-    LaunchedEffect(key1 = Unit) {
-        viewModal.cancelResponseLiveData.collectLatest {
-            when (it) {
-                is ApiState.Success -> {
-                    context.showMsg("dmdmdm")
-
-                }
-
-                is ApiState.Failure -> {
-                    context.showMsg(it.msg.message.toString())
-
-                }
-
-            }
-        }
-    }
-//    CustomDialog(title = "Order Deleted", description = "Your order has been deleted successfully",
-//        onDismiss = {
-//
-//        }, onPositiveClick = {
-//
-//        })
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
@@ -604,54 +582,7 @@ fun ProfileDescription(
     }
 }
 
-@Composable
-fun CustomDialog(
-    title: String,
-    description: String,
-    onDismiss: () -> Unit,
-    onPositiveClick: () -> Unit
-) {
-    val imageLoader = ImageLoader.Builder(LocalContext.current)
-        .componentRegistry {
-            if (Build.VERSION.SDK_INT >= 28) {
-                add(ImageDecoderDecoder(LocalContext.current))
-            } else {
-                add(GifDecoder())
-            }
-        }
-        .build()
-    Dialog(
-        onDismissRequest = { onDismiss() },
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .padding(16.dp)
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Image(
-                    painter = rememberImagePainter(
-                        imageLoader = imageLoader,
-                        data = com.grocery.mandixpress.R.drawable.success,
-                        builder = {
-                        },
-                    ),
-                    alignment = Alignment.TopCenter,
-                    contentDescription = null,
-                    modifier = Modifier.size(60.dp)
-                )
-                Text14_h2(text = title)
-                Text11_body2(
-                    text = description,
-                )
 
-            }
-        }
-    }
-}
 
 @Composable
 fun AutoRequestCallPermission(phoneNumber: String) {

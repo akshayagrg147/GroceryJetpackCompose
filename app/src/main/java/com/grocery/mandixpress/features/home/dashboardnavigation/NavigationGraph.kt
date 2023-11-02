@@ -13,7 +13,7 @@ import com.grocery.mandixpress.features.home.Modal.profileScreen
 import com.grocery.mandixpress.features.home.ui.CartScreen
 import com.grocery.mandixpress.features.home.ui.screens.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
-import com.grocery.mandixpress.features.splash.ProfileScreenNavigation
+import com.grocery.mandixpress.features.home.ui.screens.ProfileScreenNavigation
 import com.grocery.mandixpress.features.splash.splashnavigation.ItemScreenNavigation
 import com.grocery.mandixpress.features.splash.ui.screens.ListItems
 import com.grocery.mandixpress.features.splash.ui.screens.MapScreen

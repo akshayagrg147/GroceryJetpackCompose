@@ -1,6 +1,7 @@
-package com.grocery.mandixpress.features.splash
+package com.grocery.mandixpress.features.home.ui.screens
 
 import android.app.Activity
+import android.os.Build
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -15,10 +16,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.ImageLoader
+import coil.compose.rememberImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.google.accompanist.flowlayout.FlowRow
 import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
@@ -39,7 +47,6 @@ fun ProfileScreenNavigation(navController: NavHostController, context: Activity)
     OrderHistoryScreen(context, navController)
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun OrderHistoryScreen(
     context: Activity,
@@ -50,7 +57,10 @@ fun OrderHistoryScreen(
     var selected by remember { mutableStateOf(0) }
 
     val orderListResponse by viewModal.orderhistorydata.collectAsState()
-
+    val cancelResponseData by viewModal.cancelResponseLiveData.collectAsState()
+    if(cancelResponseData.data?.statusCode==200)
+        CustomDialog(title = "Order Deleted", description = "Your order has been deleted successfully",
+           )
     LaunchedEffect(key1 = selected) {
         if (selected == 0)
             viewModal.onEvent(ProfileEvent.OrderEvent("Ordered"))
@@ -140,7 +150,7 @@ fun OrderHistoryScreen(
                     }
                 }
             } else {
-                noItemound()
+                noItemFound()
             }
 
 
@@ -289,7 +299,7 @@ fun formatDate(inputDate: String): String {
 }
 
 @Composable
-fun noItemound() {
+fun noItemFound() {
     Column(modifier = Modifier.fillMaxSize(), Arrangement.Center) {
         Box(
             modifier = Modifier
@@ -314,6 +324,48 @@ fun noItemound() {
 
     }
 
+}
+
+@Composable
+fun CustomDialog(title: String, description: String) {
+    val imageLoader = ImageLoader.Builder(LocalContext.current)
+        .componentRegistry {
+            if (Build.VERSION.SDK_INT >= 28) {
+                add(ImageDecoderDecoder(LocalContext.current))
+            } else {
+                add(GifDecoder())
+            }
+        }
+        .build()
+
+    Dialog(
+        onDismissRequest = { /* Handle dismissal if needed */ },
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .padding(16.dp)
+                .background(whiteColor) // Set the background color to white
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Image(
+                    painter = rememberImagePainter(
+                        imageLoader = imageLoader,
+                        data = R.drawable.success,
+                        builder = {}
+                    ),
+                    alignment = Alignment.TopCenter,
+                    contentDescription = null,
+                    modifier = Modifier.size(60.dp)
+                )
+                Text12_h1(text = title)
+                Text11_body2(text = description)
+            }
+        }
+    }
 }
 
 @Composable

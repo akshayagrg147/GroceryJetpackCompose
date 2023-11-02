@@ -31,9 +31,9 @@ class ProfileViewModal @Inject constructor(
     var responseLiveData = userProfileResponse.asStateFlow()
     private set
 
-    private val cancelResponse: MutableSharedFlow<ApiState<commonResponse>> =
-        MutableSharedFlow()
-    var cancelResponseLiveData = cancelResponse.asSharedFlow()
+    private val cancelResponse: MutableStateFlow<CommonUiObjectResponse<commonResponse>> =
+        MutableStateFlow(CommonUiObjectResponse())
+    var cancelResponseLiveData = cancelResponse.asStateFlow()
         private set
 
     private val orderhistory: MutableStateFlow<CommonUiObjectResponse<AllOrdersHistoryList>> =
@@ -124,16 +124,16 @@ fun callingOrderStatus(orderRequest: OrderStatusRequest) {
             }
             is  ProfileEvent.cancelOrder->viewModelScope.launch {
                 repository.cancelOrder(event.data)
-                    .onStart {
-                        cancelResponse.emit(ApiState.Loading)
+                    .doOnSuccess {
+                        cancelResponse.value= CommonUiObjectResponse(data=it)
                     }
-                    .catch {
-                        cancelResponse.emit(ApiState.Failure(it))
+                    .doOnFailure {
+                        cancelResponse.value=CommonUiObjectResponse(error=it?.message?:"something went wrong")
                     }
-                    .collect { response ->
-                        val uiObjectResponse = CommonUiObjectResponse(data = response)
-                        cancelResponse.emit(uiObjectResponse.data!!)
-                    }
+                    .doOnLoading {
+                        cancelResponse.value=CommonUiObjectResponse(isLoading = true)
+                    }.collect()
+
 
 
             }

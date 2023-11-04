@@ -1,10 +1,13 @@
-package com.grocery.mandixpress.features.home.ui
+package com.grocery.mandixpress.features.home.ui.screens
+
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -12,16 +15,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.background
-import androidx.compose.material.Card
-import androidx.compose.runtime.Composable
-
-import androidx.compose.ui.unit.dp
-
-
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -35,31 +31,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
-
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-
-import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.common.SwipeButton
 import com.grocery.mandixpress.data.modal.OrderIdCreateRequest
+import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.features.home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.CartEvent
 import com.grocery.mandixpress.features.home.ui.viewmodal.CartItemsViewModal
 import com.grocery.mandixpress.features.splash.splashnavigation.ScreenRoute
+import com.grocery.mandixpress.roomdatabase.CartItems
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Box as Box1
+
 
 private val headerHeight = 150.dp
 private val toolbarHeight = 56.dp
@@ -84,6 +81,7 @@ fun CartScreen(
 
     val scope = rememberCoroutineScope()
     var passCoupon by remember { mutableStateOf(false) }
+    val request:OrderIdCreateRequest=OrderIdCreateRequest(null,null,null,null,null,null,)
 
     var isDialog by remember { mutableStateOf(false) }
     val modalBottomSheetState = rememberModalBottomSheetState(
@@ -92,6 +90,7 @@ fun CartScreen(
     )
 
     val choose: MutableState<Boolean> = remember { mutableStateOf(false) }
+    val codClicked: MutableState<Boolean> = remember { mutableStateOf(false) }
     var addressvalue: String? = null
     val order: ArrayList<OrderIdCreateRequest.Order> = ArrayList()
 
@@ -99,6 +98,11 @@ fun CartScreen(
     viewModal.getSavingAmount()
     if (isDialog)
         CommonProgressBar()
+if(codClicked.value)
+    UPIPaymentConfirmationDialog(context) {
+        viewModal.onEvent(CartEvent.createOrderId(request))
+
+    }
 
 
     val orderIDResponse by viewModal.createOrderIdState.collectAsState()
@@ -424,8 +428,8 @@ fun CartScreen(
                                     choose.value = true
                                 }
                                 "ProceedButton" -> {
-                                    isDialog = true
-                                    val request = OrderIdCreateRequest(
+                                  //  isDialog = true
+                                    var request = OrderIdCreateRequest(
                                         orderList = order,
                                         address = addressvalue,
                                         paymentmode = "COD",
@@ -435,7 +439,13 @@ fun CartScreen(
 
 
                                         )
-                                    viewModal.onEvent(CartEvent.createOrderId(request))
+                                    upiPayment(viewModal.totalPriceState.value.toString(),context,request){
+                                        request=it
+                                        codClicked.value=true
+
+                                    }
+
+
 
 
                                 }
@@ -523,6 +533,41 @@ fun CartScreen(
 
     }
 }
+
+fun upiPayment(price: String,context:Context,orderRequest:
+OrderIdCreateRequest,codClicked:(orderRequest: OrderIdCreateRequest)->Unit) {
+    val packageManager: PackageManager = context.packageManager
+    val packageInfoList = packageManager.getInstalledPackages(0)
+    val upiAppPackageNames: MutableList<String> = ArrayList()
+    for (packageInfo in packageInfoList) {
+        if (packageInfo.packageName.contains("upi")) {
+            upiAppPackageNames.add(packageInfo.packageName)
+        }
+    }
+
+    // Create a deeplink to the UPI app of the user's choice.
+
+    // Create a deeplink to the UPI app of the user's choice.
+    if(upiAppPackageNames.isNotEmpty()){
+        val upiAppPackageName = upiAppPackageNames[0]
+        var upiId="7508075534@upi"
+        val payeeName="Akshay kumar"
+        val amount=price
+        val intent =
+            Intent(Intent.ACTION_VIEW, Uri.parse("upi://pay?pa=$upiId&pn=$payeeName&am=$amount"))
+        intent.setPackage(upiAppPackageName)
+
+        // Start the UPI app with the deeplink.
+
+        // Start the UPI app with the deeplink.
+        context. startActivity(intent)
+    }
+    else{
+      codClicked(orderRequest)
+    }
+
+
+}
 /*@Composable
 fun BottomCurvedShape(): Shape = androidx.compose.ui.draw.clip(CurvedShape())
 
@@ -561,6 +606,36 @@ fun CustomShape() {
         }
     }
 }*/
+@Composable
+fun UPIPaymentConfirmationDialog(context: Context,
+    onConfirmCashOnDelivery: () -> Unit
+) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "UPI Payment Not Available") },
+            text = { Text(text = "UPI payment is not available on your device. Do you want to confirm with cash on delivery?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onConfirmCashOnDelivery()
+                        showDialog = false
+                    }
+                ) {
+                    Text(text = "Yes")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showDialog = false }
+                ) {
+                    Text(text = "No")
+                }
+            }
+      )
+    }}
 
 
 

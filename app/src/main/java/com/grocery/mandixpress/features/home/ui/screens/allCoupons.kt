@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.features.home.domain.modal.CouponResponse
-import com.grocery.mandixpress.features.home.ui.noHistoryAvailable
 import com.grocery.mandixpress.features.home.ui.viewmodal.CouponEvents
 import com.grocery.mandixpress.features.home.ui.viewmodal.CouponViewModel
 import kotlinx.coroutines.launch

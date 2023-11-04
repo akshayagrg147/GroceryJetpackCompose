@@ -10,7 +10,7 @@ import com.grocery.mandixpress.data.modal.AllOrdersHistoryList
 import com.grocery.mandixpress.data.modal.OrderIdResponse
 import com.grocery.mandixpress.data.modal.PassingAddress
 import com.grocery.mandixpress.features.home.Modal.profileScreen
-import com.grocery.mandixpress.features.home.ui.CartScreen
+import com.grocery.mandixpress.features.home.ui.screens.CartScreen
 import com.grocery.mandixpress.features.home.ui.screens.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.features.home.ui.screens.ProfileScreenNavigation

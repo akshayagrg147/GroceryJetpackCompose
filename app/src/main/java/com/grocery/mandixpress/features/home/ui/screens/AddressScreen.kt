@@ -1,5 +1,6 @@
 package com.grocery.mandixpress.features.home.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,9 +27,11 @@ import com.grocery.mandixpress.features.home.ui.viewmodal.AddressViewModal
 fun addressScreen(
     address: PassingAddress,
     navController: NavHostController,
+    data:String?=null,
 
     viewModal: AddressViewModal = hiltViewModel()
 ) {
+    Log.d("datavalue","$data")
     val context = LocalContext.current.getActivity()
     val name = remember { mutableStateOf("") }
     val phonenumber = remember { mutableStateOf("") }
@@ -206,11 +209,18 @@ fun addressScreen(
                             )
                         )
                         if (response.isCompleted) {
-                            navController.navigate(DashBoardNavRoute.AddressScreen.screen_route) {
-                                popUpTo(DashBoardNavRoute.AddressScreen.screen_route) {
+                            if(data?.contains("address")!=true)
+                            navController.navigate(DashBoardNavRoute.CartScreen.screen_route) {
+                                popUpTo(DashBoardNavRoute.CartScreen.screen_route) {
                                     inclusive = true
                                 }
                             }
+                            else
+                                navController.navigate(DashBoardNavRoute.AddressScreen.screen_route) {
+                                    popUpTo(DashBoardNavRoute.AddressScreen.screen_route) {
+                                        inclusive = true
+                                    }
+                                }
                         }
                     } else
                         viewModal.saveAddress(
@@ -225,11 +235,18 @@ fun addressScreen(
 
                                 )
                         )
-                    navController.navigate(DashBoardNavRoute.AddressScreen.screen_route) {
-                        popUpTo(DashBoardNavRoute.AddressScreen.screen_route) {
-                            inclusive = true
+                    if(data?.contains("address")!=true)
+                        navController.navigate(DashBoardNavRoute.CartScreen.screen_route) {
+                            popUpTo(DashBoardNavRoute.CartScreen.screen_route) {
+                                inclusive = true
+                            }
                         }
-                    }
+                    else
+                        navController.navigate(DashBoardNavRoute.AddressScreen.screen_route) {
+                            popUpTo(DashBoardNavRoute.AddressScreen.screen_route) {
+                                inclusive = true
+                            }
+                        }
 
 
                 } else

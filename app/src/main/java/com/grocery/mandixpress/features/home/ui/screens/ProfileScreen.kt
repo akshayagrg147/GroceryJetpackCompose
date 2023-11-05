@@ -153,7 +153,7 @@ fun profileScreen(
                             modifier = Modifier
                                 .padding(start = 15.dp, top = 5.dp)
                                 .clickable {
-                                    navController.navigate(DashBoardNavRoute.AddressScreen.screen_route)
+                                    navController.navigate(DashBoardNavRoute.AddressScreen.senddata("address"))
                                 })
                     }
 

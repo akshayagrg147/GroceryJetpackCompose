@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -428,7 +429,7 @@ if(codClicked.value)
                                     choose.value = true
                                 }
                                 "ProceedButton" -> {
-                                  //  isDialog = true
+                                    isDialog = true
                                     var request = OrderIdCreateRequest(
                                         orderList = order,
                                         address = addressvalue,
@@ -439,18 +440,19 @@ if(codClicked.value)
 
 
                                         )
-                                    upiPayment(viewModal.totalPriceState.value.toString(),context,request){
-                                        request=it
-                                        codClicked.value=true
-
-                                    }
+                                    viewModal.onEvent(CartEvent.createOrderId(request))
+//                                    upiPayment(viewModal.totalPriceState.value.toString(),context,request){
+//                                        request=it
+//                                        codClicked.value=true
+//
+//                                    }
 
 
 
 
                                 }
                                 "addressEmpty" -> {
-                                    navController.navigate(ScreenRoute.AddressScreen.route)
+                                    navController.navigate(DashBoardNavRoute.AddressScreen.screen_route)
                                 }
 
                                 else -> {
@@ -540,7 +542,8 @@ OrderIdCreateRequest,codClicked:(orderRequest: OrderIdCreateRequest)->Unit) {
     val packageInfoList = packageManager.getInstalledPackages(0)
     val upiAppPackageNames: MutableList<String> = ArrayList()
     for (packageInfo in packageInfoList) {
-        if (packageInfo.packageName.contains("upi")) {
+        Log.d("itemclicked","cod $packageInfo")
+        if (packageInfo.packageName.contains("phonepe")) {
             upiAppPackageNames.add(packageInfo.packageName)
         }
     }
@@ -549,20 +552,18 @@ OrderIdCreateRequest,codClicked:(orderRequest: OrderIdCreateRequest)->Unit) {
 
     // Create a deeplink to the UPI app of the user's choice.
     if(upiAppPackageNames.isNotEmpty()){
-        val upiAppPackageName = upiAppPackageNames[0]
-        var upiId="7508075534@upi"
-        val payeeName="Akshay kumar"
-        val amount=price
-        val intent =
-            Intent(Intent.ACTION_VIEW, Uri.parse("upi://pay?pa=$upiId&pn=$payeeName&am=$amount"))
-        intent.setPackage(upiAppPackageName)
-
-        // Start the UPI app with the deeplink.
-
-        // Start the UPI app with the deeplink.
-        context. startActivity(intent)
+        codClicked(orderRequest)
+//        val upiAppPackageName = upiAppPackageNames[0]
+//        var upiId="7508075534@upi"
+//        val payeeName="Akshay kumar"
+//        val amount=price
+//        val intent =
+//            Intent(Intent.ACTION_VIEW, Uri.parse("upi://pay?pa=$upiId&pn=$payeeName&am=$amount"))
+//        intent.setPackage(upiAppPackageName)
+//        context. startActivity(intent)
     }
     else{
+        Log.d("itemclicked","cod called")
       codClicked(orderRequest)
     }
 
@@ -610,7 +611,7 @@ fun CustomShape() {
 fun UPIPaymentConfirmationDialog(context: Context,
     onConfirmCashOnDelivery: () -> Unit
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(true) }
 
     if (showDialog) {
         AlertDialog(
@@ -634,504 +635,504 @@ fun UPIPaymentConfirmationDialog(context: Context,
                     Text(text = "No")
                 }
             }
-      )
+        )
     }}
 
 
 
 
-@Composable
-private fun Header(scroll: ScrollState, headerHeightPx: Float, viewModal: CartItemsViewModal) {
-    Box1(modifier = Modifier
-        .fillMaxWidth()
-        .graphicsLayer {
-            translationY = -scroll.value.toFloat() / 2f // Parallax effect
-            alpha = (-1f / headerHeightPx) * scroll.value + 1
-        }) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-
-
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp)
-                    .clickable {
-                        //  navController.navigate(ScreenRoute.CartScreen.route)
-                    },
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text14_h1(text = "Checkout", color = Color.Black)
-            }
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Card(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(10.dp),
-                backgroundColor = Teal200, modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxWidth()
-                    .height(30.dp)
-                    .padding(horizontal = 10.dp)
-                    .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
-            ) {
-
-
-                Row(
-                    modifier = Modifier, Arrangement.SpaceBetween
-
-                ) {
-                    Text12_body1(
-                        text = "Your total savings", whiteColor, modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(start = 10.dp)
-                    )
-                    Text12_body1(
-                        text = "₹ ${viewModal.savingAmountState.value}",
-                        color = whiteColor,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(end = 20.dp)
-                    )
-
-
-                }
-
-
-            }
-        }
-
-
-    }
-}
-
-@Composable
-fun Body(
-    order: ArrayList<OrderIdCreateRequest.Order>,
-    scroll: ScrollState,
-    viewModal: CartItemsViewModal,
-    context: Activity
-) {
-    Column(
-        modifier = Modifier
+    @Composable
+    private fun Header(scroll: ScrollState, headerHeightPx: Float, viewModal: CartItemsViewModal) {
+        Box1(modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 90.dp)
-            .verticalScroll(scroll)
-    ) {
-
-
-        if (viewModal.allCartItemsState.value.isEmpty())
-            noHistoryAvailable("No order available")
-        else {
-
-            for (item in viewModal.allCartItemsState.value) {
-                order.add(
-                    OrderIdCreateRequest.Order(
-                        item.ProductIdNumber,
-                        item.strProductName,
-                        item.strProductPrice.toString(),
-                        item.totalCount.toString()
-                    )
-                )
-                ItemEachRow(item, viewModal, context)
-            }
-
-        }
-
-
-    }
-
-
-}
-
-@Composable
-private fun bottomButton(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float) {
-    val toolbarBottom = headerHeightPx - toolbarHeightPx
-    val showToolbar by remember {
-        derivedStateOf {
-            scroll.value >= toolbarBottom
-        }
-    }
-
-    AnimatedVisibility(
-        visible = showToolbar,
-        enter = fadeIn(animationSpec = tween(300)),
-        exit = fadeOut(animationSpec = tween(300))
-    ) {
-        TopAppBar(
-            modifier = Modifier
-                .background(
-                    brush = Brush.horizontalGradient(
-                        listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
-                    )
-                )
-                .fillMaxWidth(),
-            navigationIcon = {
-                IconButton(
-                    onClick = {},
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "",
-                        tint = Color.Black
-                    )
-                }
-            },
-            title = { Text14_h2("Checkout", color = Color.Black) },
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp
-        )
-    }
-}
-
-
-@Composable
-fun AddressComponent(
-    viewModal: CartItemsViewModal,
-    navController: NavHostController,
-    firstAddress: (String) -> Unit,
-    call: (String) -> Unit, passingaddress: (String) -> Unit
-) {
-
-    val coroutineScope = rememberCoroutineScope()
-    val (isComplete, setIsComplete) = remember {
-        mutableStateOf(false)
-    }
-    val selectedIndex = remember { mutableStateOf(1) }
-    Column(modifier = Modifier.fillMaxSize()) {
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-            // .height(260.dp)
-        ) {
-            if (viewModal.addresslistState.value.size > 1) {
-                firstAddress(
-                    " ${viewModal.addresslistState.value[0].customer_name}\n${viewModal.addresslistState.value[0].Address1}\n${viewModal.addresslistState.value[0].Address2}\n${viewModal.addresslistState.value[0].PinCode}\n${viewModal.addresslistState.value[0].LandMark}"
-                )
-                selectedIndex.value = viewModal.addresslistState.value.first().id.toInt()
-                call("containsData")
-                items(viewModal.addresslistState.value) { data ->
-                    if (data.PinCode == 1) {
-                        AddAddress() {
-                            navController.navigate(ScreenRoute.AddressScreen.route)
-                        }
-                    } else {
-                        val bool =
-                            selectedIndex.value == data.id.toInt()// Define the text color conditionally
-
-                        AddressFiled(data, bool) {
-                            selectedIndex.value = data.id.toInt()
-                            passingaddress(it)
-                        }
-                    }
-                }
-            } else {
-                call("empty")
-            }
-
-        }
-        Spacer(modifier = Modifier.height((2.dp)))
-
-
-
-        if (viewModal.addresslistState.value.size > 1)
-            SwipeButton(
-                text = "Swipe with cod",
-                isComplete = isComplete,
-                backgroundColor = seallcolor,
-                onSwipe = {
-                    call("ProceedButton")
-                },
-            )
-        else
-            CommonButton(
-                text = "Proceed to address",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-            )
-            {
-                if (it)
-                    call("addressEmpty")
-            }
-
-
-    }
-
-
-}
-
-@Composable
-fun AppliedCupon(title: String?, percenage: Int?, clickOnRemove: (Boolean) -> Unit) {
-    Surface(
-        shape = MaterialTheme.shapes.medium,
-        elevation = 4.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            // Image
-            Image(
-                painter = painterResource(id = R.drawable.tick),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-            )
-
-            // Space between Image and Text
-            Spacer(modifier = Modifier.width(8.dp))
-
-            // Text Column
-            Column {
-                Text14_h2(
-                    text = title ?: "null",
-                    color = Color.Black
-                )
-                Text11_body2(
-                    text = " Applied $percenage",
-                    color = Color.Gray
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Text14_h2(
-                text = "Remove",
-                color = lightred,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .clickable {
-                        clickOnRemove(true)
-                    }
-            )
-        }
-
-    }
-
-    // Description Text
-
-}
-
-
-@Composable
-fun noHistoryAvailable(text: String) {
-    Box1(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(250.dp))
-        Text12_body1(text = text, modifier = Modifier.align(Alignment.Center))
-
-
-    }
-
-}
-
-
-@Composable
-fun AddressFiled(
-    data: AddressItems,
-    isSelected: Boolean,
-    onAddressClick: (String) -> Unit
-) {
-    Card(
-        elevation = 0.dp,
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(1.dp, Color.LightGray),
-        backgroundColor = Color.White,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 5.dp)
-            .clip(RoundedCornerShape(1.dp))
-            .clickable {
-                onAddressClick(
-                    "${data.customer_name}\n ${data.Address1}\n ${data.Address2} \n${data.PinCode} \n${data.LandMark}"
-                )
-            }
-    ) {
-        Column(modifier = Modifier.padding(10.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(130.dp)
-            ) {
-                Text12_h1(
-                    text = data.customer_name,
-                    color = headingColor, modifier = Modifier.fillMaxWidth()
-                )
-                if (isSelected)
-                    Text12_h1(
-                        text = "you're here", modifier = Modifier.fillMaxWidth(),
-                        color = Purple700
-                    )
-            }
-            Text11_body2(text = data.Address1, greyLightColor)
-            Text11_body2(text = "${data.Address2}, ${data.PinCode},", greyLightColor)
-            Text11_body2(text = data.LandMark, greyLightColor)
-
-        }
-    }
-}
-
-
-@Composable
-fun AddAddress(call: (Boolean) -> Unit) {
-    val stroke = Stroke(
-        width = 2f,
-        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
-    )
-    androidx.compose.foundation.layout.Box(
-
-        modifier = Modifier
-            .padding(horizontal = 5.dp)
-            .width(140.dp)
-            .height(80.dp)
-            .background(whiteColor)
-            .drawBehind {
-
-                drawRoundRect(color = greyLightColor, style = stroke)
-
-            }
-            .clickable {
-                call(true)
-
-            },
-
-
-        ) {
-        Column(
-            modifier = Modifier
-                .padding(10.dp)
-                .width(150.dp)
-                .height(60.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text11_body2(text = "Add new Address+", color = headingColor)
-
-        }
-    }
-}
-
-@SuppressLint("UnrememberedMutableState")
-@Composable
-fun ItemEachRow(
-    data: CartItems,
-    viewModal: CartItemsViewModal,
-    context: Activity,
-
-
-    ) {
-    //order.add(OrderIdCreateRequest.Order(productId=data.ProductIdNumber, productName = data.strProductName, productprice = data.strProductPrice.toString(), quantity = viewModal.productIdCountState.value.toString()))
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp)
-    ) {
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-
-            Image(
-                painter = rememberImagePainter(data.strCategoryThumb),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(70.dp)
-                    .align(Alignment.CenterVertically)
-            )
+            .graphicsLayer {
+                translationY = -scroll.value.toFloat() / 2f // Parallax effect
+                alpha = (-1f / headerHeightPx) * scroll.value + 1
+            }) {
             Column(
-                modifier = Modifier.padding(start = 20.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+
+
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp)
+                        .clickable {
+                            //  navController.navigate(ScreenRoute.CartScreen.route)
+                        },
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text10_h2(
-                        text = "${data.strProductName}",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .align(Alignment.CenterVertically)
-                    )
-                    IconButton(modifier = Modifier
-                        .height(20.dp)
-                        .width(20.dp), onClick = {
-                        viewModal.deleteProduct(data.ProductIdNumber)
-                        context.showMsg("1 item deleted")
-
-                    }) {
-                        Icon(Icons.Default.Close, contentDescription = "")
-                    }
+                    Text14_h1(text = "Checkout", color = Color.Black)
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
-
-
-
-
-                Text12_with_strikethrough(
-                    text1 = "₹ ${data.strProductPrice}",
-                    text2 = "₹${data.actualprice ?: "0.00"}",
-                    color = headingColor,
-
-                    )
-
-
-//                Text14_400(text = data.strProductName.toString())
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                Card(
+                    elevation = 2.dp,
+                    shape = RoundedCornerShape(10.dp),
+                    backgroundColor = Teal200, modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxWidth()
+                        .height(30.dp)
+                        .padding(horizontal = 10.dp)
+                        .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
                 ) {
-                    Row {
-                        CommonMathButton(icon = R.drawable.minus) {
-                            viewModal.deleteCartItems(data.ProductIdNumber)
 
 
-                        }
+                    Row(
+                        modifier = Modifier, Arrangement.SpaceBetween
+
+                    ) {
                         Text12_body1(
-                            text = data.totalCount.toString(),
+                            text = "Your total savings", whiteColor, modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 10.dp)
+                        )
+                        Text12_body1(
+                            text = "₹ ${viewModal.savingAmountState.value}",
+                            color = whiteColor,
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
-                                .padding(horizontal = 20.dp),
-                            color = Color.Black
+                                .padding(end = 20.dp)
                         )
-                        CommonMathButton(icon = R.drawable.add) {
-                            viewModal.insertCartItem(
-                                data.ProductIdNumber ?: "",
-                                data.strCategoryThumb ?: "",
-                                data.strProductPrice ?: 0,
-                                data.strProductName ?: "",
-                                data.actualprice ?: ""
-                            )
 
 
-                        }
                     }
 
 
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(10.dp))
-        Box1(
+
+        }
+    }
+
+    @Composable
+    fun Body(
+        order: ArrayList<OrderIdCreateRequest.Order>,
+        scroll: ScrollState,
+        viewModal: CartItemsViewModal,
+        context: Activity
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(1.dp)
-                .background(Color.Gray)
-        )
+                .padding(top = 90.dp)
+                .verticalScroll(scroll)
+        ) {
+
+
+            if (viewModal.allCartItemsState.value.isEmpty())
+                noHistoryAvailable("No order available")
+            else {
+
+                for (item in viewModal.allCartItemsState.value) {
+                    order.add(
+                        OrderIdCreateRequest.Order(
+                            item.ProductIdNumber,
+                            item.strProductName,
+                            item.strProductPrice.toString(),
+                            item.totalCount.toString()
+                        )
+                    )
+                    ItemEachRow(item, viewModal, context)
+                }
+
+            }
+
+
+        }
+
 
     }
 
-}
+    @Composable
+    private fun bottomButton(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float) {
+        val toolbarBottom = headerHeightPx - toolbarHeightPx
+        val showToolbar by remember {
+            derivedStateOf {
+                scroll.value >= toolbarBottom
+            }
+        }
+
+        AnimatedVisibility(
+            visible = showToolbar,
+            enter = fadeIn(animationSpec = tween(300)),
+            exit = fadeOut(animationSpec = tween(300))
+        ) {
+            TopAppBar(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
+                        )
+                    )
+                    .fillMaxWidth(),
+                navigationIcon = {
+                    IconButton(
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "",
+                            tint = Color.Black
+                        )
+                    }
+                },
+                title = { Text14_h2("Checkout", color = Color.Black) },
+                backgroundColor = Color.Transparent,
+                elevation = 0.dp
+            )
+        }
+    }
+
+
+    @Composable
+    fun AddressComponent(
+        viewModal: CartItemsViewModal,
+        navController: NavHostController,
+        firstAddress: (String) -> Unit,
+        call: (String) -> Unit, passingaddress: (String) -> Unit
+    ) {
+
+        val coroutineScope = rememberCoroutineScope()
+        val (isComplete, setIsComplete) = remember {
+            mutableStateOf(false)
+        }
+        val selectedIndex = remember { mutableStateOf(1) }
+        Column(modifier = Modifier.fillMaxSize()) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                // .height(260.dp)
+            ) {
+                if (viewModal.addresslistState.value.size > 1) {
+                    firstAddress(
+                        " ${viewModal.addresslistState.value[0].customer_name}\n${viewModal.addresslistState.value[0].Address1}\n${viewModal.addresslistState.value[0].Address2}\n${viewModal.addresslistState.value[0].PinCode}\n${viewModal.addresslistState.value[0].LandMark}"
+                    )
+                    selectedIndex.value = viewModal.addresslistState.value.first().id.toInt()
+                    call("containsData")
+                    items(viewModal.addresslistState.value) { data ->
+                        if (data.PinCode == 1) {
+                            AddAddress() {
+                                navController.navigate(DashBoardNavRoute.AddressScreen.screen_route)
+                            }
+                        } else {
+                            val bool =
+                                selectedIndex.value == data.id.toInt()// Define the text color conditionally
+
+                            AddressFiled(data, bool) {
+                                selectedIndex.value = data.id.toInt()
+                                passingaddress(it)
+                            }
+                        }
+                    }
+                } else {
+                    call("empty")
+                }
+
+            }
+            Spacer(modifier = Modifier.height((2.dp)))
+
+
+
+            if (viewModal.addresslistState.value.size > 1)
+                SwipeButton(
+                    text = "Swipe with cod",
+                    isComplete = isComplete,
+                    backgroundColor = seallcolor,
+                    onSwipe = {
+                        call("ProceedButton")
+                    },
+                )
+            else
+                CommonButton(
+                    text = "Proceed to address",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                )
+                {
+                    if (it)
+                        call("addressEmpty")
+                }
+
+
+        }
+
+
+    }
+
+    @Composable
+    fun AppliedCupon(title: String?, percenage: Int?, clickOnRemove: (Boolean) -> Unit) {
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            elevation = 4.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                // Image
+                Image(
+                    painter = painterResource(id = R.drawable.tick),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                )
+
+                // Space between Image and Text
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Text Column
+                Column {
+                    Text14_h2(
+                        text = title ?: "null",
+                        color = Color.Black
+                    )
+                    Text11_body2(
+                        text = " Applied $percenage",
+                        color = Color.Gray
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text14_h2(
+                    text = "Remove",
+                    color = lightred,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .clickable {
+                            clickOnRemove(true)
+                        }
+                )
+            }
+
+        }
+
+        // Description Text
+
+    }
+
+
+    @Composable
+    fun noHistoryAvailable(text: String) {
+        Box1(modifier = Modifier.fillMaxSize()) {
+            Spacer(modifier = Modifier.height(250.dp))
+            Text12_body1(text = text, modifier = Modifier.align(Alignment.Center))
+
+
+        }
+
+    }
+
+
+    @Composable
+    fun AddressFiled(
+        data: AddressItems,
+        isSelected: Boolean,
+        onAddressClick: (String) -> Unit
+    ) {
+        Card(
+            elevation = 0.dp,
+            shape = RoundedCornerShape(20.dp),
+            border = BorderStroke(1.dp, Color.LightGray),
+            backgroundColor = Color.White,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 5.dp)
+                .clip(RoundedCornerShape(1.dp))
+                .clickable {
+                    onAddressClick(
+                        "${data.customer_name}\n ${data.Address1}\n ${data.Address2} \n${data.PinCode} \n${data.LandMark}"
+                    )
+                }
+        ) {
+            Column(modifier = Modifier.padding(10.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(130.dp)
+                ) {
+                    Text12_h1(
+                        text = data.customer_name,
+                        color = headingColor, modifier = Modifier.fillMaxWidth()
+                    )
+                    if (isSelected)
+                        Text12_h1(
+                            text = "you're here", modifier = Modifier.fillMaxWidth(),
+                            color = Purple700
+                        )
+                }
+                Text11_body2(text = data.Address1, greyLightColor)
+                Text11_body2(text = "${data.Address2}, ${data.PinCode},", greyLightColor)
+                Text11_body2(text = data.LandMark, greyLightColor)
+
+            }
+        }
+    }
+
+
+    @Composable
+    fun AddAddress(call: (Boolean) -> Unit) {
+        val stroke = Stroke(
+            width = 2f,
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+        )
+        androidx.compose.foundation.layout.Box(
+
+            modifier = Modifier
+                .padding(horizontal = 5.dp)
+                .width(140.dp)
+                .height(80.dp)
+                .background(whiteColor)
+                .drawBehind {
+
+                    drawRoundRect(color = greyLightColor, style = stroke)
+
+                }
+                .clickable {
+                    call(true)
+
+                },
+
+
+            ) {
+            Column(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .width(150.dp)
+                    .height(60.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text11_body2(text = "Add new Address+", color = headingColor)
+
+            }
+        }
+    }
+
+    @SuppressLint("UnrememberedMutableState")
+    @Composable
+    fun ItemEachRow(
+        data: CartItems,
+        viewModal: CartItemsViewModal,
+        context: Activity,
+
+
+        ) {
+        //order.add(OrderIdCreateRequest.Order(productId=data.ProductIdNumber, productName = data.strProductName, productprice = data.strProductPrice.toString(), quantity = viewModal.productIdCountState.value.toString()))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+        ) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+
+                Image(
+                    painter = rememberImagePainter(data.strCategoryThumb),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(70.dp)
+                        .align(Alignment.CenterVertically)
+                )
+                Column(
+                    modifier = Modifier.padding(start = 20.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text10_h2(
+                            text = "${data.strProductName}",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                        )
+                        IconButton(modifier = Modifier
+                            .height(20.dp)
+                            .width(20.dp), onClick = {
+                            viewModal.deleteProduct(data.ProductIdNumber)
+                            context.showMsg("1 item deleted")
+
+                        }) {
+                            Icon(Icons.Default.Close, contentDescription = "")
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
+
+
+
+
+
+                    Text12_with_strikethrough(
+                        text1 = "₹ ${data.strProductPrice}",
+                        text2 = "₹${data.actualprice ?: "0.00"}",
+                        color = headingColor,
+
+                        )
+
+
+//                Text14_400(text = data.strProductName.toString())
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row {
+                            CommonMathButton(icon = R.drawable.minus) {
+                                viewModal.deleteCartItems(data.ProductIdNumber)
+
+
+                            }
+                            Text12_body1(
+                                text = data.totalCount.toString(),
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 20.dp),
+                                color = Color.Black
+                            )
+                            CommonMathButton(icon = R.drawable.add) {
+                                viewModal.insertCartItem(
+                                    data.ProductIdNumber ?: "",
+                                    data.strCategoryThumb ?: "",
+                                    data.strProductPrice ?: 0,
+                                    data.strProductName ?: "",
+                                    data.actualprice ?: ""
+                                )
+
+
+                            }
+                        }
+
+
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Box1(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(Color.Gray)
+            )
+
+        }
+
+    }
 
 

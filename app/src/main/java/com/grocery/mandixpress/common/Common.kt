@@ -97,7 +97,9 @@ fun AppButtonComponent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(background, shape = shape),
+            .background(background, shape = shape).clickable {
+            onClick()
+        },
         verticalArrangement = Arrangement.Center
     ) {
         Text12_h1(
@@ -107,9 +109,7 @@ fun AppButtonComponent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp)
-                .clickable {
-                    onClick()
-                }
+
             // Add padding if necessary
         )
     }

@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -50,6 +52,7 @@ class HomeActivity() : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     //    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
                 ) {
+                   // payment()
                     ConnectivityStatus()
                     NavigationGraph(
                         viewModal,
@@ -67,6 +70,35 @@ class HomeActivity() : ComponentActivity() {
 //                    }
 //                }
             }
+        }
+    }
+    fun payment(){
+        val packageManager: PackageManager = packageManager
+        val packageInfoList = packageManager.getInstalledPackages(0)
+        val upiAppPackageNames: MutableList<String> = ArrayList()
+        for (packageInfo in packageInfoList) {
+            Log.d("itemclicked","cod $packageInfo")
+            if (packageInfo.packageName.contains("phonepe")) {
+                upiAppPackageNames.add(packageInfo.packageName)
+            }
+        }
+
+        // Create a deeplink to the UPI app of the user's choice.
+
+        // Create a deeplink to the UPI app of the user's choice.
+        if(upiAppPackageNames.isNotEmpty()){
+            val upiAppPackageName = upiAppPackageNames[0]
+            var upiId="7508075534@upi"
+            val payeeName="Akshay kumar"
+            val amount=1
+            val intent =
+                Intent(Intent.ACTION_VIEW, Uri.parse("upi://pay?pa=akshaygarg147@ybl&pn=Dinesh&am=1&tn=TestPayment&cu=INR"))
+            intent.setPackage(upiAppPackageName)
+
+            // Start the UPI app with the deeplink.
+
+            // Start the UPI app with the deeplink.
+           startActivity(intent)
         }
     }
 

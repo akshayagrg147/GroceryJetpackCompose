@@ -328,7 +328,7 @@ fun ListItems(
                             productdetail.value = it
                             scope.launch { modalBottomSheetState.show() }
                         }
-                        Toolbar(scroll, headerHeightPx, toolbarHeightPx,{sort->
+                        Toolbar(navController,scroll, headerHeightPx, toolbarHeightPx,{sort->
                             if(sort) {
                                 filterclicked = false
                                 productClicked = false
@@ -778,7 +778,7 @@ private fun Body(
 }
 
 @Composable
-private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float, callSort: (Boolean) -> Unit,callFilter:(Boolean)->Unit) {
+private fun Toolbar( navController: NavHostController,scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float, callSort: (Boolean) -> Unit,callFilter:(Boolean)->Unit) {
     val toolbarBottom = headerHeightPx - toolbarHeightPx
     val showToolbar by remember {
         derivedStateOf {
@@ -833,7 +833,7 @@ private fun Toolbar(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx:
             },
             navigationIcon = {
                 IconButton(
-                    onClick = {},
+                    onClick = {  navController.popBackStack()},
                     modifier = Modifier
                         .padding(16.dp)
                         .size(24.dp)

@@ -3,7 +3,10 @@ package com.grocery.mandixpress.features.home.ui.screens
 import android.app.Activity
 import android.os.Build
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,8 +22,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.ImageLoader
@@ -28,14 +29,20 @@ import coil.compose.rememberImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import com.google.accompanist.flowlayout.FlowRow
-import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.Utils.*
+import com.grocery.mandixpress.Utils.CommonHeader
+import com.grocery.mandixpress.Utils.Text12_body1
+import com.grocery.mandixpress.Utils.Text12_h1
+import com.grocery.mandixpress.Utils.Text14_h2
 import com.grocery.mandixpress.common.AppButtonComponent
 import com.grocery.mandixpress.common.AppCustomChips
 import com.grocery.mandixpress.data.modal.AllOrdersHistoryList
 import com.grocery.mandixpress.data.modal.OrderStatusRequest
-import com.grocery.mandixpress.features.home.ui.ui.theme.*
+import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
+import com.grocery.mandixpress.features.home.ui.ui.theme.ShimmerColorShades
+import com.grocery.mandixpress.features.home.ui.ui.theme.headingColor
+import com.grocery.mandixpress.features.home.ui.ui.theme.lightBlueColor
+import com.grocery.mandixpress.features.home.ui.ui.theme.lightred
 import com.grocery.mandixpress.features.home.ui.viewmodal.ProfileEvent
 import com.grocery.mandixpress.features.home.ui.viewmodal.ProfileViewModal
 import java.text.ParseException
@@ -44,12 +51,11 @@ import java.util.*
 
 @Composable
 fun ProfileScreenNavigation(navController: NavHostController, context: Activity) {
-    OrderHistoryScreen(context, navController)
+    OrderHistoryScreen( navController)
 }
 
 @Composable
 fun OrderHistoryScreen(
-    context: Activity,
     navController: NavHostController,
     viewModal: ProfileViewModal = hiltViewModel()
 ) {
@@ -59,7 +65,7 @@ fun OrderHistoryScreen(
     val orderListResponse by viewModal.orderhistorydata.collectAsState()
     val cancelResponseData by viewModal.cancelResponseLiveData.collectAsState()
     if(cancelResponseData.data?.statusCode==200)
-        CustomDialog(title = "Order Deleted", description = "Your order has been deleted successfully",
+        CustomDialog(viewModal,title = "Order Deleted", description = "Your order has been cancelled successfully",
            )
     LaunchedEffect(key1 = selected) {
         if (selected == 0)
@@ -198,7 +204,7 @@ fun OrderHistoryRow(
                     text = "${data.orderId}", color = headingColor
                 )
                 Image(
-                    painter = painterResource(id = com.grocery.mandixpress.R.drawable.order_icon),
+                    painter = painterResource(id = R.drawable.order_icon),
                     contentDescription = "",
                     modifier = Modifier
                         .size(40.dp)
@@ -327,7 +333,7 @@ fun noItemFound() {
 }
 
 @Composable
-fun CustomDialog(title: String, description: String) {
+fun CustomDialog( viewModal: ProfileViewModal,title: String, description: String) {
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .componentRegistry {
             if (Build.VERSION.SDK_INT >= 28) {
@@ -338,34 +344,43 @@ fun CustomDialog(title: String, description: String) {
         }
         .build()
 
-    Dialog(
-        onDismissRequest = { /* Handle dismissal if needed */ },
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .padding(16.dp)
-                .background(whiteColor) // Set the background color to white
-        ) {
+
+    var showDialog by remember { mutableStateOf(true) }
+
+    if (showDialog)
+    AlertDialog(
+        onDismissRequest = {  },
+        title = {
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = rememberImagePainter(
-                        imageLoader = imageLoader,
-                        data = R.drawable.success,
-                        builder = {}
-                    ),
-                    alignment = Alignment.TopCenter,
-                    contentDescription = null,
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier.size(60.dp)
-                )
-                Text12_h1(text = title)
-                Text11_body2(text = description)
+                ) {
+                    Image(
+                        painter = rememberImagePainter( imageLoader = imageLoader,data = R.drawable.success),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+                },
+        text = { Text(text = " $description ") },
+        confirmButton = {
+            Button(
+                onClick = {
+                    showDialog=false
+                    viewModal.onEvent(ProfileEvent.OrderEvent("Ordered"))
+                }
+            ) {
+                Text(text = "ok")
             }
         }
-    }
+
+    )
+
 }
 
 @Composable

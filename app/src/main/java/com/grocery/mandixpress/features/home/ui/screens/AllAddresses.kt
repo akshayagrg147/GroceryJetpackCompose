@@ -119,7 +119,7 @@ fun AddressFiled(
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun AllAddress(navHostController: NavHostController, context: Context) {
+fun AllAddress(navHostController: NavHostController, context: Context,data: String) {
 
     var selected by remember { mutableStateOf(0) }
 
@@ -145,7 +145,7 @@ fun AllAddress(navHostController: NavHostController, context: Context) {
         if (selected == 0)
             allAddress(navHostController)
         else if (selected == 1) {
-            addressScreen(address = PassingAddress(), navController = navHostController)
+            addressScreen(address = PassingAddress(), navController = navHostController,data)
         }
     }
 

@@ -81,8 +81,11 @@ fun AutoUpdateScreen(
             if (result.resultCode == Activity.RESULT_OK) {
                 // Handle successful update
                     if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
-                        if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty())
+                        if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty()) {
                             context.startActivity(Intent(context, HomeActivity::class.java))
+
+                        }
+
                         else {
 
                             navController.navigate(ScreenRoute.LocateMeScreen.route)

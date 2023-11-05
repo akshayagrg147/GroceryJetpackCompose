@@ -1,5 +1,6 @@
 package com.grocery.mandixpress.features.home.dashboardnavigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
@@ -74,7 +75,9 @@ fun NavigationGraph(
             ProfileScreenNavigation(navController, context)
         }
         composable(DashBoardNavRoute.AddressScreen.screen_route) {
-            AllAddress(navController, context)
+            val data = it.arguments?.getString("data") ?: ""
+            Log.d("datavalueget","$data")
+            AllAddress(navController, context,data)
         }
 
         composable(DashBoardNavRoute.CartScreen.screen_route) {

@@ -26,10 +26,12 @@ import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRou
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text12_h1
 import com.grocery.mandixpress.Utils.Text13_body1
+import com.grocery.mandixpress.common.AppButtonComponent
 
 import com.grocery.mandixpress.common.Utils.Companion.showNotification
 import com.grocery.mandixpress.data.modal.OrderIdResponse
 import com.grocery.mandixpress.features.home.ui.ui.theme.headingColor
+import com.grocery.mandixpress.features.home.ui.ui.theme.lightBlueColor
 import com.grocery.mandixpress.features.home.ui.ui.theme.whiteColor
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
 
@@ -219,8 +221,24 @@ fun OrderConfirmation(
                         }
 
 
+
                     }
                 }
+                Spacer(modifier = Modifier.height(5.dp))
+                Box(modifier  = Modifier.height(50.dp).padding(horizontal = 10.dp)){
+                    AppButtonComponent(text = "Go to Orders", background = lightBlueColor) {
+                        navController.navigate(DashBoardNavRoute.AllOrderHistory.screen_route) {
+                            popUpTo(DashBoardNavRoute.Home.screen_route) {
+                                inclusive = true
+                            }
+                        }
+
+
+
+                    }
+                }
+
+
 
             }
         }

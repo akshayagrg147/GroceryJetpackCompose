@@ -9,7 +9,9 @@ sealed class DashBoardNavRoute(var screen_route: String = "") {
     object DashBoardCategoryWisePagination : DashBoardNavRoute("DashBoardCategoryWisePagination")
 
     object Profile : DashBoardNavRoute("Account")
-    object AddressScreen : DashBoardNavRoute("AddressScreen")
+    object AddressScreen : DashBoardNavRoute("{data}/AddressScreen"){
+        fun senddata(data: String) = "$data/AddressScreen"
+    }
     object AllOrderHistory : DashBoardNavRoute("AllOrderHistory")
     object CartScreen : DashBoardNavRoute("CartScreen")
     object OrderSuccessful : DashBoardNavRoute("OrderSuccessful")

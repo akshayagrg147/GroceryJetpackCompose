@@ -3,6 +3,7 @@ package com.grocery.mandixpress.features.splash.splashnavigation
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -18,9 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -210,18 +216,47 @@ fun ItemDetailsScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (l1, l2) = createRefs()
-            Box(modifier = Modifier
-                .constrainAs(l1) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
 
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(l1) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+
+                        .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
+                        ,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(end = 8.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            }
+                    )
+                    Text16_h1(
+                        text = "Product Screen",
+                        modifier = Modifier
+                            .fillMaxWidth()
+
+                            .padding(start = 10.dp),
+                        color = navdrawerColor
+                    )
                 }
-            ) {
                 LazyColumn(
                     //  verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 10.dp)
+                        .constrainAs(l2) {
+                            top.linkTo(l1.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
 //            .padding(bottom = 50.dp)
                     // .verticalScroll(state = scrollState)
 
@@ -229,33 +264,7 @@ fun ItemDetailsScreen(
                     item {
                         //tab view for image
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
 
-                                    .padding(start = 10.dp, top = 15.dp, bottom = 10.dp)
-                                    .align(Alignment.CenterHorizontally),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                        .padding(end = 8.dp)
-                                        .clickable {
-                                            navController.popBackStack()
-                                        }
-                                )
-                                Text16_h1(
-                                    text = "Product Screen",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-
-                                        .padding(start = 10.dp),
-                                    color = navdrawerColor
-                                )
-                            }
                             Spacer(modifier = Modifier.height(10.dp))
                             Card(
                                 elevation = 1.dp,
@@ -441,7 +450,7 @@ fun ItemDetailsScreen(
                                 }
 
                             }
-                            Spacer(modifier = Modifier.height(45.dp))
+                            Spacer(modifier = Modifier.height(150.dp))
                         } else {
 
                         }
@@ -453,7 +462,7 @@ fun ItemDetailsScreen(
             }
 
 
-        }
+
         //view cart
         if (viewModal.totalPriceState.value >= 1)
             cardviewAddtoCart(
@@ -477,16 +486,21 @@ fun PagerDots(
         horizontalArrangement = Arrangement.Center
     ) {
         for (page in 0 until pageCount) {
-            val color = if (page == currentPage) blackColor else Color.Gray
+            val isActive = (page == currentPage)
+            val scale by animateFloatAsState(targetValue = if (isActive) 1.2f else 1.0f)
+            val color = if (isActive) seallcolor else greyLightColor
+
             Box(
                 modifier = Modifier
-                    .size(13.dp).padding(horizontal = 3.dp)
-                    .background(color)
-                    .clip(CircleShape)
+                    .size(13.dp)
+                    .padding(horizontal = 3.dp)
+                    .background(color = color, shape = CircleShape)
+                    .graphicsLayer(scaleX = scale, scaleY = scale)
             )
         }
     }
 }
+
 
 
 @Composable
@@ -672,10 +686,39 @@ fun TabContentScreen(data: String) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text12_body1(text = data, color = greyLightColor)
+        ExpandableText(initialText = data,)
+
 
     }
 }
+@Composable
+fun ExpandableText(initialText: String, maxLines: Int = 3) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    // Limit the number of lines to 'maxLines' when not expanded
+    val textToShow = if (isExpanded) initialText else initialText.split("\n")
+        .take(maxLines)
+        .joinToString("\n")
+
+    Column {
+        Text(
+            text = textToShow,
+            fontSize = 12.sp,
+            color = greyLightColor,
+
+            modifier = Modifier.clickable { isExpanded = !isExpanded }
+        )
+        if (!isExpanded) {
+            Text(
+                text = "Show more",
+                color = iconColor,
+                fontSize = 11.sp,
+                modifier = Modifier.fillMaxWidth().align(Alignment.End).clickable { isExpanded = !isExpanded }
+            )
+        }
+    }
+}
+
 
 
 

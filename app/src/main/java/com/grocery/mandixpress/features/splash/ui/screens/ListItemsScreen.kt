@@ -29,7 +29,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
@@ -46,8 +45,8 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
-import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.common.AddToCartCardView
+import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.home.domain.modal.FilterOptions
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
@@ -599,7 +598,8 @@ fun SubItems(
                                 data.productImage1 ?: "",
                                 data.selling_price?.toInt() ?: 0,
                                 data.productName,
-                                data.orignal_price ?: ""
+                                data.orignal_price ?: "",
+                                data.sellerId.toString()
                             )
                             viewModal.getItemCount()
                             viewModal.getItemPrice()

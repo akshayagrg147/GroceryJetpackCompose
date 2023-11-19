@@ -116,7 +116,7 @@ fun AutoUpdateScreen(
         } else {
             LaunchedEffect(key1 = Unit){
                 delay(500)
-                Log.d("groceryApp", "SplashScreen:${sharedpreferenceCommon.getJwtToken()}  ${sharedpreferenceCommon.getCombinedAddress()}")
+                Log.d("CreateOrderId", "SplashScreen:${sharedpreferenceCommon.getJwtToken()}  ${sharedpreferenceCommon.getCombinedAddress()}")
                 if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
                     if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty() && sharedpreferenceCommon.getCombinedAddress().any { it.isLetter() }) {
                         val intent = Intent(context, HomeActivity::class.java)

@@ -1,6 +1,5 @@
 package com.grocery.mandixpress.features.home.ui.viewmodal
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
@@ -23,9 +22,9 @@ import com.grocery.mandixpress.features.home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.splash.domain.repository.CommonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,8 +39,7 @@ class HomeAllProductsViewModal @Inject constructor(
     val
     sharedPreferences: sharedpreferenceCommon,
     val dao: Dao,
-    @ApplicationContext context: Context,
-    val cat: CallingCategoryWiseData
+    private val cat: CallingCategoryWiseData
 ) : ViewModel() {
     init {
         registerFcmToken()
@@ -221,7 +219,7 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
     fun onEvent(event: HomeEvent) {
-        Log.d("showinggetfcmtoken","${sharedPreferences.getFcmToken()}")
+        Log.d("showinggetfcmtoken", sharedPreferences.getFcmToken())
         when (event) {
             is  HomeEvent.BestSellingEventFlow -> viewModelScope.launch {
                 repository.BestSellingProducts(sharedPreferences.getPostalCode())
@@ -235,7 +233,7 @@ class HomeAllProductsViewModal @Inject constructor(
                             }
                             is ApiState.Failure -> {
 
-                                _bestSelling.value = ComposeUiResponse(error = it?.msg.toString())
+                                _bestSelling.value = ComposeUiResponse(error = it.msg.toString())
                             }
                         }
                     }
@@ -252,7 +250,7 @@ class HomeAllProductsViewModal @Inject constructor(
                                 _exclusive.value = ComposeUiResponse(data = it.data)
                             }
                             is ApiState.Failure->{
-                                _exclusive.value = ComposeUiResponse( error = it?.msg.toString())
+                                _exclusive.value = ComposeUiResponse( error = it.msg.toString())
                             }
                         }
                     }
@@ -270,7 +268,7 @@ class HomeAllProductsViewModal @Inject constructor(
                                 _getProductCategory.value = ComposeUiResponse(data = it.data)
                             }
                             is ApiState.Failure->{
-                                _getProductCategory.value = ComposeUiResponse( error = it?.msg.toString())
+                                _getProductCategory.value = ComposeUiResponse( error = it.msg.toString())
                             }
                         }
                     }
@@ -286,7 +284,7 @@ class HomeAllProductsViewModal @Inject constructor(
                                 _categoryWiseResponse.value = ComposeUiResponse(data = it.data)
                             }
                             is ApiState.Failure->{
-                                _categoryWiseResponse.value = ComposeUiResponse( error = it?.msg.toString())
+                                _categoryWiseResponse.value = ComposeUiResponse( error = it.msg.toString())
                             }
                         }
                     }
@@ -303,7 +301,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                     bannerImage.value = ComposeUiResponse(data = it.data)
                 }
                 is ApiState.Failure->{
-                    bannerImage.value = ComposeUiResponse( error = it?.msg.toString())
+                    bannerImage.value = ComposeUiResponse( error = it.msg.toString())
                 }
             }
         }
@@ -343,7 +341,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                         }
                         is ApiState.Failure -> {
 
-                            bannerCategoryResponse.value = ComposeUiResponse(error = it?.msg.toString())
+                            bannerCategoryResponse.value = ComposeUiResponse(error = it.msg.toString())
 
                         }
                         is ApiState.Loading -> {
@@ -353,7 +351,6 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                     }
                 }
             }
-            else -> {}
         }
     }
 
@@ -379,7 +376,8 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
         thumb: String,
         price: Int,
         productname: String,
-        actualprice: String
+        actualprice: String,
+        sellerId:String
     ) = viewModelScope.launch(Dispatchers.IO) {
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first() ?: 0
         if (intger == 0) {
@@ -390,7 +388,8 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                 price,
                 productname,
                 actualprice,
-                savingAmount = (actualprice.toInt() - price.toInt()).toString()
+                savingAmount = (actualprice.toInt() - price).toString(),
+                sellerId = sellerId,
             )
             roomrespo.insert(data)
         } else if (intger >= 1) {

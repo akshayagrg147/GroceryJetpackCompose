@@ -36,7 +36,9 @@ data class ProductByIdResponseModal(
         @Json(name = "productDescription")
         val ProductDescription: String? = null,
         @Json(name = "rating")
-        val rating: List<Rating?>?
+        val rating: List<Rating?>?,
+        @Json(name = "sellerId")
+        var sellerId:String?=null
     )
 
     @JsonClass(generateAdapter = true)

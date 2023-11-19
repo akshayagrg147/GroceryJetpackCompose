@@ -36,7 +36,9 @@ data class ItemsCollectionsResponse(
         @Json(name = "quantity")
         val quantity: String = "",
         @Json(name = "quantityInstructionController")
-        val quantityInstructionController: String = ""
+        val quantityInstructionController: String = "",
+        @Json(name = "sellerId")
+        var sellerId:String?=null
 
     )
 }

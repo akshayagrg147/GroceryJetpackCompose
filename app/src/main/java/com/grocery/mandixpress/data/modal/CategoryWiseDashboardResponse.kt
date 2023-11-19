@@ -51,7 +51,9 @@ data class CategoryWiseDashboardResponse(
             @Json(name = "quantity")
             val quantity: String?,
             @Json(name = "rating")
-            val rating: List<Rating?>?
+            val rating: List<Rating?>?,
+            @Json(name = "sellerId")
+            var sellerId:String?=null
         ) {
             @JsonClass(generateAdapter = true)
             data class Rating(

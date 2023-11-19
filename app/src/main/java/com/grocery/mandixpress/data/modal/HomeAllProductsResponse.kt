@@ -42,7 +42,9 @@ data class HomeAllProductsResponse(
         @Json(name = "productId")
         val ProductId: String? = null,
         @Json(name = "orignal_price")
-        val orignal_price: String? = null
+        val orignal_price: String? = null,
+        @Json(name = "sellerId")
+        var sellerId:String?=null
 
     ) : Parcelable
 }

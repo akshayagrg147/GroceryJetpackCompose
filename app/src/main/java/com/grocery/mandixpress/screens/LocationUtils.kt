@@ -24,7 +24,7 @@ object LocationUtils {
 
         addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
 
-        if (addresses.isNotEmpty()) {
+        if (addresses?.isNotEmpty()==true) {
             address = addresses[0]
             addressText = address.getAddressLine(0)
         } else{

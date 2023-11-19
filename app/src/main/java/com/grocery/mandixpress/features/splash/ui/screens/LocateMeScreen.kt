@@ -167,7 +167,7 @@ private fun getCityNameByCoordinates(lat: Double, lon: Double): String? {
     var cityname: String = "empty"
     try {
         val addresses: List<Address> =
-            Geocoder(context, Locale.getDefault()).getFromLocation(lat, lon, 10)
+            Geocoder(context!!, Locale.getDefault()).getFromLocation(lat, lon, 10)?: emptyList()
 
         if (addresses.isNotEmpty()) {
             for (adr in addresses) {

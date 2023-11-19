@@ -21,6 +21,10 @@ data class OrderIdCreateRequest(
     var pincode: String?,
     @Json(name = "fcm_token")
     var fcm_token: String? = null,
+    @Json(name = "listOfSellerId")
+    var listOfSellerId:ArrayList<String>?=null,
+    @Json(name = "fcm_tokenSeller")
+    var fcm_tokenSeller:ArrayList<String>?=null,
 
     ) {
     @JsonClass(generateAdapter = true)
@@ -32,6 +36,8 @@ data class OrderIdCreateRequest(
         @Json(name = "productprice")
         val productprice: String?,
         @Json(name = "quantity")
-        val quantity: String?
+        val quantity: String?,
+        @Json(name = "sellerIdList")
+        var sellerIdList:String?,
     )
 }

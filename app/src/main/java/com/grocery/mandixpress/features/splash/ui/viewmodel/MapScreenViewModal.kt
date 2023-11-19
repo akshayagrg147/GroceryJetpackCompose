@@ -24,7 +24,7 @@ class MapScreenViewModal @Inject constructor(val sharedpreference: sharedprefere
                         latitude,
                         longitude,
                         1
-                    ) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                    )?: emptyList() // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
                     return@async addresses
                 }

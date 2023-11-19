@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "6b5a74dae0bf0bedd58e4a256433fc8c",
+    "identityHash": "d1754e0a6fa0523667b531627b3c6d4e",
     "entities": [
       {
         "tableName": "AddressItems",
@@ -52,17 +52,17 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "CartItems",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ProductIdNumber` TEXT, `strCategoryThumb` TEXT, `totalCount` INTEGER, `productPrice` INTEGER, `strProductName` TEXT, `actualprice` TEXT, `SavingAmount` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `ProductIdNumber` TEXT, `strCategoryThumb` TEXT, `totalCount` INTEGER, `productPrice` INTEGER, `strProductName` TEXT, `actualprice` TEXT, `SavingAmount` INTEGER, `sellerId` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -111,13 +111,19 @@
             "columnName": "SavingAmount",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "sellerId",
+            "columnName": "sellerId",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -126,7 +132,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6b5a74dae0bf0bedd58e4a256433fc8c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd1754e0a6fa0523667b531627b3c6d4e')"
     ]
   }
 }

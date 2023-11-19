@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/add.xml" value="0.1" />
-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/minus.xml" value="0.1" />
-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/layout/FilterDialog.xml" value="0.1921875" />
-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/layout/map_layout.xml" value="0.1921875" />
-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/xml/provider_paths.xml" value="0.1921875" />
-      </map>
-    </option>
-  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17_PREVIEW" project-jdk-name="jbr-17" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK" />
 </project>

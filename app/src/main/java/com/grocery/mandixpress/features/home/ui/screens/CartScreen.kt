@@ -4,9 +4,7 @@ package com.grocery.mandixpress.features.home.ui.screens
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -38,7 +36,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
@@ -53,7 +50,6 @@ import com.grocery.mandixpress.features.home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.CartEvent
 import com.grocery.mandixpress.features.home.ui.viewmodal.CartItemsViewModal
-import com.grocery.mandixpress.features.splash.splashnavigation.ScreenRoute
 import com.grocery.mandixpress.roomdatabase.CartItems
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Box as Box1
@@ -62,10 +58,6 @@ import androidx.compose.foundation.layout.Box as Box1
 private val headerHeight = 150.dp
 private val toolbarHeight = 56.dp
 
-private val paddingMedium = 16.dp
-
-private val titlePaddingStart = 16.dp
-private val titlePaddingEnd = 72.dp
 private var sortType by mutableStateOf("")
 
 private const val titleFontScaleStart = 1f
@@ -114,7 +106,10 @@ if(codClicked.value)
                 "orderstatus",
                 orderIDResponse.data
             )
-            viewModal.sendNotification(orderIDResponse.data?.productResponse?.fcm_token ?: "")
+            for(fcm in orderIDResponse.data?.productResponse?.fcm_tokenSeller?: emptyList() ){
+                viewModal.sendNotification(fcm)
+            }
+
             navController.navigate(DashBoardNavRoute.OrderSuccessful.screen_route) {
 //                popUpTo(DashBoardNavRoute.Home.screen_route) {
 //                    inclusive = true
@@ -222,10 +217,10 @@ if(codClicked.value)
                                     )
 
                                 Text12_with_strikethrough(
-                                    text1 = if (viewModal.totalPriceState.value.toInt() < viewModal.getFreeDeliveryMinPrice()
+                                    text1 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
                                             .toInt()
                                     ) "Free" else "₹ 30",
-                                    text2 = if (viewModal.totalPriceState.value.toInt() < viewModal.getFreeDeliveryMinPrice()
+                                    text2 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
                                             .toInt()
                                     ) "₹ 30" else "Free",
                                     color = headingColor,
@@ -430,17 +425,21 @@ if(codClicked.value)
                                 }
                                 "ProceedButton" -> {
                                     isDialog = true
-                                    var request = OrderIdCreateRequest(
+                                    val lsSellerId:ArrayList<String>? = null
+//                                    for(data in order){
+//                                        lsSellerId?.add(data.sellerIdValue.toString())
+//                                    }
+                                    val requestObj = OrderIdCreateRequest(
                                         orderList = order,
                                         address = addressvalue,
                                         paymentmode = "COD",
                                         totalOrderValue = viewModal.totalPriceState.value.toString(),
                                         mobilenumber = sharedpreferenceCommon.getMobileNumber(),
                                         pincode = sharedpreferenceCommon.getPostalCode(),
+                                        listOfSellerId = lsSellerId
+                                    )
 
-
-                                        )
-                                    viewModal.onEvent(CartEvent.createOrderId(request))
+                                    viewModal.onEvent(CartEvent.createOrderId(requestObj))
 //                                    upiPayment(viewModal.totalPriceState.value.toString(),context,request){
 //                                        request=it
 //                                        codClicked.value=true
@@ -733,7 +732,8 @@ fun UPIPaymentConfirmationDialog(context: Context,
                             item.ProductIdNumber,
                             item.strProductName,
                             item.strProductPrice.toString(),
-                            item.totalCount.toString()
+                            item.totalCount.toString(),
+                            item.sellerId
                         )
                     )
                     ItemEachRow(item, viewModal, context)
@@ -1111,7 +1111,8 @@ fun UPIPaymentConfirmationDialog(context: Context,
                                     data.strCategoryThumb ?: "",
                                     data.strProductPrice ?: 0,
                                     data.strProductName ?: "",
-                                    data.actualprice ?: ""
+                                    data.actualprice ?: "",
+                                    data.sellerId.toString()
                                 )
 
 

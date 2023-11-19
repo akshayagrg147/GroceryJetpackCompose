@@ -1027,7 +1027,8 @@ fun ExclusiveOffers(
                                 data.productImage1 ?: "",
                                 data.selling_price?.toInt() ?: 0,
                                 data.productName,
-                                data.selling_price ?: ""
+                                data.selling_price ?: "",
+                                data.sellerId.toString()
                             )
                             //    viewModal.getCartItem()
                             Toast
@@ -1142,7 +1143,8 @@ fun CateoryWiseItems(
                                 data.productImage1 ?: "",
                                 data.selling_price?.toInt() ?: 0,
                                 data.productName,
-                                data.orignalPrice ?: ""
+                                data.orignalPrice ?: "",
+                                data.sellerId.toString()
                             )
                             //    viewModal.getCartItem()
                             Toast
@@ -1261,7 +1263,8 @@ fun BestOffers(
                                 data.productImage1 ?: "",
                                 data.selling_price?.toInt() ?: 0,
                                 data.productName,
-                                data.orignal_price ?: ""
+                                data.orignal_price ?: "",
+                                data.sellerId.toString()
                             )
                             //     viewModal.getCartItem()
                             Toast

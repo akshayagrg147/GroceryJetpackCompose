@@ -138,7 +138,8 @@ fun SearchResult(
                                 data.productImage1 ?: "",
                                 data.selling_price?.toInt() ?: 0,
                                 data.productName,
-                                data.orignal_price ?: ""
+                                data.orignal_price ?: "",
+                                data.sellerId.toString()
                             )
                             viewModal.getItemCount()
                             viewModal.getItemPrice()

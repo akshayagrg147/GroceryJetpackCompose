@@ -129,7 +129,8 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
         thumb: String,
         price: Int,
         productname: String,
-        actualprice: String
+        actualprice: String,
+        sellerId:String
     ) = viewModelScope.launch(Dispatchers.IO) {
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first() ?: 0
         if (intger == 0) {
@@ -140,7 +141,8 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
                 price,
                 productname,
                 actualprice,
-                savingAmount = (actualprice.toInt() - price.toInt()).toString()
+                savingAmount = (actualprice.toInt() - price.toInt()).toString(),
+                sellerId = sellerId
             )
             repo.insert(data)
         } else if (intger >= 1) {
@@ -180,6 +182,7 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
                  viewModelScope.launch {
                      event.request.pincode=sharedpreferenceCommon.getPostalCode()
                      event.request.fcm_token=sharedpreferenceCommon.getFcmToken()
+                     Log.d("orderIdRequest","${event.request}")
                      repository.OrderIdRequest(event.request).doOnLoading {
                          createOrderIdMS.value = CommonUiObjectResponse(isLoading = true,)
 
@@ -216,6 +219,9 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
                     }
                     is ApiState.Failure -> {
                         Log.d("notificationsend", "${it.msg}")
+                    }
+                    else->{
+
                     }
                 }
             }

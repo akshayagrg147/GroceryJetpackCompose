@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grocery.mandixpress.roomdatabase.CartItems
-import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.ApiState
@@ -29,8 +28,7 @@ import javax.inject.Inject
 class ProductByIdViewModal @Inject constructor(
     val sharedpreferenceCommon: sharedpreferenceCommon,
     val repository: CommonRepository,
-    val dao: Dao,
-    val repo: RoomRepository
+    private val repo: RoomRepository
 ) : ViewModel() {
 //count total cart count
     private val totalcount: MutableState<Int> =
@@ -73,11 +71,12 @@ class ProductByIdViewModal @Inject constructor(
             val data = CartItems(
                 value.homeproducts.productId,
                 value.homeproducts.productImage1,
-                intger + 1,
+                 1,
                 Integer.parseInt(value.homeproducts.orignalprice ?: "0"),
                 value.homeproducts.productName!!,
                 value.homeproducts.orignalprice,
-                savingAmount = (value.homeproducts.orignalprice?.toInt()!! - value.homeproducts.selling_price?.toInt()!!).toString()
+                savingAmount = (value.homeproducts.orignalprice?.toInt()!! - value.homeproducts.selling_price?.toInt()!!).toString(),
+                sellerId = value.homeproducts.sellerId.toString(),
             )
             repo.insert(data)
         } else if (intger >= 1) {
@@ -125,7 +124,7 @@ class ProductByIdViewModal @Inject constructor(
 
                                 }
                                 is ApiState.Failure->{
-                                    _eventRelatedSearchFlow.value = ComposeUiResponse( error = it?.msg.toString())
+                                    _eventRelatedSearchFlow.value = ComposeUiResponse( error = it.msg.toString())
                                 }
                                 is ApiState.Loading->{
                                     _eventRelatedSearchFlow.value= ComposeUiResponse( isLoading = true)

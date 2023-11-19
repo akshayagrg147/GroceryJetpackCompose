@@ -33,15 +33,15 @@ data class OrderIdResponse(
         val paymentmode: String? = null,
         @Json(name = "totalOrderValue")
         val totalOrderValue: String? = null,
-        @Json(name = "fcm_token")
-        var fcm_token: String? = null
+        @Json(name = "fcm_tokenSeller")
+        var fcm_tokenSeller:ArrayList<String>?=null,
     ) : Parcelable {
         @Parcelize
         @JsonClass(generateAdapter = true)
         data class Order(
             @Json(name = "productId")
             val productId: String? = null,
-            @Json(name = "product_name")
+            @Json(name = "productName")
             val productName: String? = null,
             @Json(name = "productprice")
             val productprice: String? = null,

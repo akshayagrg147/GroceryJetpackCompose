@@ -3,6 +3,7 @@ package com.grocery.mandixpress.roomdatabase
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.squareup.moshi.Json
 
 @Entity(tableName = "CartItems")
 data class CartItems(
@@ -23,6 +24,8 @@ data class CartItems(
     var actualprice: String?=null,
     @ColumnInfo(name = "SavingAmount")
     var savingAmount: Int?=null,
+    @ColumnInfo(name = "sellerId")
+    var sellerId:String?=null
 
 
 )
@@ -35,8 +38,9 @@ data class CartItems(
         strCategoryDescription: String?,
         actualprice: String?,
          savingAmount: String?=null,
+        sellerId: String?,
 
-        ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription,actualprice,savingAmount?.toInt())
+        ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription,actualprice,savingAmount?.toInt(),sellerId)
 }
 
 

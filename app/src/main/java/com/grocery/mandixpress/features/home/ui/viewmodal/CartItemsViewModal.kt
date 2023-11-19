@@ -181,7 +181,7 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
              is CartEvent.createOrderId->{
                  viewModelScope.launch {
                      event.request.pincode=sharedpreferenceCommon.getPostalCode()
-                     event.request.fcm_token=sharedpreferenceCommon.getFcmToken()
+                    event.request.fcm_token=sharedpreferenceCommon.getFcmToken()
                      Log.d("orderIdRequest","${event.request}")
                      repository.OrderIdRequest(event.request).doOnLoading {
                          createOrderIdMS.value = CommonUiObjectResponse(isLoading = true,)

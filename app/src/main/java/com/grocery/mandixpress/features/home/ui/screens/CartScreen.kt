@@ -74,7 +74,7 @@ fun CartScreen(
 
     val scope = rememberCoroutineScope()
     var passCoupon by remember { mutableStateOf(false) }
-    val request:OrderIdCreateRequest=OrderIdCreateRequest(null,null,null,null,null,null,)
+    val request:OrderIdCreateRequest=OrderIdCreateRequest()
 
     var isDialog by remember { mutableStateOf(false) }
     val modalBottomSheetState = rememberModalBottomSheetState(
@@ -425,10 +425,15 @@ if(codClicked.value)
                                 }
                                 "ProceedButton" -> {
                                     isDialog = true
-                                    val lsSellerId:ArrayList<String>? = null
-//                                    for(data in order){
-//                                        lsSellerId?.add(data.sellerIdValue.toString())
-//                                    }
+                                    val lsSellerId: ArrayList<String>? = ArrayList()
+                                    for(data in order){
+                                        lsSellerId?.add(data.sellerIdName.toString())
+                                        Log.d("CreateOrderId1111", "CartScreen:${data.sellerIdName.toString()}")
+
+                                    }
+                                    Log.d("CreateOrderId1111", "CartScreen:${lsSellerId}")
+
+
                                     val requestObj = OrderIdCreateRequest(
                                         orderList = order,
                                         address = addressvalue,

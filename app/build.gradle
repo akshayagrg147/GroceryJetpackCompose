@@ -38,12 +38,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "base_url", '"https://69ec-103-15-255-161.ngrok-free.app/"'
+            buildConfigField "String", "base_url", '"https://aaa3-103-15-255-142.ngrok-free.app/"'
             buildConfigField "String", "api_key", '"AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U"'
         }
         debug {
 
-            buildConfigField "String", "base_url", '"https://69ec-103-15-255-161.ngrok-free.app/"'
+            buildConfigField "String", "base_url", '"https://aaa3-103-15-255-142.ngrok-free.app/"'
             buildConfigField "String", "api_key", '"AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U"'
         }
     }

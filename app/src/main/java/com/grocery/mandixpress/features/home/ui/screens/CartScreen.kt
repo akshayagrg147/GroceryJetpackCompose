@@ -106,6 +106,7 @@ if(codClicked.value)
                 "orderstatus",
                 orderIDResponse.data
             )
+            Log.d("cartscreenresponse","${orderIDResponse.data?.productResponse?.fcm_tokenSeller}")
             for(fcm in orderIDResponse.data?.productResponse?.fcm_tokenSeller?: emptyList() ){
                 viewModal.sendNotification(fcm)
             }

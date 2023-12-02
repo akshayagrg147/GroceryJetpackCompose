@@ -34,7 +34,7 @@ data class OrderIdResponse(
         @Json(name = "totalOrderValue")
         val totalOrderValue: String? = null,
         @Json(name = "fcm_tokenSeller")
-        var fcm_tokenSeller:ArrayList<String>?=null,
+        var fcm_tokenSeller:List<String>?=null,
     ) : Parcelable {
         @Parcelize
         @JsonClass(generateAdapter = true)

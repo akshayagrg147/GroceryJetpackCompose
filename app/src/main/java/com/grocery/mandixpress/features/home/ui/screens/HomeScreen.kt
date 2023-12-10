@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
@@ -79,7 +80,7 @@ fun Homescreen(
     var requestLocationUpdate by remember { mutableStateOf(true) }
     val scroll: ScrollState = rememberScrollState(0)
     val placesClient: PlacesClient = Places.createClient(LocalContext.current)
-
+    var showNewSeller by remember { mutableStateOf(false) }
     val bottomSheetState =
         rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
@@ -116,6 +117,70 @@ fun Homescreen(
 
                 },
             )
+            if(showNewSeller)
+                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                    val (l1, _) = createRefs()
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Color.White,
+                            shape = RoundedCornerShape(
+                                topStart = 16.dp,
+                                topEnd = 16.dp,
+                                bottomStart = 0.dp,
+                                bottomEnd = 0.dp
+                            )
+                        )
+                        .constrainAs(l1) {
+                            top.linkTo(parent.top)
+
+                        }
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color =
+                                    Color.White, shape = RoundedCornerShape(
+                                        topStart = 16.dp,
+                                        topEnd = 16.dp,
+                                        bottomStart = 0.dp,
+                                        bottomEnd = 0.dp
+                                    )
+                                )
+                        ) {
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 20.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text12_h1(
+                                    text = "other seller Added ,Price may update charges",
+                                    color = headingColor,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
+
+                            }
+                            Spacer(modifier = Modifier.height(5.dp))
+                            CommonButton(
+                                text = "Continue to add cart",
+                                modifier = Modifier.fillMaxWidth()
+                            ){
+
+                            }
+
+
+
+                        }
+
+
+                    }
+
+
+                }
+            else
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -252,7 +317,9 @@ fun Homescreen(
                 }
 
             }
-            BodyDashboard(scroll, viewModal, navcontroller, lazyListState, context)
+            BodyDashboard(scroll, viewModal, navcontroller, lazyListState, context){
+                showNewSeller =true
+            }
             if (searchvisibility)
                 SearchBar() {
                     navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
@@ -319,7 +386,8 @@ private fun BodyDashboard(
 
     viewModal: HomeAllProductsViewModal,
     navcontroller: NavHostController, lazyListState: LazyListState,
-    context: Activity
+    context: Activity,
+    showNewSellerSelected:(Boolean)->Unit
 ) {
 
 
@@ -584,7 +652,10 @@ private fun BodyDashboard(
                             return@LazyRow
                         }
                         items(list1!!) { data ->
-                            ExclusiveOffers(data, context, navcontroller, viewModal)
+                            ExclusiveOffers(data, context, navcontroller, viewModal){
+                                showNewSellerSelected(true)
+
+                            }
                         }
                     }
                 }
@@ -646,7 +717,9 @@ private fun BodyDashboard(
                         val list1 = bestSelling.data?.list
                         if (list1?.isNotEmpty() == true)
                             items(list1) { data ->
-                                BestOffers(navcontroller, data, context, viewModal)
+                                BestOffers(navcontroller, data, context, viewModal){
+                                        showNewSellerSelected(true)
+                                }
                             }
                     }
                 }
@@ -786,7 +859,9 @@ private fun BodyDashboard(
                                                 i
                                             )!!,
                                             context, navcontroller, viewModal, itemSize
-                                        )
+                                        ){
+
+                                        }
                                     }
 
                                 }
@@ -943,7 +1018,8 @@ fun ExclusiveOffers(
     data: HomeAllProductsResponse.HomeResponse,
     context: Context,
     navcontroller: NavHostController,
-    viewModal: HomeAllProductsViewModal
+    viewModal: HomeAllProductsViewModal,
+    showNewSellerSelected:(Boolean)->Unit
 ) {
 
     Card(
@@ -1029,7 +1105,12 @@ fun ExclusiveOffers(
                                 data.productName,
                                 data.selling_price ?: "",
                                 data.sellerId.toString()
-                            )
+                            ){
+                                if(it){
+                                    showNewSellerSelected(true)
+                                    context.showMsg("order through new seller")
+                                }
+                            }
                             //    viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
@@ -1059,7 +1140,8 @@ fun ExclusiveOffers(
 fun CateoryWiseItems(
     data: CategoryWiseDashboardResponse.CategoryItem.ItemData,
     context: Context,
-    navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp
+    navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp,
+    showNewSellerSelected:(Boolean)->Unit
 ) {
 
     Card(
@@ -1145,7 +1227,12 @@ fun CateoryWiseItems(
                                 data.productName,
                                 data.orignalPrice ?: "",
                                 data.sellerId.toString()
-                            )
+                            ){
+                                if(it){
+                                    showNewSellerSelected(true)
+
+                                }
+                            }
                             //    viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
@@ -1176,7 +1263,8 @@ fun BestOffers(
     navcontroller: NavHostController,
     data: HomeAllProductsResponse.HomeResponse,
     context: Context,
-    viewModal: HomeAllProductsViewModal
+    viewModal: HomeAllProductsViewModal,
+    showNewSellerSelected:(Boolean)->Unit
 ) {
     Card(
         elevation = 2.dp,
@@ -1265,7 +1353,13 @@ fun BestOffers(
                                 data.productName,
                                 data.orignal_price ?: "",
                                 data.sellerId.toString()
-                            )
+                            ){
+                                if(it){
+                                    showNewSellerSelected(true)
+
+                                    context.showMsg("order through new seller")
+                                }
+                            }
                             //     viewModal.getCartItem()
                             Toast
                                 .makeText(context, "Added to cart", Toast.LENGTH_SHORT)

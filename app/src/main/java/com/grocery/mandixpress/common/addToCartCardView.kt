@@ -19,6 +19,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.R
+import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text13_body1
@@ -55,7 +56,10 @@ fun AddToCartCardView(
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
-            if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice().toInt()) {
+if(Constants.sellerIdCommon?.isNotEmpty()==true)
+            if (viewmodal.getitempriceState.value < (viewmodal.getFreeDeliveryMinPrice()
+                   .toInt() ?: 0)
+            ) {
                 Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = R.drawable.bike_delivery),
@@ -75,14 +79,18 @@ fun AddToCartCardView(
                             modifier = Modifier.padding(start = 10.dp)
                         )
                         Text10_h2(
-                            text = "Add item worth ${viewmodal.getFreeDeliveryMinPrice().toInt() - viewmodal.getitempriceState.value}",
+                            text = "Add item worth ${(viewmodal.getFreeDeliveryMinPrice()
+                                .toInt() ?: 0) - viewmodal.getitempriceState.value}",
                             color = headingColor,
                             modifier = Modifier.padding(start = 10.dp)
                         )
                     }
                 }
 
-            } else {
+            }
+
+            if(Constants.sellerIdCommon?.isNotEmpty()==true)
+            {
                 Row(modifier = Modifier.padding(start = 10.dp)) {
                     Image(
                         painter = painterResource(id = R.drawable.unlocked),

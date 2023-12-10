@@ -31,22 +31,34 @@ android {
                         "room.expandProjection":"true"]
             }
         }
+//        Properties properties=new Properties()
+//        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+//        buildConfigFields "String","API_KEY","\"${property.getProperties("API_KEY")}\""
     }
-
+//    ndkVersion '26.1.10909125'
+//
+//    externalNativeBuild {
+//
+//        cmake {
+//                path "CMakeLists.txt"
+//            }
+//
+//    }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "base_url", '"https://aaa3-103-15-255-142.ngrok-free.app/"'
+            buildConfigField "String", "base_url", '"https://095d-103-15-255-251.ngrok-free.app/"'
             buildConfigField "String", "api_key", '"AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U"'
         }
         debug {
 
-            buildConfigField "String", "base_url", '"https://aaa3-103-15-255-142.ngrok-free.app/"'
+            buildConfigField "String", "base_url", '"https://095d-103-15-255-251.ngrok-free.app/"'
             buildConfigField "String", "api_key", '"AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U"'
         }
     }
+    ndkVersion
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

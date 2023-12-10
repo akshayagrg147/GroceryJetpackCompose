@@ -140,7 +140,11 @@ fun SearchResult(
                                 data.productName,
                                 data.orignal_price ?: "",
                                 data.sellerId.toString()
-                            )
+                            ){
+                                if(it){
+                                    context.showMsg("order through new seller")
+                                }
+                            }
                             viewModal.getItemCount()
                             viewModal.getItemPrice()
                             Toast

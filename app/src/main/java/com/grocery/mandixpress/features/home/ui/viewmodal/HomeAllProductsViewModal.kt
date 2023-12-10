@@ -13,6 +13,7 @@ import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.Utils.Constants.Companion.sellerIdCommon
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
@@ -27,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -45,12 +47,11 @@ class HomeAllProductsViewModal @Inject constructor(
         registerFcmToken()
         getItemCount()
         getItemPrice()
-
-
     }
 
     //events object
     var myParcelableData: HomeAllProductsResponse? by mutableStateOf(HomeAllProductsResponse())
+
     private val _bestSelling: MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> =
         MutableStateFlow(
             ComposeUiResponse()
@@ -134,14 +135,24 @@ class HomeAllProductsViewModal @Inject constructor(
 
 
     fun setList(response: @RawValue HomeAllProductsResponse) {
-
         listMutable.value = response
         globalmutablelist.value = response
 
     }
-    fun getFreeDeliveryMinPrice():String{
-        return sharedPreferences.getMinimumDeliveryAmount()
+    fun getFreeDeliveryMinPrice(): String {
+        val deliveryModalList = sharedPreferences.getDeliveryModalClass()
+
+        return if (deliveryModalList.isNotEmpty()) {
+            deliveryModalList
+                .filter { it.sellerId == sellerIdCommon }
+                .firstOrNull()
+                ?.price
+                ?: ""
+        } else {
+            ""
+        }
     }
+
 
     fun setvalue(str: String) {
         live.value = str
@@ -316,14 +327,17 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                             }
                             is ApiState.Success->{
                                 val listPinCodeStateModal= mutableListOf<PinCodeStateModal>()
+                                val ls = ArrayList<DeliveryModalClass>()
                                 for(modal in it.data.itemData){
+
+
                                     if(sharedPreferences.getPostalCode()==modal.pincode){
-                                        sharedPreferences.setMinimumDeliveryAmount(modal.price)
-                                        sharedPreferences.setDeliveryContactNumber(modal.deliveryContactNumber)
+                                        ls.add(DeliveryModalClass(sellerId = modal.sellerId,price = modal.price))
                                     }
                                     listPinCodeStateModal.add(PinCodeStateModal(modal.pincode,modal.city?:""))
                                 }
                            sharedPreferences.setAvailablePinCode(listPinCodeStateModal)
+                                sharedPreferences.setDeliveryModalClass(ls)
 
                             }
                             is ApiState.Failure->{
@@ -371,15 +385,20 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
             }
     }
 
+
     fun insertCartItem(
         productIdNumber: String,
         thumb: String,
         price: Int,
         productname: String,
         actualprice: String,
-        sellerId:String
+        sellerId:String,
+        otherSellerAdded:(Boolean)->Unit
     ) = viewModelScope.launch(Dispatchers.IO) {
+
+
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first() ?: 0
+
         if (intger == 0) {
             val data = CartItems(
                 productIdNumber,
@@ -391,9 +410,25 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                 savingAmount = (actualprice.toInt() - price).toString(),
                 sellerId = sellerId,
             )
+            sellerIdCommon=sellerId
             roomrespo.insert(data)
         } else if (intger >= 1) {
+//            val ls:List<DeliveryModalClass> = getFreeDeliveryMinPrice()
+//            var isSellerIdThere=false
+//            val sellerIdList: Flow<List<String>?> = dao.getProductBasedIdCount()
+
+//            runBlocking {
+//                sellerIdList.collect { sellerIdList ->
+//                    sellerIdList?.let {
+//                        isSellerIdThere = it.any { sellerId -> ls.any { it.sellerId == sellerId } }
+//                    }
+//                }
+//            }
+            if(sellerIdCommon==sellerId)
             roomrespo.updateCartItem(intger + 1, productIdNumber)
+            else{
+                otherSellerAdded(true)
+            }
 
         }
 

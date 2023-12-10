@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.RoomRepository
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
@@ -161,7 +162,7 @@ class ProductByIdViewModal @Inject constructor(
         }
     }
     fun getFreeDeliveryMinPrice():String{
-        return sharedpreferenceCommon.getMinimumDeliveryAmount()
+        return sharedpreferenceCommon.getDeliveryModalClass().filter { it.sellerId== Constants.sellerIdCommon }.first().price?:""
     }
 
 }

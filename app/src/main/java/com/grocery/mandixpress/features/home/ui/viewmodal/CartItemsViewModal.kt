@@ -11,6 +11,7 @@ import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
 import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.Constants
+import com.grocery.mandixpress.Utils.Constants.Companion.sellerIdCommon
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
@@ -66,7 +67,7 @@ class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedp
         callingItemsCollectionsId(emitProductId)
     }
     fun getFreeDeliveryMinPrice():String{
-        return sharedpreferenceCommon.getMinimumDeliveryAmount()
+        return sharedpreferenceCommon.getDeliveryModalClass().filter { it.sellerId==sellerIdCommon }.first().price?:""
     }
 
     fun getAllAddressItems() = viewModelScope.launch {

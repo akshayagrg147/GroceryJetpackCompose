@@ -18,6 +18,9 @@ interface Dao {
     @Query("SELECT totalCount FROM CartItems where ProductIdNumber=:ProductIdNumber")
     fun getProductBasedIdCount( ProductIdNumber:String?): Flow<Int?>
 
+    @Query("SELECT sellerId FROM CartItems ")
+    fun getProductBasedIdCount(): Flow<List<String>?>
+
     @Query("SELECT totalCount FROM CartItems where ProductIdNumber=:ProductIdNumber")
     fun getProductBasedIdCount1( ProductIdNumber:String?): Int?
 

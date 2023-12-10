@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.libraries.places.api.Places
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
@@ -23,6 +24,14 @@ class LoginActivity : ComponentActivity() {
     @Inject
     lateinit var sharedPreferences: sharedpreferenceCommon
     private val viewModal: RegisterLoginViewModal by viewModels()
+//    external fun GetMapApiKey(): String
+//    companion object {
+//        init {
+//            System.loadLibrary("keys")
+//        }
+//
+//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initAppIntegrity()
@@ -54,10 +63,3 @@ fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    GroceryAppTheme {
-        Greeting("Android")
-    }
-}

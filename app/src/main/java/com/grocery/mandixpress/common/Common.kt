@@ -38,8 +38,6 @@ import kotlin.math.roundToInt
 
 @Composable
 fun CommonProgressBar(text: String = "Easy shop with Us") {
-
-
     Dialog(
         onDismissRequest = {}, properties = DialogProperties(
             dismissOnClickOutside = false,
@@ -97,10 +95,10 @@ fun AppButtonComponent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(background, shape = shape).clickable {
-            onClick()
-        },
-        verticalArrangement = Arrangement.Center
+            .background(background, shape = shape)
+            .clickable {
+                onClick()
+            }, verticalArrangement = Arrangement.Center
     ) {
         Text12_h1(
             text = text,

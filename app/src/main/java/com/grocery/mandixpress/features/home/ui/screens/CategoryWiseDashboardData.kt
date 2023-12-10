@@ -82,6 +82,7 @@ fun CategoryWiseDashboardAllData(
     val productdetail = remember {
         mutableStateOf(ItemsCollectionsResponse.SubItems())
     }
+    var showNewSeller by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val pager = rememberPagerState(3)
     val modalBottomSheetState =
@@ -117,7 +118,71 @@ fun CategoryWiseDashboardAllData(
                 },
 
                 )
-            ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+            if(showNewSeller)
+                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                val (l1, _) = createRefs()
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Color.White,
+                        shape = RoundedCornerShape(
+                            topStart = 16.dp,
+                            topEnd = 16.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 0.dp
+                        )
+                    )
+                    .constrainAs(l1) {
+                        top.linkTo(parent.top)
+
+                    }
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color =
+                                Color.White, shape = RoundedCornerShape(
+                                    topStart = 16.dp,
+                                    topEnd = 16.dp,
+                                    bottomStart = 0.dp,
+                                    bottomEnd = 0.dp
+                                )
+                            )
+                    ) {
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text12_h1(
+                                text = "other seller Added ,Price may update charges",
+                                color = headingColor,
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        CommonButton(
+                            text = "Continue to add cart",
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+
+                        }
+
+
+
+                    }
+
+
+                }
+
+
+            }
+            else
+                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                 val (l1, _) = createRefs()
                 Box(modifier = Modifier
                     .fillMaxWidth()
@@ -268,7 +333,9 @@ fun CategoryWiseDashboardAllData(
                                     viewModal,
                                     productdetail,
                                     modalBottomSheetState
-                                )
+                                ){
+                                    showNewSeller=true
+                                }
                             } else {
                                 val transition = rememberInfiniteTransition()
                                 val translateAnim by transition.animateFloat(
@@ -343,7 +410,12 @@ fun CategoryWiseDashboardAllData(
                                                     data.productName ?: "",
                                                     data.orignal_price ?: "",
                                                     data.sellerId.toString()
-                                                )
+                                                ){
+                                                    if(it){
+                                                        showNewSeller=true
+                                                        context.showMsg("order through new seller")
+                                                    }
+                                                }
                                                 viewModal.getItemCount()
                                                 viewModal.getItemPrice()
                                                 Toast
@@ -436,7 +508,12 @@ fun CategoryWiseDashboardAllData(
                                                 data.productName ?: "",
                                                 data.orignal_price ?: "",
                                                 data.sellerId.toString()
-                                            )
+                                            ){
+                                                if(it){
+                                                    showNewSeller=true
+                                                    context.showMsg("order through new seller")
+                                                }
+                                            }
                                             viewModal.getItemCount()
                                             viewModal.getItemPrice()
                                             Toast
@@ -496,7 +573,8 @@ fun BodyDashboard(
     list: List<ItemsCollectionsResponse.SubItems>?, context: Context,
     viewModal: HomeAllProductsViewModal,
     productdetail: MutableState<ItemsCollectionsResponse.SubItems>,
-    modalBottomSheetState: ModalBottomSheetState
+    modalBottomSheetState: ModalBottomSheetState,
+    newSellerAdded:(Boolean)->Unit
 ) {
     if (list?.isNotEmpty() == true) {
 
@@ -522,7 +600,13 @@ fun BodyDashboard(
                             data.productName,
                             data.orignal_price,
                             data.sellerId.toString()
-                        )
+                        ){
+                            if(it){
+                                newSellerAdded(true)
+
+
+                            }
+                        }
                         viewModal.getItemCount()
                         viewModal.getItemPrice()
                         context.showMsg("Added to cart")

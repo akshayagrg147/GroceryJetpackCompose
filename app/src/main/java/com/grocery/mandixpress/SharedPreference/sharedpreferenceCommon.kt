@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import com.grocery.mandixpress.data.modal.DeliveryModalClass
 import com.grocery.mandixpress.features.home.ui.viewmodal.PinCodeStateModal
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -116,14 +118,18 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
 
 
     }
-    fun convertListToJson(pincodeList: List<PinCodeStateModal>): String {
+    fun setDeliveryModalClass(deliveryObj: MutableList<DeliveryModalClass>) {
+        val jsonDeliveryList = convertListToJson(deliveryObj)
+        return  mPrefs.edit().putString(AppConstant.minimumAmountDelivery, jsonDeliveryList).apply()
+
+
+    }
+    fun <T>convertListToJson(pincodeList: List<T>): String {
         val gson = Gson()
         return gson.toJson(pincodeList)
     }
-    fun setMinimumDeliveryAmount(pincode: String) {
-        return mPrefs.edit().putString(AppConstant.minimumAmountDelivery, pincode).apply()
 
-    }
+
     fun setDeliveryContactNumber(phone: String) {
         return mPrefs.edit().putString(AppConstant.deliveryContactNumber, phone).apply()
 
@@ -131,9 +137,7 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     fun getDeliveryContactNumber():String{
         return mPrefs.getString(AppConstant.deliveryContactNumber,"").toString()
     }
-    fun getMinimumDeliveryAmount():String{
-        return mPrefs.getString(AppConstant.minimumAmountDelivery,"").toString()
-    }
+
 
     fun getAvailablePinCode(): List<PinCodeStateModal> {
         val jsonPincodeList = mPrefs.getString(AppConstant.availablePinCode, "")
@@ -141,6 +145,24 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         val type = object : TypeToken<List<PinCodeStateModal>>() {}.type
 
         return gson.fromJson(jsonPincodeList, type) ?: emptyList()
+    }
+    fun getDeliveryModalClass(): List<DeliveryModalClass> {
+        val jsonPincodeList = mPrefs.getString(AppConstant.minimumAmountDelivery, "")
+
+        if (jsonPincodeList.isNullOrBlank()) {
+            return emptyList()
+        }
+
+        val gson = Gson()
+        val type = object : TypeToken<List<PinCodeStateModal>>() {}.type
+
+        return try {
+            gson.fromJson(jsonPincodeList, type) ?: emptyList()
+        } catch (e: JsonSyntaxException) {
+
+            // Handle JSON parsing exception
+            emptyList()
+        }
     }
 
 

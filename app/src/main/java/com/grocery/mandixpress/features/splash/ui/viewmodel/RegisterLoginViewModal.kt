@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.grocery.mandixpress.BuildConfig
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.splash.domain.repository.CommonRepository
 import com.grocery.mandixpress.data.modal.RegisterLoginRequest
 import com.grocery.mandixpress.data.modal.RegisterLoginResponse
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterLoginViewModal @Inject constructor(private val repository: CommonRepository, private val shared: sharedpreferenceCommon,@ApplicationContext applicationContext: Context) : ViewModel() {
+class RegisterLoginViewModal @Inject constructor(private val repository: CommonRepository, private val shared: sharedpreferenceCommon, @ApplicationContext applicationContext: Context) : ViewModel() {
 
     init {
         Places.initialize(applicationContext, BuildConfig.api_key)

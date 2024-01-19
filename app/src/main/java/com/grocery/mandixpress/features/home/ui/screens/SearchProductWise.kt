@@ -21,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -42,7 +43,10 @@ import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.features.home.Navigator.gridItems
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
+import com.grocery.mandixpress.roomdatabase.AdminAccessTable
+import com.grocery.mandixpress.roomdatabase.CartItems
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -51,117 +55,162 @@ import java.text.DecimalFormat
 fun SearchResult(
     data: HomeAllProductsResponse.HomeResponse,
     viewModal: HomeAllProductsViewModal,
-    context: Context
+    context: Context,
+    showExtraChargesPopUp:(CartItems,AdminAccessTable, Boolean)->Unit
 ) {
-    Card(
-        elevation = 2.dp,
-        shape = RoundedCornerShape(20.dp),
-        modifier = Modifier
-            .padding(horizontal = 4.dp, vertical = 4.dp)
-            .width(150.dp)
-            .clickable {
-                // navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
-            }
+    Box(
+        modifier = Modifier.fillMaxSize()
 
     ) {
-        Column(
+        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
+        Text11_body2(
+            text = "out of stock",
+            redColor,
+            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+
+        )
+        Card(
+            elevation = 2.dp,
+            shape = RoundedCornerShape(20.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 5.dp, vertical = 15.dp)
-        ) {
-            val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
-                    ?: 0.0f)) * 100
-            )).toString()
-            Text10_h2(
-                text = "${offpercentage}% off", color = sec20timer,
-                modifier = Modifier.align(
-                    Alignment.End
-                ),
+                .padding(horizontal = 4.dp, vertical = 4.dp)
+                .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
-                )
-
-            Image(
-
-                painter = rememberImagePainter(data.productImage1),
-                contentDescription = "splash image",
-                modifier = Modifier
-                    .width(150.dp)
-                    .height(100.dp)
-                    .align(alignment = Alignment.CenterHorizontally)
-
-
-            )
-
-            Text12_h1(
-                text = data.productName!!, color = headingColor,
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Text10_h2(
-                text = "${data.quantityInstructionController}", color = bodyTextColor,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-
-                Text10_h2(
-                    text = "₹ ${data.selling_price}",
-                    color = headingColor,
-                    //  modifier= Modifier.weight(0.5F)
-                )
-                Text(
-                    text = "₹${data.orignal_price ?: "0.00"}",
-                    fontSize = 11.sp,
-                    color = bodyTextColor,
-                    modifier = Modifier.padding(start = 5.dp),
-                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                )
-                Card(
-                    border = BorderStroke(1.dp, titleColor),
-                    modifier = Modifier
-
-                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-                        .padding(start = 20.dp)
-
-                        .background(color = whiteColor)
-                        .clickable {
-                            // response="called"
-                            viewModal.insertCartItem(
-                                data.ProductId ?: "",
-                                data.productImage1 ?: "",
-                                data.selling_price?.toInt() ?: 0,
-                                data.productName,
-                                data.orignal_price ?: "",
-                                data.sellerId.toString()
-                            )
-                            viewModal.getItemCount()
-                            viewModal.getItemPrice()
-                            Toast
-                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
-                                .show()
-
-                            Utils.vibrator(context)
-
-                        },
-
-                    ) {
-                    Text11_body2(
-                        text = "ADD",
-                        availColor,
-                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
-                    )
+                .width(150.dp)
+                .clickable {
+                    // navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
                 }
 
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp, vertical = 15.dp)
+            ) {
+                val originalPrice = data.orignal_price?.toFloat() ?: 0.0f
+                val sellingPrice = data.selling_price?.toFloat() ?: 0.0f
+
+                val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
+
+                val formattedPercentage = DecimalFormat("#.##").format(offPercentage)
+
+                Text10_h2(
+                    text = "${formattedPercentage}% off", color = sec20timer,
+                    modifier = Modifier.align(
+                        Alignment.End
+                    ),
+
+                    )
+
+                Image(
+
+                    painter = rememberImagePainter(data.productImage1),
+                    contentDescription = "splash image",
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(100.dp)
+                        .align(alignment = Alignment.CenterHorizontally)
+
+
+                )
+
+                Text12_h1(
+                    text = data.productName?:"", color = headingColor,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Text10_h2(
+                    text = "${data.quantityInstructionController}", color = bodyTextColor,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(
+                    modifier = Modifier.padding(start = 10.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+
+                    Text10_h2(
+                        text = "₹ ${data.selling_price}",
+                        color = headingColor,
+                        //  modifier= Modifier.weight(0.5F)
+                    )
+                    Text(
+                        text = "₹${data.orignal_price ?: "0.00"}",
+                        fontSize = 11.sp,
+                        color = bodyTextColor,
+                        modifier = Modifier.padding(start = 5.dp),
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                    )
+                    Card(
+                        border = BorderStroke(1.dp, titleColor),
+                        modifier = Modifier
+
+                            .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                            .padding(start = 20.dp)
+
+                            .background(color = whiteColor)
+                            .clickable {
+                                if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0) {
+                                    // response="called"
+                                    viewModal.insertCartItem(
+                                        data.ProductId ?: "",
+                                        data.productImage1 ?: "",
+                                        data.selling_price?.toInt() ?: 0,
+                                        data.productName?:"",
+                                        data.orignal_price ?: "",
+                                        data.sellerId.toString()
+                                    ) { adminAccess, cartItems ->
+                                        if (adminAccess.city != null) {
+                                            showExtraChargesPopUp(cartItems, adminAccess, true)
+
+
+                                        } else {
+                                            MainScope().launch {
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Added to cart",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+
+                                                Utils.vibrator(context)
+                                            }
+                                        }
+
+                                    }
+                                    viewModal.getItemCount()
+                                    viewModal.getItemPrice()
+                                    MainScope().launch {
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                "Added to cart",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
+
+                                        Utils.vibrator(context)
+                                    }
+                                }
+
+                            },
+
+                        ) {
+                        Text11_body2(
+                            text = if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) "Notify" else "ADD",
+                            availColor,
+                            modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                        )
+                    }
+
+
+                }
 
             }
-
         }
     }
 
@@ -181,6 +230,38 @@ fun SearchScreenProducts(
         mutableStateOf(HomeAllProductsResponse())
     }
     val scope = rememberCoroutineScope()
+    var newSellerAddedDialog by remember { mutableStateOf(false) }
+
+
+    if(newSellerAddedDialog)
+        com.grocery.mandixpress.common.CustomDialog(
+            title = "Mandi Express",
+            message = "Delivery charges may change as you are adding to other seller",
+            onShowDialog = {
+                newSellerAddedDialog=false
+
+
+            }
+            , onYesClick = {
+                newSellerAddedDialog=false
+                viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second)
+                { it ->
+                    if (it != 0) {
+                        MainScope().launch {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Added to cart",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+
+                            Utils.vibrator(context)
+                        }
+                    }
+                }
+
+            })
     scope.launch(Dispatchers.IO) {
         viewModal.repo.collectLatest {
             when (it) {
@@ -297,17 +378,23 @@ fun SearchScreenProducts(
                     .fillMaxSize()
             ) {
                 gridItems(
-                    data = responseData.value.list!!,
+                    data = responseData.value.list?: emptyList(),
                     columnCount = 2,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.padding(horizontal = 1.dp)
                 ) { itemData ->
                     if (search.value.isNotEmpty())
-                        SearchResult(itemData, viewModal, context)
+                        SearchResult(itemData, viewModal, context){
+                                cartItem,obj,boolean->
+                            newSellerAddedDialog =boolean
+                            viewModal.tempStoreAdminCartTable(obj,cartItem)
+
+
+                        }
                 }
             }
         }
-        if (viewModal.getitemcountState.value >= 1)
+        if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
             AddToCartCardView(
                 viewModal,
                 navHostController,

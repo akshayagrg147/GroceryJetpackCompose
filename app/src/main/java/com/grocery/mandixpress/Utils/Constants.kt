@@ -11,6 +11,8 @@ class Constants {
         const val BestSelling_collectionProducts ="Customers/BestSelling"
         const val registertoken="Customers/registerCustomertoken"
         const val cancelOrder="Admin/OrderStatus"
+        const val allCategory="Admin/allCategoryItemsCollections"
+
         const val categorywise_collectionProducts ="Customers/HomeCategoryWiseProducts"
         const val availibilityCheck="Customers/AvailibilityCheck"
         const val GetPendingProductById="Customers/GetPendingProductById"

@@ -1,6 +1,7 @@
 package com.grocery.mandixpress.data.network
 
 import com.grocery.mandixpress.Utils.Constants
+import com.grocery.mandixpress.common.base.toResultFlow
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.features.home.domain.modal.CouponResponse
 import com.grocery.mandixpress.features.home.domain.modal.getProductCategory
@@ -38,6 +39,12 @@ interface ApiService {
 
     @POST(Constants.cancelOrder)
     suspend fun cancelOrder(@Body data: OrderStatusRequest): Response<commonResponse>
+
+    @POST(Constants.allCategory)
+    suspend fun dataFetchBasedOnMainCategory(@Body data: ProductIdIdModal): Response<ItemsCollectionsResponse>
+
+
+
 
     @GET(Constants.HomeAllProducts)
     suspend fun getHomeAllProducts(
@@ -121,12 +128,16 @@ class CallingCategoryWiseData {
     ) {
         bannerItemData = bannerItemDat
         if (bannerItemDat.bannercategory1?.isNotEmpty() == true) {
-            if (index == 0) {
-                settingData(bannerItemData.bannercategory1 ?: "", postalCode)
-            } else if (index == 1) {
-                settingData(bannerItemData.bannercategory2 ?: "", postalCode)
-            } else {
-                settingData(bannerItemData.bannercategory3 ?: "", postalCode)
+            when (index) {
+                0 -> {
+                    settingData(bannerItemData.bannercategory1 ?: "", postalCode)
+                }
+                1 -> {
+                    settingData(bannerItemData.bannercategory2 ?: "", postalCode)
+                }
+                else -> {
+                    settingData(bannerItemData.bannercategory3 ?: "", postalCode)
+                }
             }
 
 
@@ -139,10 +150,6 @@ class CallingCategoryWiseData {
         }
 
 
-    }
-
-    fun getItemDataClass(): BannerImageResponse.ItemData {
-        return bannerItemData
     }
 
     fun gettingData(): String {

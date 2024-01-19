@@ -26,45 +26,45 @@ data class CategoryWiseDashboardResponse(
         @JsonClass(generateAdapter = true)
         data class ItemData(
             @Json(name = "orignal_price")
-            val orignalPrice: String?,
+            val orignalPrice: String?=null,
             @Json(name = "category")
-            val category: String?,
+            val category: String?=null,
             @Json(name = "DashboardDisplay")
-            val dashboardDisplay: Boolean?,
+            val dashboardDisplay: Boolean?=false,
             @Json(name = "selling_price")
-            val selling_price: String?,
+            val selling_price: String?=null,
             @Json(name = "productDescription")
-            val productDescription: String?,
+            val productDescription: String?=null,
             @Json(name = "productId")
-            val productId: String?,
+            val productId: String?=null,
             @Json(name = "productImage1")
-            val productImage1: String?,
+            val productImage1: String?=null,
             @Json(name = "productImage2")
-            val productImage2: String?,
+            val productImage2: String?=null,
             @Json(name = "quantityInstructionController")
-            val quantityInstructionController: String?,
+            val quantityInstructionController: String?=null,
 
             @Json(name = "productImage3")
-            val productImage3: String?,
+            val productImage3: String?=null,
             @Json(name = "productName")
-            val productName: String?,
+            val productName: String?=null,
             @Json(name = "quantity")
-            val quantity: String?,
+            val quantity: String?=null,
             @Json(name = "rating")
-            val rating: List<Rating?>?,
+            val rating: List<Rating?>?= emptyList(),
             @Json(name = "sellerId")
             var sellerId:String?=null
         ) {
             @JsonClass(generateAdapter = true)
             data class Rating(
                 @Json(name = "customerId")
-                val customerId: String?,
+                val customerId: String?=null,
                 @Json(name = "name")
-                val name: String?,
+                val name: String?=null,
                 @Json(name = "rating")
-                val rating: String?,
+                val rating: String?=null,
                 @Json(name = "remark")
-                val remark: String?
+                val remark: String?=null
             )
         }
     }

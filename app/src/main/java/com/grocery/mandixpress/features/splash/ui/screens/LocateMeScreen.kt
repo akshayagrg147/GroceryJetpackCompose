@@ -33,11 +33,11 @@ import com.grocery.mandixpress.screens.LocationPermissionsAndSettingDialogs
 import java.util.*
 
 @Composable
-fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hiltViewModel()) {
+fun LocateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hiltViewModel()) {
     var mFusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(context!!)
-    var latitude: Double? = null
-    var longitude: Double? = null
+        LocationServices.getFusedLocationProviderClient(context)
+    var latitude: Double? = 0.0
+    var longitude: Double? = 0.0
     var isDialog by remember { mutableStateOf(true) }
     var requestLocationUpdate by remember { mutableStateOf(true) }
     var combinedaddress by remember { mutableStateOf("") }
@@ -55,8 +55,8 @@ fun locateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                         longitude = location.longitude
                         getAddressFromLatLng(
                             context,
-                            latitude!!,
-                            longitude!!,
+                            latitude?:0.0,
+                            longitude?:0.0,
                             mapScreenViewModal
                         ) { lat, lng, addrss, city ->
                             if (addrss != null) {
@@ -149,12 +149,12 @@ fun getAddressFromLatLng(
                 latitude, longitude, it[0], getCityNameByCoordinates(
                     latitude,
                     longitude
-                )!!
+                )
             )
         }
         else{
             callback(
-                latitude!!, longitude!!, null, "empty"
+                latitude, longitude, null, "empty"
             )
         }
     }
@@ -163,8 +163,8 @@ fun getAddressFromLatLng(
 
 
 }
-private fun getCityNameByCoordinates(lat: Double, lon: Double): String? {
-    var cityname: String = "empty"
+private fun getCityNameByCoordinates(lat: Double, lon: Double): String {
+    var cityname = "empty"
     try {
         val addresses: List<Address> =
             Geocoder(context!!, Locale.getDefault()).getFromLocation(lat, lon, 10)?: emptyList()

@@ -22,8 +22,8 @@ class AppPreferenceProvider @Inject constructor(@ApplicationContext private val 
         preferences.edit().putString(USER_ID_TOKEN, value).apply()
     }
 
-    fun getUserIdToken(): String {
-        return preferences.getString(USER_ID_TOKEN, "")!!
+    fun getUserIdToken(): String? {
+        return preferences.getString(USER_ID_TOKEN, "")
     }
 
     fun setAwsUserId(value: String) {
@@ -31,8 +31,8 @@ class AppPreferenceProvider @Inject constructor(@ApplicationContext private val 
 
     }
 
-    fun getAwsUserId(): String {
-        return preferences.getString(AWS_USER_ID, "")!!
+    fun getAwsUserId(): String ?{
+        return preferences.getString(AWS_USER_ID, "")
     }
 
     fun setAwsUserName(value: String) {
@@ -40,8 +40,8 @@ class AppPreferenceProvider @Inject constructor(@ApplicationContext private val 
 
     }
 
-    fun getAwsUserName(): String {
-        return preferences.getString(AWS_USER_NAME, "")!!
+    fun getAwsUserName(): String? {
+        return preferences.getString(AWS_USER_NAME, "")
     }
 
 
@@ -50,8 +50,8 @@ class AppPreferenceProvider @Inject constructor(@ApplicationContext private val 
 
     }
 
-    fun getIsUserLoggedIn(): String {
-        return preferences.getString(IS_USER_LOGGED_IN, "")!!
+    fun getIsUserLoggedIn(): String? {
+        return preferences.getString(IS_USER_LOGGED_IN, "")
     }
 
 
@@ -60,8 +60,8 @@ class AppPreferenceProvider @Inject constructor(@ApplicationContext private val 
 
     }
 
-    fun getTNCAccepted(): String {
-        return preferences.getString(IS_TNC_ACCEPTED, "")!!
+    fun getTNCAccepted(): String ?{
+        return preferences.getString(IS_TNC_ACCEPTED, "")
     }
 
 

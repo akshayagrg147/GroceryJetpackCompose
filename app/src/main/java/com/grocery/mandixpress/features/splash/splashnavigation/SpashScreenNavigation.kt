@@ -5,8 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
-import com.grocery.mandixpress.features.splash.splashnavigation.ScreenRoute
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.splash.ui.screens.*
 
 @Composable
@@ -30,7 +29,7 @@ fun splashScreenNavigation(
             loginScreen(navController, context,sharedPreferences)
         }
         composable(ScreenRoute.LocateMeScreen.route) {
-            locateMeScreen( context)
+            LocateMeScreen( context)
         }
         composable(ScreenRoute.MapScreen.route) {
             MapScreen(navController, context,sharedPreferences)

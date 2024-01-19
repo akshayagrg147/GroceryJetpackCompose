@@ -57,7 +57,7 @@ fun ApplyCoupons(navController: NavController, viewModel: CouponViewModel = hilt
             )
         }
     else {
-        noHistoryAvailable("No Coupons available")
+        NoHistoryAvailable("No Coupons available")
     }
 }
 
@@ -84,7 +84,7 @@ fun SearchBar(searchText: String, onSearchTextChanged: (String) -> Unit) {
 fun CouponList(navController: NavController, coupons: List<CouponResponse.ItemData>) {
 
     LazyColumn {
-        items(coupons) { coupon ->
+        items(coupons?: emptyList(), key = { it.hashCode() }) { coupon ->
             CouponItem(coupon, navController)
         }
     }

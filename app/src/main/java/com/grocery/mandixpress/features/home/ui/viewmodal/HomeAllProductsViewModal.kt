@@ -12,7 +12,7 @@ import com.google.gson.Gson
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
@@ -21,14 +21,18 @@ import com.grocery.mandixpress.di.NetworkModule
 import com.grocery.mandixpress.features.home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.splash.domain.repository.CommonRepository
+import com.grocery.mandixpress.roomdatabase.AdminAccessTable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @HiltViewModel
 class HomeAllProductsViewModal @Inject constructor(
@@ -39,8 +43,9 @@ class HomeAllProductsViewModal @Inject constructor(
     val
     sharedPreferences: sharedpreferenceCommon,
     val dao: Dao,
-    private val cat: CallingCategoryWiseData
-) : ViewModel() {
+    private val cat: CallingCategoryWiseData,
+
+    ) : ViewModel() {
     init {
         registerFcmToken()
         getItemCount()
@@ -48,7 +53,8 @@ class HomeAllProductsViewModal @Inject constructor(
 
 
     }
-
+    var adminAccessTableData=AdminAccessTable()
+    var cartTableData=CartItems()
     //events object
     var myParcelableData: HomeAllProductsResponse? by mutableStateOf(HomeAllProductsResponse())
     private val _bestSelling: MutableStateFlow<ComposeUiResponse<HomeAllProductsResponse>> =
@@ -64,6 +70,14 @@ class HomeAllProductsViewModal @Inject constructor(
             ComposeUiResponse()
         )
     var exclusive = _exclusive.asStateFlow()
+        private set
+
+
+    private val sellerList: MutableStateFlow<ComposeUiResponse<AdminResponse>> =
+        MutableStateFlow(
+            ComposeUiResponse()
+        )
+    var _sellerList = sellerList.asStateFlow()
         private set
 
     private val _categoryWiseResponse: MutableStateFlow<ComposeUiResponse<CategoryWiseDashboardResponse>> =
@@ -315,18 +329,21 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
                             }
                             is ApiState.Success->{
+                                sellerList.value = ComposeUiResponse(data = it.data)
+                                roomrespo.deleteAdminAccessItems()
                                 val listPinCodeStateModal= mutableListOf<PinCodeStateModal>()
                                 for(modal in it.data.itemData){
                                     if(sharedPreferences.getPostalCode()==modal.pincode){
-                                        sharedPreferences.setMinimumDeliveryAmount(modal.price)
                                         sharedPreferences.setDeliveryContactNumber(modal.deliveryContactNumber)
                                     }
                                     listPinCodeStateModal.add(PinCodeStateModal(modal.pincode,modal.city?:""))
+                                    roomrespo.insertAdminDetails(AdminAccessTable(pincode = modal.pincode, price = modal.price, city = modal.city, sellerId = modal.sellerId, deliveryContactNumber = modal.deliveryContactNumber,latitude =modal.lat, longitude=modal.lng))
                                 }
                            sharedPreferences.setAvailablePinCode(listPinCodeStateModal)
 
                             }
                             is ApiState.Failure->{
+                                sellerList.value = ComposeUiResponse(error = it.msg.toString())
 
                             }
                         }
@@ -366,8 +383,11 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
     fun getItemPrice() = viewModelScope.launch {
         roomrespo.getTotalProductItemsPrice()
-            .catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }.collect {
-                totalprice.value = it ?: 0
+            ?.catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }?.collect {
+
+                   totalprice.value = it ?: 0
+
+
             }
     }
 
@@ -377,8 +397,10 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
         price: Int,
         productname: String,
         actualprice: String,
-        sellerId:String
+        sellerId:String,
+        passSellerDetail:(AdminAccessTable,CartItems)->Unit
     ) = viewModelScope.launch(Dispatchers.IO) {
+
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first() ?: 0
         if (intger == 0) {
             val data = CartItems(
@@ -391,7 +413,36 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                 savingAmount = (actualprice.toInt() - price).toString(),
                 sellerId = sellerId,
             )
-            roomrespo.insert(data)
+
+                if(dao.getAllCartItems().first().isEmpty())
+                {   val sellerDetail: AdminAccessTable = dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
+
+                    sharedPreferences.setMinimumDeliveryAmount(sellerDetail.price ?:"")
+                    data.lat=sellerDetail.latitude?.toDouble()
+                    data.lng=sellerDetail.longitude?.toDouble()
+                    roomrespo.insert(data)
+
+                }
+                else{
+                    val sellerIdExist: Boolean = dao.isExistSeller(sellerId)
+
+                    if(!sellerIdExist){
+                        val sellerDetail: AdminAccessTable = dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
+                        passSellerDetail(sellerDetail,data)
+                    }
+                    else{
+                        val sellerDetail: AdminAccessTable = dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
+
+                        sharedPreferences.setMinimumDeliveryAmount(sellerDetail.price ?:"")
+                        data.lat=sellerDetail.latitude?.toDouble()
+                        data.lng=sellerDetail.longitude?.toDouble()
+                        roomrespo.insert(data)
+                        passSellerDetail(AdminAccessTable(),CartItems())
+
+                    }
+                }
+
+
         } else if (intger >= 1) {
             roomrespo.updateCartItem(intger + 1, productIdNumber)
 
@@ -422,9 +473,73 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
         Log.d("kdkkdk", "skksk ${Gson().toJson(filterlist)}")
         listMutable.value = HomeAllProductsResponse(filterlist)
     }
+    fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val R = 6371.0 // Earth radius in kilometers
+
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+                sin(dLon / 2) * sin(dLon / 2)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return R * c
+    }
+    fun getDeliveryChargeBasesOnLatLng(callback: (Double) -> Unit) {
+        val latLngList: MutableList<Pair<Double, Double>> = mutableListOf()
+        var totalKm = 0.00
+
+        viewModelScope.launch {
+            val cartItems = dao.getAllCartItems().first()
+
+            for (value in cartItems) {
+                latLngList.add(Pair(value.lat ?: 0.00, value.lng ?: 0.00))
+            }
+
+            for (i in 0 until latLngList.size - 1) {
+                totalKm += haversine(
+                    latLngList[i].first,
+                    latLngList[i].second,
+                    latLngList[i + 1].first,
+                    latLngList[i + 1].second
+                )
+            }
+
+
+            callback(totalKm)
+        }
+    }
+     fun updateDeliveryCharges(data: AdminAccessTable, cartTableData: CartItems,passStoreDeliveryCharge:(Int)->Unit) {
+       if(sharedPreferences.getMinimumDeliveryAmount().isNotEmpty()) {
+           sharedPreferences.setMinimumDeliveryAmount(
+               (sharedPreferences.getMinimumDeliveryAmount()
+                   .toInt() + (data.price?.toInt() ?: 0)).toString()
+           )
+           viewModelScope.launch(Dispatchers.IO) {
+               cartTableData.lat=data.latitude?.toDouble()
+               cartTableData.lng=data.longitude?.toDouble()
+
+               roomrespo.insert(cartTableData)
+           }
+           passStoreDeliveryCharge(1)
+       }
+         else{
+           passStoreDeliveryCharge(0)
+       }
+
+    }
 
     suspend fun clearDatabase() {
         databaseClearer.clearDatabase()
+    }
+fun getStoreAdminCartTable():Pair<AdminAccessTable,CartItems>{
+    return Pair(adminAccessTableData,cartTableData)
+}
+    fun tempStoreAdminCartTable(accessTable: AdminAccessTable, cartItem: CartItems) {
+        adminAccessTableData=accessTable
+        cartTableData=cartItem
     }
 
 

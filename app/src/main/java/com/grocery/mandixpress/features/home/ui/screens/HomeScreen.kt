@@ -4,6 +4,8 @@ package com.grocery.mandixpress.features.home.ui.screens
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build.VERSION.SDK_INT
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
@@ -19,6 +21,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -34,7 +37,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.ImageLoader
 import coil.compose.rememberImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.size.OriginalSize
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.SizeMode
@@ -46,11 +53,12 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.AddToCartCardView
+import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.common.Utils.Companion.extractSixDigitNumber
-import com.grocery.mandixpress.common.Utils.Companion.vibrator
+import com.grocery.mandixpress.data.modal.AdminResponse
 import com.grocery.mandixpress.data.modal.BannerImageResponse
 import com.grocery.mandixpress.data.modal.CategoryWiseDashboardResponse
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
@@ -59,8 +67,11 @@ import com.grocery.mandixpress.features.home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeEvent
+import com.grocery.mandixpress.roomdatabase.AdminAccessTable
+import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.screens.LocationPermissionsAndSettingDialogs
 import com.grocery.mandixpress.screens.LocationUtils
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.DecimalFormat
@@ -186,7 +197,7 @@ fun Homescreen(
                             val intent = Intent(context, HomeActivity::class.java)
                             intent.flags =
                                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            context.startActivity(intent)
+                            context?.startActivity(intent)
                         }) {
                             Text12_h1(
                                 text = "Use Your Current location",
@@ -221,7 +232,7 @@ fun Homescreen(
                                     val intent = Intent(context, HomeActivity::class.java)
                                     intent.flags =
                                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    context.startActivity(intent)
+                                    context?.startActivity(intent)
                                 } else {
                                     Toast
                                         .makeText(
@@ -329,10 +340,51 @@ private fun BodyDashboard(
     )
     val exlusiveResponse by viewModal.exclusive.collectAsState()
     val categoryWiseResponse by viewModal.categoryWiseResponse.collectAsState()
+    val sellerList by viewModal._sellerList.collectAsState()
     val getProductCategory by viewModal.getProductCategory.collectAsState()
     val bestSelling by viewModal.bestSelling.collectAsState()
     val bannerImage by viewModal._bannerImage.collectAsState()
     var refreshing by remember { mutableStateOf(false) }
+    var newSellerAddedDialog by remember { mutableStateOf(false) }
+
+
+
+    if(newSellerAddedDialog)
+        com.grocery.mandixpress.common.CustomDialog(
+            title = "Mandi Express",
+            message = "Delivery charges may change as you are adding to other seller",
+            onShowDialog = {
+
+                newSellerAddedDialog=false
+
+
+            }
+        , onYesClick = {
+                newSellerAddedDialog=false
+            viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second){it->
+                if(it!=0){
+viewModal.getDeliveryChargeBasesOnLatLng{
+    Log.d("getDeliveryChargeB","$it---")
+    MainScope().launch {
+        Toast
+            .makeText(
+                context,
+                "Added to cart",
+                Toast.LENGTH_SHORT
+            )
+            .show()
+
+        Utils.vibrator(context)
+    }
+
+}
+
+                }
+
+            }
+
+
+        })
 
     LaunchedEffect(key1 = Unit) {
         if (bannerImage.data?.statusCode != 200) {
@@ -583,8 +635,29 @@ private fun BodyDashboard(
                             // availibilty(true)
                             return@LazyRow
                         }
-                        items(list1!!) { data ->
-                            ExclusiveOffers(data, context, navcontroller, viewModal)
+                        items(list1?: emptyList(),key={it.ProductId?:it.hashCode()}) { data ->
+                            ExclusiveOffers(data, context, navcontroller, viewModal){cartItem,accessTable,boolean->
+                                if(accessTable.city!=null){
+                                    viewModal.tempStoreAdminCartTable(accessTable,cartItem)
+                                    newSellerAddedDialog =boolean
+                                }
+                                else
+                                {
+                                    MainScope().launch {
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                "Added to cart",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
+
+                                        Utils.vibrator(context)
+                                    }
+                                }
+
+
+                            }
                         }
                     }
                 }
@@ -646,11 +719,17 @@ private fun BodyDashboard(
                         val list1 = bestSelling.data?.list
                         if (list1?.isNotEmpty() == true)
                             items(list1) { data ->
-                                BestOffers(navcontroller, data, context, viewModal)
+                                BestOffers(navcontroller, data, context, viewModal){
+                                        cartItem,adminAccess,boolean->
+                                    viewModal.tempStoreAdminCartTable(adminAccess, cartItem  )
+                                    newSellerAddedDialog =boolean
+
+                                }
                             }
                     }
                 }
-            } else if (bestSelling.isLoading)
+            }
+            else if (bestSelling.isLoading)
                 LazyRow(
                     modifier = Modifier
                         .padding(top = 15.dp)
@@ -664,6 +743,60 @@ private fun BodyDashboard(
                         }
                     }
                 }
+
+
+            //seller wise data
+            if (sellerList.data != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp), Arrangement.SpaceBetween
+                ) {
+                    Text13_body1(
+                        text = "Shop By Seller", color = Color.Black,
+                        modifier = Modifier
+                            .padding(start = 10.dp),
+                    )
+
+                }
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                    // .height(260.dp)
+                ) {
+
+                    if (sellerList.data?.statusCode == 200) {
+                        val list1 = sellerList.data?.itemData
+                        if (list1?.isNotEmpty() == true)
+                            items(list1) { data ->
+                                shopBySeller(navcontroller, data, context, viewModal){
+                                        cartItem,adminAccess,boolean->
+                                    if(boolean) {
+                                        viewModal.tempStoreAdminCartTable(adminAccess, cartItem)
+                                        newSellerAddedDialog = boolean
+                                    }
+
+                                }
+                            }
+                    }
+                }
+            }
+            else if (bestSelling.isLoading)
+                LazyRow(
+                    modifier = Modifier
+                        .padding(top = 15.dp)
+                        .fillMaxWidth()
+                    // .height(260.dp)
+                ) {
+                    repeat(5) {
+                        item {
+                            ShimmerAnimation()
+
+                        }
+                    }
+                }
+
 
 //Cateory Wise
             if (getProductCategory.data != null)
@@ -691,7 +824,7 @@ private fun BodyDashboard(
 
                         ) {
                         if (getProductCategory.data?.itemData?.isNotEmpty() == true)
-                            for (i in 0 until getProductCategory.data?.itemData?.size!!) {
+                            for (i in 0 until (getProductCategory.data?.itemData?.size?:-1)) {
                                 GroceriesItems(
                                     whiteColor,
                                     getProductCategory.data?.itemData!![i].imageUrl!!,
@@ -778,15 +911,22 @@ private fun BodyDashboard(
                                     mainAxisSize = SizeMode.Expand,
                                     mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween
                                 ) {
-                                    for (i in 0 until categoryWiseResponse.data?.list?.get(
-                                        it
-                                    )!!.ls?.size!!) {
+                                    for (i in 0 until (categoryWiseResponse.data?.list?.get(it)?.ls?.size?:0)) {
                                         CateoryWiseItems(
-                                            categoryWiseResponse.data?.list?.get(it)!!.ls?.get(
+                                            categoryWiseResponse.data?.list?.get(it)?.ls?.get(
                                                 i
-                                            )!!,
+                                            )?:CategoryWiseDashboardResponse.CategoryItem.ItemData(),
                                             context, navcontroller, viewModal, itemSize
-                                        )
+                                        ){accessTable,cartItem,boolean->
+                                            if(boolean){
+                                                viewModal.tempStoreAdminCartTable(accessTable,cartItem)
+                                                newSellerAddedDialog =boolean
+                                            }
+
+
+
+
+                                        }
                                     }
 
                                 }
@@ -943,113 +1083,133 @@ fun ExclusiveOffers(
     data: HomeAllProductsResponse.HomeResponse,
     context: Context,
     navcontroller: NavHostController,
-    viewModal: HomeAllProductsViewModal
+    viewModal: HomeAllProductsViewModal,
+    showExtraChargesPopUp:(CartItems,AdminAccessTable,Boolean)->Unit
 ) {
-
-    Card(
-        elevation = 2.dp,
-        shape = RoundedCornerShape(20.dp),
-        modifier = Modifier
-            .padding(horizontal = 4.dp)
-            .width(150.dp)
-            .clickable {
-                navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.ProductId!!)) }
-            }
+    Box(
+        modifier = Modifier.fillMaxSize()
 
     ) {
-        Column(
+        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
+        Text11_body2(
+            text = "out of stock",
+            redColor,
+            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+
+        )
+
+        Card(
+            elevation = 2.dp,
+            shape = RoundedCornerShape(20.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 5.dp, vertical = 15.dp)
-        ) {
+                .padding(horizontal = 4.dp)
+                .width(150.dp)
+                .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
-            val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
-                    ?: 0.0f)) * 100
-            )).toString()
-            Text10_h2(
-                text = "${offpercentage}% off", color = sec20timer,
-                modifier = Modifier.align(
-                    Alignment.End
-                ),
-            )
-
-            Image(
-                painter = rememberImagePainter(data.productImage2),
-                contentDescription = "splash image",
-                modifier = Modifier
-                    .width(150.dp)
-                    .height(100.dp)
-                    .align(alignment = Alignment.CenterHorizontally)
-            )
-
-            Text10_h2(
-                text = data.productName!!, color = headingColor,
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Text10_h2(
-                text = "${data.quantityInstructionController}", color = bodyTextColor,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-
-                Text10_h2(
-                    text = "₹ ${data.selling_price}",
-                    color = headingColor,
-                    //  modifier= Modifier.weight(0.5F)
-                )
-                Text(
-                    text = "₹${data.orignal_price ?: "0.00"}",
-                    fontSize = 11.sp,
-                    color = bodyTextColor,
-                    modifier = Modifier.padding(start = 5.dp),
-                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                )
-                Card(
-                    border = BorderStroke(1.dp, titleColor),
-                    modifier = Modifier
-
-                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-                        .padding(start = 20.dp)
-                        .background(color = whiteColor)
-                        .clickable {
-                            // response="called"
-                            viewModal.insertCartItem(
-                                data.ProductId ?: "",
-                                data.productImage1 ?: "",
-                                data.selling_price?.toInt() ?: 0,
-                                data.productName,
-                                data.selling_price ?: "",
-                                data.sellerId.toString()
-                            )
-                            //    viewModal.getCartItem()
-                            Toast
-                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
-                                .show()
-
-                            vibrator(context)
-
-                        },
-
-                    ) {
-                    Text11_body2(
-                        text = "ADD",
-                        availColor,
-                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
-                    )
+                .clickable {
+                    navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.ProductId?:"")) }
                 }
 
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp, vertical = 15.dp)
+            ) {
+
+                val originalPrice = data.orignal_price?.toFloat() ?: 0.0f
+                val sellingPrice = data.selling_price?.toFloat() ?: 0.0f
+
+                val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
+
+                val formattedPercentage = DecimalFormat("#.##").format(offPercentage)
+
+                Text10_h2(
+                    text = "${formattedPercentage}% off", color = sec20timer,
+                    modifier = Modifier.align(
+                        Alignment.End
+                    ),
+                )
+
+                Image(
+                    painter = rememberImagePainter(data.productImage2),
+                    contentDescription = "splash image",
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(100.dp)
+                        .align(alignment = Alignment.CenterHorizontally)
+                )
+
+                Text10_h2(
+                    text = data?.productName?:"", color = headingColor,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Text10_h2(
+                    text = "${data.quantityInstructionController}", color = bodyTextColor,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(
+                    modifier = Modifier.padding(start = 10.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+
+                    Text10_h2(
+                        text = "₹ ${data.selling_price}",
+                        color = headingColor,
+                        //  modifier= Modifier.weight(0.5F)
+                    )
+                    Text(
+                        text = "₹${data.orignal_price ?: "0.00"}",
+                        fontSize = 11.sp,
+                        color = bodyTextColor,
+                        modifier = Modifier.padding(start = 5.dp),
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                    )
+
+                    Card(
+                        border = BorderStroke(1.dp, titleColor),
+                        modifier = Modifier
+
+                            .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                            .padding(start = 20.dp)
+                            .background(color = whiteColor)
+                            .clickable {
+                                // response="called"
+                                viewModal.insertCartItem(
+                                    data.ProductId ?: "",
+                                    data.productImage1 ?: "",
+                                    data.selling_price?.toInt() ?: 0,
+                                    data.productName?:"",
+                                    data.selling_price ?: "",
+                                    data.sellerId.toString()
+                                ) { adminAccess, cartItem ->
+                                    if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
+                                        showExtraChargesPopUp(cartItem, adminAccess, true)
+
+
+                                }
+
+
+                            },
+
+                        ) {
+                        Text11_body2(
+                            text = if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) "Notify" else "ADD",
+
+                            availColor,
+                            modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                        )
+                    }
+
+
+                }
 
             }
-
         }
     }
 }
@@ -1059,114 +1219,144 @@ fun ExclusiveOffers(
 fun CateoryWiseItems(
     data: CategoryWiseDashboardResponse.CategoryItem.ItemData,
     context: Context,
-    navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp
+    navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp,
+    showExtraChargesPopUp:(AdminAccessTable,CartItems,Boolean)->Unit
 ) {
-
-    Card(
-        elevation = 2.dp,
-        shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .padding(start = 1.dp, end = 1.dp, bottom = 1.dp)
-            .width(itemSize)
-            .clickable {
-                navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.productId!!)) }
-            }
+    Box(
+        modifier = Modifier.fillMaxSize()
 
     ) {
-        Column(
+        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
+        Text11_body2(
+            text = "out of stock",
+            redColor,
+            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+
+        )
+        Card(
+            elevation = 2.dp,
+            shape = RoundedCornerShape(10.dp),
             modifier = Modifier
-                .padding(horizontal = 5.dp, vertical = 10.dp)
-        ) {
+                .padding(start = 1.dp, end = 1.dp, bottom = 1.dp)
+                .width(itemSize)
+                .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
-            val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignalPrice?.toFloat()
-                    ?: 0.0f)) * 100
-            )).toString()
-            Text10_h2(
-                text = "${offpercentage}% off", color = sec20timer,
-                modifier = Modifier.align(
-                    Alignment.End
-                ),
-
-                )
-            Image(
-                painter = rememberImagePainter(data.productImage1),
-                contentDescription = "splash image",
-                modifier = Modifier
-                    .width(150.dp)
-
-                    .height(100.dp)
-                    .align(alignment = Alignment.CenterHorizontally)
-            )
-            Text12_h1(
-                text = data.productName!!, color = headingColor,
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Text10_h2(
-                text = "${data.quantityInstructionController}", color = bodyTextColor,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                modifier = Modifier.padding(start = 10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-
-                Text10_h2(
-                    text = "₹ ${data.selling_price}",
-                    color = headingColor,
-                    //  modifier= Modifier.weight(0.5F)
-                )
-                Text(
-                    text = "₹${data.orignalPrice ?: "0.00"}",
-                    fontSize = 11.sp,
-                    color = bodyTextColor,
-                    modifier = Modifier.padding(start = 5.dp),
-                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                )
-                Card(
-                    border = BorderStroke(1.dp, titleColor),
-                    modifier = Modifier
-
-                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-                        .padding(start = 20.dp)
-
-                        .background(color = whiteColor)
-                        .clickable {
-                            // response="called"
-                            viewModal.insertCartItem(
-                                data.productId ?: "",
-                                data.productImage1 ?: "",
-                                data.selling_price?.toInt() ?: 0,
-                                data.productName,
-                                data.orignalPrice ?: "",
-                                data.sellerId.toString()
-                            )
-                            //    viewModal.getCartItem()
-                            Toast
-                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
-                                .show()
-
-                            vibrator(context)
-
-
-                        },
-
-                    ) {
-                    Text11_body2(
-                        text = "ADD",
-                        availColor,
-                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
-                    )
+                .clickable {
+                    navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.productId?:"")) }
                 }
 
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 5.dp, vertical = 10.dp)
+            ) {
+
+                val originalPrice = data.orignalPrice?.toFloat() ?: 0.0f
+                val sellingPrice = data.selling_price?.toFloat() ?: 0.0f
+
+                val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
+
+                val formattedPercentage = DecimalFormat("#.##").format(offPercentage)
+
+                Text10_h2(
+                    text = "${formattedPercentage}% off", color = sec20timer,
+                    modifier = Modifier.align(
+                        Alignment.End
+                    ),
+
+                    )
+                Image(
+                    painter = rememberImagePainter(data.productImage1),
+                    contentDescription = "splash image",
+                    modifier = Modifier
+                        .width(150.dp)
+
+                        .height(100.dp)
+                        .align(alignment = Alignment.CenterHorizontally)
+                )
+                Text12_h1(
+                    text = data.productName?:"", color = headingColor,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Text10_h2(
+                    text = "${data.quantityInstructionController}", color = bodyTextColor,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier.padding(start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    Text10_h2(
+                        text = "₹ ${data.selling_price}",
+                        color = headingColor,
+                        //  modifier= Modifier.weight(0.5F)
+                    )
+                    Text(
+                        text = "₹${data.orignalPrice ?: "0.00"}",
+                        fontSize = 11.sp,
+                        color = bodyTextColor,
+                        modifier = Modifier.padding(start = 5.dp),
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                    )
+                    Card(
+                        border = BorderStroke(1.dp, titleColor),
+                        modifier = Modifier
+
+                            .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                            .padding(start = 20.dp)
+
+                            .background(color = whiteColor)
+                            .clickable {
+                                if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
+                                    viewModal.insertCartItem(
+                                        data.productId ?: "",
+                                        data.productImage1 ?: "",
+                                        data.selling_price?.toInt() ?: 0,
+                                        data.productName?:"",
+                                        data.orignalPrice ?: "",
+                                        data.sellerId.toString()
+                                    ) { accessTable, cartItem ->
+                                        if (accessTable.city != null) {
+                                            showExtraChargesPopUp(accessTable, cartItem, true)
+
+
+                                        } else {
+                                            MainScope().launch {
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Added to cart",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+
+                                                Utils.vibrator(context)
+                                            }
+                                        }
+
+                                    }
+
+
+                            },
+
+                        ) {
+                        Text11_body2(
+                            text = if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) "Notify" else "ADD",
+                            availColor,
+                            modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                        )
+                    }
+
+
+                }
 
             }
-
         }
     }
 }
@@ -1176,8 +1366,181 @@ fun BestOffers(
     navcontroller: NavHostController,
     data: HomeAllProductsResponse.HomeResponse,
     context: Context,
-    viewModal: HomeAllProductsViewModal
+    viewModal: HomeAllProductsViewModal,
+    showExtraChargesPopUp:(CartItems,AdminAccessTable,Boolean)->Unit
 ) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+
+    ) {
+        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
+            Text11_body2(
+            text = "out of stock",
+            redColor,
+            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+
+        )
+        Card(
+            elevation = 2.dp,
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .width(150.dp)
+                .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
+
+                .clickable {
+                    navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.ProductId?:"")) }
+                }
+
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 5.dp, vertical = 15.dp)
+            ) {
+                val originalPrice = data.orignal_price?.toFloat() ?: 0.0f
+                val sellingPrice = data.selling_price?.toFloat() ?: 0.0f
+
+                val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
+
+                val formattedPercentage = DecimalFormat("#.##").format(offPercentage)
+
+                Text10_h2(
+                    text = "${formattedPercentage}% off", color = sec20timer,
+                    modifier = Modifier.align(
+                        Alignment.End
+                    ),
+
+                    )
+
+                Image(
+
+                    painter = rememberImagePainter(data.productImage1),
+                    contentDescription = "splash image",
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(100.dp)
+                        .align(alignment = Alignment.CenterHorizontally)
+
+
+                )
+
+                Text12_h1(
+                    text = data.productName?:"", color = headingColor,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Text10_h2(
+                    text = "${data.quantityInstructionController}", color = bodyTextColor,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Row(
+                    modifier = Modifier.padding(start = 10.dp),
+//                horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+
+                    Text10_h2(
+                        text = "₹ ${data.selling_price}",
+                        color = headingColor,
+                        //  modifier= Modifier.weight(0.5F)
+                    )
+                    Text(
+                        text = "₹${data.orignal_price ?: "0.00"}",
+                        fontSize = 11.sp,
+                        color = bodyTextColor,
+                        modifier = Modifier.padding(start = 5.dp),
+                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                    )
+                    Card(
+                        border = BorderStroke(1.dp, titleColor),
+                        modifier = Modifier
+
+                            .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                            .padding(start = 20.dp)
+
+                            .background(color = whiteColor)
+                            .clickable {
+                                if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
+                                 viewModal.insertCartItem(
+                                    data.ProductId ?: "",
+                                    data.productImage1 ?: "",
+                                    data.selling_price?.toInt() ?: 0,
+                                    data.productName?:"",
+                                    data.orignal_price ?: "",
+                                    data.sellerId.toString()
+                                ) { accessTable, cartItem ->
+                                    if (accessTable.city != null) {
+                                        showExtraChargesPopUp(cartItem, accessTable, true)
+
+
+                                    } else {
+                                        MainScope().launch {
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "Added to cart",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+
+                                            Utils.vibrator(context)
+                                        }
+
+                                    }
+
+                                }
+                                //     viewModal.getCartItem()
+
+
+                            },
+
+                        ) {
+                        Text11_body2(
+                            text = if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) "Notify" else "ADD",
+                            availColor,
+                            modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                        )
+                    }
+
+
+                }
+
+            }
+        }
+    }
+
+}
+
+@Composable
+fun shopBySeller(
+    navcontroller: NavHostController,
+    data:
+    AdminResponse.ItemData,
+    context: Context,
+    viewModal: HomeAllProductsViewModal,
+    showExtraChargesPopUp:(CartItems,AdminAccessTable,Boolean)->Unit
+) {
+    val dummySubCategory = getProductCategory.ItemData.SubCategory(
+        name = data.sellerId,
+        subCategoryUrl = "sellerId"
+    )
+    val convertedCategoryList: List<getProductCategory.ItemData.CategoryImage?> =
+        data.categorySellerData.sellerCatergoryList.map {
+            getProductCategory.ItemData.CategoryImage(it?.name, it?.image ?: ""
+                ,it?.sellerSubCatergoryList?: emptyList()
+            )
+        } ?: emptyList()
+    val dummyItemData = getProductCategory.ItemData(
+        category = "sellerId",
+        imageUrl = "",
+        subCategoryList = listOf(dummySubCategory),
+        sellerCategoryData = getProductCategory.ItemData.SellerCategoryData(sellerCatergoryList=convertedCategoryList
+            ,)
+    )
     Card(
         elevation = 2.dp,
         shape = RoundedCornerShape(20.dp),
@@ -1185,7 +1548,10 @@ fun BestOffers(
             .padding(horizontal = 4.dp)
             .width(150.dp)
             .clickable {
-                navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.ProductId!!)) }
+
+                navcontroller.currentBackStackEntry?.savedStateHandle?.set(
+                    "data", dummyItemData)
+                navcontroller.navigate(DashBoardNavRoute.MenuItems.screen_route)
             }
 
     ) {
@@ -1194,21 +1560,25 @@ fun BestOffers(
                 .fillMaxWidth()
                 .padding(horizontal = 5.dp, vertical = 15.dp)
         ) {
-            val offpercentage: String = (DecimalFormat("#.##").format(
-                100.0 - ((data.selling_price?.toFloat() ?: 0.0f) / (data.orignal_price?.toFloat()
-                    ?: 0.0f)) * 100
-            )).toString()
-            Text10_h2(
-                text = "${offpercentage}% off", color = sec20timer,
-                modifier = Modifier.align(
-                    Alignment.End
-                ),
-
-                )
+            val imageLoader = ImageLoader.Builder(context)
+                .componentRegistry {
+                    if (SDK_INT >= 28) {
+                        add(ImageDecoderDecoder(context))
+                    } else {
+                        add(GifDecoder())
+                    }
+                }
+                .build()
 
             Image(
 
-                painter = rememberImagePainter(data.productImage1),
+                painter = rememberImagePainter(
+                    imageLoader = imageLoader,
+                    data = R.drawable.seller,
+                    builder = {
+                        size(OriginalSize)
+                    }
+                ),
                 contentDescription = "splash image",
                 modifier = Modifier
                     .width(150.dp)
@@ -1219,82 +1589,25 @@ fun BestOffers(
             )
 
             Text12_h1(
-                text = data.productName!!, color = headingColor,
+                text = data.sellerId, color = headingColor,
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .align(Alignment.CenterHorizontally)
             )
-            Text10_h2(
-                text = "${data.quantityInstructionController}", color = bodyTextColor,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
+
             Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
 
-                Text10_h2(
-                    text = "₹ ${data.selling_price}",
-                    color = headingColor,
-                    //  modifier= Modifier.weight(0.5F)
-                )
-                Text(
-                    text = "₹${data.orignal_price ?: "0.00"}",
-                    fontSize = 11.sp,
-                    color = bodyTextColor,
-                    modifier = Modifier.padding(start = 5.dp),
-                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                )
-                Card(
-                    border = BorderStroke(1.dp, titleColor),
-                    modifier = Modifier
-
-                        .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-                        .padding(start = 20.dp)
-
-                        .background(color = whiteColor)
-                        .clickable {
-                            // response="called"
-                            viewModal.insertCartItem(
-                                data.ProductId ?: "",
-                                data.productImage1 ?: "",
-                                data.selling_price?.toInt() ?: 0,
-                                data.productName,
-                                data.orignal_price ?: "",
-                                data.sellerId.toString()
-                            )
-                            //     viewModal.getCartItem()
-                            Toast
-                                .makeText(context, "Added to cart", Toast.LENGTH_SHORT)
-                                .show()
-
-                            vibrator(context)
-
-                        },
-
-                    ) {
-                    Text11_body2(
-                        text = "ADD",
-                        availColor,
-                        modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
-                    )
-                }
-
-
-            }
 
         }
     }
 
 }
 
+
 @Composable
 fun GroceriesItems(
     color: Color,
-    drawable: String,
+    drawable: String?=null,
     item: getProductCategory.ItemData,
     navController: NavHostController,
     itemSize: Dp

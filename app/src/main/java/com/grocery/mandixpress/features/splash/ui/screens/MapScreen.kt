@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.google.android.gms.location.*
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.home.ui.ui.theme.GroceryAppTheme
 import com.grocery.mandixpress.screens.MapScreen1
 

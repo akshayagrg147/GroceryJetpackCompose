@@ -6,11 +6,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.data.modal.AllOrdersHistoryList
 import com.grocery.mandixpress.data.modal.OrderIdResponse
 import com.grocery.mandixpress.data.modal.PassingAddress
-import com.grocery.mandixpress.features.home.Modal.profileScreen
+import com.grocery.mandixpress.features.home.Modal.ProfileScreen
 import com.grocery.mandixpress.features.home.ui.screens.CartScreen
 import com.grocery.mandixpress.features.home.ui.screens.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
@@ -54,7 +54,7 @@ fun NavigationGraph(
             PrivacyPolicyScreen()
         }
         composable(DashBoardNavRoute.Profile.screen_route) {
-            profileScreen(navController, context, sharedPreferences)
+            ProfileScreen(navController, context, sharedPreferences)
         }
         composable(DashBoardNavRoute.OrderDetail.screen_route) {
             val model =

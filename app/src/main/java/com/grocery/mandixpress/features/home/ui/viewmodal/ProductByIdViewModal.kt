@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.RoomRepository
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
@@ -18,6 +18,8 @@ import com.grocery.mandixpress.data.modal.ProductByIdResponseModal
 import com.grocery.mandixpress.data.modal.ProductIdIdModal
 import com.grocery.mandixpress.data.modal.RelatedSearchRequest
 import com.grocery.mandixpress.features.splash.domain.repository.CommonRepository
+import com.grocery.mandixpress.roomdatabase.AdminAccessTable
+import com.grocery.mandixpress.roomdatabase.Dao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -26,10 +28,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProductByIdViewModal @Inject constructor(
+    val dao: Dao,
     val sharedpreferenceCommon: sharedpreferenceCommon,
     val repository: CommonRepository,
     private val repo: RoomRepository
 ) : ViewModel() {
+    var adminAccessTableData=AdminAccessTable()
+    var cartTableData=CartItems()
 //count total cart count
     private val totalcount: MutableState<Int> =
         mutableStateOf(0)
@@ -56,42 +61,73 @@ class ProductByIdViewModal @Inject constructor(
 
     fun deleteCartItems(value: ProductByIdResponseModal) = viewModelScope.launch(Dispatchers.IO) {
 
-        repo.deleteCartItems(value. homeproducts?.productId!!)
-        getItemBaseOnProductId(value.homeproducts.productId)
+        repo.deleteCartItems(value. homeproducts?.productId)
+        getItemBaseOnProductId(value.homeproducts?.productId?:"")
     }
 
     fun getItemBaseOnProductId(value: String) = viewModelScope.launch(Dispatchers.IO) {
         val intger: Int = repo.getProductBasedIdCount(value).first() ?: 0
         getItemCount.value = intger
     }
+    fun getStoreAdminCartTable():Pair<AdminAccessTable,CartItems>{
+        return Pair(adminAccessTableData,cartTableData)
+    }
+    fun tempStoreAdminCartTable(accessTable: AdminAccessTable, cartItem: CartItems) {
+        adminAccessTableData=accessTable
+        cartTableData=cartItem
+    }
 
-    fun insertCartItem(value: ProductByIdResponseModal) = viewModelScope.launch(Dispatchers.IO) {
-        val intger: Int = repo.getProductBasedIdCount(value.homeproducts?.productId!!).first() ?: 0
+    fun insertCartItem(value: ProductByIdResponseModal,passSellerDetail:(AdminAccessTable,CartItems)->Unit) = viewModelScope.launch(Dispatchers.IO) {
+        val intger: Int = repo.getProductBasedIdCount(value.homeproducts?.productId?:"").first() ?: 0
+
         if (intger == 0) {
             val data = CartItems(
-                value.homeproducts.productId,
-                value.homeproducts.productImage1,
-                 1,
-                Integer.parseInt(value.homeproducts.orignalprice ?: "0"),
-                value.homeproducts.productName!!,
-                value.homeproducts.orignalprice,
-                savingAmount = (value.homeproducts.orignalprice?.toInt()!! - value.homeproducts.selling_price?.toInt()!!).toString(),
-                sellerId = value.homeproducts.sellerId.toString(),
+                value.homeproducts?.productId,
+                value.homeproducts?.productImage1,
+                1,
+                Integer.parseInt(value.homeproducts?.orignalprice ?: "0"),
+                value.homeproducts?.productName,
+                value.homeproducts?.orignalprice,
+                savingAmount = ((value.homeproducts?.orignalprice?.toInt()?:0) - (value.homeproducts?.selling_price?.toInt()?:0)).toString(),
+                sellerId = value.homeproducts?.sellerId.toString(),
             )
-            repo.insert(data)
+            if (dao.getAllCartItems().first().isEmpty()) {
+                val sellerDetail: AdminAccessTable =
+                    dao.getSellerDetail(value.homeproducts?.sellerId)?.first()
+                        ?: AdminAccessTable()
+
+                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price ?: "")
+                data.lat=sellerDetail.latitude?.toDouble()
+                data.lng=sellerDetail.longitude?.toDouble()
+
+                repo.insert(data)
+            }
+            else {
+                val sellerIdExist: Boolean = dao.isExistSeller(value.homeproducts?.sellerId)
+
+                if(!sellerIdExist){
+                    val sellerDetail: AdminAccessTable =
+                        dao.getSellerDetail(value.homeproducts?.sellerId)?.first()
+                            ?: AdminAccessTable()
+                    passSellerDetail(sellerDetail,data)
+
+                }
+            }
+
+
         } else if (intger >= 1) {
-            repo.updateCartItem(intger + 1, value.homeproducts.productId)
+            repo.updateCartItem(intger + 1, value.homeproducts?.productId?:"")
 
         }
-        getItemBaseOnProductId(value.homeproducts.productId)
+        getItemBaseOnProductId(value.homeproducts?.productId?:"")
 
 
     }
 //cart items price
     fun getTotalProductItemsPrice() = viewModelScope.launch {
-        repo.getTotalProductItemsPrice().catch { e ->
+        repo.getTotalProductItemsPrice()?.catch { e ->
             Log.d("main", "Exception: ${e.message} ") }
-            .collect {
+            ?.collect {
                 totalPrice.value = it ?: 0
 
             }
@@ -162,6 +198,32 @@ class ProductByIdViewModal @Inject constructor(
     }
     fun getFreeDeliveryMinPrice():String{
         return sharedpreferenceCommon.getMinimumDeliveryAmount()
+    }
+
+    fun distancebetweenTwoLatLng(){
+
+    }
+
+
+    fun updateDeliveryCharges(data: AdminAccessTable, cartTableData: CartItems,passStoreDeliveryCharge:(Int)->Unit) {
+        if(sharedpreferenceCommon.getMinimumDeliveryAmount().isNotEmpty()) {
+
+            sharedpreferenceCommon.setMinimumDeliveryAmount(
+                (sharedpreferenceCommon.getMinimumDeliveryAmount()
+                    .toInt() + (data.price?.toInt() ?: 0)).toString()
+            )
+            viewModelScope.launch(Dispatchers.IO) {
+                cartTableData.lat=data.latitude?.toDouble()
+                cartTableData.lng=data.longitude?.toDouble()
+
+                repo.insert(cartTableData)
+            }
+            passStoreDeliveryCharge(1)
+        }
+        else{
+            passStoreDeliveryCharge(0)
+        }
+
     }
 
 }

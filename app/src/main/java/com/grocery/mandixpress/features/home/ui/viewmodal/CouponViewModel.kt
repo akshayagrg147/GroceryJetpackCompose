@@ -2,7 +2,7 @@ package com.grocery.mandixpress.features.home.ui.viewmodal
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.features.home.domain.modal.CouponResponse
 import com.grocery.mandixpress.features.splash.domain.repository.CommonRepository

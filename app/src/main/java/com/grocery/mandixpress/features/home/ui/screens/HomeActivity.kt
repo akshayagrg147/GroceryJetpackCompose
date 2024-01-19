@@ -22,7 +22,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.compose.rememberNavController
 import com.grocery.mandixpress.features.home.dashboardnavigation.NavigationGraph
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.Constants.Companion.ACTION_CUSTOM_BROADCAST
 import com.grocery.mandixpress.connectionState.ConnectionState
 import com.grocery.mandixpress.connectionState.currentConnectivityState

@@ -9,17 +9,17 @@ data class AddressItems(
     @PrimaryKey(autoGenerate = true)
     val id: Long=1,
     @ColumnInfo(name = "customer_name")
-    val customer_name: String,
+    val customer_name: String?=null,
     @ColumnInfo(name = "customer_PhoneNumber")
-    val customer_PhoneNumber: String,
+    val customer_phoneNumber: String?=null,
     @ColumnInfo(name = "PinCode")
-    val PinCode: Int,
+    val pinCode: Int?=-1,
     @ColumnInfo(name = "Address1")
-    val Address1: String,
+    val address1: String?=null,
     @ColumnInfo(name = "Address2")
-    val Address2: String,
+    val address2: String?=null,
     @ColumnInfo(name = "LandMark")
-    val LandMark: String,
+    val landMark: String?=null
 
 
 

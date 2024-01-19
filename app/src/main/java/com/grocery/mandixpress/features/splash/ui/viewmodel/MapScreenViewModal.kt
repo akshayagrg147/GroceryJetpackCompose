@@ -5,7 +5,7 @@ import android.location.Geocoder
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -35,7 +35,7 @@ class MapScreenViewModal @Inject constructor(val sharedpreference: sharedprefere
                 }
 
             } catch (e: Exception) {
-                Log.e("location", e.message!!)
+                Log.e("location", e.message?:"something went wrong")
             }
         }
 

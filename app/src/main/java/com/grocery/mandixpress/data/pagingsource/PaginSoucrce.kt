@@ -17,7 +17,6 @@ class PaginSoucrce @Inject constructor(
 ) :
     PagingSource<Int, HomeAllProductsResponse.HomeResponse>() {
 
-    val INITIAL_LOAD_SIZE = 0
     override fun getRefreshKey(state: PagingState<Int, HomeAllProductsResponse.HomeResponse>): Int? {
         return state.anchorPosition?.let {
             state.closestPageToPosition(it)?.prevKey?.plus(1)?:state.closestPageToPosition(it)?.nextKey?.minus(1)

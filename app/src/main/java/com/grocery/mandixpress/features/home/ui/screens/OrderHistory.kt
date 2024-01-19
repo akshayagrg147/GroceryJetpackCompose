@@ -118,7 +118,7 @@ fun OrderHistoryScreen(
                         .fillMaxSize()
                         .padding(bottom = 15.dp)
                 ) {
-                    items(orderListResponse.data?.list ?: emptyList(), key = { it.orderId!! }) {
+                    items(orderListResponse.data?.list ?: emptyList(), key = { it.orderId?:it.hashCode() }) {
                         OrderHistoryRow(selected, it, { data ->
                             navController.currentBackStackEntry?.arguments?.putParcelable(
                                 "orderDetail",

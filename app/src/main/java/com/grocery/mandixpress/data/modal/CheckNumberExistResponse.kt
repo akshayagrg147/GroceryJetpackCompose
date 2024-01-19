@@ -9,7 +9,7 @@ data class CheckNumberExistResponse(
     @Json(name = "isMobileExist")
     val isMobileExist: Boolean?,
     @Json(name = "JwtToken")
-    val jwtToken: String?,
+    val jwtToken: String?=null,
     @Json(name = "status")
     val status: Boolean?,
     @Json(name = "statusCode")

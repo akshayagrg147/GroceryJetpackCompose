@@ -6,7 +6,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.grocery.mandixpress.roomdatabase.Dao
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.home.domain.modal.AddressItems
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -47,12 +47,12 @@ class AddressViewModal @Inject constructor(
 
     fun UpdateAddress(address: AddressItems) = viewModelScope.launch(Dispatchers.IO) {
         dao.updateAddressItem(
-            address.customer_name,
-            address.customer_PhoneNumber,
-            address.PinCode,
-            address.Address1,
-            address.Address2,
-            address.LandMark,
+            address.customer_name?:"",
+            address.customer_phoneNumber?:"",
+            address.pinCode?:0,
+            address.address1?:"",
+            address.address2?:"",
+            address.landMark?:"",
             address.id
         )
 

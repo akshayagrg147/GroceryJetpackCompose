@@ -4,8 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grocery.mandixpress.roomdatabase.Dao
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
-import com.grocery.mandixpress.common.ApiState
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
 import com.grocery.mandixpress.common.doOnSuccess

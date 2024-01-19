@@ -7,19 +7,19 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ProductByIdResponseModal(
     @Json(name = "ProductResponse")
-    val homeproducts: ProductResponse?,
+    val homeproducts: ProductResponse?=null,
     @Json(name = "message")
-    val message: String?,
+    val message: String?=null,
     @Json(name = "statusCode")
-    val statusCode: Int?
+    val statusCode: Int?=401
 ) {
     @JsonClass(generateAdapter = true)
     data class ProductResponse(
 
         @Json(name = "selling_price")
-        val selling_price: String?,
+        val selling_price: String?=null,
         @Json(name = "orignal_price")
-        val orignalprice: String?,
+        val orignalprice: String?=null,
 
         @Json(name = "productId")
         val productId: String? = null,
@@ -44,12 +44,12 @@ data class ProductByIdResponseModal(
     @JsonClass(generateAdapter = true)
     data class Rating(
         @Json(name = "customerId")
-        val customerId: String?,
+        val customerId: String?=null,
         @Json(name = "name")
-        val name: String?,
+        val name: String?=null,
         @Json(name = "rating")
-        val rating: String?,
+        val rating: String?=null,
         @Json(name = "remark")
-        val remark: String?
+        val remark: String?=null
     )
 }

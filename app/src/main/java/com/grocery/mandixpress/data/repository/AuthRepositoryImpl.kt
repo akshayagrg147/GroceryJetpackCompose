@@ -27,7 +27,7 @@ class AuthRepositoryImpl @Inject constructor(
         val verificationCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
 
             override fun onVerificationCompleted(p0: PhoneAuthCredential) {
-                Log.d("errormessageotp",p0.smsCode?:"verification complste")
+                Log.d("errormessageotp",p0.smsCode?:"verification complete")
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {

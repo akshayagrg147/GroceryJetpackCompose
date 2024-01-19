@@ -30,7 +30,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.compose.*
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text14_h1
@@ -169,7 +169,7 @@ fun placesApi( cameraPositionState: CameraPositionState, address: String,viewMod
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
 
             if (it.resultCode == RESULT_OK) {
-                val place = Autocomplete.getPlaceFromIntent(it.data!!)
+                val place = Autocomplete.getPlaceFromIntent(it.data)
 
                 Log.d("place LatLng: ", place.latLng.latitude.toString())
 

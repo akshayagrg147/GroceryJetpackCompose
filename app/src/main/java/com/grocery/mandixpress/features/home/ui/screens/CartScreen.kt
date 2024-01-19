@@ -40,17 +40,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.common.SwipeButton
+import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.data.modal.OrderIdCreateRequest
 import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.features.home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.CartEvent
 import com.grocery.mandixpress.features.home.ui.viewmodal.CartItemsViewModal
+import com.grocery.mandixpress.roomdatabase.AdminAccessTable
 import com.grocery.mandixpress.roomdatabase.CartItems
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Box as Box1
 
@@ -92,7 +95,7 @@ fun CartScreen(
     if (isDialog)
         CommonProgressBar()
 if(codClicked.value)
-    UPIPaymentConfirmationDialog(context) {
+    UPIPaymentConfirmationDialog() {
         viewModal.onEvent(CartEvent.createOrderId(request))
 
     }
@@ -127,6 +130,7 @@ if(codClicked.value)
         width = 2f,
         pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
     )
+    val searchProduct = remember { mutableStateOf<String>("") }
 
 
     ModalBottomSheetLayout(
@@ -247,7 +251,7 @@ if(codClicked.value)
                                                 (((backBundleData.get("CouponPercent") as Int) * grandTotal.replace(
                                                     "₹ ",
                                                     ""
-                                                ).toDoubleOrNull()!!)) / 100)
+                                                ).toDouble())) / 100)
 
 
                                     Row(
@@ -391,14 +395,6 @@ if(codClicked.value)
                                 modifier = Modifier.padding(start = 10.dp)
                             )
                             Spacer(modifier = Modifier.weight(1f))
-                            Image(
-                                painter = painterResource(id = R.drawable.back),
-                                contentDescription = "back_arrow",
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .padding(end = 20.dp),
-
-                                )
                         }
 
                     }
@@ -426,9 +422,9 @@ if(codClicked.value)
                                 }
                                 "ProceedButton" -> {
                                     isDialog = true
-                                    val lsSellerId: ArrayList<String>? = ArrayList()
+                                    val lsSellerId: ArrayList<String> = ArrayList()
                                     for(data in order){
-                                        lsSellerId?.add(data.sellerIdName.toString())
+                                        lsSellerId.add(data.sellerIdName.toString())
                                         Log.d("CreateOrderId1111", "CartScreen:${data.sellerIdName.toString()}")
 
                                     }
@@ -503,7 +499,7 @@ if(codClicked.value)
                         }) {
                         Header(scroll, headerHeightPx, viewModal)
                         Body(order, scroll, viewModal, context)
-                        bottomButton(scroll, headerHeightPx, toolbarHeightPx)
+                        BottomButton(scroll, headerHeightPx, toolbarHeightPx)
                         //  Title1( "none", scroll, headerHeightPx, toolbarHeightPx)
 
                     }
@@ -613,7 +609,7 @@ fun CustomShape() {
     }
 }*/
 @Composable
-fun UPIPaymentConfirmationDialog(context: Context,
+fun UPIPaymentConfirmationDialog(
     onConfirmCashOnDelivery: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(true) }
@@ -720,6 +716,38 @@ fun UPIPaymentConfirmationDialog(context: Context,
         viewModal: CartItemsViewModal,
         context: Activity
     ) {
+        var newSellerAddedDialog by remember { mutableStateOf(false) }
+
+
+        if(newSellerAddedDialog)
+            com.grocery.mandixpress.common.CustomDialog(
+                title = "Mandi Express",
+                message = "Delivery charges may change as you are adding to other seller",
+                onShowDialog = {
+                    newSellerAddedDialog=false
+
+
+                }
+                , onYesClick = {
+                    newSellerAddedDialog=false
+                    viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second)
+                    { it ->
+                        if (it != 0) {
+                            MainScope().launch {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "Added to cart",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+
+                                Utils.vibrator(context)
+                            }
+                        }
+                    }
+
+                })
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -729,20 +757,25 @@ fun UPIPaymentConfirmationDialog(context: Context,
 
 
             if (viewModal.allCartItemsState.value.isEmpty())
-                noHistoryAvailable("No order available")
+                NoHistoryAvailable("No order available")
             else {
 
                 for (item in viewModal.allCartItemsState.value) {
                     order.add(
                         OrderIdCreateRequest.Order(
-                            item.ProductIdNumber,
+                            item.productIdNumber,
                             item.strProductName,
                             item.strProductPrice.toString(),
                             item.totalCount.toString(),
                             item.sellerId
                         )
                     )
-                    ItemEachRow(item, viewModal, context)
+                    ItemEachRow(item, viewModal, context){cartItem,accessTable,boolean->
+                        viewModal.tempStoreAdminCartTable(accessTable,cartItem)
+
+                        newSellerAddedDialog =boolean
+
+                    }
                 }
 
             }
@@ -754,7 +787,7 @@ fun UPIPaymentConfirmationDialog(context: Context,
     }
 
     @Composable
-    private fun bottomButton(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float) {
+    private fun BottomButton(scroll: ScrollState, headerHeightPx: Float, toolbarHeightPx: Float) {
         val toolbarBottom = headerHeightPx - toolbarHeightPx
         val showToolbar by remember {
             derivedStateOf {
@@ -805,8 +838,7 @@ fun UPIPaymentConfirmationDialog(context: Context,
         call: (String) -> Unit, passingaddress: (String) -> Unit
     ) {
 
-        val coroutineScope = rememberCoroutineScope()
-        val (isComplete, setIsComplete) = remember {
+        val (isComplete) = remember {
             mutableStateOf(false)
         }
         val selectedIndex = remember { mutableStateOf(1) }
@@ -818,12 +850,12 @@ fun UPIPaymentConfirmationDialog(context: Context,
             ) {
                 if (viewModal.addresslistState.value.size > 1) {
                     firstAddress(
-                        " ${viewModal.addresslistState.value[0].customer_name}\n${viewModal.addresslistState.value[0].Address1}\n${viewModal.addresslistState.value[0].Address2}\n${viewModal.addresslistState.value[0].PinCode}\n${viewModal.addresslistState.value[0].LandMark}"
+                        " ${viewModal.addresslistState.value[0].customer_name}\n${viewModal.addresslistState.value[0].address1}\n${viewModal.addresslistState.value[0].address2}\n${viewModal.addresslistState.value[0].pinCode}\n${viewModal.addresslistState.value[0].landMark}"
                     )
                     selectedIndex.value = viewModal.addresslistState.value.first().id.toInt()
                     call("containsData")
                     items(viewModal.addresslistState.value) { data ->
-                        if (data.PinCode == 1) {
+                        if (data.pinCode == 1) {
                             AddAddress() {
                                 navController.navigate(DashBoardNavRoute.AddressScreen.screen_route)
                             }
@@ -931,7 +963,7 @@ fun UPIPaymentConfirmationDialog(context: Context,
 
 
     @Composable
-    fun noHistoryAvailable(text: String) {
+    fun NoHistoryAvailable(text: String) {
         Box1(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(250.dp))
             Text12_body1(text = text, modifier = Modifier.align(Alignment.Center))
@@ -959,7 +991,7 @@ fun UPIPaymentConfirmationDialog(context: Context,
                 .clip(RoundedCornerShape(1.dp))
                 .clickable {
                     onAddressClick(
-                        "${data.customer_name}\n ${data.Address1}\n ${data.Address2} \n${data.PinCode} \n${data.LandMark}"
+                        "${data.customer_name}\n ${data.address1}\n ${data.address2} \n${data.pinCode} \n${data.landMark}"
                     )
                 }
         ) {
@@ -969,7 +1001,7 @@ fun UPIPaymentConfirmationDialog(context: Context,
                     horizontalArrangement = Arrangement.spacedBy(130.dp)
                 ) {
                     Text12_h1(
-                        text = data.customer_name,
+                        text = data.customer_name?:"",
                         color = headingColor, modifier = Modifier.fillMaxWidth()
                     )
                     if (isSelected)
@@ -978,9 +1010,9 @@ fun UPIPaymentConfirmationDialog(context: Context,
                             color = Purple700
                         )
                 }
-                Text11_body2(text = data.Address1, greyLightColor)
-                Text11_body2(text = "${data.Address2}, ${data.PinCode},", greyLightColor)
-                Text11_body2(text = data.LandMark, greyLightColor)
+                Text11_body2(text = data.address1?:"", greyLightColor)
+                Text11_body2(text = "${data.address2}, ${data.pinCode},", greyLightColor)
+                Text11_body2(text = data.landMark?:"", greyLightColor)
 
             }
         }
@@ -1032,6 +1064,7 @@ fun UPIPaymentConfirmationDialog(context: Context,
         data: CartItems,
         viewModal: CartItemsViewModal,
         context: Activity,
+        showExtraChargesPopUp:(CartItems, AdminAccessTable, Boolean)->Unit
 
 
         ) {
@@ -1071,7 +1104,7 @@ fun UPIPaymentConfirmationDialog(context: Context,
                         IconButton(modifier = Modifier
                             .height(20.dp)
                             .width(20.dp), onClick = {
-                            viewModal.deleteProduct(data.ProductIdNumber)
+                            viewModal.deleteProduct(data.productIdNumber)
                             context.showMsg("1 item deleted")
 
                         }) {
@@ -1100,7 +1133,7 @@ fun UPIPaymentConfirmationDialog(context: Context,
                     ) {
                         Row {
                             CommonMathButton(icon = R.drawable.minus) {
-                                viewModal.deleteCartItems(data.ProductIdNumber)
+                                viewModal.deleteCartItems(data.productIdNumber)
 
 
                             }
@@ -1112,8 +1145,8 @@ fun UPIPaymentConfirmationDialog(context: Context,
                                 color = Color.Black
                             )
                             CommonMathButton(icon = R.drawable.add) {
-                                viewModal.insertCartItem(
-                                    data.ProductIdNumber ?: "",
+                                viewModal.insertCartItemCartScreen(
+                                    data.productIdNumber ?: "",
                                     data.strCategoryThumb ?: "",
                                     data.strProductPrice ?: 0,
                                     data.strProductName ?: "",

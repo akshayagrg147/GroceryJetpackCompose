@@ -118,7 +118,7 @@ fun AddToCartCardView(
                         .fillMaxWidth()
                         .padding(2.dp)
                 ) {
-                    var (l0, l1, l2) = createRefs()
+                    val (l0, l1, l2) = createRefs()
                     Image(
                         painter = painterResource(id = R.drawable.cart_icon),
                         contentDescription = "Carrot Icon",

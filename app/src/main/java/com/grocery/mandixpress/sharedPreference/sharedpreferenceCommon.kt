@@ -1,10 +1,11 @@
-package com.grocery.mandixpress.SharedPreference
+package com.grocery.mandixpress.sharedPreference
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.grocery.mandixpress.SharedPreference.AppConstant
 import com.grocery.mandixpress.features.home.ui.viewmodal.PinCodeStateModal
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -120,8 +121,8 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         val gson = Gson()
         return gson.toJson(pincodeList)
     }
-    fun setMinimumDeliveryAmount(pincode: String) {
-        return mPrefs.edit().putString(AppConstant.minimumAmountDelivery, pincode).apply()
+    fun setMinimumDeliveryAmount(amount: String) {
+        return mPrefs.edit().putString(AppConstant.minimumAmountDelivery, amount).apply()
 
     }
     fun setDeliveryContactNumber(phone: String) {

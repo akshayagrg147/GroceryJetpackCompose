@@ -92,7 +92,7 @@ fun AddressFiled(
                     color = headingColor
                 )
                 Text10_h2(
-                    text = "${data.Address1},${data.Address2}, ${data.PinCode},${data.LandMark}",
+                    text = "${data.address1},${data.address2}, ${data.pinCode},${data.landMark}",
                     modifier = Modifier.fillMaxWidth(),
                     color = bodyTextColor
                 )
@@ -117,7 +117,6 @@ fun AddressFiled(
 
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AllAddress(navHostController: NavHostController, context: Context,data: String) {
 
@@ -143,7 +142,7 @@ fun AllAddress(navHostController: NavHostController, context: Context,data: Stri
 
 
         if (selected == 0)
-            allAddress(navHostController)
+            AllAddress(navHostController)
         else if (selected == 1) {
             addressScreen(address = PassingAddress(), navController = navHostController,data)
         }
@@ -154,7 +153,7 @@ fun AllAddress(navHostController: NavHostController, context: Context,data: Stri
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun allAddress(
+fun AllAddress(
     navHostController: NavHostController,
     viewModal: HomeAllProductsViewModal = hiltViewModel()
 ) {
@@ -171,7 +170,7 @@ fun allAddress(
     ) {
         item {
             if (viewModal.list.value.isEmpty())
-                noAddressAvailable()
+                NoAddressAvailable()
 
 
         }
@@ -268,11 +267,11 @@ fun allAddress(
                                 it.id,
                                 it.customer_name,
                                 "ak@gmail.com",
-                                it.customer_PhoneNumber,
-                                it.PinCode.toString(),
-                                it.LandMark,
-                                it.Address1,
-                                it.Address2
+                                it.customer_phoneNumber,
+                                it.pinCode.toString(),
+                                it.landMark,
+                                it.address1,
+                                it.address2
                             )
 
                             navHostController.currentBackStackEntry?.arguments?.putParcelable(
@@ -292,7 +291,7 @@ fun allAddress(
 
 
 @Composable
-fun noAddressAvailable() {
+fun NoAddressAvailable() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

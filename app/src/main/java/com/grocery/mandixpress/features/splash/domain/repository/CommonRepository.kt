@@ -1,7 +1,7 @@
 package com.grocery.mandixpress.features.splash.domain.repository
 
 import com.grocery.mandixpress.FCMApiService
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.ApiService
 import com.grocery.mandixpress.notification.model.NotificationModel
@@ -80,6 +80,11 @@ class CommonRepository @Inject constructor(
 
     fun cancelOrder(data: OrderStatusRequest) = toResultFlow{
         apiService.cancelOrder(data)
+    }
+
+    fun dataFetchBasedOnMainCategory(request: ProductIdIdModal)= toResultFlow {
+        apiService.dataFetchBasedOnMainCategory(request)
+
     }
 
 

@@ -199,7 +199,7 @@ fun addressScreen(
                     if (editcalled) {
                         val response = viewModal.UpdateAddress(
                             AddressItems(
-                                address.id!!,
+                                address.id?:-1,
                                 name.value,
                                 phonenumber.value,
                                 Integer.parseInt(pincode.value),
@@ -225,7 +225,7 @@ fun addressScreen(
                     } else
                         viewModal.saveAddress(
                             AddressItems(
-                                address.id!!,
+                                address.id?:0L,
                                 name.value,
                                 phonenumber.value,
                                 Integer.parseInt(pincode.value),

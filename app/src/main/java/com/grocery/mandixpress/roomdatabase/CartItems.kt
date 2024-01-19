@@ -3,14 +3,13 @@ package com.grocery.mandixpress.roomdatabase
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.Json
 
 @Entity(tableName = "CartItems")
 data class CartItems(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     @ColumnInfo(name = "ProductIdNumber")
-    val ProductIdNumber: String?=null,
+    val productIdNumber: String?=null,
     @ColumnInfo(name = "strCategoryThumb")
     val strCategoryThumb: String?=null,
     @ColumnInfo(name = "totalCount")
@@ -25,22 +24,28 @@ data class CartItems(
     @ColumnInfo(name = "SavingAmount")
     var savingAmount: Int?=null,
     @ColumnInfo(name = "sellerId")
-    var sellerId:String?=null
+    var sellerId:String?=null,
+    @ColumnInfo(name = "lat")
+    var lat:Double?=null,
+    @ColumnInfo(name = "lng")
+    var lng:Double?=null
 
 
 )
 {
     constructor(
-        ProductIdNumber: String?,
-        strCategoryThumb: String?,
-        totalCount: Int?,
-        price:Int?,
-        strCategoryDescription: String?,
-        actualprice: String?,
+        ProductIdNumber: String?=null,
+        strCategoryThumb: String?=null,
+        totalCount: Int?=null,
+        price:Int?=null,
+        strCategoryDescription: String?=null,
+        actualprice: String?=null,
          savingAmount: String?=null,
-        sellerId: String?,
+        sellerId: String?=null,
+        lat:Double?=null,
+        lng:Double?=null
 
-        ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription,actualprice,savingAmount?.toInt(),sellerId)
+        ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription,actualprice,savingAmount?.toInt(),sellerId,lat,lng)
 }
 
 

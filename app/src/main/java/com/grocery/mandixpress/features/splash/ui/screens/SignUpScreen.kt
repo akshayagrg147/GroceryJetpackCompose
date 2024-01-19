@@ -16,7 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.grocery.mandixpress.data.modal.RegisterLoginRequest
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.splash.ui.viewmodel.RegisterLoginViewModal
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.ApiState
@@ -60,7 +60,7 @@ fun SignUpScreen(
         isDialog  =  when(it){
                 is ApiState.Success ->{
                     sharedPreferences.setMobileNumber(contactNum.value)
-                    sharedPreferences.setJwtToken(it.data.token!!)
+                    sharedPreferences.setJwtToken(it.data.token?:"")
                     navController.navigate(ScreenRoute.LocateMeScreen.route)
                     false
                 }

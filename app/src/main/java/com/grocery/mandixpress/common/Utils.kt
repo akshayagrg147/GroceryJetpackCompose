@@ -1,6 +1,9 @@
 package com.grocery.mandixpress.common
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -13,7 +16,7 @@ import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
 class Utils {
     companion object{
         fun vibrator(context: Context) {
-            var vibration = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            val vibration = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
             if (Build.VERSION.SDK_INT >= 26) {
                 vibration.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -22,6 +25,26 @@ class Utils {
                 vib.vibrate(200)
             }
 
+        }
+        private fun distance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+            val theta = lon1 - lon2
+            var dist = (Math.sin(deg2rad(lat1))
+                    * Math.sin(deg2rad(lat2))
+                    + (Math.cos(deg2rad(lat1))
+                    * Math.cos(deg2rad(lat2))
+                    * Math.cos(deg2rad(theta))))
+            dist = Math.acos(dist)
+            dist = rad2deg(dist)
+            dist = dist * 60 * 1.1515
+            return dist
+        }
+
+        private fun deg2rad(deg: Double): Double {
+            return deg * Math.PI / 180.0
+        }
+
+        private fun rad2deg(rad: Double): Double {
+            return rad * 180.0 / Math.PI
         }
         fun extractSixDigitNumber(input: String): String? {
             val regex = Regex("\\b\\d{6}\\b") // Matches 6 digits surrounded by word boundaries

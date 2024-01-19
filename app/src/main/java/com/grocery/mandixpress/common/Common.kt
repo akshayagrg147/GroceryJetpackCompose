@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.grocery.mandixpress.R
+import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text11_body2
 import com.grocery.mandixpress.Utils.Text12_h1
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
@@ -367,6 +368,61 @@ fun SwipeButton(
         }
 
     }
+}
+
+@Composable
+fun CustomDialog(
+
+    title: String,
+    message: String,
+    onYesClick: () -> Unit,
+    onShowDialog:()->Unit
+
+    ) {
+
+
+
+    AlertDialog(
+        onDismissRequest = {
+            onShowDialog()
+
+
+        },
+        title = {
+            Text(text = title)
+        },
+        text = {
+            Text(text = message)
+        },
+        buttons = {
+            Column(
+                modifier = Modifier.padding(8.dp),
+
+            ) {
+                CommonButton(
+                    text = "Yes",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    backgroundColor = seallcolor
+                ) {
+                    onYesClick()
+
+                }
+                CommonButton(
+                    text = "No",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    backgroundColor = lightred
+                ) {
+                    onShowDialog()
+                }
+
+
+            }
+        }
+    )
 }
 
 

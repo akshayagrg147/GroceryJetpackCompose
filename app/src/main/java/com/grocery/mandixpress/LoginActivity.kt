@@ -11,7 +11,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.splash.splashnavigation.splashScreenNavigation
 import com.grocery.mandixpress.features.home.ui.ui.theme.GroceryAppTheme
 import com.grocery.mandixpress.features.splash.ui.viewmodel.RegisterLoginViewModal

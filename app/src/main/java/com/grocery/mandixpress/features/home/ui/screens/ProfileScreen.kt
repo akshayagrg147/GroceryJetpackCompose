@@ -9,7 +9,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,33 +32,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import coil.ImageLoader
 import coil.compose.rememberImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
-import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.UserResponse
 import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.ProfileEvent
 import com.grocery.mandixpress.features.home.ui.viewmodal.ProfileViewModal
-import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
-fun profileScreen(
+fun ProfileScreen(
     navController: NavHostController,
     context: HomeActivity, sharedpreferenceCommon: sharedpreferenceCommon,
     viewModal: ProfileViewModal = hiltViewModel()
@@ -122,7 +114,7 @@ fun profileScreen(
             {
                 Spacer(modifier = Modifier.height(1.dp))
                 if (profileResponse.data?.statusCode == 200)
-                    StatSection(modifier = Modifier, navController, profileResponse.data!!)
+                    StatSection(modifier = Modifier, navController, profileResponse.data?:UserResponse())
                 Spacer(modifier = Modifier.height(10.dp))
 
 

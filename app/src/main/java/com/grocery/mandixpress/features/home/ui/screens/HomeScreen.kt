@@ -53,7 +53,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.AddToCartCardView
 import com.grocery.mandixpress.common.Utils
@@ -71,6 +70,7 @@ import com.grocery.mandixpress.roomdatabase.AdminAccessTable
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.screens.LocationPermissionsAndSettingDialogs
 import com.grocery.mandixpress.screens.LocationUtils
+import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -252,7 +252,9 @@ fun Homescreen(
 
             }
         }) {
-        BackPressSample()
+
+       // BackPressSample()
+        Log.d("minimumdeliverycharges","${viewModal.getFreeDeliveryMinPrice()}")
         val coroutineScope = rememberCoroutineScope()
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -364,6 +366,8 @@ private fun BodyDashboard(
             viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second){it->
                 if(it!=0){
 viewModal.getDeliveryChargeBasesOnLatLng{
+
+
     Log.d("getDeliveryChargeB","$it---")
     MainScope().launch {
         Toast
@@ -791,7 +795,7 @@ viewModal.getDeliveryChargeBasesOnLatLng{
                 ) {
                     repeat(5) {
                         item {
-                            ShimmerAnimation()
+                            ShimmerAnimationCategory()
 
                         }
                     }
@@ -844,7 +848,7 @@ viewModal.getDeliveryChargeBasesOnLatLng{
                 ) {
                     repeat(5) {
                         item {
-                            ShimmerAnimation()
+                            ShimmerAnimationCategory()
 
                         }
                     }
@@ -1659,6 +1663,29 @@ fun GroceriesItems(
 
 //shimming
 @Composable
+fun ShimmerAnimationCategory(
+) {
+    val transition = rememberInfiniteTransition()
+    val translateAnim by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+            RepeatMode.Reverse
+        )
+    )
+
+    val brush = Brush.linearGradient(
+        colors = ShimmerColorShades,
+        start = Offset(10f, 10f),
+        end = Offset(translateAnim, translateAnim)
+    )
+
+    ShimmerItemCategory(brush = brush)
+
+}
+
+@Composable
 fun ShimmerAnimation(
 ) {
     val transition = rememberInfiniteTransition()
@@ -1687,20 +1714,54 @@ fun ShimmerItem(
     brush: Brush
 ) {
     Column(modifier = Modifier.padding(10.dp)) {
+        Column (modifier = Modifier.width(150.dp)){
+            Spacer(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(100.dp)
+                    .background(brush = brush)
+            )
+            Spacer(
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .width(150.dp)
+                    .height(20.dp)
+                    .background(brush = brush)
+            )
+            Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp),Arrangement.SpaceBetween) {
+                Spacer(
+                    modifier = Modifier
 
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(150.dp)
-                .background(brush = brush)
-        )
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp)
-                .padding(vertical = 8.dp)
-                .background(brush = brush)
-        )
+                        .width(50.dp)
+                        .height(20.dp)
+                        .background(brush = brush)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .width(50.dp)
+                        .padding(start = 20.dp)
+                        .height(20.dp)
+                        .background(brush = brush)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ShimmerItemCategory(
+    brush: Brush
+) {
+    Column(modifier = Modifier.padding(10.dp)) {
+        Column (modifier = Modifier.width(150.dp)){
+            Spacer(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(100.dp)
+                    .background(brush = brush)
+            )
+
+        }
     }
 }
 

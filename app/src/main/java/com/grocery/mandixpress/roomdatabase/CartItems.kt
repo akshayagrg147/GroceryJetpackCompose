@@ -28,7 +28,8 @@ data class CartItems(
     @ColumnInfo(name = "lat")
     var lat:Double?=null,
     @ColumnInfo(name = "lng")
-    var lng:Double?=null
+    var lng:Double?=null,
+
 
 
 )
@@ -44,6 +45,7 @@ data class CartItems(
         sellerId: String?=null,
         lat:Double?=null,
         lng:Double?=null
+
 
         ) : this(0, ProductIdNumber, strCategoryThumb, totalCount, price,strCategoryDescription,actualprice,savingAmount?.toInt(),sellerId,lat,lng)
 }

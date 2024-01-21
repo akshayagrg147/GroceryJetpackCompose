@@ -25,9 +25,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -62,17 +65,76 @@ fun ShimmerItem(
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            Spacer(
-                modifier = Modifier
-                    .size(200.dp)
-                    .background(brush = brush)
-            )
-            Spacer(
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(start = 8.dp)
-                    .background(brush = brush)
-            )
+            Column (modifier = Modifier.width(150.dp)){
+                Spacer(
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(100.dp)
+                        .background(brush = brush)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .width(150.dp)
+                        .height(20.dp)
+                        .background(brush = brush)
+                )
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),Arrangement.SpaceBetween) {
+                    Spacer(
+                        modifier = Modifier
+
+                            .width(50.dp)
+                            .height(20.dp)
+                            .background(brush = brush)
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .width(50.dp)
+                            .padding(start = 20.dp)
+                            .height(20.dp)
+                            .background(brush = brush)
+                    )
+                }
+            }
+            Column (modifier = Modifier
+                .padding(start = 10.dp)
+                .width(150.dp)){
+                Spacer(
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(100.dp)
+                        .background(brush = brush)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .width(150.dp)
+                        .height(20.dp)
+                        .background(brush = brush)
+                )
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),Arrangement.SpaceBetween) {
+                    Spacer(
+                        modifier = Modifier
+
+                            .width(50.dp)
+                            .height(20.dp)
+                            .background(brush = brush)
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .width(50.dp)
+                            .padding(start = 20.dp)
+                            .height(20.dp)
+                            .background(brush = brush)
+                    )
+                }
+            }
+
+
 
         }
 
@@ -568,6 +630,7 @@ fun menuitems(
                         .padding(top = 5.dp)
 
                 ) {
+
                     LazyColumn(
                         modifier = Modifier
                             .padding(bottom = 15.dp)
@@ -575,6 +638,7 @@ fun menuitems(
 
 
                         if(passingvalue.category.equals("sellerId")){
+
                             items(passingvalue.sellerCategoryData?.sellerCatergoryList ?: emptyList()) { item ->
 
                                 ItemEachRowSellerCategory(
@@ -586,8 +650,7 @@ fun menuitems(
 
 
                                 }
-                            }
-                        }
+                            }}
                         else{
 
                             items(passingvalue.subCategoryList ?: emptyList()) { item ->
@@ -610,7 +673,35 @@ fun menuitems(
                         state = rememberSwipeRefreshState(isRefreshing = refreshing),
                         onRefresh = { refreshing = true },
                     )
-                    {
+                    {   if(passingvalue.category.equals("sellerId"))
+                    { if(   allItems.data?.list?.isEmpty()==true) {
+
+                        Image(
+                            painter = painterResource(id = R.drawable.noitems),
+                            contentDescription = null,
+                            alignment = Alignment.Center,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                       return@SwipeRefresh
+
+                    }
+                    }
+                    else{
+                        if(viewModal._itemsCollection.value.list?.isEmpty()==true) {
+
+                            Image(
+                                painter = painterResource(id = R.drawable.noitems),
+                                contentDescription = null,
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            return@SwipeRefresh
+
+                        }
+
+                    }
                         LazyColumn(
                             modifier = Modifier.background(MaterialTheme.colors.background),
                             contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
@@ -798,7 +889,9 @@ fun MenuItemGrid(
         Text11_body2(
             text = "out of stock" ,
             redColor,
-            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+            modifier = Modifier
+                .padding(end = 5.dp, top = 15.dp)
+                .align(alignment = Alignment.Center)
 
         )
 
@@ -814,7 +907,7 @@ fun MenuItemGrid(
             .padding(horizontal = 4.dp)
 
             .width(150.dp)
-            .alpha(if(data.quantity.isNotEmpty() && data.quantity.toInt()==0)0.7f else 1.0f)
+            .alpha(if (data.quantity.isNotEmpty() && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
 
     ) {
@@ -833,9 +926,11 @@ fun MenuItemGrid(
 
             Text10_h2(
                 text = "${formattedPercentage}% off", color = sec20timer,
-                modifier = Modifier.padding(end = 10.dp).align(
-                    Alignment.End
-                ),
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .align(
+                        Alignment.End
+                    ),
 
                     )
 
@@ -865,15 +960,27 @@ fun MenuItemGrid(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row( horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp, bottom = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, bottom = 10.dp),
 //
                 ) {
+Row {
+    Text10_h2(
+        text = "₹ ${data.selling_price}",
+        color = headingColor,
+        //  modifier= Modifier.weight(0.5F)
+    )
 
-                    Text10_h2(
-                        text = "₹ ${data.selling_price}",
-                        color = headingColor,
-                        //  modifier= Modifier.weight(0.5F)
-                    )
+    Text(
+        text = "₹${data.orignal_price ?: "0.00"}",
+        fontSize = 11.sp,
+        color = bodyTextColor,
+        modifier = Modifier.padding(start = 5.dp),
+        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+    )
+}
+
 
                         Card(
                             border = BorderStroke(1.dp,   titleColor),
@@ -885,7 +992,7 @@ fun MenuItemGrid(
                                 .background(color = whiteColor)
                                 .clickable {
                                     // response="called"
-                                    if(data.quantity.isNotEmpty() && data.quantity.toInt()!=0){
+                                    if (data.quantity.isNotEmpty() && data.quantity.toInt() != 0) {
                                         viewModal.insertCartItem(
                                             data.productId ?: "",
                                             data.productImage1 ?: "",

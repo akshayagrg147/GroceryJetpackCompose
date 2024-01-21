@@ -402,8 +402,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
     ) = viewModelScope.launch(Dispatchers.IO) {
 
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first() ?: 0
-        if (intger == 0) {
-            val data = CartItems(
+        if (intger == 0) { val data = CartItems(
                 productIdNumber,
                 thumb,
                 intger + 1,
@@ -433,7 +432,6 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                     else{
                         val sellerDetail: AdminAccessTable = dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
 
-                        sharedPreferences.setMinimumDeliveryAmount(sellerDetail.price ?:"")
                         data.lat=sellerDetail.latitude?.toDouble()
                         data.lng=sellerDetail.longitude?.toDouble()
                         roomrespo.insert(data)
@@ -497,26 +495,28 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
             for (value in cartItems) {
                 latLngList.add(Pair(value.lat ?: 0.00, value.lng ?: 0.00))
             }
+            val uniqueLatLngSet = latLngList.toSet()
 
-            for (i in 0 until latLngList.size - 1) {
+            val uniqueLatLngList = uniqueLatLngSet.toList()
+
+            for (i in 0 until uniqueLatLngList.size - 1) {
                 totalKm += haversine(
-                    latLngList[i].first,
-                    latLngList[i].second,
-                    latLngList[i + 1].first,
-                    latLngList[i + 1].second
+                    uniqueLatLngList[i].first,
+                    uniqueLatLngList[i].second,
+                    uniqueLatLngList[i + 1].first,
+                    uniqueLatLngList[i + 1].second
                 )
             }
+            val decimalRupees = String.format("%.2f", totalKm)
+          sharedPreferences.setMinimumDeliveryAmount((sharedPreferences.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
+            Log.d("getDeliveryChargeB","${sharedPreferences.getMinimumDeliveryAmount()}---$totalKm---"+latLngList.size)
 
 
             callback(totalKm)
         }
     }
      fun updateDeliveryCharges(data: AdminAccessTable, cartTableData: CartItems,passStoreDeliveryCharge:(Int)->Unit) {
-       if(sharedPreferences.getMinimumDeliveryAmount().isNotEmpty()) {
-           sharedPreferences.setMinimumDeliveryAmount(
-               (sharedPreferences.getMinimumDeliveryAmount()
-                   .toInt() + (data.price?.toInt() ?: 0)).toString()
-           )
+
            viewModelScope.launch(Dispatchers.IO) {
                cartTableData.lat=data.latitude?.toDouble()
                cartTableData.lng=data.longitude?.toDouble()
@@ -524,10 +524,8 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                roomrespo.insert(cartTableData)
            }
            passStoreDeliveryCharge(1)
-       }
-         else{
-           passStoreDeliveryCharge(0)
-       }
+
+
 
     }
 

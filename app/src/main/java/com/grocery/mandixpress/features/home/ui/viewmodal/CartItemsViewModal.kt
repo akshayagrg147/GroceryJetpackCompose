@@ -29,6 +29,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @HiltViewModel
 class CartItemsViewModal @Inject constructor(val sharedpreferenceCommon: sharedpreferenceCommon,
@@ -205,6 +209,13 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
                         dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
                     passSellerDetail(sellerDetail, data)
                 }
+                else{
+                    val sellerDetail: AdminAccessTable =
+                        dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
+                    data.lat=sellerDetail.latitude?.toDouble()
+                    data.lng=sellerDetail.longitude?.toDouble()
+                    repo.insert(data)
+                }
             }
 
 
@@ -217,6 +228,54 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
 
     fun deleteProduct(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteCartItem(productIdNumber)
+        //updateDeliveryRate()
+    }
+    private fun updateDeliveryRate() {
+            val latLngList: MutableList<Pair<Double, Double>> = mutableListOf()
+            var totalKm = 0.00
+
+            viewModelScope.launch {
+                val cartItems = dao.getAllCartItems().first()
+                val distinctSellerNames = cartItems.map { it.sellerId }.distinct()
+                if(distinctSellerNames.size>1){
+                  //  sharedpreferenceCommon.setMinimumDeliveryAmount(cartItems[0].actualprice)
+                    for (value in cartItems) {
+                        latLngList.add(Pair(value.lat ?: 0.00, value.lng ?: 0.00))
+                    }
+                    val uniqueLatLngSet = latLngList.toSet()
+
+                    val uniqueLatLngList = uniqueLatLngSet.toList()
+
+                    for (i in 0 until uniqueLatLngList.size - 1) {
+                        totalKm += haversine(
+                            uniqueLatLngList[i].first,
+                            uniqueLatLngList[i].second,
+                            uniqueLatLngList[i + 1].first,
+                            uniqueLatLngList[i + 1].second
+                        )
+                    }
+                    val decimalRupees = String.format("%.2f", totalKm)
+                    sharedpreferenceCommon.setMinimumDeliveryAmount((sharedpreferenceCommon.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
+
+                }
+
+            }
+
+    }
+
+    fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val R = 6371.0 // Earth radius in kilometers
+
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+                sin(dLon / 2) * sin(dLon / 2)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return R * c
     }
 
     fun callingItemsCollectionsId(productIdIdModal: MutableSharedFlow<ProductIdIdModal>) =

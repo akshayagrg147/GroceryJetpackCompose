@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -49,7 +50,9 @@ import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.AddToCartCardView
 import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
+import com.grocery.mandixpress.features.home.Navigator.gridItems
 import com.grocery.mandixpress.features.home.domain.modal.FilterOptions
+import com.grocery.mandixpress.features.home.ui.screens.SearchResult
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
 import com.grocery.mandixpress.roomdatabase.AdminAccessTable
@@ -514,7 +517,7 @@ fun SubItems(
     showExtraChargesPopUp:(CartItems,AdminAccessTable, Boolean)->Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.width((LocalConfiguration.current.screenWidthDp.dp / 2)).fillMaxHeight()
 
     ) {
         if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
@@ -612,32 +615,31 @@ fun SubItems(
 
                             .background(color = whiteColor)
                             .clickable {
-                                if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
-                                {  // response="called"
+                                if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0) {  // response="called"
                                     viewModal.insertCartItem(
                                         data.ProductId ?: "",
                                         data.productImage1 ?: "",
                                         data.selling_price?.toInt() ?: 0,
-                                        data.productName?:"",
+                                        data.productName ?: "",
                                         data.orignal_price ?: "",
                                         data.sellerId.toString()
                                     ) { accessTable, cartItem ->
                                         showExtraChargesPopUp(cartItem, accessTable, true)
                                     }
-                                viewModal.getItemCount()
-                                viewModal.getItemPrice()
-                                MainScope().launch {
-                                    Toast
-                                        .makeText(
-                                            context,
-                                            "Added to cart",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                        .show()
+                                    viewModal.getItemCount()
+                                    viewModal.getItemPrice()
+                                    MainScope().launch {
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                "Added to cart",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
 
-                                    Utils.vibrator(context)
+                                        Utils.vibrator(context)
+                                    }
                                 }
-                            }
 
 
                             },
@@ -679,7 +681,7 @@ fun ItemEachRow(
 
             .clickable {
 
-                call(item.productId ?: "", item.productId?.toInt()?:0)
+                call(item.productId ?: "", item.productId?.toInt() ?: 0)
             }) {
         Column(
             modifier = Modifier,
@@ -817,7 +819,7 @@ private fun Body(
         ) {
 
             Spacer(Modifier.height(headerHeight))
-            (LocalConfiguration.current.screenWidthDp.dp / 2)
+
             FlowRow(
                 mainAxisSize = SizeMode.Expand,
                 mainAxisAlignment = FlowMainAxisAlignment.SpaceBetween

@@ -21,31 +21,31 @@
             "notNull": false
           },
           {
-            "fieldPath": "customer_PhoneNumber",
+            "fieldPath": "customer_phoneNumber",
             "columnName": "customer_PhoneNumber",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "PinCode",
+            "fieldPath": "pinCode",
             "columnName": "PinCode",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "Address1",
+            "fieldPath": "address1",
             "columnName": "Address1",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "Address2",
+            "fieldPath": "address2",
             "columnName": "Address2",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "LandMark",
+            "fieldPath": "landMark",
             "columnName": "LandMark",
             "affinity": "TEXT",
             "notNull": false
@@ -71,7 +71,7 @@
             "notNull": true
           },
           {
-            "fieldPath": "ProductIdNumber",
+            "fieldPath": "productIdNumber",
             "columnName": "ProductIdNumber",
             "affinity": "TEXT",
             "notNull": false

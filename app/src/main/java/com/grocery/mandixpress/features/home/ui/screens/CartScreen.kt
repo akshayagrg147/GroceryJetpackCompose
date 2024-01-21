@@ -1105,7 +1105,7 @@ fun UPIPaymentConfirmationDialog(
                             .height(20.dp)
                             .width(20.dp), onClick = {
                             viewModal.deleteProduct(data.productIdNumber)
-                            context.showMsg("1 item deleted")
+
 
                         }) {
                             Icon(Icons.Default.Close, contentDescription = "")
@@ -1152,6 +1152,7 @@ fun UPIPaymentConfirmationDialog(
                                     data.strProductName ?: "",
                                     data.actualprice ?: "",
                                     data.sellerId.toString()
+
                                 )
 
 

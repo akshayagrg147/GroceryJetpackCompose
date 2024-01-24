@@ -9,6 +9,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
@@ -153,8 +154,8 @@ class HomeAllProductsViewModal @Inject constructor(
         globalmutablelist.value = response
 
     }
-    fun getFreeDeliveryMinPrice():String{
-        return sharedPreferences.getMinimumDeliveryAmount()
+    fun getFreeDeliveryMinPrice():Double{
+        return sharedPreferences.getMinimumDeliveryAmount().toDouble()
     }
 
     fun setvalue(str: String) {
@@ -165,7 +166,7 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
     fun registerFcmToken() {
-        Log.d("sharedreference", "success ${sharedPreferences.getMobileNumber()}")
+        showLog("sharedreference", "success ${sharedPreferences.getMobileNumber()}")
 
         viewModelScope.launch {
 
@@ -176,10 +177,10 @@ class HomeAllProductsViewModal @Inject constructor(
             ).collectLatest {
                 when (it) {
                     is ApiState.Success -> {
-                        Log.d("sharedreference", "success")
+                        showLog("sharedreference", "success")
                     }
                     is ApiState.Failure -> {
-                        Log.d("sharedreference", "failure ${it.msg}")
+                        showLog("sharedreference", "failure ${it.msg}")
                     }
                 }
             }
@@ -233,7 +234,7 @@ class HomeAllProductsViewModal @Inject constructor(
     }
 
     fun onEvent(event: HomeEvent) {
-        Log.d("showinggetfcmtoken", sharedPreferences.getFcmToken())
+        showLog("showinggetfcmtoken", sharedPreferences.getFcmToken())
         when (event) {
             is  HomeEvent.BestSellingEventFlow -> viewModelScope.launch {
                 repository.BestSellingProducts(sharedPreferences.getPostalCode())
@@ -374,7 +375,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
     fun getItemCount() = viewModelScope.launch {
 
-        roomrespo.getTotalProductItems().catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }
+        roomrespo.getTotalProductItems().catch { e ->   showLog("dmdndnd", "Exception: ${e.message} ") }
             .collect {
                 totalcount.value = it ?: 0
             }
@@ -383,7 +384,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
     fun getItemPrice() = viewModelScope.launch {
         roomrespo.getTotalProductItemsPrice()
-            ?.catch { e -> Log.d("dmdndnd", "Exception: ${e.message} ") }?.collect {
+            ?.catch { e ->   showLog("dmdndnd", "Exception: ${e.message} ") }?.collect {
 
                    totalprice.value = it ?: 0
 
@@ -468,7 +469,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
 
     fun setFilterList(filterlist: List<HomeAllProductsResponse.HomeResponse>?) {
-        Log.d("kdkkdk", "skksk ${Gson().toJson(filterlist)}")
+        showLog("kdkkdk", "skksk ${Gson().toJson(filterlist)}")
         listMutable.value = HomeAllProductsResponse(filterlist)
     }
     fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
@@ -509,7 +510,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
             }
             val decimalRupees = String.format("%.2f", totalKm)
           sharedPreferences.setMinimumDeliveryAmount((sharedPreferences.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
-            Log.d("getDeliveryChargeB","${sharedPreferences.getMinimumDeliveryAmount()}---$totalKm---"+latLngList.size)
+            showLog("getDeliveryChargeB","${sharedPreferences.getMinimumDeliveryAmount()}---$totalKm---"+latLngList.size)
 
 
             callback(totalKm)

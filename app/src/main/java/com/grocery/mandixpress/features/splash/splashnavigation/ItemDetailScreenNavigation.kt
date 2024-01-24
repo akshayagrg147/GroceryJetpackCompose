@@ -489,9 +489,20 @@ fun ItemDetailsScreen(
                     item {
 
                         if (relatedSearch.isLoading) {
-                            repeat(5) {
-                                ShimmerAnimation()
+                            LazyRow(
+                                modifier = Modifier
+                                    .padding(top = 15.dp)
+                                    .fillMaxWidth()
+                                // .height(260.dp)
+                            ) {
+                                repeat(5) {
+                                    item {
+                                        ShimmerAnimation()
+
+                                    }
+                                }
                             }
+
                         } else if (relatedSearch.data != null) {
 
                             Row(

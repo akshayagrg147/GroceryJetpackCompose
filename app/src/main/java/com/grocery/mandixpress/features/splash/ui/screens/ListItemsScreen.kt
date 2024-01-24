@@ -356,7 +356,7 @@ fun ListItems(
                     }
 
                 }
-                if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
+                if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice()>0.0))
                     AddToCartCardView(
                         viewModal,
                         navController,

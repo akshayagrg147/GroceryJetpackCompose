@@ -329,7 +329,7 @@ fun CategoryWiseDashboardAllData(
                             }
 
                         }
-                        if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
+                        if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice()>0.0))
                             AddToCartCardView(
                                 viewModal,
                                 navController,
@@ -364,6 +364,7 @@ fun CategoryWiseDashboardAllData(
                                         .padding(top = 5.dp)
                                     // .height(400.dp)
                                 ) {
+                                    if(list.snapshot().items.isNotEmpty())
                                     LazyVerticalGrid(
                                         columns = GridCells.Fixed(2),
                                         modifier = Modifier.padding(10.dp)
@@ -424,11 +425,15 @@ fun CategoryWiseDashboardAllData(
                                             }
                                         }
                                     }
+                                    else {
+
+                                        NoItemound()
+                                    }
                                 }
 
 
                             }
-                            if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
+                            if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice()>0.0))
                                 AddToCartCardView(
                                     viewModal,
                                     navController,
@@ -546,7 +551,7 @@ fun CategoryWiseDashboardAllData(
 
 
                         }
-                        if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
+                        if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice()>0.0))
                             AddToCartCardView(
                                 viewModal,
                                 navController,
@@ -657,19 +662,19 @@ fun NoItemound() {
                 .height(160.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.drawable.noitems),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
 
         }
-        Text12_h1(
-            text = "No Items Available", color = headingColor,
-            modifier = Modifier
-                .padding(top = 10.dp)
-                .align(Alignment.CenterHorizontally)
-        )
+//        Text12_h1(
+//            text = "No Items Available", color = headingColor,
+//            modifier = Modifier
+//                .padding(top = 10.dp)
+//                .align(Alignment.CenterHorizontally)
+//        )
 
 
     }

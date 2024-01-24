@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.splash.splashnavigation.ScreenRoute
 import com.grocery.mandixpress.appupdate.InAppUpdateManager
@@ -116,7 +117,7 @@ fun AutoUpdateScreen(
         } else {
             LaunchedEffect(key1 = Unit){
                 delay(500)
-                Log.d("CreateOrderId", "SplashScreen:${sharedpreferenceCommon.getJwtToken()}  ${sharedpreferenceCommon.getCombinedAddress()}")
+                showLog("CreateOrderId", "SplashScreen:${sharedpreferenceCommon.getJwtToken()}  ${sharedpreferenceCommon.getCombinedAddress()}")
                 if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
                     if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty() && sharedpreferenceCommon.getCombinedAddress().any { it.isLetter() }) {
                         val intent = Intent(context, HomeActivity::class.java)

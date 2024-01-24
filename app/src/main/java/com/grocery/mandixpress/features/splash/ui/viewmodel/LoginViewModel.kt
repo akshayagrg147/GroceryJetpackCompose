@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.CheckNumberExistResponse
 import com.grocery.mandixpress.data.modal.RegisterLoginRequest
@@ -43,13 +44,13 @@ fun onEvent(mobile: LoginEvent) {
                 ) .collectLatest {
                     when(it){
                         is ApiState.Success->{
-                            Log.d("loginViewModal", "checkMobileNumberExist 11: ${Gson().toJson(it.data)}")
+                            showLog("loginViewModal", "checkMobileNumberExist 11: ${Gson().toJson(it.data)}")
                             _loginResponse.emit(ComposeUiResponse(data = it.data))
 
                         }
                         is ApiState.Failure->{
                             _loginResponse.emit(ComposeUiResponse(error = it.msg.toString()))
-                            Log.d("loginViewModal", "checkMobileNumberExist22: ${it.msg}")
+                            showLog("loginViewModal", "checkMobileNumberExist22: ${it.msg}")
                         }
                         is ApiState.Loading->{
                             _loginResponse.emit(ComposeUiResponse(isLoading = true))
@@ -67,7 +68,7 @@ fun onEvent(mobile: LoginEvent) {
 
     fun gettingJwtToken()=commonRepository.gettingJwt()
     fun showmsg(message: String) {
-        Log.d("showinggetfcmtoken","$message")
+        showLog("showinggetfcmtoken","$message")
 
     }
 }

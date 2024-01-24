@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.features.splash.domain.repository.AuthRepository
 import kotlinx.coroutines.channels.awaitClose
@@ -27,11 +28,11 @@ class AuthRepositoryImpl @Inject constructor(
         val verificationCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
 
             override fun onVerificationCompleted(p0: PhoneAuthCredential) {
-                Log.d("errormessageotp",p0.smsCode?:"verification complete")
+               showLog("errormessageotp",p0.smsCode?:"verification complete")
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {
-                Log.d("errormessageotp",p0.message?:"not know")
+                showLog("errormessageotp",p0.message?:"not know")
                 trySend(ApiState.Failure(p0))
             }
 

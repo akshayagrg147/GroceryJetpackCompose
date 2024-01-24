@@ -55,7 +55,7 @@ fun AddToCartCardView(
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
-            if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice().toInt()) {
+            if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice()) {
                 Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = R.drawable.bike_delivery),

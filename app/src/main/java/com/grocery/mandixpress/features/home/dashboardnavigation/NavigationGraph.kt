@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.data.modal.AllOrdersHistoryList
 import com.grocery.mandixpress.data.modal.OrderIdResponse
@@ -76,7 +77,7 @@ fun NavigationGraph(
         }
         composable(DashBoardNavRoute.AddressScreen.screen_route) {
             val data = it.arguments?.getString("data") ?: ""
-            Log.d("datavalueget","$data")
+            showLog("datavalueget","$data")
             AllAddress(navController, context,data)
         }
 

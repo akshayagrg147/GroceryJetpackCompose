@@ -6,6 +6,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.grocery.mandixpress.SharedPreference.AppConstant
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.features.home.ui.viewmodal.PinCodeStateModal
 import dagger.hilt.android.qualifiers.ApplicationContext
 
@@ -36,7 +37,7 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     }
 
     fun setFcmToken(fcm_token: String): Any {
-        Log.d("showinggetfcmtoken"," get $fcm_token")
+        showLog("showinggetfcmtoken"," get $fcm_token")
         return mPrefs.edit().putString("fcm_Token", fcm_token).apply()
     }
     fun getFcmToken(): String {
@@ -133,7 +134,7 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         return mPrefs.getString(AppConstant.deliveryContactNumber,"").toString()
     }
     fun getMinimumDeliveryAmount():String{
-        return mPrefs.getString(AppConstant.minimumAmountDelivery,"").toString()
+        return mPrefs.getString(AppConstant.minimumAmountDelivery,"0.00").toString()
     }
 
     fun getAvailablePinCode(): List<PinCodeStateModal> {

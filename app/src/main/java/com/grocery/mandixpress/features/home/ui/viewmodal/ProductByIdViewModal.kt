@@ -6,6 +6,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.RoomRepository
 import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
@@ -25,6 +26,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 @HiltViewModel
 class ProductByIdViewModal @Inject constructor(
@@ -61,8 +66,66 @@ class ProductByIdViewModal @Inject constructor(
 
     fun deleteCartItems(value: ProductByIdResponseModal) = viewModelScope.launch(Dispatchers.IO) {
 
-        repo.deleteCartItems(value. homeproducts?.productId)
+        repo.deleteCartItems(value. homeproducts?.productId){
+            if(it==0){
+                updateDeliveryRate()
+            }
+        }
         getItemBaseOnProductId(value.homeproducts?.productId?:"")
+    }
+    private fun updateDeliveryRate() {
+        val latLngList: MutableList<Pair<Double, Double>> = mutableListOf()
+        var totalKm = 0.00
+
+        viewModelScope.launch {
+            val cartItems = dao.getAllCartItems().first()
+            if(cartItems.isEmpty())
+                return@launch
+            val distinctSellerNames = cartItems.map { it.sellerId }.distinct()
+            val sellerDetail: AdminAccessTable = dao.getSellerDetail(distinctSellerNames[0])?.first() ?: AdminAccessTable()
+
+            if(distinctSellerNames.size>1){
+                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price.toString())
+                for (value in cartItems) {
+                    latLngList.add(Pair(value.lat ?: 0.00, value.lng ?: 0.00))
+                }
+                val uniqueLatLngSet = latLngList.toSet()
+
+                val uniqueLatLngList = uniqueLatLngSet.toList()
+
+                for (i in 0 until uniqueLatLngList.size - 1) {
+                    totalKm += haversine(
+                        uniqueLatLngList[i].first,
+                        uniqueLatLngList[i].second,
+                        uniqueLatLngList[i + 1].first,
+                        uniqueLatLngList[i + 1].second
+                    )
+                }
+                val decimalRupees = String.format("%.2f", totalKm)
+                sharedpreferenceCommon.setMinimumDeliveryAmount((sharedpreferenceCommon.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
+
+            }
+            else{
+                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price?:"").toString()
+
+            }
+
+        }
+
+    }
+    fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val R = 6371.0 // Earth radius in kilometers
+
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+                sin(dLon / 2) * sin(dLon / 2)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return R * c
     }
 
     fun getItemBaseOnProductId(value: String) = viewModelScope.launch(Dispatchers.IO) {
@@ -126,7 +189,7 @@ class ProductByIdViewModal @Inject constructor(
 //cart items price
     fun getTotalProductItemsPrice() = viewModelScope.launch {
         repo.getTotalProductItemsPrice()?.catch { e ->
-            Log.d("main", "Exception: ${e.message} ") }
+            showLog("main", "Exception: ${e.message} ") }
             ?.collect {
                 totalPrice.value = it ?: 0
 
@@ -135,7 +198,7 @@ class ProductByIdViewModal @Inject constructor(
 //cart items count
     fun getTotalProductItems() = viewModelScope.launch {
         repo.getTotalProductItems().catch { e ->
-            Log.d("main", "Exception: ${e.message} ") }
+            showLog("main", "Exception: ${e.message} ") }
             .collectLatest {
                 totalcount.value = it ?: 0
 

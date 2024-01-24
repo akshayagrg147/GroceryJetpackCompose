@@ -29,6 +29,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -125,12 +126,17 @@ object NetworkModule {
             chain.proceed(modifiedRequest)
         }
 
-        return OkHttpClient.Builder()
-            .addInterceptor(interceptor)
+        val okHttpClientBuilder =  OkHttpClient.Builder()
             .addInterceptor(oAuthInterceptor)
             .addInterceptor(additionalHeadersInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
 
-            .build()
+
+        if (BuildConfig.DEBUG) {
+            okHttpClientBuilder.addInterceptor(interceptor)
+        }
+        return okHttpClientBuilder.build()
     }
 
     @Provides

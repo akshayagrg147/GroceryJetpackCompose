@@ -561,8 +561,8 @@ fun menuitems(
                     Text14_h1(
                         text =   "Sub cart menus",
                         color = headingColor,
-                        modifier = Modifier
-                            .wrapContentSize(Alignment.Center)// This will make the text take up the available space and be centered
+                        modifier = Modifier.padding(start=90.dp).align(Alignment.CenterVertically)
+                            // This will make the text take up the available space and be centered
                     )
                     else
 
@@ -962,7 +962,7 @@ fun MenuItemGrid(
                 Row( horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 10.dp, bottom = 10.dp),
+                        .padding(start = 1.dp, bottom = 10.dp),
 //
                 ) {
 Row {
@@ -987,7 +987,7 @@ Row {
                             modifier = Modifier
 
                                 .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-                                .padding(start = 10.dp)
+                                .padding(start = 5.dp)
 
                                 .background(color = whiteColor)
                                 .clickable {

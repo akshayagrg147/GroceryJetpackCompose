@@ -21,6 +21,7 @@ import com.grocery.mandixpress.HiltApplication.Companion.context
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text14_h1
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.common.Utils.Companion.extractSixDigitNumber
 import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
@@ -48,7 +49,7 @@ fun LocateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
         LocationPermissionsAndSettingDialogs(
             updateCurrentLocation = {
                 requestLocationUpdate = false
-                Log.d("latitudeandlongitude","call2")
+                showLog("latitudeandlongitude","call2")
                 LocationUtils.requestLocationResultCallback(mFusedLocationClient) { locationResult ->
                     locationResult.lastLocation?.let { location ->
                         latitude = location.latitude
@@ -111,7 +112,7 @@ fun LocateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                     color = Color.White,
                     enabled = combinedaddress.isNotEmpty()
                 )
-                {  Log.d("errorcheck","${extractSixDigitNumber(combinedaddress)}")
+                {   showLog("errorcheck","${extractSixDigitNumber(combinedaddress)}")
                     if(extractSixDigitNumber(combinedaddress)?.length==6){
                         mapScreenViewModal.savePinCode(extractSixDigitNumber(combinedaddress))
                         val intent = Intent(context, HomeActivity::class.java)
@@ -119,7 +120,7 @@ fun LocateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                         context.startActivity(intent)
                     }
                     else{
-                        Log.d("errorcheck","${extractSixDigitNumber(combinedaddress)}")
+                        showLog("errorcheck","${extractSixDigitNumber(combinedaddress)}")
                     }
 
 
@@ -179,7 +180,7 @@ private fun getCityNameByCoordinates(lat: Double, lon: Double): String {
         }
     }
     catch (e:Exception){
-        Log.d("TAG", "getCityNameByCoordinates: ${e.message}")
+        showLog("TAG", "getCityNameByCoordinates: ${e.message}")
     }
     return cityname
 }

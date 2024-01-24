@@ -29,7 +29,7 @@ constructor(private val dao: Dao) {
         dao.deleteAllAdminAccessTable()
     }
 
-    suspend  fun deleteCartItems(productIdNumber: String?) = withContext(Dispatchers.IO) {
+    suspend  fun deleteCartItems(productIdNumber: String?,checkProductExist:(Int)->Unit) = withContext(Dispatchers.IO) {
 
         var intger: Int =
             dao.getProductBasedIdCount(productIdNumber).first()?:0
@@ -43,6 +43,7 @@ constructor(private val dao: Dao) {
                 .deleteCartItem(productIdNumber)
 
         }
+        checkProductExist(intger)
     }
     fun getTotalProductItems(): Flow<Int?> = dao.getTotalProductItems()
     fun getTotalProductItemsPrice(): Flow<Int?>? = dao.getTotalProductItemsPrice()

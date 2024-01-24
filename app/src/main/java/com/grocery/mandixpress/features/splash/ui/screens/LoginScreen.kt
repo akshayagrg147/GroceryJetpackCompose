@@ -73,13 +73,13 @@ fun loginScreen(
 
     LaunchedEffect(key1 = mobileRegisterResponse) {
         if (mobileRegisterResponse.isLoading) {
-            Log.d("loginViewModal", "checkMobileNumberExist: loading")
+            showLog("loginViewModal", "checkMobileNumberExist: loading")
         }
         else if (mobileRegisterResponse.data != null) {
             isDialog = false
 
             if (mobileRegisterResponse.data?.isMobileExist == true) {
-                Log.d("loginViewModal", "checkMobileNumberExist: loadinged rr")
+                showLog("loginViewModal", "checkMobileNumberExist: loadinged rr")
                 sharedPreferences.setJwtToken(mobileRegisterResponse.data?.jwtToken?:"")
                 sharedPreferences.setMobileNumber("+91${mobile}")
                 navController.navigate(ScreenRoute.LocateMeScreen.route)
@@ -99,7 +99,7 @@ fun loginScreen(
         }
         else if (mobileRegisterResponse.error.isNotEmpty()) {
             isDialog = false
-            Log.d("loginViewModal", "checkMobileNumberExist: error")
+            showLog("loginViewModal", "checkMobileNumberExist: error")
             Toast.makeText(context, mobileRegisterResponse.error, Toast.LENGTH_SHORT).show()
         }
     }

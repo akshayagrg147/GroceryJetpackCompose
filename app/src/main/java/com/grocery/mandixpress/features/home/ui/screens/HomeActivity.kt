@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.grocery.mandixpress.features.home.dashboardnavigation.NavigationGraph
 import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.Constants.Companion.ACTION_CUSTOM_BROADCAST
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.connectionState.ConnectionState
 import com.grocery.mandixpress.connectionState.currentConnectivityState
 import com.grocery.mandixpress.connectionState.observeConnectivityAsFlow
@@ -41,25 +42,34 @@ class HomeActivity() : ComponentActivity() {
     @Inject
     lateinit var sharedpreferenceCommon: sharedpreferenceCommon
 
+
+
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GroceryAppTheme {
                 val navController = rememberNavController()
+                var internetconnectvity by remember { mutableStateOf(false) }
                 // A surface container using the 'background' color from the theme
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     //    bottomBar = { com.grocery.groceryapp.BottomNavigation.BottomNavigation(navController = navController) }
                 ) {
-                   // payment()
-                    ConnectivityStatus()
-                    NavigationGraph(
-                        viewModal,
-                        navController = navController,
-                        this@HomeActivity,
-                        sharedpreferenceCommon
-                    )
+
+                  if(internetconnectvity){
+                      NavigationGraph(
+                          viewModal,
+                          navController = navController,
+                          this@HomeActivity,
+                          sharedpreferenceCommon
+                      )
+                  }
+                    ConnectivityStatus{
+                        internetconnectvity=true
+
+                    }
+
                 }
 //                FirebaseApp.initializeApp(this)
 //                FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -77,7 +87,7 @@ class HomeActivity() : ComponentActivity() {
         val packageInfoList = packageManager.getInstalledPackages(0)
         val upiAppPackageNames: MutableList<String> = ArrayList()
         for (packageInfo in packageInfoList) {
-            Log.d("itemclicked","cod $packageInfo")
+            showLog("itemclicked","cod $packageInfo")
             if (packageInfo.packageName.contains("phonepe")) {
                 upiAppPackageNames.add(packageInfo.packageName)
             }
@@ -141,7 +151,7 @@ fun connectivityState(): State<ConnectionState> {
 
 
 @Composable
-fun ConnectivityStatus() {
+fun ConnectivityStatus(internetconnectvity:(Boolean)->Unit) {
     var internetconnectvity by remember { mutableStateOf(false) }
     val connection by connectivityState()
 
@@ -149,7 +159,7 @@ fun ConnectivityStatus() {
 
     if (isConnected) {
         internetconnectvity = true
-
+        internetconnectvity(true)
         // navController.navigate(DashBoardNavRoute.Home.screen_route)
 
     } else {
@@ -157,7 +167,7 @@ fun ConnectivityStatus() {
     }
     if (!internetconnectvity)
         CustomDialog() {
-            internetconnectvity = true
+            //internetconnectvity = true
         }
 
 
@@ -170,8 +180,8 @@ fun CustomDialog(call: (Boolean) -> Unit) {
         onDismissRequest = {},
         properties = DialogProperties(dismissOnBackPress = false)
     ) {
-        onlineconnection() {
-            if (it)
+        onlineconnection() {retryclicked->
+            if (retryclicked)
                 call(true)
         }
     }

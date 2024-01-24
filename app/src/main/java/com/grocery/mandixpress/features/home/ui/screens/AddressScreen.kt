@@ -31,7 +31,7 @@ fun addressScreen(
 
     viewModal: AddressViewModal = hiltViewModel()
 ) {
-    Log.d("datavalue","$data")
+    showLog("datavalue","$data")
     val context = LocalContext.current.getActivity()
     val name = remember { mutableStateOf("") }
     val phonenumber = remember { mutableStateOf("") }

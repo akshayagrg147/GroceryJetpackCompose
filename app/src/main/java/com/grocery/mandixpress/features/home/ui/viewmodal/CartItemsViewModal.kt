@@ -11,6 +11,7 @@ import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
 import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.Constants
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
@@ -90,7 +91,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
     }
 
     fun getAllAddressItems() = viewModelScope.launch {
-        repo.getAddressItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }
+        repo.getAddressItems().catch { e -> showLog("main", "Exception: ${e.message} ") }
             .collect {
                 val customAddress = "Custom Address"
 
@@ -103,7 +104,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
 
 
     private fun getAllCartAddressItems() = viewModelScope.launch {
-        repo.getCartItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }.collect {
+        repo.getCartItems().catch { e ->  showLog("main", "Exception: ${e.message} ") }.collect {
             allCartItems.value = it
         }
 
@@ -111,7 +112,11 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
     }
 
     fun deleteCartItems(productIdNumber: String?) = viewModelScope.launch {
-        repo.deleteCartItems(productIdNumber)
+        repo.deleteCartItems(productIdNumber){
+            if(it==0){
+                updateDeliveryRate()
+            }
+        }
     }
 
     fun getCartItem() {
@@ -122,7 +127,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
     }
 
     private fun getTotalProductItemsPrice() = viewModelScope.launch {
-        repo.getTotalProductItemsPrice()?.catch { e -> Log.d("main", "Exception: ${e.message} ") }
+        repo.getTotalProductItemsPrice()?.catch { e -> showLog("main", "Exception: ${e.message} ") }
             ?.collect {
                 totalPrice.value = it ?: 0
 
@@ -130,7 +135,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
     }
 
     private fun getTotalProductItems() = viewModelScope.launch {
-        repo.getTotalProductItems().catch { e -> Log.d("main", "Exception: ${e.message} ") }
+        repo.getTotalProductItems().catch { e ->  showLog("main", "Exception: ${e.message} ") }
             .collect {
                 totalCount.value = it ?: 0
             }
@@ -138,7 +143,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
     }
 
     fun getSavingAmount() = viewModelScope.launch {
-        repo.getTotalSavingAmount()?.catch { e -> Log.d("main", "Exception: ${e.message} ") }
+        repo.getTotalSavingAmount()?.catch { e ->  showLog("main", "Exception: ${e.message} ") }
             ?.collect {
                 savingAmountMutable.value = it ?: 0
             }
@@ -228,7 +233,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
 
     fun deleteProduct(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteCartItem(productIdNumber)
-        //updateDeliveryRate()
+        updateDeliveryRate()
     }
     private fun updateDeliveryRate() {
             val latLngList: MutableList<Pair<Double, Double>> = mutableListOf()
@@ -236,9 +241,13 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
 
             viewModelScope.launch {
                 val cartItems = dao.getAllCartItems().first()
+                if(cartItems.isEmpty())
+                    return@launch
                 val distinctSellerNames = cartItems.map { it.sellerId }.distinct()
+                val sellerDetail: AdminAccessTable = dao.getSellerDetail(distinctSellerNames[0])?.first() ?: AdminAccessTable()
+
                 if(distinctSellerNames.size>1){
-                  //  sharedpreferenceCommon.setMinimumDeliveryAmount(cartItems[0].actualprice)
+                    sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price.toString())
                     for (value in cartItems) {
                         latLngList.add(Pair(value.lat ?: 0.00, value.lng ?: 0.00))
                     }
@@ -256,6 +265,10 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
                     }
                     val decimalRupees = String.format("%.2f", totalKm)
                     sharedpreferenceCommon.setMinimumDeliveryAmount((sharedpreferenceCommon.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
+
+                }
+                else{
+                    sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price?:"").toString()
 
                 }
 
@@ -287,7 +300,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
                 when (it) {
                     is ApiState.Success -> {
                         itemsCollection.value = it.data
-                        Log.d("itemsizevalue","${itemsCollection.value.list?.size}")
+                        showLog("itemsizevalue","${itemsCollection.value.list?.size}")
                     }
 
                     is ApiState.Failure -> {
@@ -310,7 +323,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
                 viewModelScope.launch {
                     event.request.pincode = sharedpreferenceCommon.getPostalCode()
                     event.request.fcm_token = sharedpreferenceCommon.getFcmToken()
-                    Log.d("orderIdRequest", "${event.request}")
+                    showLog("orderIdRequest", "${event.request}")
                     repository.OrderIdRequest(event.request).doOnLoading {
                         createOrderIdMS.value = CommonUiObjectResponse(isLoading = true,)
 
@@ -362,11 +375,11 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
                 )).collectLatest {
                 when (it) {
                     is ApiState.Success -> {
-                        Log.d("notificationsend", "sent")
+                        showLog("notificationsend", "sent")
                     }
 
                     is ApiState.Failure -> {
-                        Log.d("notificationsend", "${it.msg}")
+                        showLog("notificationsend", "${it.msg}")
                     }
 
                     else -> {
@@ -415,7 +428,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
 
 
     fun searchCharcterWiseItem(value: String) {
-        Log.d("itemsizevalue", "${allItemsCollection.value.data?.list?.size}")
+        showLog("itemsizevalue", "${allItemsCollection.value.data?.list?.size}")
 
         if (value.isNotEmpty()) {
             val filteredList = listOfAllItems.filter {
@@ -425,7 +438,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
             val updatedData = allItemsCollection.value.data?.copy(list = filteredList)
             allItemsCollection.value = allItemsCollection.value.copy(data = updatedData)
 
-            Log.d("itemsizevalue", "filter ${_allItemsCollection.value.data?.list?.size}")
+            showLog("itemsizevalue", "filter ${_allItemsCollection.value.data?.list?.size}")
         } else {
             // If the search value is empty, reset _allItemsCollection to the original data
            // allItemsCollection.value = allItemsCollection.value?.copy(data = listOfAllItems)

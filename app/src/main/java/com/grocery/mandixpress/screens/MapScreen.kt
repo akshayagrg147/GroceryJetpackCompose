@@ -34,6 +34,7 @@ import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text14_h1
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.splash.ui.viewmodel.RegisterLoginViewModal
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -171,7 +172,7 @@ fun placesApi( cameraPositionState: CameraPositionState, address: String,viewMod
             if (it.resultCode == RESULT_OK) {
                 val place = Autocomplete.getPlaceFromIntent(it.data)
 
-                Log.d("place LatLng: ", place.latLng.latitude.toString())
+                showLog("place LatLng: ", place.latLng.latitude.toString())
 
                 // move the camera position of the map
 

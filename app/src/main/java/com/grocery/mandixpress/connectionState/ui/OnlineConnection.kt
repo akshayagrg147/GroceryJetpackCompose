@@ -26,8 +26,9 @@ fun onlineconnection(call: (Boolean) -> Unit) {
         mutableStateOf(false)
     }
     if (retryclicked.value) {
-        LocalContext.current.launchActivity<LoginActivity>() {
-        }
+        call(true)
+//        LocalContext.current.launchActivity<LoginActivity>() {
+//        }
 
     }
     Card(

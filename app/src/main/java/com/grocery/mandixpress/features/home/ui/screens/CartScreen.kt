@@ -109,7 +109,7 @@ if(codClicked.value)
                 "orderstatus",
                 orderIDResponse.data
             )
-            Log.d("cartscreenresponse","${orderIDResponse.data?.productResponse?.fcm_tokenSeller}")
+            showLog("cartscreenresponse","${orderIDResponse.data?.productResponse?.fcm_tokenSeller}")
             for(fcm in orderIDResponse.data?.productResponse?.fcm_tokenSeller?: emptyList() ){
                 viewModal.sendNotification(fcm)
             }
@@ -425,10 +425,10 @@ if(codClicked.value)
                                     val lsSellerId: ArrayList<String> = ArrayList()
                                     for(data in order){
                                         lsSellerId.add(data.sellerIdName.toString())
-                                        Log.d("CreateOrderId1111", "CartScreen:${data.sellerIdName.toString()}")
+                                        showLog("CreateOrderId1111", "CartScreen:${data.sellerIdName.toString()}")
 
                                     }
-                                    Log.d("CreateOrderId1111", "CartScreen:${lsSellerId}")
+                                    showLog("CreateOrderId1111", "CartScreen:${lsSellerId}")
 
 
                                     val requestObj = OrderIdCreateRequest(
@@ -543,7 +543,7 @@ OrderIdCreateRequest,codClicked:(orderRequest: OrderIdCreateRequest)->Unit) {
     val packageInfoList = packageManager.getInstalledPackages(0)
     val upiAppPackageNames: MutableList<String> = ArrayList()
     for (packageInfo in packageInfoList) {
-        Log.d("itemclicked","cod $packageInfo")
+        showLog("itemclicked","cod $packageInfo")
         if (packageInfo.packageName.contains("phonepe")) {
             upiAppPackageNames.add(packageInfo.packageName)
         }
@@ -564,7 +564,7 @@ OrderIdCreateRequest,codClicked:(orderRequest: OrderIdCreateRequest)->Unit) {
 //        context. startActivity(intent)
     }
     else{
-        Log.d("itemclicked","cod called")
+        showLog("itemclicked","cod called")
       codClicked(orderRequest)
     }
 

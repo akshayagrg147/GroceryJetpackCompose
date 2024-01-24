@@ -254,7 +254,7 @@ fun Homescreen(
         }) {
 
        // BackPressSample()
-        Log.d("minimumdeliverycharges","${viewModal.getFreeDeliveryMinPrice()}")
+        showLog("minimumdeliverycharges","${viewModal.getFreeDeliveryMinPrice()}")
         val coroutineScope = rememberCoroutineScope()
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -271,7 +271,7 @@ fun Homescreen(
                     navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
                 }
             if (viewModal.getitemcountState.value >= 1 && (viewModal.getFreeDeliveryMinPrice()
-                    .isNotEmpty())
+                        >0.0)
             )
                 AddToCartCardView(
                     viewModal,
@@ -368,7 +368,7 @@ private fun BodyDashboard(
 viewModal.getDeliveryChargeBasesOnLatLng{
 
 
-    Log.d("getDeliveryChargeB","$it---")
+    showLog("getDeliveryChargeB","$it---")
     MainScope().launch {
         Toast
             .makeText(
@@ -1550,7 +1550,8 @@ fun shopBySeller(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(horizontal = 4.dp)
-            .width(150.dp)
+            .width(120.dp)
+
             .clickable {
 
                 navcontroller.currentBackStackEntry?.savedStateHandle?.set(

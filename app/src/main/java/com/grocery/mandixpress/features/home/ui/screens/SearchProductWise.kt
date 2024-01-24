@@ -26,6 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.common.Utils
@@ -75,8 +78,6 @@ fun SearchResult(
             modifier = Modifier
                 .padding(horizontal = 4.dp, vertical = 4.dp)
                 .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
-
-                .width(150.dp)
                 .clickable {
                     // navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
                 }
@@ -270,7 +271,7 @@ fun SearchScreenProducts(
                     responseData.value = it.data
                 }
                 is ApiState.Failure -> {
-                    Log.d("gettingresponse", it.msg.message.toString())
+                    showLog("gettingresponse", it.msg.message.toString())
 
                 }
 
@@ -371,7 +372,7 @@ fun SearchScreenProducts(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
-
+if(responseData.value.list?.isNotEmpty()==true)
             LazyColumn(
                 modifier = Modifier
                     .padding(top = 10.dp)
@@ -393,8 +394,17 @@ fun SearchScreenProducts(
                         }
                 }
             }
+            else{
+    Image(
+        painter = painterResource(id = R.drawable.noitems),
+        contentDescription = null,
+        alignment = Alignment.Center,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.height(300.dp).fillMaxWidth()
+    )
+            }
         }
-        if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
+        if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice()>0.0))
             AddToCartCardView(
                 viewModal,
                 navHostController,

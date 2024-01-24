@@ -3,6 +3,7 @@ package com.grocery.mandixpress.features.home.ui.viewmodal
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.doOnFailure
@@ -41,7 +42,7 @@ class ProfileViewModal @Inject constructor(
     private set
 
 fun callingOrderStatus(orderRequest: OrderStatusRequest) {
-    Log.d("callingOrderStatus","true")
+    showLog("callingOrderStatus","true")
     onEvent(ProfileEvent.cancelOrder(orderRequest))
 
 

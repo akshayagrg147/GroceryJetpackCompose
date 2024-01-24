@@ -4,7 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.os.Build
+import android.util.Log
 import android.widget.Toast
+import com.grocery.mandixpress.BuildConfig
 
 
 fun Context.showMsg(
@@ -16,6 +19,11 @@ fun Context.getActivity(): Activity?= when(this){
 is Activity->this
     is ContextWrapper->baseContext.getActivity()
     else->null
+}
+
+fun showLog(tagname:String,message:String){
+    if (BuildConfig.DEBUG)
+    Log.d(tagname,message)
 }
 
 

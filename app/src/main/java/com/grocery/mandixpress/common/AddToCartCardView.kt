@@ -22,6 +22,7 @@ import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text13_body1
+import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
 
@@ -36,26 +37,57 @@ fun AddToCartCardView(
         elevation = 2.dp,
         shape = RoundedCornerShape(10.dp),
         backgroundColor = seallcolor, modifier = modifier
-            .fillMaxWidth()
-            .height(85.dp)
-            .padding(horizontal = 10.dp, vertical = 8.dp)
+             .fillMaxWidth()
+             .height(85.dp)
+             .padding(horizontal = 10.dp, vertical = 8.dp)
 
-            .clickable {
-                navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
-            }
-            .border(
-                width = 1.dp, // Border width
-                color = greyLightColor, // Border color
-                shape = RoundedCornerShape(10.dp) // Match the card's shape
-            )
-            .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
+             .clickable {
+                 navController.navigate(DashBoardNavRoute.CartScreen.screen_route)
+             }
+             .border(
+                 width = 1.dp, // Border width
+                 color = greyLightColor, // Border color
+                 shape = RoundedCornerShape(10.dp) // Match the card's shape
+             )
+             .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
-            if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice()) {
+            if(viewmodal.getSellersMinDeliveryCharge()!="0.00") {
+
+                if(viewmodal.withHigherCartItemTotal()<viewmodal.getFreeDeliveryMinPrice())
+
+                Row(modifier = Modifier) {
+                    Image(
+                        painter = painterResource(id = R.drawable.bike_delivery),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding()
+                            .width(30.dp)
+                            .height(30.dp)
+                            .padding(start = 10.dp)
+
+
+                    )
+                    Column() {
+                        Text10_h2(
+                            text = "Pay Delivery",
+                            color = Purple700,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                        Text10_h2(
+                            text = if(viewmodal.withHigherCartItemTotal() < viewmodal.getFreeDeliveryMinPrice()) String.format("%.2f",30+viewmodal.getSellersMinDeliveryCharge().toDouble()) else String.format(
+                                "%.2f",viewmodal.getSellersMinDeliveryCharge()),
+                            color = headingColor,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
+                }
+            }
+           else if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice()) {
                 Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = R.drawable.bike_delivery),
@@ -75,7 +107,7 @@ fun AddToCartCardView(
                             modifier = Modifier.padding(start = 10.dp)
                         )
                         Text10_h2(
-                            text = "Add item worth ${viewmodal.getFreeDeliveryMinPrice().toInt() - viewmodal.getitempriceState.value}",
+                            text = "Add item worth ${viewmodal.getFreeDeliveryMinPrice().toDouble() - viewmodal.getitempriceState.value}",
                             color = headingColor,
                             modifier = Modifier.padding(start = 10.dp)
                         )

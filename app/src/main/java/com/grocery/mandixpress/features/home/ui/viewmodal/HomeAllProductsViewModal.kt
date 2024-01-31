@@ -9,6 +9,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
+import com.grocery.mandixpress.SharedPreference.AppConstant
 import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
@@ -26,6 +27,7 @@ import com.grocery.mandixpress.roomdatabase.AdminAccessTable
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.android.parcel.RawValue
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -54,6 +56,7 @@ class HomeAllProductsViewModal @Inject constructor(
 
 
     }
+    val animationText=(0..20).asSequence().asFlow().map { if(it%2==0) "Search milk" else "Search bread" }.onEach { delay(3000) }
     var adminAccessTableData=AdminAccessTable()
     var cartTableData=CartItems()
     //events object
@@ -401,7 +404,6 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
         sellerId:String,
         passSellerDetail:(AdminAccessTable,CartItems)->Unit
     ) = viewModelScope.launch(Dispatchers.IO) {
-
         val intger: Int = dao.getProductBasedIdCount(productIdNumber).first() ?: 0
         if (intger == 0) { val data = CartItems(
                 productIdNumber,
@@ -413,9 +415,11 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                 savingAmount = (actualprice.toInt() - price).toString(),
                 sellerId = sellerId,
             )
-
                 if(dao.getAllCartItems().first().isEmpty())
-                {   val sellerDetail: AdminAccessTable = dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
+                {
+                    showLog("getSellersMinDeliveryCharge","--1--"+dao.getAllCartItems().first().isEmpty().toString()+"---"+dao.getAllCartItems().first()+"---"+dao.getAllCartItems())
+
+                    val sellerDetail: AdminAccessTable = dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
 
                     sharedPreferences.setMinimumDeliveryAmount(sellerDetail.price ?:"")
                     data.lat=sellerDetail.latitude?.toDouble()
@@ -424,6 +428,8 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
                 }
                 else{
+                    showLog("getSellersMinDeliveryCharge","--2--"+dao.getAllCartItems().first().isEmpty().toString()+"---"+dao.getAllCartItems().first()+"---"+dao.getAllCartItems())
+
                     val sellerIdExist: Boolean = dao.isExistSeller(sellerId)
 
                     if(!sellerIdExist){
@@ -432,6 +438,11 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                     }
                     else{
                         val sellerDetail: AdminAccessTable = dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
+
+                        val withHighestCartItemTotal=dao.getSellerWithHighestCartItemTotal()
+                        val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.sellerId)?.first() ?: AdminAccessTable()
+
+                        sharedPreferences.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"")
 
                         data.lat=sellerDetail.latitude?.toDouble()
                         data.lng=sellerDetail.longitude?.toDouble()
@@ -442,13 +453,28 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                 }
 
 
-        } else if (intger >= 1) {
+        }
+        else if (intger >= 1) {
+            val withHighestCartItemTotal=dao.getSellerWithHighestCartItemTotal()
+            val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.sellerId)?.first() ?: AdminAccessTable()
+
+            sharedPreferences.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"")
+
             roomrespo.updateCartItem(intger + 1, productIdNumber)
 
         }
 
 
     }
+    fun withHigherCartItemTotal():Int {
+        var withHighestCartItemTotal=-1
+        viewModelScope.launch(Dispatchers.IO) {
+             withHighestCartItemTotal = dao.getSellerWithHighestCartItemTotal().totalItemPrice?:-1
+        }
+        return withHighestCartItemTotal
+    }
+
+
 
     fun setcategory(value: String) {
         cat.settingData(value,sharedPreferences.getPostalCode())
@@ -486,6 +512,9 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
         return R * c
     }
+    fun getSellersMinDeliveryCharge():String{
+        return sharedPreferences.getDeliverySellersCharges()
+    }
     fun getDeliveryChargeBasesOnLatLng(callback: (Double) -> Unit) {
         val latLngList: MutableList<Pair<Double, Double>> = mutableListOf()
         var totalKm = 0.00
@@ -509,7 +538,8 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                 )
             }
             val decimalRupees = String.format("%.2f", totalKm)
-          sharedPreferences.setMinimumDeliveryAmount((sharedPreferences.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
+           sharedPreferences.setDeliverySellersCharges((decimalRupees.toFloat()*5).toString())
+//          sharedPreferences.setMinimumDeliveryAmount((sharedPreferences.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
             showLog("getDeliveryChargeB","${sharedPreferences.getMinimumDeliveryAmount()}---$totalKm---"+latLngList.size)
 
 

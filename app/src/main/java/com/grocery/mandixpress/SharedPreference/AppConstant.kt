@@ -16,6 +16,7 @@ class AppConstant {
         const val imageuri = "imageuri"
         const val availablePinCode = "availablePinCode"
         const val minimumAmountDelivery = "minimumAmountDelivery"
+        const val deliverySellersCharges = "deliverySellersCharges"
         const val deliveryContactNumber = "deliveryContactNumber"
 
 

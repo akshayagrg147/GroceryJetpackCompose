@@ -8,7 +8,13 @@ import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.*
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.with
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -266,6 +272,8 @@ fun Homescreen(
 
             }
             BodyDashboard(scroll, viewModal, navcontroller, lazyListState, context)
+            showLog("getSellersMinDeliveryCharge",viewModal.getSellersMinDeliveryCharge())
+
             if (searchvisibility)
                 SearchBar() {
                     navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
@@ -325,7 +333,7 @@ fun NoAvaibiltyScreen() {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
 @Composable
 private fun BodyDashboard(
     scroll: ScrollState,
@@ -348,6 +356,7 @@ private fun BodyDashboard(
     val bannerImage by viewModal._bannerImage.collectAsState()
     var refreshing by remember { mutableStateOf(false) }
     var newSellerAddedDialog by remember { mutableStateOf(false) }
+    val animationSearchText=viewModal.animationText.collectAsState(initial = "Search Product")
 
 
 
@@ -366,7 +375,6 @@ private fun BodyDashboard(
             viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second){it->
                 if(it!=0){
 viewModal.getDeliveryChargeBasesOnLatLng{
-
 
     showLog("getDeliveryChargeB","$it---")
     MainScope().launch {
@@ -478,43 +486,54 @@ viewModal.getDeliveryChargeBasesOnLatLng{
                         }
                     }
                     if (imageUrls.isNotEmpty()) {
-                        TextField(
-                            value = "",
-                            shape = RoundedCornerShape(8.dp),
-                            enabled = false,
-                            onValueChange = {
 
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(24.dp))
-                                .clickable {
-                                    navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
-                                }
-                                .padding(start = 10.dp, end = 10.dp),
-                            placeholder = {
-                                Text12_body1(
-                                    text = "Search Product",
-                                    color = bodyTextColor,
-                                )
-                            },
-                            colors = TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                cursorColor = Color.Transparent,
-                                trailingIconColor = titleColor,
-                                backgroundColor = greycolor,
-                                disabledIndicatorColor = Color.Transparent
-                            ),
-                            leadingIcon = {
-                                IconButton(onClick = {}) {
-                                    Icon(
-                                        Icons.Default.Search, contentDescription = "",
+                        // Animated search text state
+
+                        AnimatedContent( animationSearchText,
+                            transitionSpec = {
+                                (slideInVertically() with slideOutVertically()).using(SizeTransform(clip = false))
+
+                            }) {
+
+                            TextField(
+                                value = "",
+                                shape = RoundedCornerShape(8.dp),
+                                enabled = false,
+                                onValueChange = {
+
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(24.dp))
+                                    .clickable {
+                                        navcontroller.navigate(DashBoardNavRoute.SearchProductItems.screen_route)
+                                    }
+                                    .padding(start = 10.dp, end = 10.dp),
+                                placeholder = {
+                                    Text12_body1(
+                                        text = it.value,
+                                        color = bodyTextColor,
                                     )
-                                }
-                            },
-                            singleLine = true,
-                        )
+                                },
+                                colors = TextFieldDefaults.textFieldColors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    cursorColor = Color.Transparent,
+                                    trailingIconColor = titleColor,
+                                    backgroundColor = greycolor,
+                                    disabledIndicatorColor = Color.Transparent
+                                ),
+                                leadingIcon = {
+                                    IconButton(onClick = {}) {
+                                        Icon(
+                                            Icons.Default.Search, contentDescription = "",
+                                        )
+                                    }
+                                },
+                                singleLine = true,
+                            )
+                        }
+
 
                         val pagerState = rememberPagerState(pageCount = imageUrls.size)
 
@@ -1098,7 +1117,9 @@ fun ExclusiveOffers(
         Text11_body2(
             text = "out of stock",
             redColor,
-            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+            modifier = Modifier
+                .padding(end = 5.dp, top = 15.dp)
+                .align(alignment = Alignment.Center)
 
         )
 
@@ -1111,7 +1132,13 @@ fun ExclusiveOffers(
                 .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
                 .clickable {
-                    navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.ProductId?:"")) }
+                    navcontroller.run {
+                        navigate(
+                            DashBoardNavRoute.ProductDetail.senddata(
+                                data.ProductId ?: ""
+                            )
+                        )
+                    }
                 }
 
         ) {
@@ -1188,7 +1215,7 @@ fun ExclusiveOffers(
                                     data.ProductId ?: "",
                                     data.productImage1 ?: "",
                                     data.selling_price?.toInt() ?: 0,
-                                    data.productName?:"",
+                                    data.productName ?: "",
                                     data.selling_price ?: "",
                                     data.sellerId.toString()
                                 ) { adminAccess, cartItem ->
@@ -1234,7 +1261,9 @@ fun CateoryWiseItems(
         Text11_body2(
             text = "out of stock",
             redColor,
-            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+            modifier = Modifier
+                .padding(end = 5.dp, top = 15.dp)
+                .align(alignment = Alignment.Center)
 
         )
         Card(
@@ -1246,7 +1275,13 @@ fun CateoryWiseItems(
                 .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
                 .clickable {
-                    navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.productId?:"")) }
+                    navcontroller.run {
+                        navigate(
+                            DashBoardNavRoute.ProductDetail.senddata(
+                                data.productId ?: ""
+                            )
+                        )
+                    }
                 }
 
         ) {
@@ -1322,7 +1357,7 @@ fun CateoryWiseItems(
                                         data.productId ?: "",
                                         data.productImage1 ?: "",
                                         data.selling_price?.toInt() ?: 0,
-                                        data.productName?:"",
+                                        data.productName ?: "",
                                         data.orignalPrice ?: "",
                                         data.sellerId.toString()
                                     ) { accessTable, cartItem ->
@@ -1381,7 +1416,9 @@ fun BestOffers(
             Text11_body2(
             text = "out of stock",
             redColor,
-            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+            modifier = Modifier
+                .padding(end = 5.dp, top = 15.dp)
+                .align(alignment = Alignment.Center)
 
         )
         Card(
@@ -1393,7 +1430,13 @@ fun BestOffers(
                 .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
                 .clickable {
-                    navcontroller.run { navigate(DashBoardNavRoute.ProductDetail.senddata(data.ProductId?:"")) }
+                    navcontroller.run {
+                        navigate(
+                            DashBoardNavRoute.ProductDetail.senddata(
+                                data.ProductId ?: ""
+                            )
+                        )
+                    }
                 }
 
         ) {
@@ -1469,34 +1512,34 @@ fun BestOffers(
                             .background(color = whiteColor)
                             .clickable {
                                 if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
-                                 viewModal.insertCartItem(
-                                    data.ProductId ?: "",
-                                    data.productImage1 ?: "",
-                                    data.selling_price?.toInt() ?: 0,
-                                    data.productName?:"",
-                                    data.orignal_price ?: "",
-                                    data.sellerId.toString()
-                                ) { accessTable, cartItem ->
-                                    if (accessTable.city != null) {
-                                        showExtraChargesPopUp(cartItem, accessTable, true)
+                                    viewModal.insertCartItem(
+                                        data.ProductId ?: "",
+                                        data.productImage1 ?: "",
+                                        data.selling_price?.toInt() ?: 0,
+                                        data.productName ?: "",
+                                        data.orignal_price ?: "",
+                                        data.sellerId.toString()
+                                    ) { accessTable, cartItem ->
+                                        if (accessTable.city != null) {
+                                            showExtraChargesPopUp(cartItem, accessTable, true)
 
 
-                                    } else {
-                                        MainScope().launch {
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    "Added to cart",
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
+                                        } else {
+                                            MainScope().launch {
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "Added to cart",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
 
-                                            Utils.vibrator(context)
+                                                Utils.vibrator(context)
+                                            }
+
                                         }
 
                                     }
-
-                                }
                                 //     viewModal.getCartItem()
 
 
@@ -1555,7 +1598,8 @@ fun shopBySeller(
             .clickable {
 
                 navcontroller.currentBackStackEntry?.savedStateHandle?.set(
-                    "data", dummyItemData)
+                    "data", dummyItemData
+                )
                 navcontroller.navigate(DashBoardNavRoute.MenuItems.screen_route)
             }
 
@@ -1729,7 +1773,9 @@ fun ShimmerItem(
                     .height(20.dp)
                     .background(brush = brush)
             )
-            Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp),Arrangement.SpaceBetween) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),Arrangement.SpaceBetween) {
                 Spacer(
                     modifier = Modifier
 

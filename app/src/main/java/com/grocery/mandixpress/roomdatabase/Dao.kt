@@ -49,6 +49,9 @@ interface Dao {
     @Query("SELECT * FROM CartItems")
     fun getAllCartItems():Flow<List<CartItems>>
 
+    @Query("SELECT sellerId, SUM(productPrice) AS totalItemPrice FROM CartItems GROUP BY sellerId ORDER BY totalItemPrice DESC LIMIT 1")
+    suspend fun getSellerWithHighestCartItemTotal(): CartItemPriceBySeller
+
     //address
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAddressItem(address: AddressItems)

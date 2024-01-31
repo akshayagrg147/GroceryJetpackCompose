@@ -220,30 +220,51 @@ if(codClicked.value)
                                         .weight(1f),
 
                                     )
-
-                                Text12_with_strikethrough(
+                                if(viewModal.getSellersMinDeliveryCharge()=="0.00")
+                                    Text12_with_strikethrough(
                                     text1 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
-                                            .toInt()
+                                            .toDouble()
                                     ) "Free" else "₹ 30",
                                     text2 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
-                                            .toInt()
+                                            .toDouble()
                                     ) "₹ 30" else "Free",
                                     color = headingColor,
                                     modifier = Modifier.align(Alignment.CenterVertically)
                                 )
+                                else{
+                                    Text12_body1(
+                                        text = if(viewModal.withHigherCartItemTotal() < viewModal.getFreeDeliveryMinPrice()) String.format("%.2f",30+viewModal.getSellersMinDeliveryCharge().toDouble()).toString() else String.format("%.2f",viewModal.getSellersMinDeliveryCharge()),
+                                        color = headingColor,
+                                        modifier = Modifier.align(Alignment.CenterVertically),
+
+                                        )
+                                }
                             }
 
 
                             var backBundleData =
                                 navController.currentBackStackEntry?.savedStateHandle?.get<Bundle>("passCoupon")
                             val grandTotal =
-                                if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
-                                        .toInt()
-                                ) {
-                                    "₹ " + ((30) + (viewModal.totalPriceState.value.toDouble()))
-                                } else {
-                                    "₹ ${(viewModal.totalPriceState.value.toDouble())}"
+                                if(viewModal.getSellersMinDeliveryCharge()=="0.00"){
+                                    if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
+                                            .toInt()
+                                    ) {
+                                        "₹ " + ((30) + (viewModal.totalPriceState.value.toDouble()))
+                                    } else {
+                                        "₹ ${(viewModal.totalPriceState.value.toDouble())}"
+                                    }
                                 }
+                            else{
+                                    if(viewModal.withHigherCartItemTotal() < viewModal.getFreeDeliveryMinPrice())
+                                        "₹ " + String.format("%.2f",viewModal.totalPriceState.value.toDouble()+30+viewModal.getSellersMinDeliveryCharge().toDouble()).toString()
+                                    else
+                                        String.format("%.2f",viewModal.totalPriceState.value.toDouble()+viewModal.getSellersMinDeliveryCharge().toDouble())
+
+                                }
+
+
+
+
                             if (passCoupon) {
                                 if ((backBundleData?.get("CouponPercent") != null)) {
                                     val cuponDiscount =
@@ -299,7 +320,8 @@ if(codClicked.value)
                                         )
                                     }
                                 }
-                            } else {
+                            }
+                            else {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -364,40 +386,40 @@ if(codClicked.value)
 
                         }
                     }
-                    Card(
-                        onClick = { navController.navigate(DashBoardNavRoute.ApplyCoupons.screen_route) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .padding(start = 10.dp, top = 5.dp, end = 10.dp)
-                            .background(Color.White)
-                            .border(
-                                width = 1.dp,
-                                color = whiteColor,
-                                shape = RoundedCornerShape(30.dp) // Set the corner radius here
-                            )
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.discount), // Replace with your image resource
-                                contentDescription = "Discount",
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .padding(start = 10.dp), // Adjust the size as needed
-
-                            )
-                            Text12_h1(
-                                text = "Use  Coupons", color = blackColor,
-                                modifier = Modifier.padding(start = 10.dp)
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-
-                    }
+//                    Card(
+//                        onClick = { navController.navigate(DashBoardNavRoute.ApplyCoupons.screen_route) },
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .height(50.dp)
+//                            .padding(start = 10.dp, top = 5.dp, end = 10.dp)
+//                            .background(Color.White)
+//                            .border(
+//                                width = 1.dp,
+//                                color = whiteColor,
+//                                shape = RoundedCornerShape(30.dp) // Set the corner radius here
+//                            )
+//                    ) {
+//                        Row(
+//                            modifier = Modifier.fillMaxSize(),
+//                            horizontalArrangement = Arrangement.Start,
+//                            verticalAlignment = Alignment.CenterVertically
+//                        ) {
+//                            Image(
+//                                painter = painterResource(id = R.drawable.discount), // Replace with your image resource
+//                                contentDescription = "Discount",
+//                                modifier = Modifier
+//                                    .size(30.dp)
+//                                    .padding(start = 10.dp), // Adjust the size as needed
+//
+//                            )
+//                            Text12_h1(
+//                                text = "Use  Coupons", color = blackColor,
+//                                modifier = Modifier.padding(start = 10.dp)
+//                            )
+//                            Spacer(modifier = Modifier.weight(1f))
+//                        }
+//
+//                    }
 
                     if (choose.value) {
                         Text13_body1(

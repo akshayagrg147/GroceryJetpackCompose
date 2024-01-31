@@ -107,7 +107,7 @@ class ProductByIdViewModal @Inject constructor(
             }
             else{
                 sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price?:"").toString()
-
+                sharedpreferenceCommon.setDeliverySellersCharges("0.00")
             }
 
         }
@@ -139,7 +139,9 @@ class ProductByIdViewModal @Inject constructor(
         adminAccessTableData=accessTable
         cartTableData=cartItem
     }
-
+    fun getSellersMinDeliveryCharge():String{
+        return sharedpreferenceCommon.getDeliverySellersCharges()
+    }
     fun insertCartItem(value: ProductByIdResponseModal,passSellerDetail:(AdminAccessTable,CartItems)->Unit) = viewModelScope.launch(Dispatchers.IO) {
         val intger: Int = repo.getProductBasedIdCount(value.homeproducts?.productId?:"").first() ?: 0
 
@@ -205,6 +207,13 @@ class ProductByIdViewModal @Inject constructor(
             }
 
     }
+    fun withHigherCartItemTotal():Int {
+        var withHighestCartItemTotal=-1
+        viewModelScope.launch(Dispatchers.IO) {
+            withHighestCartItemTotal = dao.getSellerWithHighestCartItemTotal().totalItemPrice?:-1
+        }
+        return withHighestCartItemTotal
+    }
 
 
     fun onEvents(events: ProductEvents) {
@@ -259,13 +268,14 @@ class ProductByIdViewModal @Inject constructor(
 
         }
     }
-    fun getFreeDeliveryMinPrice():String{
-        return sharedpreferenceCommon.getMinimumDeliveryAmount()
+    fun getFreeDeliveryMinPrice():Double{
+        return sharedpreferenceCommon.getMinimumDeliveryAmount().toDouble()
     }
 
     fun distancebetweenTwoLatLng(){
 
     }
+
 
 
     fun updateDeliveryCharges(data: AdminAccessTable, cartTableData: CartItems,passStoreDeliveryCharge:(Int)->Unit) {

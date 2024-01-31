@@ -126,6 +126,10 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         return mPrefs.edit().putString(AppConstant.minimumAmountDelivery, amount).apply()
 
     }
+    fun setDeliverySellersCharges(amount: String) {
+        return mPrefs.edit().putString(AppConstant.deliverySellersCharges, amount).apply()
+
+    }
     fun setDeliveryContactNumber(phone: String) {
         return mPrefs.edit().putString(AppConstant.deliveryContactNumber, phone).apply()
 
@@ -136,7 +140,9 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     fun getMinimumDeliveryAmount():String{
         return mPrefs.getString(AppConstant.minimumAmountDelivery,"0.00").toString()
     }
-
+    fun getDeliverySellersCharges():String{
+        return mPrefs.getString(AppConstant.deliverySellersCharges,"0.00").toString()
+    }
     fun getAvailablePinCode(): List<PinCodeStateModal> {
         val jsonPincodeList = mPrefs.getString(AppConstant.availablePinCode, "")
         val gson = Gson()

@@ -109,7 +109,11 @@ fun RelatedSearchItem(
 
             .width(150.dp)
             .clickable {
-                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata(data.ProductId?:""))
+                navcontroller.navigate(
+                    DashBoardNavRoute.ProductDetail.senddata(
+                        data.ProductId ?: ""
+                    )
+                )
             }
 
     ) {
@@ -161,7 +165,6 @@ fun RelatedSearchItem(
                 modifier = Modifier.padding(start = 10.dp),
 //                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-
                 Text10_h2(
                     text = "₹ ${data.selling_price}",
                     color = headingColor,
@@ -299,12 +302,15 @@ fun ItemDetailsScreen(
                                     PagerDots(
                                         currentPage = pager.currentPage,
                                         pageCount = pager.pageCount,
-                                        modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally).then(Modifier.horizontalScroll(rememberScrollState()))
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .align(Alignment.CenterHorizontally)
+                                            .then(Modifier.horizontalScroll(rememberScrollState()))
                                     )
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = 10.dp,top=5.dp),
+                                            .padding(start = 10.dp, top = 5.dp),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
                                         Text12_h1(
@@ -433,18 +439,26 @@ fun ItemDetailsScreen(
                                                 border = BorderStroke(1.dp, titleColor),
                                                 modifier = Modifier
 
-                                                    .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                                                    .clip(
+                                                        RoundedCornerShape(
+                                                            5.dp,
+                                                            5.dp,
+                                                            5.dp,
+                                                            5.dp
+                                                        )
+                                                    )
                                                     .padding(start = 10.dp)
 
                                                     .background(color = whiteColor)
                                                     .clickable {
-                                                        viewModal.insertCartItem(value){
-                                                                access,cart->
-                                                            viewModal.tempStoreAdminCartTable(access,cart)
+                                                        viewModal.insertCartItem(value) { access, cart ->
+                                                            viewModal.tempStoreAdminCartTable(
+                                                                access,
+                                                                cart
+                                                            )
 
 
-                                                            newSellerAddedDialog=true
-
+                                                            newSellerAddedDialog = true
 
 
                                                         }
@@ -546,7 +560,7 @@ fun ItemDetailsScreen(
 
 
         //view cart
-        if (viewModal.totalPriceState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
+        if (viewModal.totalPriceState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice()>0.0))
             CardviewAddtoCart(
                 navController,
                 context,
@@ -615,7 +629,36 @@ fun CardviewAddtoCart(
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
-            if(viewmodal.getFreeDeliveryMinPrice().isNotEmpty()) {
+            if(viewmodal.getSellersMinDeliveryCharge()!="0.00") {
+                if(viewmodal.withHigherCartItemTotal()<viewmodal.getFreeDeliveryMinPrice())
+
+                    Row(modifier = Modifier) {
+                        Image(
+                            painter = painterResource(id = R.drawable.bike_delivery),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding()
+                                .width(30.dp)
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+
+
+                        )
+                        Column() {
+                            Text10_h2(
+                                text = "Pay Delivery",
+                                color = Purple700,
+                                modifier = Modifier.padding(start = 10.dp)
+                            )
+                            Text10_h2(
+                                text = if(viewmodal.withHigherCartItemTotal() < viewmodal.getFreeDeliveryMinPrice()) (30+viewmodal.getSellersMinDeliveryCharge().toDouble()).toString() else viewmodal.getSellersMinDeliveryCharge(),
+                                color = headingColor,
+                                modifier = Modifier.padding(start = 10.dp)
+                            )
+                        }
+                    }
+            }
+            else if(viewmodal.getFreeDeliveryMinPrice()>0.00) {
                 if (viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice()
                         .toInt())
                 ) {
@@ -797,7 +840,10 @@ fun ExpandableText(initialText: String, maxLines: Int = 3) {
                 text = "Show more",
                 color = iconColor,
                 fontSize = 11.sp,
-                modifier = Modifier.fillMaxWidth().align(Alignment.End).clickable { isExpanded = !isExpanded }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.End)
+                    .clickable { isExpanded = !isExpanded }
             )
         }
     }

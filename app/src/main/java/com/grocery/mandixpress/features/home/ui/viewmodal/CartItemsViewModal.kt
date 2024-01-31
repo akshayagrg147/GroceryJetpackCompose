@@ -86,8 +86,8 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
         callingItemsCollectionsId(emitProductId)
     }
 
-    fun getFreeDeliveryMinPrice(): String {
-        return sharedpreferenceCommon.getMinimumDeliveryAmount()
+    fun getFreeDeliveryMinPrice(): Double {
+        return sharedpreferenceCommon.getMinimumDeliveryAmount().toDouble()
     }
 
     fun getAllAddressItems() = viewModelScope.launch {
@@ -118,7 +118,9 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
             }
         }
     }
-
+    fun getSellersMinDeliveryCharge():String{
+        return sharedpreferenceCommon.getDeliverySellersCharges()
+    }
     fun getCartItem() {
         getTotalProductItems()
         getTotalProductItemsPrice()
@@ -230,6 +232,16 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
         }
 
     }
+    fun withHigherCartItemTotal():Int {
+        var withHighestCartItemTotal=-1
+        viewModelScope.launch(Dispatchers.IO) {
+            val sellerWithHighestTotal = dao.getSellerWithHighestCartItemTotal()
+
+            // Check if the returned object is not null before accessing its properties
+            withHighestCartItemTotal = sellerWithHighestTotal.totalItemPrice ?: -1
+        }
+        return withHighestCartItemTotal
+    }
 
     fun deleteProduct(productIdNumber: String?) = viewModelScope.launch(Dispatchers.IO) {
         dao.deleteCartItem(productIdNumber)
@@ -247,7 +259,11 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
                 val sellerDetail: AdminAccessTable = dao.getSellerDetail(distinctSellerNames[0])?.first() ?: AdminAccessTable()
 
                 if(distinctSellerNames.size>1){
-                    sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price.toString())
+                    val withHighestCartItemTotal=dao.getSellerWithHighestCartItemTotal()
+                    val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.sellerId)?.first() ?: AdminAccessTable()
+
+                    sharedpreferenceCommon.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"")
+
                     for (value in cartItems) {
                         latLngList.add(Pair(value.lat ?: 0.00, value.lng ?: 0.00))
                     }
@@ -264,11 +280,12 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
                         )
                     }
                     val decimalRupees = String.format("%.2f", totalKm)
-                    sharedpreferenceCommon.setMinimumDeliveryAmount((sharedpreferenceCommon.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
+                    sharedpreferenceCommon.setDeliverySellersCharges((decimalRupees.toFloat()*5).toString())
 
                 }
                 else{
                     sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price?:"").toString()
+                    sharedpreferenceCommon.setDeliverySellersCharges("0.00")
 
                 }
 

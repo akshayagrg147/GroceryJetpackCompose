@@ -172,7 +172,36 @@ fun cardViewAddtoCart(
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
-            if (viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice().toInt())) {
+            if(viewmodal.getSellersMinDeliveryCharge()!="0.00") {
+                if(viewmodal.withHigherCartItemTotal()<viewmodal.getFreeDeliveryMinPrice())
+
+                    Row(modifier = Modifier) {
+                        Image(
+                            painter = painterResource(id = R.drawable.bike_delivery),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .padding()
+                                .width(30.dp)
+                                .height(30.dp)
+                                .padding(start = 10.dp)
+
+
+                        )
+                        Column() {
+                            Text10_h2(
+                                text = "Pay Delivery",
+                                color = Purple700,
+                                modifier = Modifier.padding(start = 10.dp)
+                            )
+                            Text10_h2(
+                                text = if(viewmodal.withHigherCartItemTotal() < viewmodal.getFreeDeliveryMinPrice()) (30+viewmodal.getSellersMinDeliveryCharge().toDouble()).toString() else viewmodal.getSellersMinDeliveryCharge(),
+                                color = headingColor,
+                                modifier = Modifier.padding(start = 10.dp)
+                            )
+                        }
+                    }
+        }
+          else  if (viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice().toDouble())) {
                 Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = com.grocery.mandixpress.R.drawable.bike_delivery),
@@ -764,7 +793,7 @@ fun menuitems(
 
                 }
             }
-            if (viewModal.totalPriceState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice().isNotEmpty()))
+            if (viewModal.totalPriceState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice()>0.00))
                 cardViewAddtoCart(
                     navController,
                     context,

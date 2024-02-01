@@ -590,22 +590,25 @@ fun SubItems(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier .fillMaxWidth().padding(start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Text10_h2(
-                        text = "₹ ${data.selling_price}",
-                        color = headingColor,
-                        //  modifier= Modifier.weight(0.5F)
-                    )
-                    Text(
-                        text = "₹${data.orignal_price ?: "0.00"}",
-                        fontSize = 11.sp,
-                        color = bodyTextColor,
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                    )
+                    Column {
+                        Text10_h2(
+                            text = "₹ ${data.selling_price}",
+                            color = headingColor,
+                            //  modifier= Modifier.weight(0.5F)
+                        )
+                        Text(
+                            text = "₹${data.orignal_price ?: "0.00"}",
+                            fontSize = 11.sp,
+                            color = bodyTextColor,
+                            modifier = Modifier.padding(start = 0.dp),
+                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                        )
+                    }
+
                     Card(
                         border = BorderStroke(1.dp, titleColor),
                         modifier = Modifier

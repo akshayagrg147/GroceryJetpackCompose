@@ -995,19 +995,21 @@ fun MenuItemGrid(
 //
                 ) {
 Row {
-    Text10_h2(
-        text = "₹ ${data.selling_price}",
-        color = headingColor,
-        //  modifier= Modifier.weight(0.5F)
-    )
+    Column {
+        Text10_h2(
+            text = "₹ ${data.selling_price}",
+            color = headingColor,
+            //  modifier= Modifier.weight(0.5F)
+        )
+        Text(
+            text = "₹${data.orignal_price ?: "0.00"}",
+            fontSize = 11.sp,
+            color = bodyTextColor,
+            modifier = Modifier.padding(start = 0.dp),
+            style = TextStyle(textDecoration = TextDecoration.LineThrough)
+        )
+    }
 
-    Text(
-        text = "₹${data.orignal_price ?: "0.00"}",
-        fontSize = 11.sp,
-        color = bodyTextColor,
-        modifier = Modifier.padding(start = 5.dp),
-        style = TextStyle(textDecoration = TextDecoration.LineThrough)
-    )
 }
 
 

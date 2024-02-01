@@ -69,7 +69,9 @@ fun SearchResult(
         Text11_body2(
             text = "out of stock",
             redColor,
-            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+            modifier = Modifier
+                .padding(end = 5.dp, top = 15.dp)
+                .align(alignment = Alignment.Center)
 
         )
         Card(
@@ -129,22 +131,24 @@ fun SearchResult(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier .fillMaxWidth().padding(start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+Column {
+    Text10_h2(
+        text = "₹ ${data.selling_price}",
+        color = headingColor,
+        //  modifier= Modifier.weight(0.5F)
+    )
+    Text(
+        text = "₹${data.orignal_price ?: "0.00"}",
+        fontSize = 11.sp,
+        color = bodyTextColor,
+        modifier = Modifier.padding(start = 0.dp),
+        style = TextStyle(textDecoration = TextDecoration.LineThrough)
+    )
+}
 
-                    Text10_h2(
-                        text = "₹ ${data.selling_price}",
-                        color = headingColor,
-                        //  modifier= Modifier.weight(0.5F)
-                    )
-                    Text(
-                        text = "₹${data.orignal_price ?: "0.00"}",
-                        fontSize = 11.sp,
-                        color = bodyTextColor,
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                    )
                     Card(
                         border = BorderStroke(1.dp, titleColor),
                         modifier = Modifier
@@ -160,7 +164,7 @@ fun SearchResult(
                                         data.ProductId ?: "",
                                         data.productImage1 ?: "",
                                         data.selling_price?.toInt() ?: 0,
-                                        data.productName?:"",
+                                        data.productName ?: "",
                                         data.orignal_price ?: "",
                                         data.sellerId.toString()
                                     ) { adminAccess, cartItems ->
@@ -400,7 +404,9 @@ if(responseData.value.list?.isNotEmpty()==true)
         contentDescription = null,
         alignment = Alignment.Center,
         contentScale = ContentScale.Crop,
-        modifier = Modifier.height(300.dp).fillMaxWidth()
+        modifier = Modifier
+            .height(300.dp)
+            .fillMaxWidth()
     )
             }
         }

@@ -56,6 +56,7 @@ class HomeAllProductsViewModal @Inject constructor(
 
 
     }
+    var apicallNeed=true
     val animationText=(0..20).asSequence().asFlow().map { if(it%2==0) "Search milk" else "Search bread" }.onEach { delay(3000) }
     var adminAccessTableData=AdminAccessTable()
     var cartTableData=CartItems()
@@ -316,6 +317,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                     bannerImage.value = ComposeUiResponse( isLoading = true)
                 }
                 is ApiState.Success->{
+                 // apicallNeed=false
                     bannerImage.value = ComposeUiResponse(data = it.data)
                 }
                 is ApiState.Failure->{

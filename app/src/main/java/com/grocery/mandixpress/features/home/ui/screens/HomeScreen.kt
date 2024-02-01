@@ -344,6 +344,7 @@ private fun BodyDashboard(
 ) {
 
 
+
     val padding by animateDpAsState(
         targetValue = if (lazyListState.isScrolled) 0.dp else TOP_BAR_HEIGHT,
         animationSpec = tween(durationMillis = 300)
@@ -397,9 +398,9 @@ viewModal.getDeliveryChargeBasesOnLatLng{
 
 
         })
-
     LaunchedEffect(key1 = Unit) {
         if (bannerImage.data?.statusCode != 200) {
+            if(viewModal.apicallNeed)
             viewModal.onEvent(
                 HomeEvent.BannerImageEventFlow
             )
@@ -450,7 +451,9 @@ viewModal.getDeliveryChargeBasesOnLatLng{
 
             if (bannerImage.data?.statusCode == 200) {
                 if (bannerImage.data?.itemData?.isNotEmpty() == true) {
-                    LaunchedEffect(key1 = Unit) {
+                    if(viewModal.apicallNeed)
+                    { viewModal.apicallNeed=false
+                        LaunchedEffect(key1 = Unit) {
                         viewModal.onEvent(
                             HomeEvent.adminDetailsEventFlow
 
@@ -470,7 +473,7 @@ viewModal.getDeliveryChargeBasesOnLatLng{
                         viewModal.onEvent(
                             HomeEvent.ItemCategoryEventFlow
                         )
-                    }
+                    }}
 
                     val imageUrls: MutableList<Pair<String, BannerImageResponse.ItemData>> =
                         mutableListOf()
@@ -1132,6 +1135,7 @@ fun ExclusiveOffers(
                 .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
                 .clickable {
+                    if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
                     navcontroller.run {
                         navigate(
                             DashBoardNavRoute.ProductDetail.senddata(
@@ -1185,22 +1189,25 @@ fun ExclusiveOffers(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Text10_h2(
-                        text = "₹ ${data.selling_price}",
-                        color = headingColor,
-                        //  modifier= Modifier.weight(0.5F)
-                    )
-                    Text(
-                        text = "₹${data.orignal_price ?: "0.00"}",
-                        fontSize = 11.sp,
-                        color = bodyTextColor,
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                    )
+                    Column {
+                        Text10_h2(
+                            text = "₹ ${data.selling_price}",
+                            color = headingColor,
+                            //  modifier= Modifier.weight(0.5F)
+                        )
+                        Text(
+                            text = "₹${data.orignal_price ?: "0.00"}",
+                            fontSize = 11.sp,
+                            color = bodyTextColor,
+                            modifier = Modifier.padding(start = 0.dp),
+                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                        )
+                    }
+
 
                     Card(
                         border = BorderStroke(1.dp, titleColor),
@@ -1275,6 +1282,7 @@ fun CateoryWiseItems(
                 .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
                 .clickable {
+                    if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
                     navcontroller.run {
                         navigate(
                             DashBoardNavRoute.ProductDetail.senddata(
@@ -1327,22 +1335,25 @@ fun CateoryWiseItems(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
-                    modifier = Modifier.padding(start = 10.dp),
+                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Text10_h2(
-                        text = "₹ ${data.selling_price}",
-                        color = headingColor,
-                        //  modifier= Modifier.weight(0.5F)
-                    )
-                    Text(
-                        text = "₹${data.orignalPrice ?: "0.00"}",
-                        fontSize = 11.sp,
-                        color = bodyTextColor,
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                    )
+                    Column {
+                        Text10_h2(
+                            text = "₹ ${data.selling_price}",
+                            color = headingColor,
+                            //  modifier= Modifier.weight(0.5F)
+                        )
+                        Text(
+                            text = "₹${data.orignalPrice ?: "0.00"}",
+                            fontSize = 11.sp,
+                            color = bodyTextColor,
+                            modifier = Modifier.padding(start = 0.dp),
+                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                        )
+                    }
+
                     Card(
                         border = BorderStroke(1.dp, titleColor),
                         modifier = Modifier
@@ -1430,6 +1441,7 @@ fun BestOffers(
                 .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
                 .clickable {
+                    if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
                     navcontroller.run {
                         navigate(
                             DashBoardNavRoute.ProductDetail.senddata(
@@ -1486,22 +1498,25 @@ fun BestOffers(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Text10_h2(
-                        text = "₹ ${data.selling_price}",
-                        color = headingColor,
-                        //  modifier= Modifier.weight(0.5F)
-                    )
-                    Text(
-                        text = "₹${data.orignal_price ?: "0.00"}",
-                        fontSize = 11.sp,
-                        color = bodyTextColor,
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                    )
+                    Column {
+                        Text10_h2(
+                            text = "₹ ${data.selling_price}",
+                            color = headingColor,
+                            //  modifier= Modifier.weight(0.5F)
+                        )
+                        Text(
+                            text = "₹${data.orignal_price ?: "0.00"}",
+                            fontSize = 11.sp,
+                            color = bodyTextColor,
+                            modifier = Modifier.padding(start = 0.dp),
+                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                        )
+                    }
+
                     Card(
                         border = BorderStroke(1.dp, titleColor),
                         modifier = Modifier

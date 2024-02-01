@@ -755,20 +755,21 @@ fun ProductWiseRow(
 
                 .width(150.dp)
                 .clickable {
-                    productdetail.value = ItemsCollectionsResponse.SubItems(
-                        orignal_price = data?.orignal_price ?: "",
+                    if (data?.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
+                    { productdetail.value = ItemsCollectionsResponse.SubItems(
+                        orignal_price = data.orignal_price ?: "",
                         item_category_name = "",
-                        selling_price = data?.selling_price ?: "",
-                        productDescription = data?.productDescription ?: "",
-                        productId = data?.ProductId ?: "",
-                        productImage1 = data?.productImage1 ?: "",
-                        productImage2 = data?.productImage2 ?: "",
-                        productImage3 = data?.productImage3 ?: "",
-                        productName = data?.productName ?: "",
-                        quantity = data?.quantity ?: "",
-                        quantityInstructionController = data?.quantityInstructionController ?: "",
+                        selling_price = data.selling_price ?: "",
+                        productDescription = data.productDescription ?: "",
+                        productId = data.ProductId ?: "",
+                        productImage1 = data.productImage1 ?: "",
+                        productImage2 = data.productImage2 ?: "",
+                        productImage3 = data.productImage3 ?: "",
+                        productName = data.productName ?: "",
+                        quantity = data.quantity ?: "",
+                        quantityInstructionController = data.quantityInstructionController ?: "",
                     )
-                    scope.launch { modalBottomSheetState.show() }
+                    scope.launch { modalBottomSheetState.show() }}
 //                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
                 }
 
@@ -820,22 +821,25 @@ fun ProductWiseRow(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier .fillMaxWidth().padding(start = 10.dp),
+               horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Text10_h2(
-                        text = "₹ ${data?.selling_price}",
-                        color = headingColor,
-                        //  modifier= Modifier.weight(0.5F)
-                    )
-                    Text(
-                        text = "₹${data?.orignal_price ?: "0.00"}",
-                        fontSize = 11.sp,
-                        color = bodyTextColor,
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                    )
+                    Column {
+                        Text10_h2(
+                            text = "₹ ${data?.selling_price}",
+                            color = headingColor,
+                            //  modifier= Modifier.weight(0.5F)
+                        )
+                        Text(
+                            text = "₹${data?.orignal_price ?: "0.00"}",
+                            fontSize = 11.sp,
+                            color = bodyTextColor,
+                            modifier = Modifier.padding(start = 0.dp),
+                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                        )
+                    }
+
                     Card(
                         border = BorderStroke(1.dp, titleColor),
                         modifier = Modifier
@@ -900,8 +904,10 @@ fun ProductWiseRowBanner(
                 .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
                 .clickable {
-                    productdetail.value = data
-                    scope.launch { modalBottomSheetState.show() }
+                    if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0) {
+                        productdetail.value = data
+                        scope.launch { modalBottomSheetState.show() }
+                    }
 //                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
                 }
 
@@ -953,22 +959,25 @@ fun ProductWiseRowBanner(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier.padding(start = 10.dp),
-//                horizontalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier .fillMaxWidth().padding(start = 10.dp),
+              horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Text10_h2(
-                        "₹ ${data.selling_price}",
-                        headingColor,
-                        /* modifier= Modifier.weight(0.5F) */
-                    )
-                    Text(
-                        text = "₹${data.orignal_price}",
-                        fontSize = 11.sp,
-                        color = bodyTextColor,
-                        modifier = Modifier.padding(start = 5.dp),
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                    )
+                    Column {
+                        Text10_h2(
+                            text = "₹ ${data.selling_price}",
+                            color = headingColor,
+                            //  modifier= Modifier.weight(0.5F)
+                        )
+                        Text(
+                            text = "₹${data.orignal_price ?: "0.00"}",
+                            fontSize = 11.sp,
+                            color = bodyTextColor,
+                            modifier = Modifier.padding(start = 0.dp),
+                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                        )
+                    }
+
                     Card(
                         border = BorderStroke(1.dp, titleColor),
                         modifier = Modifier

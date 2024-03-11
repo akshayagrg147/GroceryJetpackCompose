@@ -554,10 +554,10 @@ fun SubItems(
 
                 val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
 
-                val formattedPercentage = DecimalFormat("#.##").format(offPercentage)
+                val formattedPercentage = DecimalFormat("#").format(offPercentage)
 
                 Text10_h2(
-                    text = "${formattedPercentage}% off", color = sec20timer,
+                    text = "${formattedPercentage.toInt()}% off", color = sec20timer,
                     modifier = Modifier.align(
                         Alignment.End
                     ),

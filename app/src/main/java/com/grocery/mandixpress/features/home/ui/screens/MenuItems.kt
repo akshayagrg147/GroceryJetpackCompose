@@ -951,10 +951,10 @@ fun MenuItemGrid(
                 val sellingPrice = data.selling_price.toFloat() ?: 0.0f
 
                 val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
-                val formattedPercentage = DecimalFormat("#.##").format(offPercentage)
+                val formattedPercentage = DecimalFormat("#").format(offPercentage)
 
             Text10_h2(
-                text = "${formattedPercentage}% off", color = sec20timer,
+                text = "${formattedPercentage.toInt()}% off", color = sec20timer,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(

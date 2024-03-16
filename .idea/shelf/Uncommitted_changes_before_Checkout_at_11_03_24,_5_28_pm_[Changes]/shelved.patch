@@ -1,0 +1,159 @@
+Index: .idea/deploymentTargetDropDown.xml
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+deleted file mode 100644
+--- a/.idea/deploymentTargetDropDown.xml	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
++++ /dev/null	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
+@@ -1,17 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="deploymentTargetDropDown">
+-    <targetSelectedWithDropDown>
+-      <Target>
+-        <type value="QUICK_BOOT_TARGET" />
+-        <deviceKey>
+-          <Key>
+-            <type value="VIRTUAL_DEVICE_PATH" />
+-            <value value="C:\Users\om\.android\avd\ak_testing.avd" />
+-          </Key>
+-        </deviceKey>
+-      </Target>
+-    </targetSelectedWithDropDown>
+-    <timeTargetWasSelectedWithDropDown value="2022-09-30T09:23:59.457110900Z" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/inspectionProfiles/Project_Default.xml
+===================================================================
+diff --git a/.idea/inspectionProfiles/Project_Default.xml b/.idea/inspectionProfiles/Project_Default.xml
+deleted file mode 100644
+--- a/.idea/inspectionProfiles/Project_Default.xml	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
++++ /dev/null	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
+@@ -1,23 +0,0 @@
+-<component name="InspectionProjectProfileManager">
+-  <profile version="1.0">
+-    <option name="myName" value="Project Default" />
+-    <inspection_tool class="PreviewAnnotationInFunctionWithParameters" enabled="true" level="ERROR" enabled_by_default="true">
+-      <option name="previewFile" value="true" />
+-    </inspection_tool>
+-    <inspection_tool class="PreviewDimensionRespectsLimit" enabled="true" level="WARNING" enabled_by_default="true">
+-      <option name="previewFile" value="true" />
+-    </inspection_tool>
+-    <inspection_tool class="PreviewMultipleParameterProviders" enabled="true" level="ERROR" enabled_by_default="true">
+-      <option name="previewFile" value="true" />
+-    </inspection_tool>
+-    <inspection_tool class="PreviewMustBeTopLevelFunction" enabled="true" level="ERROR" enabled_by_default="true">
+-      <option name="previewFile" value="true" />
+-    </inspection_tool>
+-    <inspection_tool class="PreviewNeedsComposableAnnotation" enabled="true" level="ERROR" enabled_by_default="true">
+-      <option name="previewFile" value="true" />
+-    </inspection_tool>
+-    <inspection_tool class="PreviewPickerAnnotation" enabled="true" level="ERROR" enabled_by_default="true">
+-      <option name="previewFile" value="true" />
+-    </inspection_tool>
+-  </profile>
+-</component>
+\ No newline at end of file
+Index: .idea/vcs.xml
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+deleted file mode 100644
+--- a/.idea/vcs.xml	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
++++ /dev/null	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
+@@ -1,6 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="VcsDirectoryMappings">
+-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/misc.xml
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+deleted file mode 100644
+--- a/.idea/misc.xml	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
++++ /dev/null	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
+@@ -1,30 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="DesignSurface">
+-    <option name="filePathToZoomLevelMap">
+-      <map>
+-        <entry key="..\:/Users/om/.gradle/caches/transforms-3/ee8bd0f6f91a09d37dc9aeb5c6d694ef/transformed/material-1.4.0/res/drawable/ic_mtrl_chip_close_circle.xml" value="0.1" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/add.xml" value="0.101" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/ic_banana.xml" value="0.101" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/ic_baseline_arrow_drop_down_24.xml" value="0.1255" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/ic_bellpepper.xml" value="0.101" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/ic_orders_icon.xml" value="0.101" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/location_icon.xml" value="0.1" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/location_pin.xml" value="0.1" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/minus.xml" value="0.101" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/ornge_carrot.xml" value="0.1085" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/drawable/right_arrow.xml" value="0.1" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/layout/activity_list_items.xml" value="0.17617753623188406" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/layout/activity_orders.xml" value="0.1" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/layout/map_layout.xml" value="0.17028985507246377" />
+-        <entry key="..\:/Users/om/AndroidStudioProjects/GroceryApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+-      </map>
+-    </option>
+-  </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+-    <output url="file://$PROJECT_DIR$/build/classes" />
+-  </component>
+-  <component name="ProjectType">
+-    <option name="id" value="Android" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+deleted file mode 100644
+--- a/.idea/.gitignore	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
++++ /dev/null	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
+@@ -1,3 +0,0 @@
+-# Default ignored files
+-/shelf/
+-/workspace.xml
+Index: .idea/compiler.xml
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+deleted file mode 100644
+--- a/.idea/compiler.xml	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
++++ /dev/null	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
+@@ -1,6 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="CompilerConfiguration">
+-    <bytecodeTargetLevel target="11" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/gradle.xml
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+deleted file mode 100644
+--- a/.idea/gradle.xml	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
++++ /dev/null	(revision 6f09f395613b77ed194cdf86512c0ba69c2dd3a5)
+@@ -1,19 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="GradleMigrationSettings" migrationVersion="1" />
+-  <component name="GradleSettings">
+-    <option name="linkedExternalProjectsSettings">
+-      <GradleProjectSettings>
+-        <option name="testRunner" value="GRADLE" />
+-        <option name="distributionType" value="DEFAULT_WRAPPED" />
+-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+-        <option name="modules">
+-          <set>
+-            <option value="$PROJECT_DIR$" />
+-            <option value="$PROJECT_DIR$/app" />
+-          </set>
+-        </option>
+-      </GradleProjectSettings>
+-    </option>
+-  </component>
+-</project>
+\ No newline at end of file

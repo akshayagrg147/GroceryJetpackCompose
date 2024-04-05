@@ -249,9 +249,11 @@ fun SearchScreenProducts(
             }
             , onYesClick = {
                 newSellerAddedDialog=false
-                viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second)
-                { it ->
-                    if (it != 0) {
+                viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second){cartData->
+
+                    viewModal.getDeliveryChargeBasesOnLatLng(cartData){
+
+                        showLog("getDeliveryChargeB","$it---")
                         MainScope().launch {
                             Toast
                                 .makeText(
@@ -263,8 +265,8 @@ fun SearchScreenProducts(
 
                             Utils.vibrator(context)
                         }
-                    }
-                }
+
+                    }}
 
             })
     scope.launch(Dispatchers.IO) {

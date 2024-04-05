@@ -26,10 +26,10 @@ data class UserResponse(
         @Json(name = "userId")
         val userId: String?=null,
         @Json(name = "order")
-        val order: String?=null,
+        val order: String?="0",
         @Json(name = "cancel")
-        val cancel: String?=null,
+        val cancel: String?="0",
         @Json(name = "deliver")
-        val deliver: String?=null
+        val deliver: String?="0"
     )
 }

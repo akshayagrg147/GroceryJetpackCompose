@@ -2,6 +2,7 @@ package com.grocery.mandixpress.features.splash.splashnavigation
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
@@ -35,6 +36,7 @@ import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CustomDialog
 import com.grocery.mandixpress.common.Utils
+import com.grocery.mandixpress.common.getAfterCalculation
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.data.modal.ProductByIdResponseModal
 import com.grocery.mandixpress.data.modal.ProductIdIdModal
@@ -45,8 +47,10 @@ import com.grocery.mandixpress.features.home.ui.viewmodal.ProductByIdViewModal
 import com.grocery.mandixpress.features.home.ui.viewmodal.ProductEvents
 import com.grocery.mandixpress.features.home.ui.viewmodal.ProductEvents.RelatedSearchEvents
 import com.grocery.mandixpress.roomdatabase.AdminAccessTable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 import com.grocery.mandixpress.features.home.ui.ui.theme.bodyTextColor as bodyTextColor1
 
@@ -372,10 +376,11 @@ fun ItemDetailsScreen(
                                                         }
                                                         , onYesClick = {
                                                             newSellerAddedDialog=false
+                                                            viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second){cartData->
 
-                                                            viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second)
-                                                            { it ->
-                                                                if (it != 0) {
+                                                                viewModal.getDeliveryChargeBasesOnLatLng(cartData){
+
+                                                                    showLog("getDeliveryChargeB","$it---")
                                                                     MainScope().launch {
                                                                         Toast
                                                                             .makeText(
@@ -387,8 +392,8 @@ fun ItemDetailsScreen(
 
                                                                         Utils.vibrator(context)
                                                                     }
-                                                                }
-                                                            }
+
+                                                                }}
 
                                                         })
                                                 CommonMathButton(icon = R.drawable.add) {
@@ -417,9 +422,11 @@ fun ItemDetailsScreen(
                                                     }
                                                     , onYesClick = {
                                                         newSellerAddedDialog=false
-                                                        viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second)
-                                                        { it ->
-                                                            if (it != 0) {
+                                                        viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second){cartData->
+
+                                                            viewModal.getDeliveryChargeBasesOnLatLng(cartData){
+
+                                                                showLog("getDeliveryChargeB","$it---")
                                                                 MainScope().launch {
                                                                     Toast
                                                                         .makeText(
@@ -431,8 +438,8 @@ fun ItemDetailsScreen(
 
                                                                     Utils.vibrator(context)
                                                                 }
-                                                            }
-                                                        }
+
+                                                            }}
 
                                                     })
                                             Card(
@@ -630,19 +637,45 @@ fun CardviewAddtoCart(
                 .background(whiteColor)
         ) {
             if(viewmodal.getSellersMinDeliveryCharge()!="0.00") {
-                if(viewmodal.withHigherCartItemTotal()<viewmodal.getFreeDeliveryMinPrice())
+                Log.d("getSellersMinDeliveryCh","--"+viewmodal.getSellersMinDeliveryCharge())
+                var extraChargesShouldIncludeState = remember {
+                    mutableStateOf(-1)
+                }
 
+                LaunchedEffect(Unit) {
+                    val resultList = withContext(Dispatchers.IO) {
+                        viewmodal.withHigherCartItemTotal()
+                    }
+                    getAfterCalculation(resultList){
+                        extraChargesShouldIncludeState.value = it
+                    }
+
+                    // Update the state with the result of the coroutine
+
+                }
+
+                val textToShow = if (extraChargesShouldIncludeState.value==0) {
+                    // Ensure that the calculation is done before proceeding
+                    val deliveryCharge = 30 + viewmodal.getSellersMinDeliveryCharge().toDouble()
+                    String.format("%.2f", deliveryCharge)
+                }
+                else if (extraChargesShouldIncludeState.value==1)  {
+                    // Ensure that the calculation is done before proceeding
+                    val deliveryCharge = viewmodal.getSellersMinDeliveryCharge().toDouble()
+                    String.format("%.2f", deliveryCharge)
+                }
+                else{
+                    ""
+                }
+                if(textToShow.isNotEmpty())
                     Row(modifier = Modifier) {
                         Image(
                             painter = painterResource(id = R.drawable.bike_delivery),
                             contentDescription = "",
                             modifier = Modifier
                                 .padding()
-                                .width(30.dp)
-                                .height(30.dp)
+                                .size(30.dp)
                                 .padding(start = 10.dp)
-
-
                         )
                         Column() {
                             Text10_h2(
@@ -650,16 +683,16 @@ fun CardviewAddtoCart(
                                 color = Purple700,
                                 modifier = Modifier.padding(start = 10.dp)
                             )
+
                             Text10_h2(
-                                text = if(viewmodal.withHigherCartItemTotal() < viewmodal.getFreeDeliveryMinPrice()) (30+viewmodal.getSellersMinDeliveryCharge().toDouble()).toString() else viewmodal.getSellersMinDeliveryCharge(),
+                                text = textToShow,
                                 color = headingColor,
                                 modifier = Modifier.padding(start = 10.dp)
                             )
                         }
                     }
             }
-            else if(viewmodal.getFreeDeliveryMinPrice()>0.00) {
-                if (viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice()
+            else if (viewmodal.getFreeDeliveryMinPrice()>0.00 && viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice()
                         .toInt())
                 ) {
                     Row(modifier = Modifier) {
@@ -692,7 +725,9 @@ fun CardviewAddtoCart(
                         }
                     }
 
-                } else {
+                }
+
+                else {
                     Row(modifier = Modifier.padding(start = 10.dp)) {
                         Image(
                             painter = painterResource(id = R.drawable.unlocked),
@@ -773,7 +808,7 @@ fun CardviewAddtoCart(
                     }
 
                 }
-            }
+
         }
     }
 }

@@ -436,13 +436,13 @@ fun StatSection(modifier: Modifier = Modifier, navController: NavController, dat
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
-        ProfileStat(numberText = data.name?.cancel.toString(), text = "Cancelled") {
+        ProfileStat(numberText =if(data.name?.cancel=="null") "0" else data.name?.cancel.toString(), text = "Cancelled") {
             navController.navigate(DashBoardNavRoute.AllOrderHistory.screen_route)
         }
-        ProfileStat(numberText = data.name?.order.toString(), text = "Orders") {
+        ProfileStat(numberText = if(data.name?.order=="null") "0" else data.name?.order.toString(), text = "Orders") {
             navController.navigate(DashBoardNavRoute.AllOrderHistory.screen_route)
         }
-        ProfileStat(numberText = data.name?.deliver.toString(), text = "Delivered") {
+        ProfileStat(numberText = if(data.name?.deliver=="null") "0" else data.name?.deliver.toString(), text = "Delivered") {
             navController.navigate(DashBoardNavRoute.AllOrderHistory.screen_route)
         }
     }

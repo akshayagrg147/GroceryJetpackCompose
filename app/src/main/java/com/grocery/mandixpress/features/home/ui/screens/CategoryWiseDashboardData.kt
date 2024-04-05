@@ -241,9 +241,11 @@ fun CategoryWiseDashboardAllData(
                 }
                 , onYesClick = {
                     newSellerAddedDialog=false
-                    viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second)
-                    { it ->
-                        if (it != 0) {
+                    viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second){cartData->
+
+                        viewModal.getDeliveryChargeBasesOnLatLng(cartData){
+
+                            showLog("getDeliveryChargeB","$it---")
                             MainScope().launch {
                                 Toast
                                     .makeText(
@@ -255,8 +257,8 @@ fun CategoryWiseDashboardAllData(
 
                                 Utils.vibrator(context)
                             }
-                        }
-                    }
+
+                        }}
 
                 })
         var refreshing by remember { mutableStateOf(false) }
@@ -311,6 +313,7 @@ fun CategoryWiseDashboardAllData(
                                   viewModal.tempStoreAdminCartTable(accessTable, cartItemss)
                                 }
                             } else {
+
                                 val transition = rememberInfiniteTransition()
                                 val translateAnim by transition.animateFloat(
                                     initialValue = 0f,

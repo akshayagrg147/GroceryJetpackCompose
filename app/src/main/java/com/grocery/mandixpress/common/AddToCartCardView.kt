@@ -1,6 +1,7 @@
 package com.grocery.mandixpress.common
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,6 +10,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,9 +26,12 @@ import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.Text10_h2
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text13_body1
-import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import com.grocery.mandixpress.features.home.ui.viewmodal.HomeAllProductsViewModal
+import com.grocery.mandixpress.roomdatabase.CartItemPriceBySeller
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.ArrayList
 
 @Composable
 fun AddToCartCardView(
@@ -51,43 +58,71 @@ fun AddToCartCardView(
              )
              .clip(RoundedCornerShape(2.dp, 2.dp, 2.dp, 2.dp))
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(whiteColor)
-        ) {
-            if(viewmodal.getSellersMinDeliveryCharge()!="0.00") {
+         Column(
+             modifier = Modifier
+                 .fillMaxWidth()
+                 .background(whiteColor)
+         ) {
+             if (viewmodal.getSellersMinDeliveryCharge() != "0.00") {
+                 Log.d("getSellersMinDeliveryCh","--"+viewmodal.getSellersMinDeliveryCharge())
+                 var extraChargesShouldIncludeState = remember {
+                     mutableStateOf(-1)
+                 }
 
-                if(viewmodal.withHigherCartItemTotal()<viewmodal.getFreeDeliveryMinPrice())
+                 LaunchedEffect(Unit) {
+                     val resultList = withContext(Dispatchers.IO) {
+                         viewmodal.withHigherCartItemTotal()
+                     }
+                   getAfterCalculation(resultList){
+                       extraChargesShouldIncludeState.value = it
+                   }
 
-                Row(modifier = Modifier) {
-                    Image(
-                        painter = painterResource(id = R.drawable.bike_delivery),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .padding()
-                            .width(30.dp)
-                            .height(30.dp)
-                            .padding(start = 10.dp)
+                     // Update the state with the result of the coroutine
+
+                 }
+
+                 val textToShow = if (extraChargesShouldIncludeState.value==0) {
+                     // Ensure that the calculation is done before proceeding
+                     val deliveryCharge = 30 + viewmodal.getSellersMinDeliveryCharge().toDouble()
+                     String.format("%.2f", deliveryCharge)
+                 }
+                 else if (extraChargesShouldIncludeState.value==1)  {
+                     // Ensure that the calculation is done before proceeding
+                     val deliveryCharge = viewmodal.getSellersMinDeliveryCharge().toDouble()
+                     String.format("%.2f", deliveryCharge)
+                 }
+                 else{
+                     ""
+                 }
+if(textToShow.isNotEmpty())
+                 Row(modifier = Modifier) {
+                     Image(
+                         painter = painterResource(id = R.drawable.bike_delivery),
+                         contentDescription = "",
+                         modifier = Modifier
+                             .padding()
+                             .size(30.dp)
+                             .padding(start = 10.dp)
+                     )
+                     Column() {
+                         Text10_h2(
+                             text = "Pay Delivery",
+                             color = Purple700,
+                             modifier = Modifier.padding(start = 10.dp)
+                         )
+
+                         Text10_h2(
+                             text = textToShow,
+                             color = headingColor,
+                             modifier = Modifier.padding(start = 10.dp)
+                         )
+                     }
+                 }
+             }
 
 
-                    )
-                    Column() {
-                        Text10_h2(
-                            text = "Pay Delivery",
-                            color = Purple700,
-                            modifier = Modifier.padding(start = 10.dp)
-                        )
-                        Text10_h2(
-                            text = if(viewmodal.withHigherCartItemTotal() < viewmodal.getFreeDeliveryMinPrice()) String.format("%.2f",30+viewmodal.getSellersMinDeliveryCharge().toDouble()) else String.format(
-                                "%.2f",viewmodal.getSellersMinDeliveryCharge()),
-                            color = headingColor,
-                            modifier = Modifier.padding(start = 10.dp)
-                        )
-                    }
-                }
-            }
-           else if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice()) {
+
+             else if (viewmodal.getitempriceState.value < viewmodal.getFreeDeliveryMinPrice()) {
                 Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = R.drawable.bike_delivery),
@@ -198,5 +233,21 @@ fun AddToCartCardView(
 
         }
 
+    }
+}
+
+fun getAfterCalculation(resultList: ArrayList<CartItemPriceBySeller>, callback: (Int) -> Unit) {
+    var extraChargesShouldInclude = false
+    resultList.forEach { item ->
+        if ((item.totalItemPrice ?: -1) >= (item.freedeliveryPrice ?: -1)) {
+            extraChargesShouldInclude = true
+            return@forEach
+        }
+    }
+    // Callback invoked after forEach loop completes
+    if (extraChargesShouldInclude) {
+        callback(1) // Condition met
+    } else {
+        callback(0) // Condition not met
     }
 }

@@ -6,7 +6,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -53,8 +52,10 @@ import com.grocery.mandixpress.features.home.ui.viewmodal.CartEvent
 import com.grocery.mandixpress.features.home.ui.viewmodal.CartItemsViewModal
 import com.grocery.mandixpress.roomdatabase.AdminAccessTable
 import com.grocery.mandixpress.roomdatabase.CartItems
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.compose.foundation.layout.Box as Box1
 
 
@@ -220,47 +221,71 @@ if(codClicked.value)
                                         .weight(1f),
 
                                     )
-                                if(viewModal.getSellersMinDeliveryCharge()=="0.00")
-                                    Text12_with_strikethrough(
-                                    text1 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
-                                            .toDouble()
-                                    ) "Free" else "₹ 30",
-                                    text2 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
-                                            .toDouble()
-                                    ) "₹ 30" else "Free",
-                                    color = headingColor,
-                                    modifier = Modifier.align(Alignment.CenterVertically)
-                                )
-                                else{
-                                    Text12_body1(
-                                        text = if(viewModal.withHigherCartItemTotal() < viewModal.getFreeDeliveryMinPrice()) String.format("%.2f",30+viewModal.getSellersMinDeliveryCharge().toDouble()).toString() else String.format("%.2f",viewModal.getSellersMinDeliveryCharge()),
-                                        color = headingColor,
-                                        modifier = Modifier.align(Alignment.CenterVertically),
-
+                                if(viewModal.getSellersMinDeliveryCharge()=="0.00") {
+                                    if(viewModal.getFreeDeliveryMinPrice()!=0.0) {
+                                        Text12_with_strikethrough(
+                                            text1 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
+                                                    .toDouble()
+                                            ) "Free" else "₹ 30",
+                                            text2 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
+                                                    .toDouble()
+                                            ) "₹ 30" else "Free",
+                                            color = headingColor,
+                                            modifier = Modifier.align(Alignment.CenterVertically)
                                         )
+                                    }
+                                }
+                                else{
+                                  multisellerIncluded(viewModal = viewModal)
                                 }
                             }
 
 
                             var backBundleData =
                                 navController.currentBackStackEntry?.savedStateHandle?.get<Bundle>("passCoupon")
-                            val grandTotal =
-                                if(viewModal.getSellersMinDeliveryCharge()=="0.00"){
-                                    if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
-                                            .toInt()
-                                    ) {
-                                        "₹ " + ((30) + (viewModal.totalPriceState.value.toDouble()))
-                                    } else {
-                                        "₹ ${(viewModal.totalPriceState.value.toDouble())}"
-                                    }
-                                }
-                            else{
-                                    if(viewModal.withHigherCartItemTotal() < viewModal.getFreeDeliveryMinPrice())
-                                        "₹ " + String.format("%.2f",viewModal.totalPriceState.value.toDouble()+30+viewModal.getSellersMinDeliveryCharge().toDouble()).toString()
-                                    else
-                                        String.format("%.2f",viewModal.totalPriceState.value.toDouble()+viewModal.getSellersMinDeliveryCharge().toDouble())
+                            val totalPriceState = viewModal.totalPriceState
+                            val minDeliveryCharge = viewModal.getSellersMinDeliveryCharge()
+                            val freeDeliveryMinPrice = viewModal.getFreeDeliveryMinPrice().toDouble()
 
+                            val grandTotal = if (minDeliveryCharge == "0.00") {
+                                if (totalPriceState.value < freeDeliveryMinPrice) {
+                                    "₹ ${String.format("%.2f", (30 + totalPriceState.value).toDouble())}"
+                                } else {
+                                    "₹ ${String.format("%.2f", totalPriceState.value.toDouble())}"
                                 }
+                            }
+                            else {
+                                val extraChargesShouldIncludeState = remember { mutableStateOf(true) }
+
+                                LaunchedEffect(Unit) {
+                                    val resultList = withContext(Dispatchers.IO) {
+                                        viewModal.withHigherCartItemTotal()
+                                    }
+                                    var extraChargesShouldInclude = true
+                                    resultList.forEach { item ->
+                                        if ((item.totalItemPrice ?: -1) >= (item.freedeliveryPrice ?: -1)) {
+                                            extraChargesShouldInclude = false
+                                            return@forEach
+                                        }
+                                    }
+                                    extraChargesShouldIncludeState.value = extraChargesShouldInclude
+                                }
+
+
+
+                                if (extraChargesShouldIncludeState.value) {
+                                    "₹ " + String.format("%.2f",
+                                        viewModal.totalPriceState.value.toDouble() + 30 + viewModal.getSellersMinDeliveryCharge()
+                                            .toDouble()
+                                    ).toString()
+                                } else {
+                                    String.format("%.2f",
+                                        viewModal.totalPriceState.value.toDouble() + viewModal.getSellersMinDeliveryCharge()
+                                            .toDouble()
+                                    )
+                                }
+                            }
+
 
 
 
@@ -559,6 +584,45 @@ if(codClicked.value)
     }
 }
 
+
+@Composable
+fun multisellerIncluded(viewModal: CartItemsViewModal) {
+    // State to hold the result of the coroutine
+    val extraChargesShouldIncludeState = remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        val resultList = withContext(Dispatchers.IO) {
+            viewModal.withHigherCartItemTotal()
+        }
+        var extraChargesShouldInclude = true
+        resultList.forEach { item ->
+            if ((item.totalItemPrice ?: -1) >= (item.freedeliveryPrice ?: -1)) {
+                extraChargesShouldInclude = false
+                return@forEach
+            }
+        }
+        // Update the state with the result of the coroutine
+        extraChargesShouldIncludeState.value = extraChargesShouldInclude
+    }
+
+    // Use the state to determine the text to display
+    val textToShow = if (extraChargesShouldIncludeState.value) {
+        String.format("%.2f", 30 + viewModal.getSellersMinDeliveryCharge().toDouble()).toString()
+    } else {
+        String.format("%.2f", viewModal.getSellersMinDeliveryCharge().toDouble())
+    }
+
+    // Display the text based on the state
+    Text12_body1(
+        text = textToShow,
+        color = headingColor,
+
+    )
+}
+
+
+
+
 fun upiPayment(price: String,context:Context,orderRequest:
 OrderIdCreateRequest,codClicked:(orderRequest: OrderIdCreateRequest)->Unit) {
     val packageManager: PackageManager = context.packageManager
@@ -752,9 +816,11 @@ fun UPIPaymentConfirmationDialog(
                 }
                 , onYesClick = {
                     newSellerAddedDialog=false
-                    viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second)
-                    { it ->
-                        if (it != 0) {
+                    viewModal.updateDeliveryCharges(viewModal.getStoreAdminCartTable().first, viewModal.getStoreAdminCartTable().second){cartData->
+
+                        viewModal.getDeliveryChargeBasesOnLatLng(cartData){
+
+                            showLog("getDeliveryChargeB","$it---")
                             MainScope().launch {
                                 Toast
                                     .makeText(
@@ -766,8 +832,8 @@ fun UPIPaymentConfirmationDialog(
 
                                 Utils.vibrator(context)
                             }
-                        }
-                    }
+
+                        }}
 
                 })
         Column(
@@ -1140,8 +1206,8 @@ fun UPIPaymentConfirmationDialog(
 
 
                     Text12_with_strikethrough(
-                        text1 = "₹ ${data.strProductPrice}",
-                        text2 = "₹${data.actualprice ?: "0.00"}",
+                        text1 = "₹${data.actualprice ?: "0.00"}",
+                        text2 = "₹ ${data.strProductPrice}",
                         color = headingColor,
 
                         )
@@ -1173,7 +1239,8 @@ fun UPIPaymentConfirmationDialog(
                                     data.strProductPrice ?: 0,
                                     data.strProductName ?: "",
                                     data.actualprice ?: "",
-                                    data.sellerId.toString()
+                                    data.sellerId.toString(),
+
 
                                 )
 

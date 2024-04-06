@@ -63,7 +63,7 @@ fun Text14_h2_(text: String, color: Color = titleColor, modifier: Modifier = Mod
 
 @Composable
 fun Text14_h1_(text: String, color: Color = titleColor, modifier: Modifier = Modifier) {
-    Text(text = text, style = loginTypography.h1, color = color, modifier = modifier,fontSize = 14.sp )
+    Text(text = text, style = loginTypography.h3, color = color, modifier = modifier,fontSize = 14.sp )
 }
 
 @Composable

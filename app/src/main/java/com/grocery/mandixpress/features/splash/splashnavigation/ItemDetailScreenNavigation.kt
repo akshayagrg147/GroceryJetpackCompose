@@ -91,7 +91,8 @@ fun ItemScreenNavigation(
         ItemDetailsScreen(response.data?: ProductByIdResponseModal(), navController, context)
     } else if (_itemDetailFlow.error.isNotEmpty()) {
         isLoading = false
-        context.showMsg(_itemDetailFlow.error)
+        context.showMsg("something went wrong")
+       // context.showMsg(_itemDetailFlow.error)
 
     }
 

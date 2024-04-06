@@ -166,7 +166,8 @@ fun loginScreen(
 
                                         is ApiState.Failure -> {
                                             isDialog = false
-                                            context.showMsg(it.msg.toString())
+                                            context.showMsg("something went wrong")
+                                            //context.showMsg(it.msg.toString())
                                         }
 
                                         ApiState.Loading -> {
@@ -208,7 +209,8 @@ fun loginScreen(
                                     }
                                     is ApiState.Failure -> {
                                         isDialog = false
-                                        context.showMsg(it.msg.toString())
+                                        context.showMsg("something went wrong")
+                                      //  context.showMsg(it.msg.toString())
                                     }
                                     ApiState.Loading -> {
                                         isDialog = true
@@ -299,7 +301,7 @@ fun ResendTimer(call:(Boolean)->Unit) {
     Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
         ) {
             if (countdown > 0) {
                 Text(
@@ -308,7 +310,7 @@ fun ResendTimer(call:(Boolean)->Unit) {
                     color = Color.Gray
                 )
             } else {
-                Text12_h1(
+                Text14_h1_(
                     text = "Resend OTP",
                     color = headingColor,
                     modifier = Modifier.clickable{

@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -312,23 +314,33 @@ fun CategoryWiseDashboardAllData(
                                     newSellerAddedDialog =boolean
                                   viewModal.tempStoreAdminCartTable(accessTable, cartItemss)
                                 }
-                            } else {
+                            }
+                            else {
+                                LazyVerticalGrid(columns = GridCells.Fixed(2 )) {
+                                    repeat(5) {
+                                        item {
 
-                                val transition = rememberInfiniteTransition()
-                                val translateAnim by transition.animateFloat(
-                                    initialValue = 0f,
-                                    targetValue = 1000f,
-                                    animationSpec = infiniteRepeatable(
-                                        tween(durationMillis = 1200, easing = FastOutSlowInEasing),
-                                        RepeatMode.Reverse
-                                    )
-                                )
-                                val brush = Brush.linearGradient(
-                                    colors = ShimmerColorShades,
-                                    start = Offset(10f, 10f),
-                                    end = Offset(translateAnim, translateAnim)
-                                )
-                                ShimmerItem(brush = brush)
+                                            val transition = rememberInfiniteTransition()
+                                            val translateAnim by transition.animateFloat(
+                                                initialValue = 0f,
+                                                targetValue = 1000f,
+                                                animationSpec = infiniteRepeatable(
+                                                    tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+                                                    RepeatMode.Reverse
+                                                )
+                                            )
+                                            val brush = Brush.linearGradient(
+                                                colors = ShimmerColorShades,
+                                                start = Offset(10f, 10f),
+                                                end = Offset(translateAnim, translateAnim)
+                                            )
+                                            ShimmerItem(brush = brush)
+
+                                        }
+                                    }
+                                }
+
+
                             }
 
                         }
@@ -696,25 +708,59 @@ fun ScrollingImageRow(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        itemsIndexed(ls?: emptyList()) { index, item ->
+        itemsIndexed(ls ?: emptyList()) { index, item ->
             val isSelected = selectedItemIndex == index
             Column() {
-                Image(
-                    painter = rememberImagePainter(item.subCategoryUrl),
-                    contentDescription = null, contentScale = ContentScale.Crop,
+                Box(
                     modifier = Modifier
                         .padding(8.dp)
                         .size(size)
-
-                        .background(if (isSelected) greyLightColor else whiteColor)
                         .clip(CircleShape)
-                        .let { if (isSelected) it.clip(CircleShape) else it }
-
+                        .background(if (isSelected) lightGreyColor else Color.White) // Change color to red when selected
                         .clickable {
                             selectedItemIndex = index
                             call(item.name)
                         }
-                )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(1.dp)
+                            .size(size)
+                            .clip(CircleShape)
+                            .background(if (isSelected) lightGreyColor else Color.White) // Change color to red when selected
+                            .clickable {
+                                selectedItemIndex = index
+                                call(item.name)
+                            }
+                    ) {
+                        // Outer circle around selected item
+                        if (isSelected) {
+                            Box(
+                                modifier = Modifier
+                                    .size(size + 16.dp) // Adjust the size of the circle as needed
+                                    .clip(CircleShape)
+                                    .border(width = 1.dp, color = Color.Black, shape = CircleShape)
+                                    .align(Alignment.Center)
+                            ) {
+                                // Empty box for outer circle
+                            }
+                        }
+
+                        // Inner Image
+                        Image(
+                            painter = rememberImagePainter(item.subCategoryUrl),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(size) // Match the size of the outer box
+                                .align(Alignment.Center) // Center the image within the outer circle
+                        )
+                    }
+
+                }
+
+
+
                 Text10_h2(
                     text = item.name, color = headingColor,
                     modifier = Modifier
@@ -746,7 +792,9 @@ fun ProductWiseRow(
         Text11_body2(
             text = "out of stock",
             redColor,
-            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+            modifier = Modifier
+                .padding(end = 5.dp, top = 15.dp)
+                .align(alignment = Alignment.Center)
 
         )
         Card(
@@ -758,21 +806,23 @@ fun ProductWiseRow(
 
                 .width(150.dp)
                 .clickable {
-                    if (data?.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
-                    { productdetail.value = ItemsCollectionsResponse.SubItems(
-                        orignal_price = data.orignal_price ?: "",
-                        item_category_name = "",
-                        selling_price = data.selling_price ?: "",
-                        productDescription = data.productDescription ?: "",
-                        productId = data.ProductId ?: "",
-                        productImage1 = data.productImage1 ?: "",
-                        productImage2 = data.productImage2 ?: "",
-                        productImage3 = data.productImage3 ?: "",
-                        productName = data.productName ?: "",
-                        quantity = data.quantity ?: "",
-                        quantityInstructionController = data.quantityInstructionController ?: "",
-                    )
-                    scope.launch { modalBottomSheetState.show() }}
+                    if (data?.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0) {
+                        productdetail.value = ItemsCollectionsResponse.SubItems(
+                            orignal_price = data.orignal_price ?: "",
+                            item_category_name = "",
+                            selling_price = data.selling_price ?: "",
+                            productDescription = data.productDescription ?: "",
+                            productId = data.ProductId ?: "",
+                            productImage1 = data.productImage1 ?: "",
+                            productImage2 = data.productImage2 ?: "",
+                            productImage3 = data.productImage3 ?: "",
+                            productName = data.productName ?: "",
+                            quantity = data.quantity ?: "",
+                            quantityInstructionController = data.quantityInstructionController
+                                ?: "",
+                        )
+                        scope.launch { modalBottomSheetState.show() }
+                    }
 //                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
                 }
 
@@ -824,7 +874,9 @@ fun ProductWiseRow(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier .fillMaxWidth().padding(start = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp),
                horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
@@ -894,7 +946,9 @@ fun ProductWiseRowBanner(
         Text11_body2(
             text = "out of stock",
             redColor,
-            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
+            modifier = Modifier
+                .padding(end = 5.dp, top = 15.dp)
+                .align(alignment = Alignment.Center)
 
         )
         Card(
@@ -962,7 +1016,9 @@ fun ProductWiseRowBanner(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier .fillMaxWidth().padding(start = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp),
               horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 

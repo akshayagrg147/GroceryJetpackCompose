@@ -61,7 +61,7 @@ fun OrderConfirmation(
             width = 2f,
             pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
         )
-        showNotification(LocalContext.current, "Order Placed", "")
+        showNotification(LocalContext.current, "Order Placed", "Thanku for shopping with us!")
         Column(modifier = Modifier.fillMaxSize()) {
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 viewModal.deleteCartItems()

@@ -66,7 +66,8 @@ fun SignUpScreen(
                 }
 
                 is ApiState.Failure -> {
-                    context.showMsg(it.msg.message.toString())
+                    context.showMsg("something went wrong")
+                  //  context.showMsg(it.msg.message.toString())
                     false
                 }
                 ApiState.Loading -> true

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import coil.ImageLoader
 import coil.compose.rememberImagePainter
 import coil.decode.GifDecoder
@@ -87,7 +88,12 @@ fun OrderHistoryScreen(
     ) {
 
         CommonHeader(text = "Order History", color = Color.Black) {
-            navController.popBackStack()
+            navController.navigate(
+                DashBoardNavRoute.Home.screen_route,
+                // Use NavOptions to specify popUpTo
+                NavOptions.Builder().setPopUpTo(navController.graph.startDestinationId, inclusive = false).build())
+
+           // navController.popBackStack()
         }
         FlowRow {
             listOf<String>("Ordered", "Delivered", "Cancelled").forEachIndexed { index, s ->

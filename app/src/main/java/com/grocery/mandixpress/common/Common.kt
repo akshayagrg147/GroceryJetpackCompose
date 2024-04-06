@@ -54,7 +54,7 @@ fun CommonProgressBar(text: String = "Easy shop with Us") {
                 .size(170.dp)
 
                 .border(
-                    1.dp, borderColor, androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                    0.dp, borderColor, androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                 )
                 .background(
                     brush = Brush.verticalGradient(

@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import com.google.android.libraries.places.api.Places
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.grocery.mandixpress.Utils.Constants
 import dagger.hilt.android.HiltAndroidApp
@@ -20,6 +21,7 @@ class HiltApplication:Application() {
         instance = this
         createNotificationChannel()
         subscribeTopic()
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
     }
     companion object {

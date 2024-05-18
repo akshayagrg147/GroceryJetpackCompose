@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -77,6 +76,7 @@ import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.screens.LocationPermissionsAndSettingDialogs
 import com.grocery.mandixpress.screens.LocationUtils
 import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.ui.theme.font_bold
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

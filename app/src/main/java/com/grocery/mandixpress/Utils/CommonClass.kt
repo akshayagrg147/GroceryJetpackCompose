@@ -30,13 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
+import com.grocery.mandixpress.ui.theme.font_bold
+import com.grocery.mandixpress.ui.theme.loginTypography
 
 @Composable
 fun Text12_body1(text: String, color: Color = bodyTextColor, modifier: Modifier = Modifier,textAlign: TextAlign= TextAlign.Start) {
     Text(text = text, style = loginTypography.body1, color = color,fontSize = 12.sp, modifier = modifier, textAlign = textAlign)
 }
 @Composable
-fun Text12_with_strikethrough(text1: String,text2:String, color: Color = bodyTextColor, modifier: Modifier = Modifier,style:TextStyle=loginTypography.body1) {
+fun Text12_with_strikethrough(text1: String,text2:String, color: Color = bodyTextColor, modifier: Modifier = Modifier,style:TextStyle= loginTypography.body1) {
     Box(modifier = modifier) {
         Row(modifier = Modifier,Arrangement.spacedBy(8.dp )) {
             Text(

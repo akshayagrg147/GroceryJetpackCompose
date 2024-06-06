@@ -82,12 +82,10 @@ fun AddToCartCardView(
                  }
 
                  val textToShow = if (extraChargesShouldIncludeState.value==0) {
-                     // Ensure that the calculation is done before proceeding
                      val deliveryCharge = 30 + viewmodal.getSellersMinDeliveryCharge().toDouble()
                      String.format("%.2f", deliveryCharge)
                  }
                  else if (extraChargesShouldIncludeState.value==1)  {
-                     // Ensure that the calculation is done before proceeding
                      val deliveryCharge = viewmodal.getSellersMinDeliveryCharge().toDouble()
                      String.format("%.2f", deliveryCharge)
                  }

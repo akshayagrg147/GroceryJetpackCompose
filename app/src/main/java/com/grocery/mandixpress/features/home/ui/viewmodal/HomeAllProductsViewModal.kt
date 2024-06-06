@@ -54,13 +54,7 @@ class HomeAllProductsViewModal @Inject constructor(
     private val cat: CallingCategoryWiseData,
 
     ) : ViewModel() {
-    init {
-        registerFcmToken()
-        getItemCount()
-        getItemPrice()
 
-
-    }
     var apicallNeed=true
     val animationText=(0..20).asSequence().asFlow().map { if(it%2==0) "Search milk" else "Search bread" }.onEach { delay(3000) }
     var adminAccessTableData=AdminAccessTable()
@@ -155,6 +149,14 @@ class HomeAllProductsViewModal @Inject constructor(
         .flatMapLatest {
             repository.HomeAllProducts(it,sharedPreferences.getPostalCode())
         }
+
+    init {
+        registerFcmToken()
+        getItemCount()
+        getItemPrice()
+
+
+    }
 
 
     fun setList(response: @RawValue HomeAllProductsResponse) {
@@ -432,6 +434,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                     data.lat=sellerDetail.latitude?.toDouble()
                     data.lng=sellerDetail.longitude?.toDouble()
                     roomrespo.insert(data)
+                    passSellerDetail(AdminAccessTable(),CartItems())
 
                 }
                 else{
@@ -550,7 +553,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                     uniqueLatLngList[i + 1].second
                 )
             }
-            val decimalRupees = String.format("%.2f", totalKm)
+            val decimalRupees = String.format("%.2f", totalKm).replace(",", ".")
             val deliveryCharge = decimalRupees.toFloat() * 5
             sharedPreferences.setDeliverySellersCharges(deliveryCharge.toString())
             // Adjust minimum delivery amount

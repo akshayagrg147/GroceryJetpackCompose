@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -525,8 +526,8 @@ fun menuitems(
 
         if(newSellerAddedDialog)
             com.grocery.mandixpress.common.CustomDialog(
-                title = "Mandi Express",
-                message = "Delivery charges may change as you are adding to other seller",
+                title = "MandiXpress",
+                message = "Delivery charges may change as you are adding product from other seller",
                 onShowDialog = {
                     newSellerAddedDialog=false
 
@@ -950,111 +951,115 @@ fun MenuItemGrid(
     showExtraChargesPopUp:(CartItems, AdminAccessTable, Boolean)->Unit,
     viewModal: CartItemsViewModal = hiltViewModel(),
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
 
-    ){
-        if (  data.quantity.isNotEmpty() && data.quantity.toInt()==0)
-        Text11_body2(
-            text = "out of stock" ,
-            redColor,
+
+
+        Card(
+            elevation = 2.dp,
+            shape = RoundedCornerShape(20.dp),
+            enabled = false,
+            onClick = {
+                if (data.quantity.isNotEmpty() && data.quantity.toInt() != 0)
+                    passItem(data)
+            },
             modifier = Modifier
-                .padding(end = 5.dp, top = 15.dp)
-                .align(alignment = Alignment.Center)
+                .padding(horizontal = 4.dp)
 
-        )
-
-    Card(
-        elevation = 2.dp,
-        shape = RoundedCornerShape(20.dp),
-        enabled = false,
-        onClick = {
-            if (  data.quantity.isNotEmpty() && data.quantity.toInt()!=0)
-                passItem(data)
-        },
-        modifier = Modifier
-            .padding(horizontal = 4.dp)
-
-            .width(150.dp)
-            .alpha(if (data.quantity.isNotEmpty() && data.quantity.toInt() == 0) 0.7f else 1.0f)
+                .width(150.dp)
+                .alpha(if (data.quantity.isNotEmpty() && data.quantity.toInt() == 0) 0.7f else 1.0f)
 
 
-    ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 5.dp)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
 
             ) {
-                val originalPrice = data.orignal_price.toFloat() ?: 0.0f
-                val sellingPrice = data.selling_price.toFloat() ?: 0.0f
+                if (data.quantity.isNotEmpty() && data.quantity.toInt() == 0)
+                    Text11_body2(
+                        text = "out of stock",
+                        redColor,
+                        modifier = Modifier.fillMaxHeight()
+                            .padding( top = 30.dp ).rotate(-90f)
 
-                val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
-                val formattedPercentage = DecimalFormat("#").format(offPercentage)
-
-            Text10_h2(
-                text = "${formattedPercentage.toInt()}% off", color = sec20timer,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .align(
-                        Alignment.End
-                    ),
 
                     )
 
-                Image(
-
-                    painter = rememberImagePainter(data.productImage1),
-                    contentDescription = "splash image",
-                    modifier = Modifier
-                        .width(150.dp)
-                        .height(100.dp)
-                        .align(alignment = Alignment.CenterHorizontally)
-
-
-                )
-
-                Text12_h1(
-                    text = data.productName, color = headingColor,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-                Text10_h2(
-                    text = data.quantityInstructionController, color = bodyTextColor,
-                    modifier = Modifier
-                        .padding(end = 10.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Row( horizontalArrangement = Arrangement.SpaceBetween,
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 1.dp, bottom = 10.dp),
-//
-                ) {
-Row {
-    Column {
-        Text10_h2(
-            text = "₹ ${data.selling_price}",
-            color = headingColor,
-            //  modifier= Modifier.weight(0.5F)
-        )
-        Text(
-            text = "₹${data.orignal_price ?: "0.00"}",
-            fontSize = 11.sp,
-            color = bodyTextColor,
-            modifier = Modifier.padding(start = 0.dp),
-            style = TextStyle(textDecoration = TextDecoration.LineThrough)
-        )
-    }
+                        .padding(horizontal = 5.dp)
 
-}
+                ) {
+                    val originalPrice = data.orignal_price.toFloat() ?: 0.0f
+                    val sellingPrice = data.selling_price.toFloat() ?: 0.0f
+
+                    val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
+                    val formattedPercentage = DecimalFormat("#").format(offPercentage)
+
+                    Text10_h2(
+                        text = "${formattedPercentage.toInt()}% off", color = sec20timer,
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .align(
+                                Alignment.End
+                            ),
+
+                        )
+
+                    Image(
+
+                        painter = rememberImagePainter(data.productImage1),
+                        contentDescription = "splash image",
+                        modifier = Modifier
+                            .width(120.dp)
+                            .height(100.dp)
+                            .padding(start = 30.dp)
+                            .align(alignment = Alignment.CenterHorizontally)
+
+
+                    )
+
+                    Text12_h1(
+                        text = data.productName, color = headingColor,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    Text10_h2(
+                        text = data.quantityInstructionController, color = bodyTextColor,
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 1.dp, bottom = 10.dp),
+//
+                    ) {
+                        Row {
+                            Column {
+                                Text10_h2(
+                                    text = "₹ ${data.selling_price}",
+                                    color = headingColor,
+                                    //  modifier= Modifier.weight(0.5F)
+                                )
+                                Text(
+                                    text = "₹${data.orignal_price ?: "0.00"}",
+                                    fontSize = 11.sp,
+                                    color = bodyTextColor,
+                                    modifier = Modifier.padding(start = 0.dp),
+                                    style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                                )
+                            }
+
+                        }
 
 
                         Card(
-                            border = BorderStroke(1.dp,   titleColor),
+                            border = BorderStroke(1.dp, titleColor),
                             modifier = Modifier
 
                                 .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
@@ -1091,20 +1096,21 @@ Row {
 
                             ) {
                             Text11_body2(
-                                text = if(data.quantity.isNotEmpty() && data.quantity.toInt()==0) "Notify" else "ADD",
+                                text = if (data.quantity.isNotEmpty() && data.quantity.toInt() == 0) "Notify" else "ADD",
                                 availColor,
                                 modifier = Modifier.padding(vertical = 3.dp, horizontal = 8.dp)
                             )
                         }
 
 
-                }
+                    }
 
+                }
             }
-        }
 
     }
-}
+    }
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable

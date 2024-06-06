@@ -807,8 +807,8 @@ fun UPIPaymentConfirmationDialog(
 
         if(newSellerAddedDialog)
             com.grocery.mandixpress.common.CustomDialog(
-                title = "Mandi Express",
-                message = "Delivery charges may change as you are adding to other seller",
+                title = "MandiXpress",
+                message = "Delivery charges may change as you are adding product from other seller",
                 onShowDialog = {
                     newSellerAddedDialog=false
 

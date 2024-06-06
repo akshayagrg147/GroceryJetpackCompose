@@ -198,7 +198,7 @@ fun OrderHistoryRow(
 
                     )
                 Text12_body1(
-                    text = data.createdDate?.split(" ")?.get(1) ?: "nn",
+                    text = data.createdDate?.split(" ")?.get(1) ?: "",
                 )
             }
             Spacer(Modifier.height(5.dp))

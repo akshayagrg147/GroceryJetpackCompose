@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GroceryApp</string>
+    <string name="app_name">MandiXpress</string>
     <string name="name">Enter your name</string>
     <string name="address">Search with your pincode..</string>
     <string name="exit_confirmation_title">Confirm Exit</string>

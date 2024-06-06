@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -234,8 +235,8 @@ fun CategoryWiseDashboardAllData(
 
         if(newSellerAddedDialog)
             com.grocery.mandixpress.common.CustomDialog(
-                title = "Mandi Express",
-                message = "Delivery charges may change as you are adding to other seller",
+                title = "MandiXpress",
+                message = "Delivery charges may change as you are adding product from other seller",
                 onShowDialog = {
                     newSellerAddedDialog=false
 
@@ -784,19 +785,7 @@ fun ProductWiseRow(
 ) {
     val scope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier.fillMaxSize()
 
-    ) {
-        if (data?.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
-        Text11_body2(
-            text = "out of stock",
-            redColor,
-            modifier = Modifier
-                .padding(end = 5.dp, top = 15.dp)
-                .align(alignment = Alignment.Center)
-
-        )
         Card(
             elevation = 2.dp,
             shape = RoundedCornerShape(20.dp),
@@ -827,6 +816,19 @@ fun ProductWiseRow(
                 }
 
         ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+
+            ) {
+                if (  data?.quantity?.isNotEmpty()==true && data?.quantity.toInt()==0)
+                    Text11_body2(
+                        text = "out of stock",
+                        redColor,
+                        modifier = Modifier.fillMaxHeight()
+                            .padding( top = 30.dp ).rotate(-90f)
+
+
+                    )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -853,8 +855,9 @@ fun ProductWiseRow(
                     painter = rememberImagePainter(data?.productImage1),
                     contentDescription = "splash image",
                     modifier = Modifier
-                        .width(150.dp)
+                        .width(120.dp)
                         .height(100.dp)
+                        .padding(start = 30.dp)
                         .align(alignment = Alignment.CenterHorizontally)
 
 
@@ -938,19 +941,7 @@ fun ProductWiseRowBanner(
 ) {
 
     val scope = rememberCoroutineScope()
-    Box(
-        modifier = Modifier.fillMaxSize()
 
-    ) {
-        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
-        Text11_body2(
-            text = "out of stock",
-            redColor,
-            modifier = Modifier
-                .padding(end = 5.dp, top = 15.dp)
-                .align(alignment = Alignment.Center)
-
-        )
         Card(
             elevation = 2.dp,
             shape = RoundedCornerShape(20.dp),
@@ -969,6 +960,19 @@ fun ProductWiseRowBanner(
                 }
 
         ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+
+            ) {
+                if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
+                    Text11_body2(
+                        text = "out of stock",
+                        redColor,
+                        modifier = Modifier.fillMaxHeight()
+                            .padding( top = 30.dp ).rotate(-90f)
+
+
+                    )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -995,8 +999,9 @@ fun ProductWiseRowBanner(
                     painter = rememberImagePainter(data.productImage1),
                     contentDescription = "splash image",
                     modifier = Modifier
-                        .width(150.dp)
+                        .width(120.dp)
                         .height(100.dp)
+                        .padding(start = 30.dp)
                         .align(alignment = Alignment.CenterHorizontally)
 
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -520,13 +521,7 @@ fun SubItems(
         modifier = Modifier.width((LocalConfiguration.current.screenWidthDp.dp / 2)).fillMaxHeight()
 
     ) {
-        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
-        Text11_body2(
-            text = "out of stock",
-            redColor,
-            modifier = Modifier.padding(end = 5.dp, top = 15.dp).align(alignment = Alignment.Center)
 
-        )
         Card(
             elevation = 2.dp,
             shape = RoundedCornerShape(20.dp),
@@ -534,130 +529,161 @@ fun SubItems(
                 .padding(horizontal = 10.dp, vertical = 10.dp)
 
                 .width(160.dp)
-                .alpha(if(data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)0.7f else 1.0f)
+                .alpha(if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) 0.7f else 1.0f)
                 .clickable {
-                    if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()!=0)
-                    passclicked(data)
+                    if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0)
+                        passclicked(data)
 
 //                navcontroller.navigate(DashBoardNavRoute.ProductDetail.senddata("${data.ProductId!!} exclusive"))
                 }
 
         ) {
-            Column(
-                modifier = Modifier
+            Box(
+                modifier = Modifier.fillMaxSize()
 
-                    .padding(horizontal = 5.dp, vertical = 15.dp)
             ) {
+                if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0)
+                    Text11_body2(
+                        text = "out of stock",
+                        redColor,
+                        modifier = Modifier.fillMaxHeight()
+                            .padding(top = 30.dp).rotate(-90f)
 
-                val originalPrice = data.orignal_price?.toFloat() ?: 0.0f
-                val sellingPrice = data.selling_price?.toFloat() ?: 0.0f
 
-                val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
+                    )
+                Column(
+                    modifier = Modifier
 
-                val formattedPercentage = DecimalFormat("#").format(offPercentage)
+                        .padding(horizontal = 5.dp, vertical = 15.dp)
+                ) {
 
-                Text10_h2(
-                    text = "${formattedPercentage.toInt()}% off", color = sec20timer,
-                    modifier = Modifier.align(
-                        Alignment.End
-                    ),
+                    val originalPrice = data.orignal_price?.toFloat() ?: 0.0f
+                    val sellingPrice = data.selling_price?.toFloat() ?: 0.0f
+
+                    val offPercentage = ((originalPrice - sellingPrice) / originalPrice) * 100
+
+                    val formattedPercentage = DecimalFormat("#").format(offPercentage)
+
+                    Text10_h2(
+                        text = "${formattedPercentage.toInt()}% off", color = sec20timer,
+                        modifier = Modifier.align(
+                            Alignment.End
+                        ),
+
+                        )
+
+                    Image(
+
+                        painter = rememberImagePainter(data.productImage1),
+                        contentDescription = "splash image",
+                        modifier = Modifier
+
+                            .width(120.dp)
+                            .height(100.dp)
+                            .padding(start = 30.dp)
+                            .align(alignment = Alignment.CenterHorizontally)
+
 
                     )
 
-                Image(
-
-                    painter = rememberImagePainter(data.productImage1),
-                    contentDescription = "splash image",
-                    modifier = Modifier
-                        .width(150.dp)
-                        .height(100.dp)
-                        .align(alignment = Alignment.CenterHorizontally)
-
-
-                )
-
-                Text12_h1(
-                    text = data.productName?:"", color = headingColor,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-                Text10_h2(
-                    text = "${data.quantityInstructionController}", color = bodyTextColor,
-                    modifier = Modifier
-                        .padding(end = 10.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(
-                    modifier = Modifier .fillMaxWidth().padding(start = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Column {
-                        Text10_h2(
-                            text = "₹ ${data.selling_price}",
-                            color = headingColor,
-                            //  modifier= Modifier.weight(0.5F)
-                        )
-                        Text(
-                            text = "₹${data.orignal_price ?: "0.00"}",
-                            fontSize = 11.sp,
-                            color = bodyTextColor,
-                            modifier = Modifier.padding(start = 0.dp),
-                            style = TextStyle(textDecoration = TextDecoration.LineThrough)
-                        )
-                    }
-
-                    Card(
-                        border = BorderStroke(1.dp, titleColor),
+                    Text12_h1(
+                        text = data.productName ?: "", color = headingColor,
                         modifier = Modifier
+                            .padding(top = 10.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    Text10_h2(
+                        text = "${data.quantityInstructionController}", color = bodyTextColor,
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
 
-                            .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
-                            .padding(start = 20.dp)
+                        Column {
+                            Text10_h2(
+                                text = "₹ ${data.selling_price}",
+                                color = headingColor,
+                                //  modifier= Modifier.weight(0.5F)
+                            )
+                            Text(
+                                text = "₹${data.orignal_price ?: "0.00"}",
+                                fontSize = 11.sp,
+                                color = bodyTextColor,
+                                modifier = Modifier.padding(start = 0.dp),
+                                style = TextStyle(textDecoration = TextDecoration.LineThrough)
+                            )
+                        }
 
-                            .background(color = whiteColor)
-                            .clickable {
-                                if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0) {  // response="called"
-                                    viewModal.insertCartItem(
-                                        data.ProductId ?: "",
-                                        data.productImage1 ?: "",
-                                        data.selling_price?.toInt() ?: 0,
-                                        data.productName ?: "",
-                                        data.orignal_price ?: "",
-                                        data.sellerId.toString()
-                                    ) { accessTable, cartItem ->
-                                        showExtraChargesPopUp(cartItem, accessTable, true)
+                        Card(
+                            border = BorderStroke(1.dp, titleColor),
+                            modifier = Modifier
+
+                                .clip(RoundedCornerShape(5.dp, 5.dp, 5.dp, 5.dp))
+                                .padding(start = 20.dp)
+
+                                .background(color = whiteColor)
+                                .clickable {
+                                    if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() != 0) {  // response="called"
+                                        viewModal.insertCartItem(
+                                            data.ProductId ?: "",
+                                            data.productImage1 ?: "",
+                                            data.selling_price?.toInt() ?: 0,
+                                            data.productName ?: "",
+                                            data.orignal_price ?: "",
+                                            data.sellerId.toString()
+                                        ) { accessTable, cartItem ->
+                                            if (accessTable.city != null) {
+                                                showExtraChargesPopUp(cartItem, accessTable, true)
+                                            } else {
+                                                MainScope().launch {
+                                                    Toast
+                                                        .makeText(
+                                                            context,
+                                                            "Added to cart",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                        .show()
+
+                                                    Utils.vibrator(context)
+                                                }
+                                            }
+                                        }
+                                        //akshay have to un comment if any issues
+//                                    viewModal.getItemCount()
+//                                    viewModal.getItemPrice()
+//                                    MainScope().launch {
+//                                        Toast
+//                                            .makeText(
+//                                                context,
+//                                                "Added to cart",
+//                                                Toast.LENGTH_SHORT
+//                                            )
+//                                            .show()
+//
+//                                        Utils.vibrator(context)
+//                                    }
                                     }
-                                    viewModal.getItemCount()
-                                    viewModal.getItemPrice()
-                                    MainScope().launch {
-                                        Toast
-                                            .makeText(
-                                                context,
-                                                "Added to cart",
-                                                Toast.LENGTH_SHORT
-                                            )
-                                            .show()
-
-                                        Utils.vibrator(context)
-                                    }
-                                }
 
 
-                            },
+                                },
 
-                        ) {
-                        Text11_body2(
-                            text = if(data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0) "Notify" else "ADD",
-                            availColor,
-                            modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
-                        )
+                            ) {
+                            Text11_body2(
+                                text = if (data.quantity?.isNotEmpty() == true && data.quantity.toInt() == 0) "Notify" else "ADD",
+                                availColor,
+                                modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
+                            )
+                        }
+
+
                     }
-
 
                 }
-
             }
         }
     }
@@ -776,8 +802,8 @@ private fun Body(
 
     if(newSellerAddedDialog)
         com.grocery.mandixpress.common.CustomDialog(
-            title = "Mandi Express",
-            message = "Delivery charges may change as you are adding to other seller",
+            title = "MandiXpress",
+            message = "Delivery charges may change as you are adding product from other seller",
             onShowDialog = {
                 newSellerAddedDialog=false
 

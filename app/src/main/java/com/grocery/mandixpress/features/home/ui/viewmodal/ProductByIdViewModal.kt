@@ -168,6 +168,7 @@ class ProductByIdViewModal @Inject constructor(
                 data.lng=sellerDetail.longitude?.toDouble()
 
                 repo.insert(data)
+                passSellerDetail(AdminAccessTable(),CartItems())
             }
             else {
                 val sellerIdExist: Boolean = dao.isExistSeller(value.homeproducts?.sellerId)
@@ -179,11 +180,31 @@ class ProductByIdViewModal @Inject constructor(
                     passSellerDetail(sellerDetail,data)
 
                 }
+                else{
+                    val sellerDetail: AdminAccessTable = dao.getSellerDetail(value.homeproducts?.sellerId)?.first() ?: AdminAccessTable()
+
+                    val withHighestCartItemTotal=dao.getSellerWithHighestCartItemTotal()
+                    val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.get(0)?.sellerId)?.first() ?: AdminAccessTable()
+
+
+                    sharedpreferenceCommon.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"0.00")
+
+                    data.lat=sellerDetail.latitude?.toDouble()
+                    data.lng=sellerDetail.longitude?.toDouble()
+                    repo.insert(data)
+                    passSellerDetail(AdminAccessTable(),CartItems())
+
+                }
             }
 
 
         } else if (intger >= 1) {
+            val withHighestCartItemTotal=dao.getSellerWithHighestCartItemTotal()
+            val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.get(0)?.sellerId)?.first() ?: AdminAccessTable()
+            sharedpreferenceCommon.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"0.00")
+
             repo.updateCartItem(intger + 1, value.homeproducts?.productId?:"")
+
 
         }
         getItemBaseOnProductId(value.homeproducts?.productId?:"")

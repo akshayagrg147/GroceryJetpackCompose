@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -57,6 +58,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.AddToCartCardView
@@ -363,8 +366,8 @@ private fun BodyDashboard(
 
     if(newSellerAddedDialog)
         com.grocery.mandixpress.common.CustomDialog(
-            title = "Mandi Express",
-            message = "Delivery charges may change as you are adding to other seller",
+            title = "MandiXpress",
+            message = "Delivery charges may change as you are adding product from other seller",
             onShowDialog = {
 
                 newSellerAddedDialog=false
@@ -1112,19 +1115,8 @@ fun ExclusiveOffers(
     viewModal: HomeAllProductsViewModal,
     showExtraChargesPopUp:(CartItems,AdminAccessTable,Boolean)->Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
 
-    ) {
-        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
-        Text11_body2(
-            text = "out of stock",
-            redColor,
-            modifier = Modifier
-                .padding(end = 5.dp, top = 15.dp)
-                .align(alignment = Alignment.Center)
 
-        )
 
         Card(
             elevation = 2.dp,
@@ -1146,6 +1138,19 @@ fun ExclusiveOffers(
                 }
 
         ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+
+            ) {
+            if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
+                Text11_body2(
+                    text = "out of stock",
+                    redColor,
+                    modifier = Modifier.fillMaxHeight()
+                        .padding( top = 30.dp ).rotate(-90f)
+
+
+                )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1170,8 +1175,9 @@ fun ExclusiveOffers(
                     painter = rememberImagePainter(data.productImage2),
                     contentDescription = "splash image",
                     modifier = Modifier
-                        .width(150.dp)
+                        .width(120.dp)
                         .height(100.dp)
+                        .padding(start = 30.dp)
                         .align(alignment = Alignment.CenterHorizontally)
                 )
 
@@ -1260,19 +1266,7 @@ fun CateoryWiseItems(
     navcontroller: NavHostController, viewModal: HomeAllProductsViewModal, itemSize: Dp,
     showExtraChargesPopUp:(AdminAccessTable,CartItems,Boolean)->Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
 
-    ) {
-        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
-        Text11_body2(
-            text = "out of stock",
-            redColor,
-            modifier = Modifier
-                .padding(end = 5.dp, top = 15.dp)
-                .align(alignment = Alignment.Center)
-
-        )
         Card(
             elevation = 2.dp,
             shape = RoundedCornerShape(10.dp),
@@ -1293,6 +1287,19 @@ fun CateoryWiseItems(
                 }
 
         ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+
+            ) {
+                if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
+                    Text11_body2(
+                        text = "out of stock",
+                        redColor,
+                        modifier = Modifier.fillMaxHeight()
+                            .padding( top = 30.dp ).rotate(-90f)
+
+
+                    )
             Column(
                 modifier = Modifier
                     .padding(horizontal = 5.dp, vertical = 10.dp)
@@ -1316,9 +1323,10 @@ fun CateoryWiseItems(
                     painter = rememberImagePainter(data.productImage1),
                     contentDescription = "splash image",
                     modifier = Modifier
-                        .width(150.dp)
+                        .width(120.dp)
 
                         .height(100.dp)
+                        .padding(start = 30.dp)
                         .align(alignment = Alignment.CenterHorizontally)
                 )
                 Text12_h1(
@@ -1419,19 +1427,7 @@ fun BestOffers(
     viewModal: HomeAllProductsViewModal,
     showExtraChargesPopUp:(CartItems,AdminAccessTable,Boolean)->Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
 
-    ) {
-        if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
-            Text11_body2(
-            text = "out of stock",
-            redColor,
-            modifier = Modifier
-                .padding(end = 5.dp, top = 15.dp)
-                .align(alignment = Alignment.Center)
-
-        )
         Card(
             elevation = 2.dp,
             shape = RoundedCornerShape(20.dp),
@@ -1452,6 +1448,19 @@ fun BestOffers(
                 }
 
         ) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+
+            ) {
+                if (  data.quantity?.isNotEmpty()==true && data.quantity.toInt()==0)
+                    Text11_body2(
+                        text = "out of stock",
+                        redColor,
+                        modifier = Modifier.fillMaxHeight()
+                            .padding( top = 30.dp ).rotate(-90f)
+
+
+                    )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1477,8 +1486,9 @@ fun BestOffers(
                     painter = rememberImagePainter(data.productImage1),
                     contentDescription = "splash image",
                     modifier = Modifier
-                        .width(150.dp)
+                        .width(120.dp)
                         .height(100.dp)
+                        .padding(start = 30.dp)
                         .align(alignment = Alignment.CenterHorizontally)
 
 

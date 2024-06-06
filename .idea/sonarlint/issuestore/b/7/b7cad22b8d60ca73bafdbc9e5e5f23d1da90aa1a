@@ -1,0 +1,6 @@
+
+ekotlin:S117"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¹ÕúÚ
+ekotlin:S117'"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ïÄ¤ä
+7kotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿ
+pkotlin:S101"YRename class "sharedpreferenceCommon" to match the regular expression ^[A-Z][a-zA-Z0-9]*$(µð¶ë
+<kotlin:S6524s"Make this collection immutable.(›×Èÿûÿÿÿÿ

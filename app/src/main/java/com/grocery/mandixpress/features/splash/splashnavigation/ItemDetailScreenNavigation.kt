@@ -368,8 +368,8 @@ fun ItemDetailsScreen(
 
                                                 if(newSellerAddedDialog)
                                                     com.grocery.mandixpress.common.CustomDialog(
-                                                        title = "Mandi Express",
-                                                        message = "Delivery charges may change as you are adding to other seller",
+                                                        title = "MandiXpress",
+                                                        message = "Delivery charges may change as you are adding product from other seller",
                                                         onShowDialog = {
                                                             newSellerAddedDialog=false
 
@@ -398,11 +398,26 @@ fun ItemDetailsScreen(
 
                                                         })
                                                 CommonMathButton(icon = R.drawable.add) {
-                                                    viewModal.insertCartItem(value){access,cart->
-                                                        viewModal.tempStoreAdminCartTable(access,cart)
+                                                    viewModal.insertCartItem(value){accessTable,cartItem->
 
+                                                        if(accessTable.city!=null){
+                                                            viewModal.tempStoreAdminCartTable(accessTable,cartItem)
+                                                            newSellerAddedDialog =true
+                                                        }
+                                                        else
+                                                        {
+                                                            MainScope().launch {
+                                                                Toast
+                                                                    .makeText(
+                                                                        context,
+                                                                        "Added to cart",
+                                                                        Toast.LENGTH_SHORT
+                                                                    )
+                                                                    .show()
 
-                                                        newSellerAddedDialog=true
+                                                                Utils.vibrator(context)
+                                                            }
+                                                        }
 
 
 
@@ -414,8 +429,8 @@ fun ItemDetailsScreen(
                                         else {
                                             if(newSellerAddedDialog)
                                                 com.grocery.mandixpress.common.CustomDialog(
-                                                    title = "Mandi Express",
-                                                    message = "Delivery charges may change as you are adding to other seller",
+                                                    title = "MandiXpress",
+                                                    message = "Delivery charges may change as you are adding product from other seller",
                                                     onShowDialog = {
                                                         newSellerAddedDialog=false
 
@@ -459,17 +474,29 @@ fun ItemDetailsScreen(
 
                                                     .background(color = whiteColor)
                                                     .clickable {
-                                                        viewModal.insertCartItem(value) { access, cart ->
-                                                            viewModal.tempStoreAdminCartTable(
-                                                                access,
-                                                                cart
-                                                            )
+                                                        viewModal.insertCartItem(value) { accessTable, cartItem ->
+                                                            if (accessTable.city != null) {
+                                                                viewModal.tempStoreAdminCartTable(
+                                                                    accessTable,
+                                                                    cartItem
+                                                                )
+                                                                newSellerAddedDialog = true
+                                                            } else {
+                                                                MainScope().launch {
+                                                                    Toast
+                                                                        .makeText(
+                                                                            context,
+                                                                            "Added to cart",
+                                                                            Toast.LENGTH_SHORT
+                                                                        )
+                                                                        .show()
 
-
-                                                            newSellerAddedDialog = true
-
-
+                                                                    Utils.vibrator(context)
+                                                                }
+                                                            }
                                                         }
+
+
 
 
                                                     },

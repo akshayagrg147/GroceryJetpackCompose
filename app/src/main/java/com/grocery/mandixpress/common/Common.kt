@@ -372,58 +372,67 @@ fun SwipeButton(
 
 @Composable
 fun CustomDialog(
-
     title: String,
     message: String,
     onYesClick: () -> Unit,
-    onShowDialog:()->Unit
-
-    ) {
-
-
-
-    AlertDialog(
+    onShowDialog: () -> Unit
+) {
+    Dialog(
         onDismissRequest = {
             onShowDialog()
-
-
         },
-        title = {
-            Text(text = title)
-        },
-        text = {
-            Text(text = message)
-        },
-        buttons = {
+        content = {
             Column(
-                modifier = Modifier.padding(8.dp),
-
+                modifier = Modifier
+                    .padding(16.dp)
+                    .background(Color.Transparent)
             ) {
-                CommonButton(
-                    text = "Yes",
+                Button(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp),
-                    backgroundColor = seallcolor
+                        .align(Alignment.End)
+                        .background(Color.Transparent)
+                        .padding(bottom = 10.dp),
+                    onClick = { onShowDialog() }
                 ) {
-                    onYesClick()
-
+                    Text("Close")
                 }
-                CommonButton(
-                    text = "No",
+                Surface(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp),
-                    backgroundColor = lightred
+                        .wrapContentWidth()
+                        .wrapContentHeight()
+                        .padding(6.dp),
+                    shape = MaterialTheme.shapes.large
                 ) {
-                    onShowDialog()
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = message,
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.padding(bottom = 20.dp)
+                        )
+                        CommonButton(
+                            text = "continue",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp),
+                            backgroundColor = seallcolor
+                        ) {
+                            onYesClick()
+                        }
+                    }
                 }
-
-
             }
         }
     )
 }
+
+
 
 
 @Composable

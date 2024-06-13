@@ -1,9 +1,9 @@
 
-•kotlin:S117w"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¾¦‡üÿÿÿÿJ$c00b1652-c6ef-4348-b562-8f5651f2d31e
-Zkotlin:S6310E"Avoid hardcoded dispatchers.(÷µÙƒJ$5b28b58d-c8c3-402d-b892-a1bbad1af10e
-[kotlin:S6310…"Avoid hardcoded dispatchers.(ó¶ìóJ$278f4366-f61a-4ddd-a28c-b2a6776a66ac
-`kotlin:S6310“"Avoid hardcoded dispatchers.(îÖä¹øÿÿÿÿJ$68d7b340-ba4b-42c8-b7ff-8daa3a168481
-[kotlin:S6310ê"Avoid hardcoded dispatchers.(ÏÃâJ$dd78ce09-8762-48ff-9f92-175b6fcb27e9
-`kotlin:S6310¸"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿJ$fe7151e5-073c-47b3-8a34-90a4a3b675bb
-„kotlin:S6313é"EClasses extending "ViewModel" should not expose suspending functions.(ôÏÄíJ$a5effb0b-f8b1-440e-bd26-6592ea688623
-™kotlin:S1186¯"ZAdd a nested comment explaining why this function is empty or complete the implementation.(İÂ‰ÔJ$23ae7aad-e008-47d6-b999-1c385bbada79
+œkotlin:S117w"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¾¦‡üÿÿÿÿ8í£íäş1J$2b993397-7f77-477a-8b0c-0825677d016a
+akotlin:S6310E"Avoid hardcoded dispatchers.(÷µÙƒ8î£íäş1J$91d88fa1-3ea6-46e3-a6eb-397f6fb22734
+bkotlin:S6310…"Avoid hardcoded dispatchers.(ó¶ìó8î£íäş1J$7dc22023-372b-4ee2-af95-c842c2db5938
+gkotlin:S6310“"Avoid hardcoded dispatchers.(îÖä¹øÿÿÿÿ8î£íäş1J$19ce465c-6775-4ad6-abef-0b97bb116ace
+bkotlin:S6310ê"Avoid hardcoded dispatchers.(ÏÃâ8î£íäş1J$0184d7da-be7c-4969-9290-b1625aa40800
+gkotlin:S6310¸"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿ8î£íäş1J$83d170db-43f3-4c65-845e-88c9c345871f
+‹kotlin:S6313é"EClasses extending "ViewModel" should not expose suspending functions.(ôÏÄí8ï£íäş1J$59213388-331b-4bdd-b095-80fe0a54f9a2
+ kotlin:S1186¯"ZAdd a nested comment explaining why this function is empty or complete the implementation.(İÂ‰Ô8û£íäş1J$7b3e9628-f0c5-466c-8246-93ef09e0adf4

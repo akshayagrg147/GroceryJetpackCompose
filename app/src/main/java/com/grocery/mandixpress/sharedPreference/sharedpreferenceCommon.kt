@@ -122,12 +122,12 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
         val gson = Gson()
         return gson.toJson(pincodeList)
     }
-    fun setMinimumDeliveryAmount(amount: String) {
-        return mPrefs.edit().putString(AppConstant.minimumAmountDelivery, amount).apply()
+    fun setMinimumDeliveryAmount(amount: Float) {
+        return mPrefs.edit().putFloat(AppConstant.minimumAmountDelivery, amount).apply()
 
     }
-    fun setDeliverySellersCharges(amount: String) {
-        return mPrefs.edit().putString(AppConstant.deliverySellersCharges, amount).apply()
+    fun setDeliverySellersCharges(amount: Float) {
+        return mPrefs.edit().putFloat(AppConstant.deliverySellersCharges, amount).apply()
 
     }
     fun setDeliveryContactNumber(phone: String) {
@@ -137,11 +137,11 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     fun getDeliveryContactNumber():String{
         return mPrefs.getString(AppConstant.deliveryContactNumber,"").toString()
     }
-    fun getMinimumDeliveryAmount():String{
-        return mPrefs.getString(AppConstant.minimumAmountDelivery,"0.00").toString()
+    fun getMinimumDeliveryAmount():Float{
+        return mPrefs.getFloat(AppConstant.minimumAmountDelivery,0.00f)
     }
-    fun getDeliverySellersCharges():String{
-        return mPrefs.getString(AppConstant.deliverySellersCharges,"0.00").toString()
+    fun getDeliverySellersCharges():Float{
+        return mPrefs.getFloat(AppConstant.deliverySellersCharges,0.00f)
     }
     fun getAvailablePinCode(): List<PinCodeStateModal> {
         val jsonPincodeList = mPrefs.getString(AppConstant.availablePinCode, "")

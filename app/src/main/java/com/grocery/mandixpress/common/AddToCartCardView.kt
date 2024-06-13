@@ -63,7 +63,7 @@ fun AddToCartCardView(
                  .fillMaxWidth()
                  .background(whiteColor)
          ) {
-             if (viewmodal.getSellersMinDeliveryCharge() != "0.00") {
+             if (viewmodal.getSellersMinDeliveryCharge() != 0.00f) {
                  Log.d("getSellersMinDeliveryCh","--"+viewmodal.getSellersMinDeliveryCharge())
                  var extraChargesShouldIncludeState = remember {
                      mutableStateOf(-1)
@@ -82,17 +82,19 @@ fun AddToCartCardView(
                  }
 
                  val textToShow = if (extraChargesShouldIncludeState.value==0) {
-                     val deliveryCharge = 30 + viewmodal.getSellersMinDeliveryCharge().toDouble()
+                     val deliveryCharge =   30 + viewmodal.getSellersMinDeliveryCharge()
                      String.format("%.2f", deliveryCharge)
+
                  }
                  else if (extraChargesShouldIncludeState.value==1)  {
-                     val deliveryCharge = viewmodal.getSellersMinDeliveryCharge().toDouble()
+                     val deliveryCharge =   viewmodal.getSellersMinDeliveryCharge()
                      String.format("%.2f", deliveryCharge)
+
                  }
                  else{
-                     ""
+                     0.00f
                  }
-if(textToShow.isNotEmpty())
+if(textToShow!=0.00f)
                  Row(modifier = Modifier) {
                      Image(
                          painter = painterResource(id = R.drawable.bike_delivery),
@@ -110,7 +112,7 @@ if(textToShow.isNotEmpty())
                          )
 
                          Text10_h2(
-                             text = textToShow,
+                             text = textToShow.toString().replace(",","."),
                              color = headingColor,
                              modifier = Modifier.padding(start = 10.dp)
                          )

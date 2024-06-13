@@ -1,0 +1,34 @@
+
+tkotlin:S1172ς".Remove this unused function parameter "price".(ΆΣΣι8―¥―δώ1J$0638bd4e-3ee5-44f1-ac53-219a13fbfcd2
+skotlin:S1172‚	"(Remove these unused function parameters.(€Ϊ«Ώÿÿÿÿÿ8±¥―δώ1J$180caa30-48e2-40fd-81b4-06f39909b7b4
+hkotlin:S125w"Remove this commented out code.(ω²γΤόÿÿÿÿ8¶¥―δώ1J$fe0cd24f-75ab-471e-b0fe-6cac0e2e2862
+dkotlin:S125"Remove this commented out code.(΄μΏ“8·¥―δώ1J$9a9c5de8-c718-40cb-bf6d-e7af705cfc49
+dkotlin:S125μ"Remove this commented out code.(Ω§κ8·¥―δώ1J$7004b478-2f7d-4a5a-bcbe-cdcf09f9e445
+ikotlin:S125 "Remove this commented out code.(»‹ώΜÿÿÿÿÿ8·¥―δώ1J$fb9dad27-cd2c-41f4-8a72-84fae1522d07
+ikotlin:S125ƒ"Remove this commented out code.(± Ρϊÿÿÿÿ8·¥―δώ1J$3254a7bf-a3bd-48a4-a800-51a418b0f4b2
+ikotlin:S125“"Remove this commented out code.(²‹¶όÿÿÿÿ8·¥―δώ1J$c6e6d439-7d51-404c-9a76-035877f06c12
+ikotlin:S125™"Remove this commented out code.(²‹¶όÿÿÿÿ8Έ¥―δώ1J$01b2065c-f246-433f-871e-babf976fa6db
+ikotlin:S125ξ"Remove this commented out code.(Ξρ®ψÿÿÿÿ8Έ¥―δώ1J$a891baa0-9e16-4959-a453-0f8d6bcb49fc
+ikotlin:S125‡	"Remove this commented out code.(ΟΰΦύÿÿÿÿ8Έ¥―δώ1J$1de61a8d-24ed-48d6-86b0-16e7e379b9b5
+ckotlin:S125ΐ	"Remove this commented out code.(Σz8Έ¥―δώ1J$7bd1cd94-4138-4d4b-b2cf-e9ef6d4b5783
+bkotlin:S6310Ò"Avoid hardcoded dispatchers.(Φ‚„σ8½¥―δώ1J$9b07febe-4e26-456f-a465-9cf297e73c4d
+bkotlin:S6310…"Avoid hardcoded dispatchers.(Φ‚„σ8½¥―δώ1J$6b8c3d54-1867-4f8b-82a3-569550e62331
+—kotlin:S6311Ò"QRemove this dispatcher. It is pointless when used with only suspending functions.(Φ‚„σ8¥ή›2J$ea00053e-b4d0-4263-923a-7b2a2e2a6979
+—kotlin:S6311…"QRemove this dispatcher. It is pointless when used with only suspending functions.(Φ‚„σ8¥ή›2J$fcd13b65-30d1-432f-b69b-d883d23f85ed
+rkotlin:S1481™"'Remove this unused "l3" local variable.(‘τ΄ώÿÿÿÿ8Π¥―δώ1J$203ea84b-796c-4fa3-9a79-222a1b8ebb8a
+rkotlin:S1481™"'Remove this unused "l2" local variable.(‘τ΄ώÿÿÿÿ8Π¥―δώ1J$1447d831-aeea-41e7-a731-9e05df66b9f9
+}kotlin:S1481†"2Remove this unused "searchProduct" local variable.(αΣ†­ψÿÿÿÿ8Π¥―δώ1J$8457bb58-fb62-481b-b4f5-20dcc0c79786
+_kotlin:S1128"Remove this unused import.(™ςζά8Υ¥―δώ1J$98e3d014-848a-4fcc-9b7f-264cc1405d54
+gkotlin:S1110©"!Remove these useless parentheses.(Ψγμε8Ϊ¥―δώ1J$45335713-806c-459b-866f-fc64353b0392
+ikotlin:S1874¦"#Deprecated code should not be used.(΄±ή8Ϊ¥―δώ1J$9995747d-e91b-4a6a-9fd1-97b148e99a30
+ikotlin:S1874©"#Deprecated code should not be used.(Ψγμε8Ϊ¥―δώ1J$8bf84e91-8a45-4b0f-8dd1-49f55f208356
+ikotlin:S1874¶"#Deprecated code should not be used.(χΚ“8Ϊ¥―δώ1J$cf2cef6a-d24c-4fc1-8dd1-8b12071484b8
+hkotlin:S1874ƒ"#Deprecated code should not be used.(²»’W8Ϊ¥―δώ1J$1fb41aa5-09c9-4fe8-884a-db7194f48228
+hkotlin:S1874„"#Deprecated code should not be used.(ώγ­T8Ϊ¥―δώ1J$84deeb7d-c831-4a1d-b246-3742c8b9c4b4
+ikotlin:S1874†"#Deprecated code should not be used.(°ζΜΠ8Ϊ¥―δώ1J$b7ae76fb-c3d7-4cd0-90f3-975f1e36347e
+kotlin:S3776H"SRefactor this method to reduce its Cognitive Complexity from 130 to the 15 allowed.(’ΧΎ΄8Ϋ¥―δώ1J$ad9e1a2c-5249-490a-8226-da562d97e192
+kotlin:S3776"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(ΠΊθΐ8Ϋ¥―δώ1J$3f01e1a2-e446-4e86-b24b-1853871a6d9a
+ykotlin:S1066‚".Merge this "if" statement with the nested one.(Ή­ωÿÿÿÿ8θ¥―δώ1J$990f92f8-01f8-4a77-b057-782d1576868c
+qkotlin:S6518„",Replace function call with indexed accessor.(ώγ­T8κ¥―δώ1J$291750b4-4c92-4fb5-9a7e-4191bdb1f2dd
+rkotlin:S6518†",Replace function call with indexed accessor.(°ζΜΠ8κ¥―δώ1J$2101a5c1-0ee7-4abc-9b6b-25ab4cb93c5d
+rkotlin:S6518©",Replace function call with indexed accessor.(Ψγμε8κ¥―δώ1J$d70b8115-4c58-4f3b-a129-f30f045d248d

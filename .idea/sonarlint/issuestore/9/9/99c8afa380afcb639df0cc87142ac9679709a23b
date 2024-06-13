@@ -1,0 +1,13 @@
+
+okotlin:S1172›"0Remove this unused function parameter "context".(ìçÄ–J$5ac302a0-8d0a-455d-bdc1-8be777f33f17
+wkotlin:S1172Ş"3Remove this unused function parameter "pagerState".(ƒšò‘úÿÿÿÿJ$249085bf-8133-45fa-b89a-d6d7962ff724
+]kotlin:S125Ñ"Remove this commented out code.(§ã†×J$7d462fe3-f857-4fe8-ae6a-0acf30d996d4
+[kotlin:S6310¼"Avoid hardcoded dispatchers.(Ö‚„óJ$71c67168-fd43-478b-8f65-5d8bbf59716d
+—kotlin:S6311¼"QRemove this dispatcher. It is pointless when used with only suspending functions.(Ö‚„ó8óİ›Œ2J$f9b39b52-4f72-4f3c-aa14-52f39f419db3
+nkotlin:S1481ˆ"/Remove this unused "indexValue" local variable.(€şÅÉJ$c0c145c7-ec26-48ab-a712-73deb9b11be0
+fkotlin:S1481±"'Remove this unused "l2" local variable.(ı¸Â˜J$f2078f6c-af5c-42d3-a301-fabb72df6b8b
+Xkotlin:S1128
+"Remove this unused import.(™òæÜJ$67d4a25a-667e-4eb1-b5cf-30a5289f7e31
+dkotlin:S11286"Remove this unused import.(”†°ìûÿÿÿÿ8†Ş›Œ2J$ed1d60f7-8576-4803-96ff-8c538b4b4715
+‘kotlin:S3776ı"RRefactor this method to reduce its Cognitive Complexity from 99 to the 15 allowed.(Ø¯Â°J$ad004b8f-70a5-46d5-a5f1-0443bf99eafa
+–kotlin:S3776³"RRefactor this method to reduce its Cognitive Complexity from 23 to the 15 allowed.(Š•Ä¡úÿÿÿÿJ$53db4cb8-6d57-44e5-89f9-13e15a6dd3de

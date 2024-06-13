@@ -275,7 +275,7 @@ fun Homescreen(
 
             }
             BodyDashboard(scroll, viewModal, navcontroller, lazyListState, context)
-            showLog("getSellersMinDeliveryCharge",viewModal.getSellersMinDeliveryCharge())
+            showLog("getSellersMinDeliveryCharge",viewModal.getSellersMinDeliveryCharge().toString())
 
             if (searchvisibility)
                 SearchBar() {

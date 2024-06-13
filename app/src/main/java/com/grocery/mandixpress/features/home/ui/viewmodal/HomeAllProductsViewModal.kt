@@ -430,7 +430,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
                     val sellerDetail: AdminAccessTable = dao.getSellerDetail(sellerId)?.first() ?: AdminAccessTable()
 
-                    sharedPreferences.setMinimumDeliveryAmount(sellerDetail.price ?:"0.00")
+                    sharedPreferences.setMinimumDeliveryAmount(sellerDetail.price?.toFloat() ?:0.00f)
                     data.lat=sellerDetail.latitude?.toDouble()
                     data.lng=sellerDetail.longitude?.toDouble()
                     roomrespo.insert(data)
@@ -453,7 +453,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
                         val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.get(0)?.sellerId)?.first() ?: AdminAccessTable()
 
 
-                        sharedPreferences.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"0.00")
+                        sharedPreferences.setMinimumDeliveryAmount(sellerPickMinDelivery.price?.toFloat()?:0.00f)
 
                         data.lat=sellerDetail.latitude?.toDouble()
                         data.lng=sellerDetail.longitude?.toDouble()
@@ -468,7 +468,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
         else if (intger >= 1) {
             val withHighestCartItemTotal=dao.getSellerWithHighestCartItemTotal()
             val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.get(0)?.sellerId)?.first() ?: AdminAccessTable()
-            sharedPreferences.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"0.00")
+            sharedPreferences.setMinimumDeliveryAmount(sellerPickMinDelivery.price?.toFloat()?:0.00f)
 
             roomrespo.updateCartItem(intger + 1, productIdNumber)
 
@@ -527,7 +527,7 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
         return R * c
     }
-    fun getSellersMinDeliveryCharge():String{
+    fun getSellersMinDeliveryCharge():Float{
         return sharedPreferences.getDeliverySellersCharges()
     }
     fun getDeliveryChargeBasesOnLatLng(dataincart:CartItems, callback: (Double) -> Unit) {
@@ -555,10 +555,10 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
             }
             val decimalRupees = String.format("%.2f", totalKm).replace(",", ".")
             val deliveryCharge = decimalRupees.toFloat() * 5
-            sharedPreferences.setDeliverySellersCharges(deliveryCharge.toString())
+            sharedPreferences.setDeliverySellersCharges(deliveryCharge)
             // Adjust minimum delivery amount
             val minimumDeliveryAmount = sharedPreferences.getMinimumDeliveryAmount().toFloat()
-            sharedPreferences.setMinimumDeliveryAmount((minimumDeliveryAmount + deliveryCharge).toString())
+            sharedPreferences.setMinimumDeliveryAmount((minimumDeliveryAmount + deliveryCharge))
 
             showLog("getDeliveryChargeB", " $totalKm ---${decimalRupees}---${deliveryCharge} ${sharedPreferences.getMinimumDeliveryAmount()}---$totalKm---${latLngList.size}---${sharedPreferences.getDeliverySellersCharges()}")
             roomrespo.insert(cartTableData)

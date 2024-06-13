@@ -221,7 +221,7 @@ if(codClicked.value)
                                         .weight(1f),
 
                                     )
-                                if(viewModal.getSellersMinDeliveryCharge()=="0.00") {
+                                if(viewModal.getSellersMinDeliveryCharge()==0.00f) {
                                     if(viewModal.getFreeDeliveryMinPrice()!=0.0) {
                                         Text12_with_strikethrough(
                                             text1 = if (viewModal.totalPriceState.value < viewModal.getFreeDeliveryMinPrice()
@@ -247,7 +247,7 @@ if(codClicked.value)
                             val minDeliveryCharge = viewModal.getSellersMinDeliveryCharge()
                             val freeDeliveryMinPrice = viewModal.getFreeDeliveryMinPrice().toDouble()
 
-                            val grandTotal = if (minDeliveryCharge == "0.00") {
+                            val grandTotal = if (minDeliveryCharge == 0.00f) {
                                 if (totalPriceState.value < freeDeliveryMinPrice) {
                                     "₹ ${String.format("%.2f", (30 + totalPriceState.value).toDouble())}"
                                 } else {

@@ -167,7 +167,7 @@ fun loginScreen(
                                         is ApiState.Failure -> {
                                             isDialog = false
                                             context.showMsg("something went wrong")
-                                            //context.showMsg(it.msg.toString())
+                                            context.showMsg(it.msg.toString())
                                         }
 
                                         ApiState.Loading -> {
@@ -210,7 +210,7 @@ fun loginScreen(
                                     is ApiState.Failure -> {
                                         isDialog = false
                                         context.showMsg("something went wrong")
-                                      //  context.showMsg(it.msg.toString())
+                                        context.showMsg(it.msg.toString())
                                     }
                                     ApiState.Loading -> {
                                         isDialog = true

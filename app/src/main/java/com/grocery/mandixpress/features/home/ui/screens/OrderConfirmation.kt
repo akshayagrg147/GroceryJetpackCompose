@@ -14,6 +14,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -40,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import coil.ImageLoader
 import coil.compose.rememberImagePainter
 import coil.decode.GifDecoder
@@ -97,7 +99,7 @@ fun OrderConfirmation(
         )
         val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
         showNotification(LocalContext.current, "Order Placed", "Thanku for shopping with us!")
-        Column(modifier = Modifier.fillMaxSize()) {
+
             TopAppBar(
                 modifier = Modifier
                     .background(
@@ -108,7 +110,12 @@ fun OrderConfirmation(
                     .fillMaxWidth(),
                 navigationIcon = {
                     IconButton(
-                        onClick = {},
+                        onClick = {
+                            navController.navigate(
+                                DashBoardNavRoute.Home.screen_route,
+                                // Use NavOptions to specify popUpTo
+                                NavOptions.Builder().setPopUpTo(navController.graph.startDestinationId, inclusive = false).build())
+                        },
                         modifier = Modifier
                             .padding(16.dp)
                             .size(24.dp)
@@ -124,374 +131,391 @@ fun OrderConfirmation(
                 backgroundColor = whiteColor,
                 elevation = 1.dp
             )
-            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                viewModal.deleteCartItems()
-              //  LottieAnimationComponent(animationFileName = "order.json")
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                        .border(1.dp, titleColor)
-                    ,
-                    shape = RoundedCornerShape(8.dp)
-                    ,
-                    elevation = 10.dp
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .background(whiteColor)
-                            .padding(20.dp)
-                            .clickable { }) {
 
+        LazyColumn {
 
-                        Box(modifier = Modifier.fillMaxWidth(), Alignment.Center) {
-                            Image(
-                                painter = rememberImagePainter(
-                                    imageLoader = imageLoader,
-                                    data = com.grocery.mandixpress.R.drawable.success,
-                                    builder = {
-                                    },
-                                ),
-                                alignment = Alignment.TopCenter,
-                                contentDescription = null,
-                                modifier = Modifier.size(60.dp)
-                            )
-                        }
-                        Text12_h1(
-                            text = "Order Placed!",
-                            modifier = Modifier
-                                .padding(top = 30.dp)
-                                .align(Alignment.CenterHorizontally)
-                        )
-                        Text12_body1(
-                            text = "Your will receive a confirmation email with order details",
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(vertical = 10.dp)
+            item {
+                Column(modifier = Modifier.fillMaxSize().padding(top=40.dp)) {
 
-                        )
-                        Row(
+                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                        viewModal.deleteCartItems()
+                        //  LottieAnimationComponent(animationFileName = "order.json")
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
-                        ) {Row(
-                            modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(20.dp)
+                                .border(1.dp, titleColor)
+                            ,
+                            shape = RoundedCornerShape(8.dp)
+                            ,
+                            elevation = 10.dp
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.orderid),
-                                contentDescription = "",
+                            Column(
                                 modifier = Modifier
-                                    .padding()
-                                    .size(30.dp)
-                                    .padding(start = 10.dp, end = 10.dp)
-                            )
-                            Text13_body1(
-                                text = "Order Id:",
-                                modifier = Modifier
-                                    .padding(top = 5.dp)
-                            )
-                        }
-                            Text12_body1(
-                                text = "${data.productResponse?.orderId}",
-                                modifier = Modifier
-                                    .padding(top = 5.dp)
-                            )
+                                    .background(whiteColor)
+                                    .padding(20.dp)
+                                    .clickable { }) {
 
-                        }
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                modifier = Modifier,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.money_svgrepo_com),
-                                    contentDescription = "",
+                                Box(modifier = Modifier.fillMaxWidth(), Alignment.Center) {
+                                    Image(
+                                        painter = rememberImagePainter(
+                                            imageLoader = imageLoader,
+                                            data = com.grocery.mandixpress.R.drawable.success,
+                                            builder = {
+                                            },
+                                        ),
+                                        alignment = Alignment.TopCenter,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(60.dp)
+                                    )
+                                }
+                                Text12_h1(
+                                    text = "Order Placed!",
                                     modifier = Modifier
-                                        .padding()
-                                        .size(30.dp)
-                                        .padding(start = 10.dp, end = 10.dp)
+                                        .padding(top = 30.dp)
+                                        .align(Alignment.CenterHorizontally)
                                 )
+                                Text12_body1(
+                                    text = "Your will receive a confirmation email with order details",
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .padding(vertical = 10.dp)
+
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                                ) {Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.orderid),
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .padding()
+                                            .size(30.dp)
+                                            .padding(start = 10.dp, end = 10.dp)
+                                    )
+                                    Text13_body1(
+                                        text = "Order Id:",
+                                        modifier = Modifier
+                                            .padding(top = 5.dp)
+                                    )
+                                }
+                                    Text12_body1(
+                                        text = "${data.productResponse?.orderId}",
+                                        modifier = Modifier
+                                            .padding(top = 5.dp)
+                                    )
+
+                                }
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                                ) {
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.money_svgrepo_com),
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .padding()
+                                                .size(30.dp)
+                                                .padding(start = 10.dp, end = 10.dp)
+                                        )
+                                        Text13_body1(
+                                            text = "Order value",
+                                            modifier = Modifier
+                                                .padding(vertical = 5.dp)
+                                        )
+                                    }
+                                    Text12_body1(
+                                        text = " ₹ ${data.productResponse?.totalOrderValue}",
+                                        modifier = Modifier
+                                            .padding(vertical = 5.dp)
+                                    )
+
+                                }
+
+
+                            }
+                        }
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp)
+                                .border(1.dp, titleColor),
+                            shape = RoundedCornerShape(12.dp),
+                            elevation = 10.dp
+                        ) {
+                            Column (modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                                verticalArrangement = Arrangement.Center
+
+                            ){
+                                Row {
+
+
+                                    Pulsating {
+                                        Surface(
+                                            color = titleColor,
+                                            shape = CircleShape,
+                                            modifier = Modifier.size(10.dp),
+                                            content = {}
+                                        )
+                                    }
+                                    Row(modifier = Modifier.padding(start = 10.dp)){
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.order_icon), // Replace with your icon resource
+                                            contentDescription = "Location Icon",
+                                            tint = Color.Unspecified,
+
+                                            modifier = Modifier.size(24.dp)
+                                        )
+
+                                        Column( modifier = Modifier.padding(start = 5.dp))  {
+                                            Text12_h1(
+                                                text = "Ordered",
+                                                color = headingColor
+                                            )
+                                            Text12_h1(
+                                                text = "Packing your order",
+                                                color = bodyTextColor
+                                            )
+                                        }
+                                    }
+
+                                }
+                                Canvas(
+                                    Modifier
+                                        .padding(start = 5.dp)
+                                        .height(60.dp)
+                                ) {
+
+                                    drawLine(
+                                        color = seallcolor,
+                                        start = Offset(0f, 0f),
+                                        end = Offset(0f, 120f),
+                                        strokeWidth = 2.dp.toPx(),
+                                        pathEffect = pathEffect
+                                    )
+                                }
+
+                                Row(modifier = Modifier.padding(top = 5.dp)) {
+
+
+                                    PulsatingGray()
+                                    Row(modifier = Modifier.padding(start = 10.dp)) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.bike_delivery), // Replace with your icon resource
+                                            contentDescription = "Location Icon",
+                                            tint = Color.Unspecified,
+
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Column(modifier = Modifier.padding(start = 5.dp)) {
+                                            Text12_h1(
+                                                text = "On the way",
+                                                color = headingColor,
+                                            )
+                                            Text12_h1(
+                                                text = "Order is picked by delivery agent",
+                                                color = bodyTextColor
+                                            )
+                                        }
+                                    }
+                                }
+                                Canvas(
+                                    Modifier
+                                        .padding(start = 5.dp)
+                                        .height(60.dp)
+                                ) {
+
+                                    drawLine(
+                                        color = greyLightColor,
+                                        start = Offset(0f, 0f),
+                                        end = Offset(0f, 120f),
+                                        strokeWidth = 2.dp.toPx(),
+                                        pathEffect = pathEffect
+                                    )
+                                }
+                                Row(modifier = Modifier.padding(top = 5.dp) ) {
+
+
+                                    PulsatingGray()
+                                    Row(modifier = Modifier.padding(start = 10.dp)) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
+                                            contentDescription = "Location Icon",
+                                            tint = Color.Unspecified,
+
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Column(modifier = Modifier.padding(start = 5.dp)) {
+                                            Text12_h1(
+                                                text = "Delivered",
+                                                color = headingColor,
+
+
+                                                )
+                                            Text12_h1(
+                                                text = "Order is Delivered",
+                                                color = bodyTextColor
+
+
+                                            )
+                                        }
+                                    }
+
+                                }
+
+                            }
+                        }
+
+
+                        Box(
+                            modifier = Modifier
+                                .padding(15.dp)
+                                .fillMaxWidth()
+                                .background(whiteColor)
+                                .drawBehind {
+                                    drawRoundRect(color = headingColor, style = stroke)
+                                },
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .background(whiteColor)
+                                    .padding(20.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+
+                            ) {
                                 Text13_body1(
-                                    text = "Order value",
+                                    text = "Delivery by today by 10:00 pm",
                                     modifier = Modifier
                                         .padding(vertical = 5.dp)
                                 )
-                            }
-                            Text12_body1(
-                                text = " ₹ ${data.productResponse?.totalOrderValue}",
-                                modifier = Modifier
-                                    .padding(vertical = 5.dp)
-                            )
-
-                        }
 
 
-                    }
-                }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                        .border(1.dp, titleColor),
-                    shape = RoundedCornerShape(8.dp),
-                    elevation = 10.dp
-                ) {
-                    Column (modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                        verticalArrangement = Arrangement.Center
-
-                        ){
-                        Row {
-
-
-                            Pulsating {
-                                Surface(
-                                    color = titleColor,
-                                    shape = CircleShape,
-                                    modifier = Modifier.size(10.dp),
-                                    content = {}
-                                )
-                            }
-                            Row(modifier = Modifier.padding(start = 10.dp)){
-                                Icon(
-                                    painter = painterResource(id = R.drawable.order_icon), // Replace with your icon resource
-                                    contentDescription = "Location Icon",
-                                    tint = Color.Unspecified,
-
-                                    modifier = Modifier.size(24.dp)
-                                )
-
-                                Column( modifier = Modifier.padding(start = 5.dp))  {
-                                    Text12_h1(
-                                        text = "Ordered",
-                                        color = headingColor
-                                    )
-                                    Text12_h1(
-                                        text = "Packing your order",
-                                        color = bodyTextColor
-                                    )
-                                }
-                            }
-
-                        }
-                        Canvas(Modifier.padding(start = 8.dp).height(60.dp)
-                           ) {
-
-                            drawLine(
-                                color = seallcolor,
-                                start = Offset(0f, 0f),
-                                end = Offset(0f, 120f),
-                                strokeWidth = 2.dp.toPx(),
-                                pathEffect = pathEffect
-                            )
-                        }
-
-                        Row(modifier = Modifier.padding(top = 5.dp)) {
-
-
-                            PulsatingGray()
-                            Row(modifier = Modifier.padding(start = 10.dp)) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.bike_delivery), // Replace with your icon resource
-                                    contentDescription = "Location Icon",
-                                    tint = Color.Unspecified,
-
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Column(modifier = Modifier.padding(start = 5.dp)) {
-                                    Text12_h1(
-                                        text = "On the way",
-                                        color = headingColor,
-                                    )
-                                    Text12_h1(
-                                        text = "Order is picked by delivery agent",
-                                        color = bodyTextColor
-                                    )
-                                }
-                            }
-                        }
-                        Canvas(Modifier.padding(start = 8.dp).height(60.dp)
-                        ) {
-
-                            drawLine(
-                                color = greyLightColor,
-                                start = Offset(0f, 0f),
-                                end = Offset(0f, 120f),
-                                strokeWidth = 2.dp.toPx(),
-                                pathEffect = pathEffect
-                            )
-                        }
-                        Row(modifier = Modifier.padding(top = 5.dp) ) {
-
-
-                            PulsatingGray()
-                            Row(modifier = Modifier.padding(start = 10.dp)) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
-                                    contentDescription = "Location Icon",
-                                    tint = Color.Unspecified,
-
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Column(modifier = Modifier.padding(start = 5.dp)) {
-                                    Text12_h1(
-                                        text = "Delivered",
-                                        color = headingColor,
-
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                                ) {
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.date),
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .padding()
+                                                .size(30.dp)
+                                                .padding(start = 10.dp, end = 10.dp)
+                                        )
+                                        Text13_body1(
+                                            text = "Order Date:",
+                                            modifier = Modifier
 
                                         )
-                                    Text12_h1(
-                                        text = "Order is Delivered",
-                                        color = bodyTextColor
-
-
+                                    }
+                                    Text12_body1(
+                                        text = "${data.productResponse?.createdDate}",
+                                        modifier = Modifier
+                                            .padding(vertical = 5.dp)
                                     )
+
                                 }
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp),
+                                    Arrangement.SpaceBetween
+                                ) {
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.bike_delivery),
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .padding()
+                                                .size(30.dp)
+                                                .padding(start = 10.dp, end = 10.dp)
+                                        )
+                                        Text13_body1(
+                                            text = "Contact Number:",
+                                            modifier = Modifier
+                                                .padding(vertical = 5.dp)
+                                        )
+                                    }
+                                    Text12_body1(
+                                        text = "${data.productResponse?.mobilenumber}",
+                                        modifier = Modifier
+                                            .padding(vertical = 5.dp)
+                                    )
+
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp), Arrangement.SpaceBetween
+                                ) {
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.address),
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .padding()
+                                                .size(30.dp)
+                                                .padding(start = 10.dp, end = 10.dp)
+                                        )
+                                        Text13_body1(
+                                            text = "Deliver Address:",
+                                            modifier = Modifier
+                                                .padding(vertical = 5.dp)
+                                        )
+                                    }
+                                    Text12_bodyOneLine(
+                                        text = "${data.productResponse?.address}".replace("\n"," ").take(10),
+                                        modifier = Modifier
+                                            .padding(top = 5.dp),
+
+                                        )
+
+                                }
+
+
+
                             }
-
                         }
-
-                    }
-                }
-
-
-                Box(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .fillMaxWidth()
-                        .background(whiteColor)
-                        .drawBehind {
-                            drawRoundRect(color = headingColor, style = stroke)
-                        },
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .background(whiteColor)
-                            .padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-
-                    ) {
-                        Text13_body1(
-                            text = "Delivery by today by 10:00 pm",
-                            modifier = Modifier
-                                .padding(vertical = 5.dp)
-                        )
-
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                modifier = Modifier,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.date),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .padding()
-                                        .size(30.dp)
-                                        .padding(start = 10.dp, end = 10.dp)
-                                )
-                                Text13_body1(
-                                    text = "Order Date:",
-                                    modifier = Modifier
-
-                                )
-                            }
-                            Text12_body1(
-                                text = "${data.productResponse?.createdDate}",
-                                modifier = Modifier
-                                    .padding(vertical = 5.dp)
-                            )
-
-                        }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp),
-                            Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                modifier = Modifier,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.bike_delivery),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .padding()
-                                        .size(30.dp)
-                                        .padding(start = 10.dp, end = 10.dp)
-                                )
-                                Text13_body1(
-                                    text = "Contact Number:",
-                                    modifier = Modifier
-                                        .padding(vertical = 5.dp)
-                                )
-                            }
-                            Text12_body1(
-                                text = "${data.productResponse?.mobilenumber}",
-                                modifier = Modifier
-                                    .padding(vertical = 5.dp)
-                            )
-
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp), Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                modifier = Modifier,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.address),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .padding()
-                                        .size(30.dp)
-                                        .padding(start = 10.dp, end = 10.dp)
-                                )
-                                Text13_body1(
-                                    text = "Deliver Address:",
-                                    modifier = Modifier
-                                        .padding(vertical = 5.dp)
-                                )
-                            }
-                            Text12_bodyOneLine(
-                                text = "${data.productResponse?.address}".replace("\n"," ").take(10),
-                                modifier = Modifier
-                                    .padding(top = 5.dp),
-
-                            )
-
-                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Box(modifier  = Modifier
+                            .height(50.dp)
+                            .padding(horizontal = 15.dp)){
+                            AppButtonComponent(text = "Go to Orders", background = lightBlueColor) {
+                                navController.navigate(DashBoardNavRoute.AllOrderHistory.screen_route) {
+                                    popUpTo(DashBoardNavRoute.Home.screen_route) {
+                                        inclusive = true
+                                    }
+                                }
 
 
 
-                    }
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                Box(modifier  = Modifier
-                    .height(50.dp)
-                    .padding(horizontal = 10.dp)){
-                    AppButtonComponent(text = "Go to Orders", background = lightBlueColor) {
-                        navController.navigate(DashBoardNavRoute.AllOrderHistory.screen_route) {
-                            popUpTo(DashBoardNavRoute.Home.screen_route) {
-                                inclusive = true
                             }
                         }
 
@@ -499,11 +523,9 @@ fun OrderConfirmation(
 
                     }
                 }
-
-
-
             }
         }
+
     } else if (data.statusCode == 401)
         Column(modifier = Modifier.fillMaxSize()) {
             Column(

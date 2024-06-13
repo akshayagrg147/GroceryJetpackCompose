@@ -87,7 +87,7 @@ class ProductByIdViewModal @Inject constructor(
             val sellerDetail: AdminAccessTable = dao.getSellerDetail(distinctSellerNames[0])?.first() ?: AdminAccessTable()
 
             if(distinctSellerNames.size>1){
-                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price.toString())
+                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price?.toFloat()?:0.00f)
                 for (value in cartItems) {
                     latLngList.add(Pair(value.lat ?: 0.00, value.lng ?: 0.00))
                 }
@@ -104,12 +104,12 @@ class ProductByIdViewModal @Inject constructor(
                     )
                 }
                 val decimalRupees = totalKm.toInt()
-                sharedpreferenceCommon.setMinimumDeliveryAmount((sharedpreferenceCommon.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)).toString())
+                sharedpreferenceCommon.setMinimumDeliveryAmount((sharedpreferenceCommon.getMinimumDeliveryAmount().toFloat()+(decimalRupees.toFloat()*5)))
 
             }
             else{
-                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price?:"0.00").toString()
-                sharedpreferenceCommon.setDeliverySellersCharges("0.00")
+                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price?.toFloat()?:0.00f).toString()
+                sharedpreferenceCommon.setDeliverySellersCharges(0.00f)
             }
 
         }
@@ -141,7 +141,7 @@ class ProductByIdViewModal @Inject constructor(
         adminAccessTableData=accessTable
         cartTableData=cartItem
     }
-    fun getSellersMinDeliveryCharge():String{
+    fun getSellersMinDeliveryCharge():Float{
         return sharedpreferenceCommon.getDeliverySellersCharges()
     }
     fun insertCartItem(value: ProductByIdResponseModal,passSellerDetail:(AdminAccessTable,CartItems)->Unit) = viewModelScope.launch(Dispatchers.IO) {
@@ -163,7 +163,7 @@ class ProductByIdViewModal @Inject constructor(
                     dao.getSellerDetail(value.homeproducts?.sellerId)?.first()
                         ?: AdminAccessTable()
 
-                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price ?:"0.00" )
+                sharedpreferenceCommon.setMinimumDeliveryAmount(sellerDetail.price?.toFloat() ?:0.00f )
                 data.lat=sellerDetail.latitude?.toDouble()
                 data.lng=sellerDetail.longitude?.toDouble()
 
@@ -187,7 +187,7 @@ class ProductByIdViewModal @Inject constructor(
                     val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.get(0)?.sellerId)?.first() ?: AdminAccessTable()
 
 
-                    sharedpreferenceCommon.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"0.00")
+                    sharedpreferenceCommon.setMinimumDeliveryAmount(sellerPickMinDelivery.price?.toFloat()?:0.00f)
 
                     data.lat=sellerDetail.latitude?.toDouble()
                     data.lng=sellerDetail.longitude?.toDouble()
@@ -201,7 +201,7 @@ class ProductByIdViewModal @Inject constructor(
         } else if (intger >= 1) {
             val withHighestCartItemTotal=dao.getSellerWithHighestCartItemTotal()
             val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail( withHighestCartItemTotal.get(0)?.sellerId)?.first() ?: AdminAccessTable()
-            sharedpreferenceCommon.setMinimumDeliveryAmount(sellerPickMinDelivery.price?:"0.00")
+            sharedpreferenceCommon.setMinimumDeliveryAmount(sellerPickMinDelivery.price?.toFloat()?:0.00f)
 
             repo.updateCartItem(intger + 1, value.homeproducts?.productId?:"")
 
@@ -347,10 +347,10 @@ class ProductByIdViewModal @Inject constructor(
             }
             val decimalRupees = String.format("%.2f", totalKm)
             val deliveryCharge = decimalRupees.toFloat() * 5
-            sharedpreferenceCommon.setDeliverySellersCharges(deliveryCharge.toString())
+            sharedpreferenceCommon.setDeliverySellersCharges(deliveryCharge)
             // Adjust minimum delivery amount
             val minimumDeliveryAmount = sharedpreferenceCommon.getMinimumDeliveryAmount().toFloat()
-            sharedpreferenceCommon.setMinimumDeliveryAmount((minimumDeliveryAmount + deliveryCharge).toString())
+            sharedpreferenceCommon.setMinimumDeliveryAmount((minimumDeliveryAmount + deliveryCharge))
 
             showLog("getDeliveryChargeB", " $totalKm ---${decimalRupees}---${deliveryCharge} ${sharedpreferenceCommon.getMinimumDeliveryAmount()}---$totalKm---${latLngList.size}---${sharedpreferenceCommon.getDeliverySellersCharges()}")
             repo.insert(cartTableData)

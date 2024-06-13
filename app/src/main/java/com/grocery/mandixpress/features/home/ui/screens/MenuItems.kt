@@ -178,7 +178,7 @@ fun cardViewAddtoCart(
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
-            if(viewmodal.getSellersMinDeliveryCharge()!="0.00") {
+            if(viewmodal.getSellersMinDeliveryCharge()!=0.00f) {
                 Log.d("getSellersMinDeliveryCh","--"+viewmodal.getSellersMinDeliveryCharge())
                 var extraChargesShouldIncludeState = remember {
                     mutableStateOf(-1)
@@ -207,9 +207,9 @@ fun cardViewAddtoCart(
                     String.format("%.2f", deliveryCharge)
                 }
                 else{
-                    ""
+                    0.00f
                 }
-                if(textToShow.isNotEmpty())
+                if(textToShow!=0.00f)
                     Row(modifier = Modifier) {
                         Image(
                             painter = painterResource(id = R.drawable.bike_delivery),
@@ -227,7 +227,7 @@ fun cardViewAddtoCart(
                             )
 
                             Text10_h2(
-                                text = textToShow,
+                                text = textToShow.toString().replace(",","."),
                                 color = headingColor,
                                 modifier = Modifier.padding(start = 10.dp)
                             )

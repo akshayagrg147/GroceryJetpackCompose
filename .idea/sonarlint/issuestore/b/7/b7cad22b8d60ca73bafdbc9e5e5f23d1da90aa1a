@@ -1,6 +1,6 @@
 
-ekotlin:S117"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¹ÕúÚ
-ekotlin:S117'"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ïÄ¤ä
-7kotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿ
-pkotlin:S101"YRename class "sharedpreferenceCommon" to match the regular expression ^[A-Z][a-zA-Z0-9]*$(µð¶ë
-<kotlin:S6524s"Make this collection immutable.(›×Èÿûÿÿÿÿ
+‹kotlin:S117"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¹ÕúÚJ$b4dfd71d-2e4a-4a67-850e-b98872f632cf
+‹kotlin:S117'"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(ïÄ¤äJ$097dca53-62e9-4146-b396-e418d29e7436
+]kotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿJ$7cda272d-a437-43ae-8d2d-44ab1478f113
+–kotlin:S101"YRename class "sharedpreferenceCommon" to match the regular expression ^[A-Z][a-zA-Z0-9]*$(µð¶ëJ$b7dc0f84-df25-43bc-9cca-2a9dab68ecae
+bkotlin:S6524s"Make this collection immutable.(›×ÈÿûÿÿÿÿJ$ffe0622c-a69e-47e3-90da-e7f83649c0c3

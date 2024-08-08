@@ -2,6 +2,7 @@ package com.grocery.mandixpress.features.home.ui.screens
 
 import androidx.compose.foundation.Canvas
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -22,6 +23,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -100,37 +102,55 @@ fun OrderConfirmation(
         val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
         showNotification(LocalContext.current, "Order Placed", "Thanku for shopping with us!")
 
-            TopAppBar(
-                modifier = Modifier
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
-                        )
+        TopAppBar(
+            modifier = Modifier
+                .background(
+                    brush = Brush.horizontalGradient(
+                        listOf(Color(0xFFFFFFFF), Color(0xFFFFFFFF))
                     )
-                    .fillMaxWidth(),
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
+                )
+                .fillMaxWidth().clickable{
+                    navController.navigate(
+                        DashBoardNavRoute.Home.screen_route,
+                        NavOptions.Builder()
+                            .setPopUpTo(navController.graph.startDestinationId, inclusive = false)
+                            .build()
+                    )
+
+                },
+            navigationIcon = {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .size(24.dp)
+                        .clickable {
                             navController.navigate(
                                 DashBoardNavRoute.Home.screen_route,
-                                // Use NavOptions to specify popUpTo
-                                NavOptions.Builder().setPopUpTo(navController.graph.startDestinationId, inclusive = false).build())
-                        },
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .size(24.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "",
-                            tint = Color.Black
-                        )
-                    }
-                },
-                title = { Text14_h2("Order Placed", color = Color.Black) },
-                backgroundColor = whiteColor,
-                elevation = 1.dp
-            )
+                                NavOptions.Builder()
+                                    .setPopUpTo(navController.graph.startDestinationId, inclusive = false)
+                                    .build()
+                            )
+
+                        }
+                )
+            },
+            title = { Text("Order Placed", color = Color.Black, modifier = Modifier.clickable{
+                Log.d("TopAppBar", "Back button clicked")
+                navController.navigate(
+                    DashBoardNavRoute.Home.screen_route,
+                    NavOptions.Builder()
+                        .setPopUpTo(navController.graph.startDestinationId, inclusive = false)
+                        .build()
+                )
+
+            }) },
+            backgroundColor = Color.White,
+            elevation = 1.dp
+        )
+
 
         LazyColumn {
 
@@ -177,7 +197,7 @@ fun OrderConfirmation(
                                         .align(Alignment.CenterHorizontally)
                                 )
                                 Text12_body1(
-                                    text = "Your will receive a confirmation email with order details",
+                                    text = "You will receive a confirmation email with order details",
                                     modifier = Modifier
                                         .align(Alignment.CenterHorizontally)
                                         .padding(vertical = 10.dp)

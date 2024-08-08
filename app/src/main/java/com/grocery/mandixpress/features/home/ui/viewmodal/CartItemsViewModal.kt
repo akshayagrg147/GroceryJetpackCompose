@@ -79,8 +79,12 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
     var createOrderIdState = createOrderIdMS.asStateFlow()
         private set
 
+    private val firsSellerLatLng: MutableState<Pair<Double,Double>> = mutableStateOf(Pair(0.00,0.00))
+    val firsSellerLatLngValue: MutableState<Pair<Double,Double>> = firsSellerLatLng
+
     init {
         getAllCartAddressItems()
+        getFirstItemCartLatLng()
         callingItemsCollectionsId(emitProductId)
     }
 
@@ -91,6 +95,10 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
 
     fun getFreeDeliveryMinPrice(): Double {
         return sharedpreferenceCommon.getMinimumDeliveryAmount().toDouble()
+    }
+    fun getSvedLatLng():Pair<String?,String?>{
+        return sharedpreferenceCommon.getLatLng()
+
     }
 
     fun getAllAddressItems() = viewModelScope.launch {
@@ -108,6 +116,7 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
 
     private fun getAllCartAddressItems() = viewModelScope.launch {
         repo.getCartItems().catch { e ->  showLog("main", "Exception: ${e.message} ") }.collect {
+            if(it.isNotEmpty())
             allCartItems.value = it
         }
 
@@ -131,8 +140,18 @@ var listOfAllItems= mutableListOf<ItemsCollectionsResponse.SubItems>()
 
 
     }
+    private fun getFirstItemCartLatLng() = viewModelScope.launch {
 
-    private fun getTotalProductItemsPrice() = viewModelScope.launch {
+        repo.getCartItems().catch { e -> showLog("main", "Exception: ${e.message} ") }
+            .collect {
+                if(it.isNotEmpty())
+                firsSellerLatLng.value = Pair(it[0].lat ?: 0.00, it[0].lng ?: 0.00,)
+            }
+    }
+
+
+
+        private fun getTotalProductItemsPrice() = viewModelScope.launch {
         repo.getTotalProductItemsPrice()?.catch { e -> showLog("main", "Exception: ${e.message} ") }
             ?.collect {
                 totalPrice.value = it ?: 0

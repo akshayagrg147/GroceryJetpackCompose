@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -86,7 +88,7 @@ import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun Homescreen(
     navcontroller: NavHostController, sharedpreferenceCommon: sharedpreferenceCommon,
@@ -97,6 +99,7 @@ fun Homescreen(
     val mFusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context!!)
     var requestLocationUpdate by remember { mutableStateOf(true) }
+    var bottomdismiss by remember { mutableStateOf(false) }
     val scroll: ScrollState = rememberScrollState(0)
     val placesClient: PlacesClient = Places.createClient(LocalContext.current)
 
@@ -107,6 +110,9 @@ fun Homescreen(
         )
     val scope = rememberCoroutineScope()
     val address = remember { mutableStateOf("") }
+    if(bottomdismiss){
+        LocalSoftwareKeyboardController.current?.hide()
+    }
 
 
     val searchvisibility by remember { mutableStateOf(false) }
@@ -128,6 +134,7 @@ fun Homescreen(
                             .clickable {
                                 scope.launch {
                                     bottomSheetState.hide()
+                                    bottomdismiss=true
                                 }
 
                             }, // Adjust the size as needed
@@ -270,6 +277,7 @@ fun Homescreen(
             HeaderDeliveryTime(viewModal, navcontroller, lazyListState) {
                 coroutineScope.launch {
                     bottomSheetState.show()
+                    bottomdismiss=false
 
                 }
 
@@ -1901,6 +1909,7 @@ private fun BackPressSample() {
         ExitConfirmationDialog(
             showDialog = showDialog,
             onDismiss = {
+
                 showDialog = false
                 // Handle dialog dismiss if needed
             },

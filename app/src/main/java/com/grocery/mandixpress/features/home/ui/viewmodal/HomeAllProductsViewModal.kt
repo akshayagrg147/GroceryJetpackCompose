@@ -119,6 +119,8 @@ class HomeAllProductsViewModal @Inject constructor(
     val list: State<List<AddressItems>> = addresslist
 
     private val totalcount: MutableState<Int> = mutableStateOf(0)
+    private val firsSellerLatLng: MutableState<Pair<Double,Double>> = mutableStateOf(Pair(0.00,0.00))
+    val firsSellerLatLngValue: MutableState<Pair<Double,Double>> = firsSellerLatLng
     val getitemcountState: MutableState<Int> = totalcount
     private val totalprice: MutableState<Int> = mutableStateOf(0)
     val getitempriceState: MutableState<Int> = totalprice
@@ -154,6 +156,7 @@ class HomeAllProductsViewModal @Inject constructor(
         registerFcmToken()
         getItemCount()
         getItemPrice()
+        getFirstItemCartLatLng()
 
 
     }
@@ -394,6 +397,14 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
     }
 
+    private fun getFirstItemCartLatLng() = viewModelScope.launch {
+        roomrespo.getCartItems().catch { e ->  showLog("main", "Exception: ${e.message} ") }.collect {
+            if(it.isNotEmpty())
+            firsSellerLatLng.value = Pair(it[0].lat?:0.00,it[0].lng?:0.00,)
+        }
+
+
+    }
     fun getItemPrice() = viewModelScope.launch {
         roomrespo.getTotalProductItemsPrice()
             ?.catch { e ->   showLog("dmdndnd", "Exception: ${e.message} ") }?.collect {
@@ -402,6 +413,10 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
 
 
             }
+    }
+    fun getSvedLatLng():Pair<String?,String?>{
+        return sharedPreferences.getLatLng()
+
     }
 
     fun insertCartItem(
@@ -481,9 +496,10 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
             val lsItems: ArrayList<CartItemPriceBySeller> = ArrayList()
             val resultList = dao.getSellerWithHighestCartItemTotal()
             Log.d("resultsize123", resultList.toString())
+
             resultList.forEach { seller ->
                 val sellerPickMinDelivery: AdminAccessTable = dao.getSellerDetail(seller?.sellerId)?.first() ?: AdminAccessTable()
-                lsItems.add(CartItemPriceBySeller(seller?.sellerId, seller?.totalItemPrice, sellerPickMinDelivery.price?.toInt()))
+                lsItems.add(CartItemPriceBySeller(seller?.sellerId, seller?.totalItemPrice, sellerPickMinDelivery.price?.toInt(), sellerLat = sellerPickMinDelivery.latitude?.toDouble(), sellerLng = sellerPickMinDelivery.longitude?.toDouble(), customerLat =  sharedPreferences.getLatLng().first?.toDouble(), customerLng =  sharedPreferences.getLatLng().second?.toDouble()))
             }
             lsItems
         }

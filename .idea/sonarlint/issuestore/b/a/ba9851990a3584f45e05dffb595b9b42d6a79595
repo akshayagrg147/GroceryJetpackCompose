@@ -1,18 +1,18 @@
 
-]kotlin:S125"Remove this commented out code.(¸ÿÎíJ$7b9cc1bd-1014-4838-a0ec-c754cb39279d
-bkotlin:S125“"Remove this commented out code.(¡Ïï’şÿÿÿÿJ$138fba11-08b6-4386-9c3a-6b6b3c43fcc5
-]kotlin:S125Ğ"Remove this commented out code.(—Ëò—J$1ad637a2-5193-406d-a55a-c6ea15842a57
-kotlin:S117W"NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(‘’ÿÂıÿÿÿÿJ$25f146e4-35ae-4b9d-a553-b135984a315e
-–kotlin:S117³"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¾¦‡üÿÿÿÿJ$91f8cb2a-8a75-4fc7-ad6c-4e48d2193f05
-`kotlin:S6310¥"Avoid hardcoded dispatchers.(š’Ò‘úÿÿÿÿJ$eb786963-37e1-4a48-9593-17e8ce45a74f
-`kotlin:S6310Á"Avoid hardcoded dispatchers.(š’Ò‘úÿÿÿÿJ$fe930933-8131-4c6b-bdb1-aeb097e2a457
-[kotlin:S6310ı"Avoid hardcoded dispatchers.(’šøJ$c74d4cec-cbdc-4a47-8f98-ee7da8f878c5
-[kotlin:S6310ğ"Avoid hardcoded dispatchers.(ÏÃâJ$7d59cf69-279e-40a6-87ea-275ec1ef3405
-`kotlin:S6310±"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿJ$0a4f16f7-d8a5-4f20-88bd-7fb8696fb60b
-„kotlin:S6313ï"EClasses extending "ViewModel" should not expose suspending functions.(ôÏÄíJ$6ad17c9d-77d6-4f62-b8d9-512251e54232
-lkotlin:S108Ò")Either remove or fill this block of code.(ÑòìÀøÿÿÿÿJ$aa4d80ab-4865-4d33-9279-28b144ea601a
-lkotlin:S108œ")Either remove or fill this block of code.(±ß–ûÿÿÿÿJ$7b7043e6-020d-4aad-af69-2901515d0c08
-ukotlin:S1481c"2Remove this unused "customAddress" local variable.(ËÏ™‰ùÿÿÿÿJ$990be6db-f3ba-4c35-8992-44f104093d0a
-]kotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿJ$1366e1c0-f096-48c1-abeb-99015aa016fa
-“kotlin:S101ú"PRename class "createOrderId" to match the regular expression ^[A-Z][a-zA-Z0-9]*$(ëìÄÔûÿÿÿÿJ$4c4526d4-5df0-425a-9c6a-d83d80231bd6
-¢kotlin:S101û"_Rename class "dataFetchBasedOnMainCategory" to match the regular expression ^[A-Z][a-zA-Z0-9]*$(üÛêäÿÿÿÿÿJ$6af0c8ae-6197-410e-ad9f-fb4672787b27
+dkotlin:S125£"Remove this commented out code.(¸ÿÎí8ÓÒ™‚‚2J$8a36ccca-3a53-47a4-af6d-ef199e097979
+ikotlin:S125¦"Remove this commented out code.(¡Ïï’şÿÿÿÿ8ÓÒ™‚‚2J$e96ab738-28b4-4c52-aac8-1e1f32fb8a3b
+dkotlin:S125ã"Remove this commented out code.(—Ëò—8ÓÒ™‚‚2J$1cb5b22e-5354-48c2-8c59-9a81bf314c0e
+—kotlin:S117["NRename this parameter to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(‘’ÿÂıÿÿÿÿ8ÖÒ™‚‚2J$24efda78-d453-4aec-9ccb-28b7d2725c67
+kotlin:S117Æ"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¾¦‡üÿÿÿÿ8×Ò™‚‚2J$0bf9c281-0fa1-487f-9152-82d25b13b48a
+gkotlin:S6310¸"Avoid hardcoded dispatchers.(š’Ò‘úÿÿÿÿ8×Ò™‚‚2J$d2c55f60-a05c-41f9-957f-a514632df46e
+Akotlin:S6310Ô"Avoid hardcoded dispatchers.(š’Ò‘úÿÿÿÿ8¥˜ËıŠ2
+<kotlin:S6310"Avoid hardcoded dispatchers.(’šø8¥˜ËıŠ2
+<kotlin:S6310ƒ"Avoid hardcoded dispatchers.(ÏÃâ8¥˜ËıŠ2
+Akotlin:S6310Ä"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿ8¦˜ËıŠ2
+ekotlin:S6313‚"EClasses extending "ViewModel" should not expose suspending functions.(ôÏÄí8¨˜ËıŠ2
+skotlin:S108å")Either remove or fill this block of code.(ÑòìÀøÿÿÿÿ8àÒ™‚‚2J$ed72ee51-5949-4cb5-9383-ccd2b55c4672
+skotlin:S108¯")Either remove or fill this block of code.(±ß–ûÿÿÿÿ8àÒ™‚‚2J$cd16fb63-1a58-42e6-a390-888f9fa5ead0
+|kotlin:S1481k"2Remove this unused "customAddress" local variable.(ËÏ™‰ùÿÿÿÿ8çÒ™‚‚2J$d31d4ed8-f397-409f-9f64-a60c23dc5cf7
+dkotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿ8çÒ™‚‚2J$c457d5da-651f-4d78-ade9-e9186eaa76a5
+škotlin:S101"PRename class "createOrderId" to match the regular expression ^[A-Z][a-zA-Z0-9]*$(ëìÄÔûÿÿÿÿ8îÒ™‚‚2J$69d307a6-1231-488f-85a1-42b02fb2f56a
+©kotlin:S101"_Rename class "dataFetchBasedOnMainCategory" to match the regular expression ^[A-Z][a-zA-Z0-9]*$(üÛêäÿÿÿÿÿ8îÒ™‚‚2J$91b74c7e-87ed-41a5-b675-fae54ed73276

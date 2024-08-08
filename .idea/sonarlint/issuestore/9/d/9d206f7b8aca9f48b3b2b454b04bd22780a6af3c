@@ -1,7 +1,8 @@
 
-6kotlin:S125I"Remove this commented out code.(„–¡Œ
-:kotlin:S6310“"Avoid hardcoded dispatchers.(„¶­–úÿÿÿÿ
-7kotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿ
-gkotlin:S1192·"NDefine a constant instead of duplicating this literal "Added to cart" 3 times.(–‘İ
-ikotlin:S3776;"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(Ÿ¤¨Q
-kkotlin:S3776å"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(“•¨²
+ckotlin:S125N"Remove this commented out code.(„–¡Œ8¨˜Õ„‹2J$f9fea760-a3d9-49cc-950a-e9fa424d1213
+gkotlin:S6310"Avoid hardcoded dispatchers.(„¶­–úÿÿÿÿ8ª˜Õ„‹2J$eaf652dc-5d16-4f29-9c29-1eb0a61db9e2
+dkotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿ8²˜Õ„‹2J$aff529e7-96a2-4d8c-9116-6780ecbbcaf8
+dkotlin:S1128"Remove this unused import.(®•±âùÿÿÿÿ8²˜Õ„‹2J$a8225db0-0e16-4669-a7fe-b5e8eb0fff9b
+”kotlin:S1192À"NDefine a constant instead of duplicating this literal "Added to cart" 3 times.(–‘İ8³˜Õ„‹2J$6677e8a5-41bf-4508-9e6c-fa8e8da66fc0
+–kotlin:S3776@"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(Ÿ¤¨Q8µ˜Õ„‹2J$d4edbb7c-dab0-44e3-8c3f-d3e04b926575
+˜kotlin:S3776ï"RRefactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.(“•¨²8µ˜Õ„‹2J$416637ec-c7ba-49a8-88c5-6787583a34f7

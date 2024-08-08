@@ -37,6 +37,7 @@ class Constants {
         const val NOTIFICATION_CHANNEL_NAME = "FCM Notification"
         const val TOPIC = "/topics/Raheem"
         const val OrderStatus = "/Admin/OrderStatus"
+        var distanceInKm:Double?=0.00
 
 
     }

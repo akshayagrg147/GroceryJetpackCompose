@@ -224,7 +224,8 @@ fun CommonNumberField(
                 disabledIndicatorColor = fadedTextColor,
 
                 ),
-            label = { Text(text = placeholder) },
+        label = { Text(text = placeholder,color = veryLightGrey) },
+        placeholder = { Text(text = placeholder, color = veryLightGrey) },
             trailingIcon = {
                 Icon(
                     painter = painterResource(id = trailingIcon),
@@ -276,8 +277,9 @@ fun CommonTextField(
                 focusedIndicatorColor = Color.LightGray,
                 disabledIndicatorColor = fadedTextColor
             ),
-            label = { Text(text = placeholder) },
-            trailingIcon = {
+            label = { Text(text = placeholder,color = veryLightGrey) },
+        placeholder = { Text(text = placeholder, color = veryLightGrey) },
+        trailingIcon = {
                 Icon(
                     painter = painterResource(id = trailingIcon),
                     contentDescription = "",
@@ -331,7 +333,8 @@ fun CommonTextFieldNonEditable(
             disabledIndicatorColor = fadedTextColor,
 
         ),
-        label = { Text(text = placeholder) },
+       label = { Text(text = placeholder,color = veryLightGrey) },
+       placeholder = { Text(text = placeholder, color = veryLightGrey) },
         trailingIcon = {
             Icon(
                 painter = painterResource(id = trailingIcon),

@@ -45,6 +45,9 @@ class MapScreenViewModal @Inject constructor(val sharedpreference: sharedprefere
         sharedpreference.setCity(city)
 
     }
+    fun saveLatLng(latitude: String, longitude: String){
+        sharedpreference.setLngLng(latitude,longitude)
+    }
 
     fun savePinCode(extractSixDigitNumber: String?) {
         sharedpreference.setPinCode(extractSixDigitNumber?:"")

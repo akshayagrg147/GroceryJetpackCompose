@@ -2,17 +2,17 @@ package com.grocery.mandixpress.di
 
 import android.content.Context
 import androidx.room.Room
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.grocery.mandixpress.BuildConfig
 import com.grocery.mandixpress.FCMApiService
 import com.grocery.mandixpress.NotificationHeader
-
-import com.grocery.mandixpress.roomdatabase.AppDatabase
 import com.grocery.mandixpress.Utils.Constants
-import com.grocery.mandixpress.data.network.ApiService
-import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.WithoutNotificationHeader
+import com.grocery.mandixpress.data.network.ApiService
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
 import com.grocery.mandixpress.data.network.OAuthInterceptor
+import com.grocery.mandixpress.roomdatabase.AppDatabase
+import com.grocery.mandixpress.roomdatabase.Dao
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -125,6 +125,10 @@ object NetworkModule {
                 .build()
             chain.proceed(modifiedRequest)
         }
+        val chuckerInterceptor: ChuckerInterceptor = ChuckerInterceptor.Builder(applicationContext)
+            .maxContentLength(250000L)
+            .alwaysReadResponseBody(true)
+            .build()
 
         val okHttpClientBuilder =  OkHttpClient.Builder()
             .addInterceptor(oAuthInterceptor)
@@ -135,6 +139,7 @@ object NetworkModule {
 
         if (BuildConfig.DEBUG) {
             okHttpClientBuilder.addInterceptor(interceptor)
+                . addInterceptor(chuckerInterceptor);
         }
         return okHttpClientBuilder.build()
     }
@@ -148,9 +153,14 @@ object NetworkModule {
         val cache = Cache(cacheDir, cacheSize.toLong())
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val chuckerInterceptor: ChuckerInterceptor = ChuckerInterceptor.Builder(applicationContext)
+            .maxContentLength(250000L)
+            .alwaysReadResponseBody(true)
+            .build()
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
             .addInterceptor(oAuthInterceptor)
+            . addInterceptor(chuckerInterceptor)
 
             .build()
     }

@@ -10,6 +10,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -20,6 +23,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -28,6 +32,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -82,8 +87,10 @@ fun SearchResult(
                     Text11_body2(
                         text = "out of stock",
                         redColor,
-                        modifier = Modifier.fillMaxHeight()
-                            .padding( top = 30.dp ).rotate(-90f)
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(top = 30.dp)
+                            .rotate(-90f)
 
 
                     )
@@ -134,7 +141,9 @@ fun SearchResult(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(
-                    modifier = Modifier .fillMaxWidth().padding(start = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 Column {
@@ -224,6 +233,7 @@ Column {
 
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SearchScreenProducts(
@@ -277,12 +287,14 @@ fun SearchScreenProducts(
             when (it) {
                 is ApiState.Success -> {
 
+
                     responseData.value = it.data
                 }
                 is ApiState.Failure -> {
                     showLog("gettingresponse", it.msg.message.toString())
 
                 }
+
 
             }
         }
@@ -381,38 +393,55 @@ fun SearchScreenProducts(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
-if(responseData.value.list?.isNotEmpty()==true)
-            LazyColumn(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxSize()
-            ) {
-                gridItems(
-                    data = responseData.value.list?: emptyList(),
-                    columnCount = 2,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(horizontal = 1.dp)
-                ) { itemData ->
-                    if (search.value.isNotEmpty())
-                        SearchResult(itemData, viewModal, context){
-                                cartItem,obj,boolean->
-                            newSellerAddedDialog =boolean
-                            viewModal.tempStoreAdminCartTable(obj,cartItem)
-
-
-                        }
-                }
-            }
-            else{
-    Image(
-        painter = painterResource(id = R.drawable.noitems),
-        contentDescription = null,
-        alignment = Alignment.Center,
-        contentScale = ContentScale.Crop,
+if(responseData.value.list?.isNotEmpty()==true) {
+    LocalSoftwareKeyboardController.current?.hide()
+    LazyColumn(
         modifier = Modifier
-            .height(300.dp)
-            .fillMaxWidth()
-    )
+            .padding(top = 10.dp)
+            .fillMaxSize()
+    ) {
+        gridItems(
+            data = responseData.value.list ?: emptyList(),
+            columnCount = 2,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(horizontal = 1.dp)
+        ) { itemData ->
+            if (search.value.isNotEmpty())
+                SearchResult(itemData, viewModal, context) { cartItem, obj, boolean ->
+                    newSellerAddedDialog = boolean
+                    viewModal.tempStoreAdminCartTable(obj, cartItem)
+
+
+                }
+        }
+    }
+}
+            else{
+                if(search.value.isEmpty()){
+                    Image(
+                        painter = painterResource(id = R.drawable.noitems),
+                        contentDescription = null,
+                        alignment = Alignment.Center,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(300.dp)
+                            .fillMaxWidth()
+                    )
+                }
+    else{
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2 )
+                    ) {
+                        repeat(5) {
+                            item {
+                                ShimmerAnimation()
+
+                            }
+                        }
+                    }
+                }
+
             }
         }
         if (viewModal.getitemcountState.value >= 1 &&(viewModal.getFreeDeliveryMinPrice()>0.0))

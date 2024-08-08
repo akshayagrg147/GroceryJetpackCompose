@@ -1,17 +1,18 @@
 
-okotlin:S1172Ù"0Remove this unused function parameter "context".(ìçÄ–J$1f4081d4-1a2c-42dc-94c5-6dd9d9cccb28
-lkotlin:S1172¼"(Remove these unused function parameters.(¬ç½™ûÿÿÿÿJ$17a36ba4-c989-4dc2-be96-cad10c8b058a
-]kotlin:S125 "Remove this commented out code.(Ãóê½J$fc705c3d-218d-402b-9378-5425b10f3f25
-]kotlin:S125÷"Remove this commented out code.(³æò…J$2143cd61-5841-4c62-a202-ca2e46601917
-Xkotlin:S1128="Remove this unused import.(äàİ‚J$d0f4874d-6183-452d-8472-41343ae1ec67
-]kotlin:S1128>"Remove this unused import.(Ä†ÌùÿÿÿÿJ$9b9f968f-62bd-4138-84ad-f74292e7beb3
-kotlin:S1192„"NDefine a constant instead of duplicating this literal "Added to cart" 4 times.(–‘İJ$1bb3711c-4bb1-46d8-a1f1-363742273fe2
-‘kotlin:S1192û"MDefine a constant instead of duplicating this literal "out of stock" 3 times.(¤Ô¥¦ùÿÿÿÿJ$ac44cb9f-2c1f-4925-8cae-4956b8471aaa
-‘kotlin:S1192˜	"MDefine a constant instead of duplicating this literal "splash image" 5 times.(ëËõµÿÿÿÿÿJ$81ea53e6-b977-4d81-98a9-e053ad420638
-•kotlin:S3776["RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(È…®ÎüÿÿÿÿJ$376ad58e-ac9d-4865-a2ab-e6fc36999b31
-’kotlin:S3776Õ"SRefactor this method to reduce its Cognitive Complexity from 173 to the 15 allowed.(«Š†üJ$7326d7fb-c397-4a57-af76-2c1d3a49e7bd
-–kotlin:S3776×"RRefactor this method to reduce its Cognitive Complexity from 24 to the 15 allowed.(æğÓ·şÿÿÿÿJ$4822e909-c2a4-486c-9333-35a35d6d270e
-–kotlin:S3776ï	"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(¯ÿ€ßüÿÿÿÿJ$b147ea26-9412-43ab-8892-8a2ac71299cf
-‘kotlin:S3776"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(•òÊçJ$c2477a1e-94df-438c-b8bd-91296e9118e9
-mkotlin:S1066©".Merge this "if" statement with the nested one.(¦¢½­J$9e900ca5-efd9-43a7-95ad-9b9a56bd4102
-rkotlin:S1066•".Merge this "if" statement with the nested one.(ÚŒéŸùÿÿÿÿJ$0ce61d10-384a-4d99-bf29-dbb1ce6e6fd8
+okotlin:S1172á"0Remove this unused function parameter "context".(ìçÄ–J$20a63916-bffd-4241-bd5e-0e210fc474aa
+lkotlin:S1172Ä"(Remove these unused function parameters.(¬ç½™ûÿÿÿÿJ$b92298ce-1633-4ffa-ade1-186ee69310c7
+]kotlin:S125¨"Remove this commented out code.(Ãóê½J$f4045ac9-2970-434b-b053-33aff30b0f28
+]kotlin:S125€"Remove this commented out code.(³æò…J$c6d7ae31-151a-45bd-b150-078db98f406c
+<kotlin:S6314¹"Unused coroutines Flow.(¸öøãøÿÿÿÿ8±½Ï‡“2
+_kotlin:S1128?"Remove this unused import.(äàİ‚8Ê¨ƒ‹2J$001c6b74-cd48-4d48-835e-b423dc3aa4b3
+dkotlin:S1128@"Remove this unused import.(Ä†Ìùÿÿÿÿ8Ê¨ƒ‹2J$3614dbd4-522b-40ce-aae7-33442f31e67c
+kotlin:S1192Œ"NDefine a constant instead of duplicating this literal "Added to cart" 4 times.(–‘İJ$af415573-1ade-4da6-85f9-1717d83f71cb
+‘kotlin:S1192ƒ	"MDefine a constant instead of duplicating this literal "out of stock" 3 times.(¤Ô¥¦ùÿÿÿÿJ$89e6edaa-2349-4f81-b441-ae5e2d72f2da
+‘kotlin:S1192 	"MDefine a constant instead of duplicating this literal "splash image" 5 times.(ëËõµÿÿÿÿÿJ$1fa597dd-f2d2-456e-a41a-bdb7c2b1a081
+•kotlin:S3776]"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(È…®ÎüÿÿÿÿJ$4afcc543-36e3-4d10-9c57-343b0168d9a1
+’kotlin:S3776İ"SRefactor this method to reduce its Cognitive Complexity from 173 to the 15 allowed.(«Š†üJ$b2095877-a2ba-455b-93e4-c779a2ea4110
+–kotlin:S3776ß"RRefactor this method to reduce its Cognitive Complexity from 24 to the 15 allowed.(æğÓ·şÿÿÿÿJ$fe12bcec-9c44-4c4b-9fa3-b5315c041c5d
+–kotlin:S3776÷	"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(¯ÿ€ßüÿÿÿÿJ$41937a28-47c3-43c8-a78d-7f20813e877c
+‘kotlin:S3776—"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(•òÊçJ$79c83543-04d8-42be-a5be-8f81783435b1
+mkotlin:S1066±".Merge this "if" statement with the nested one.(¦¢½­J$e90a88d8-fae8-4304-9dc1-f63483e1dc21
+rkotlin:S1066".Merge this "if" statement with the nested one.(ÚŒéŸùÿÿÿÿJ$aafb96fc-4640-435c-bb17-8418b7755e73

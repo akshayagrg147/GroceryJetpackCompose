@@ -47,6 +47,7 @@ import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.common.getAfterCalculation
+import com.grocery.mandixpress.common.haversine
 import com.grocery.mandixpress.data.modal.ItemsCollectionsResponse
 import com.grocery.mandixpress.data.modal.ProductIdIdModal
 import com.grocery.mandixpress.features.home.Navigator.gridItems
@@ -178,18 +179,24 @@ fun cardViewAddtoCart(
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
+            val distanceInkM= haversine(viewmodal.firsSellerLatLngValue.value.first,viewmodal.firsSellerLatLngValue.value.second,viewmodal.getSvedLatLng().first?.toDouble()?:0.00,viewmodal.getSvedLatLng().second?.toDouble()?:0.00)
+
             if(viewmodal.getSellersMinDeliveryCharge()!=0.00f) {
                 Log.d("getSellersMinDeliveryCh","--"+viewmodal.getSellersMinDeliveryCharge())
                 var extraChargesShouldIncludeState = remember {
                     mutableStateOf(-1)
+                }
+                val amountMoreThan3Km = remember {
+                    mutableStateOf(0.00)
                 }
 
                 LaunchedEffect(Unit) {
                     val resultList = withContext(Dispatchers.IO) {
                         viewmodal.withHigherCartItemTotal()
                     }
-                    getAfterCalculation(resultList){
-                        extraChargesShouldIncludeState.value = it
+                    getAfterCalculation (resultList) { shouldBeCharged, chargeAmount ->
+                        extraChargesShouldIncludeState.value = shouldBeCharged
+                        amountMoreThan3Km.value = chargeAmount
                     }
 
                     // Update the state with the result of the coroutine
@@ -205,6 +212,11 @@ fun cardViewAddtoCart(
                     // Ensure that the calculation is done before proceeding
                     val deliveryCharge = viewmodal.getSellersMinDeliveryCharge().toDouble()
                     String.format("%.2f", deliveryCharge)
+                }
+                else if (extraChargesShouldIncludeState.value==2)  {
+                    val deliveryCharge =   amountMoreThan3Km.value
+                    String.format("%.2f", deliveryCharge)
+
                 }
                 else{
                     0.00f
@@ -234,7 +246,37 @@ fun cardViewAddtoCart(
                         }
                     }
         }
-          else  if (viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice().toDouble())) {
+            else if(distanceInkM>3)
+            {
+
+                Row(modifier = Modifier) {
+                    Image(
+                        painter = painterResource(id = R.drawable.bike_delivery),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding()
+                            .size(30.dp)
+                            .padding(start = 10.dp)
+                    )
+                    Column() {
+                        Text10_h2(
+                            text = "Pay Delivery",
+                            color = Purple700,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+
+                        Text10_h2(
+                            text = (distanceInkM.toInt()*5).toString(),
+                            color = headingColor,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
+                }
+
+
+            }
+
+            else  if (viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice().toDouble())) {
                 Row(modifier = Modifier) {
                     Image(
                         painter = painterResource(id = com.grocery.mandixpress.R.drawable.bike_delivery),
@@ -265,7 +307,8 @@ fun cardViewAddtoCart(
                     }
                 }
 
-            } else {
+            }
+            else {
                 Row(modifier = Modifier.padding(start = 10.dp)) {
                     Image(
                         painter = painterResource(id = R.drawable.unlocked),
@@ -1079,18 +1122,7 @@ fun MenuItemGrid(
                                         ) { adminData, cartItem ->
                                             showExtraChargesPopUp(cartItem, adminData, true)
                                         }
-                                        viewModal.getCartItem()
-                                        MainScope().launch {
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    "Added to cart",
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
 
-                                            Utils.vibrator(context)
-                                        }
                                     }
                                 },
 

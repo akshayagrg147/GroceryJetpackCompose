@@ -56,12 +56,15 @@ class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: C
     }
 
 
-    fun setLat(lat: String): Any {
-        return mPrefs.edit().putString(AppConstant.lat, lat).apply()
-    }
+   fun getLatLng(): Pair<String?, String?>{
+       val lat = mPrefs.getString(AppConstant.lat, null)
+       val lng = mPrefs.getString(AppConstant.lng, null)
+       return Pair(lat, lng)
+   }
 
-    fun setLng(lng: String): Any {
-        return mPrefs.edit().putString(AppConstant.lng, lng).apply()
+    fun setLngLng(lat: String,lng: String) {
+         mPrefs.edit().putString(AppConstant.lat, lat).apply()
+         mPrefs.edit().putString(AppConstant.lng, lng).apply()
     }
 
     fun getCity(): String {

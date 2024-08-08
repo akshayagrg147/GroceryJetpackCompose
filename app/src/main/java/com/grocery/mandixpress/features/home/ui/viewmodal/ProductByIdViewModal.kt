@@ -47,6 +47,9 @@ class ProductByIdViewModal @Inject constructor(
         mutableStateOf(0)
     val totalCountState: State<Int> = totalcount
 
+    private val firsSellerLatLng: MutableState<Pair<Double,Double>> = mutableStateOf(Pair(0.00,0.00))
+    val firsSellerLatLngValue: MutableState<Pair<Double,Double>> = firsSellerLatLng
+
     private val totalPrice: MutableState<Int> =
         mutableStateOf(0)
     val totalPriceState: State<Int> = totalPrice
@@ -65,6 +68,10 @@ class ProductByIdViewModal @Inject constructor(
     )
     var itemDetailFlow = _itemDetailFlow.asStateFlow()
         private set
+
+    init {
+        getFirstItemCartLatLng()
+    }
 
     fun deleteCartItems(value: ProductByIdResponseModal) = viewModelScope.launch(Dispatchers.IO) {
 
@@ -115,6 +122,14 @@ class ProductByIdViewModal @Inject constructor(
         }
 
     }
+    private fun getFirstItemCartLatLng() = viewModelScope.launch {
+        repo.getCartItems().catch { e -> showLog("main", "Exception: ${e.message} ") }
+            .collect {
+                if(it.isNotEmpty())
+                firsSellerLatLng.value = Pair(it[0].lat ?: 0.00, it[0].lng ?: 0.00,)
+            }
+    }
+
     fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val R = 6371.0 // Earth radius in kilometers
 
@@ -129,7 +144,10 @@ class ProductByIdViewModal @Inject constructor(
 
         return R * c
     }
+    fun getSvedLatLng():Pair<String?,String?>{
+        return sharedpreferenceCommon.getLatLng()
 
+    }
     fun getItemBaseOnProductId(value: String) = viewModelScope.launch(Dispatchers.IO) {
         val intger: Int = repo.getProductBasedIdCount(value).first() ?: 0
         getItemCount.value = intger

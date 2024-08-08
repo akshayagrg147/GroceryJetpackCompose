@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -63,6 +62,8 @@ fun LocateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                             if (addrss != null) {
                                 isDialog=false
                                 combinedaddress = "${addrss.getAddressLine(0)},$city"
+                                mapScreenViewModal.saveLatLng(latitude = lat.toString(),longitude.toString())
+
                                 mapScreenViewModal.setAddress(combinedaddress,city)
                             }
 

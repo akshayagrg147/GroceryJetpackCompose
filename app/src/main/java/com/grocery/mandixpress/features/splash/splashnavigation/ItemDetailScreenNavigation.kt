@@ -37,6 +37,7 @@ import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CustomDialog
 import com.grocery.mandixpress.common.Utils
 import com.grocery.mandixpress.common.getAfterCalculation
+import com.grocery.mandixpress.common.haversine
 import com.grocery.mandixpress.data.modal.HomeAllProductsResponse
 import com.grocery.mandixpress.data.modal.ProductByIdResponseModal
 import com.grocery.mandixpress.data.modal.ProductIdIdModal
@@ -664,7 +665,11 @@ fun CardviewAddtoCart(
                 .fillMaxWidth()
                 .background(whiteColor)
         ) {
+            val distanceInkM= haversine(viewmodal.firsSellerLatLngValue.value.first,viewmodal.firsSellerLatLngValue.value.second,viewmodal.getSvedLatLng().first?.toDouble()?:0.00,viewmodal.getSvedLatLng().second?.toDouble()?:0.00)
             if(viewmodal.getSellersMinDeliveryCharge()!=0.00f) {
+                val amountMoreThan3Km = remember {
+                    mutableStateOf(0.00)
+                }
                 Log.d("getSellersMinDeliveryCh","--"+viewmodal.getSellersMinDeliveryCharge())
                 var extraChargesShouldIncludeState = remember {
                     mutableStateOf(-1)
@@ -674,8 +679,9 @@ fun CardviewAddtoCart(
                     val resultList = withContext(Dispatchers.IO) {
                         viewmodal.withHigherCartItemTotal()
                     }
-                    getAfterCalculation(resultList){
-                        extraChargesShouldIncludeState.value = it
+                    getAfterCalculation (resultList) { shouldBeCharged, chargeAmount ->
+                        extraChargesShouldIncludeState.value = shouldBeCharged
+                        amountMoreThan3Km.value = chargeAmount
                     }
 
                     // Update the state with the result of the coroutine
@@ -691,6 +697,11 @@ fun CardviewAddtoCart(
                     // Ensure that the calculation is done before proceeding
                     val deliveryCharge = viewmodal.getSellersMinDeliveryCharge().toDouble()
                     String.format("%.2f", deliveryCharge)
+                }
+                else if (extraChargesShouldIncludeState.value==2)  {
+                    val deliveryCharge =   amountMoreThan3Km.value
+                    String.format("%.2f", deliveryCharge)
+
                 }
                 else{
                     0.00f
@@ -719,6 +730,35 @@ fun CardviewAddtoCart(
                             )
                         }
                     }
+            }
+            else if(distanceInkM>3)
+            {
+
+                Row(modifier = Modifier) {
+                    Image(
+                        painter = painterResource(id = R.drawable.bike_delivery),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding()
+                            .size(30.dp)
+                            .padding(start = 10.dp)
+                    )
+                    Column() {
+                        Text10_h2(
+                            text = "Pay Delivery",
+                            color = Purple700,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+
+                        Text10_h2(
+                            text = (distanceInkM.toInt()*5).toString(),
+                            color = headingColor,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
+                }
+
+
             }
             else if (viewmodal.getFreeDeliveryMinPrice()>0.00 && viewmodal.totalPriceState.value < (viewmodal.getFreeDeliveryMinPrice()
                         .toInt())

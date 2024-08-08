@@ -844,7 +844,7 @@ fun UPIPaymentConfirmationDialog(
         ) {
 
 
-            if (viewModal.allCartItemsState.value.isEmpty())
+            if (viewModal.allCartItemsState.value.isEmpty()||viewModal.totalPriceState.value == 0)
                 NoHistoryAvailable("No order available")
             else {
 

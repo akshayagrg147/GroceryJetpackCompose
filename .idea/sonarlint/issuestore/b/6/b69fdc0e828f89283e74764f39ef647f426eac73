@@ -1,12 +1,0 @@
-
-ukotlin:S1172-"0Remove this unused function parameter "context".(ìçÄ–8Èäßµ2J$bf24f604-4d10-4e21-93e8-6f9964fc7d7b
-kotlin:S117·"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¾¦‡üÿÿÿÿ8Ëäßµ2J$2b450611-c438-46b8-be74-cc9cd7d3f379
-akotlin:S6310T"Avoid hardcoded dispatchers.(Ö‚„ó8Ëäßµ2J$838cee68-588f-467c-be8d-7e5ee026dd07
-pkotlin:S6311T"QRemove this dispatcher. It is pointless when used with only suspending functions.(Ö‚„ó8ô¾Ï‡“2
-—kotlin:S3776*"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(¡˜ìÏ8Óäßµ2J$a807d18d-b99f-46a0-b642-5a50d6f4167f
-‡kotlin:S6511J"=Merge chained "if" statements into a single "when" statement.(î²¿×ûÿÿÿÿ8Öäßµ2J$348c83e7-c9ed-4739-9277-5136f480636a
-‚kotlin:S6511`"=Merge chained "if" statements into a single "when" statement.(²³¤8Öäßµ2J$cdbeaac6-611e-43eb-a76b-97b7c535f78e
-wkotlin:S6518Ÿ",Replace function call with indexed accessor.(Ïë·şÿÿÿÿ8Öäßµ2J$27a0b61e-44ea-463f-bb77-e468f5d9a3ec
-wkotlin:S6518Ÿ",Replace function call with indexed accessor.(Ïë·şÿÿÿÿ8Öäßµ2J$cd3c668b-266b-436f-b048-15ba862b21b4
-wkotlin:S6518Ÿ",Replace function call with indexed accessor.(Ïë·şÿÿÿÿ8Öäßµ2J$0e4ed4ae-26ff-4a88-b38d-a9d22d573836
-wkotlin:S6518Ÿ",Replace function call with indexed accessor.(Ïë·şÿÿÿÿ8Öäßµ2J$ea3cd3be-58f4-41e2-a5ce-6a96b35bd86c

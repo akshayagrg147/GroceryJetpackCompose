@@ -20,7 +20,7 @@ import com.grocery.mandixpress.roomdatabase.CartItemPriceBySeller
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

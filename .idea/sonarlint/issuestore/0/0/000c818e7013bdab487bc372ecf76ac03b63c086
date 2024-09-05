@@ -1,13 +1,0 @@
-
-ukotlin:S1172j"0Remove this unused function parameter "context".(μηΔ–8‘µδώ1J$ba783e10-2fd1-4cf9-80f8-ccb1564238e4
-vkotlin:S1172‚"0Remove this unused function parameter "context".(μηΔ–8’µδώ1J$2b5cce5b-b03f-4bd8-8329-2b1089ecfa99
-hkotlin:S125`"Remove this commented out code.(όΗ΄“ωÿÿÿÿ8•µδώ1J$1326a899-352a-46a5-8c6f-a997dcd32858
-bkotlin:S6310§"Avoid hardcoded dispatchers.(Φ‚„σ8™µδώ1J$0e209bb8-d3e6-4197-98ed-baa75a49ed24
-qkotlin:S6311§"QRemove this dispatcher. It is pointless when used with only suspending functions.(Φ‚„σ8ά»Ο‡“2
-_kotlin:S1128"Remove this unused import.(™ςζά8¨µδώ1J$7c2a1e8d-97ed-4e85-9cbe-53ce17517ea3
-”kotlin:S1192†"NDefine a constant instead of duplicating this literal "Added to cart" 4 times.(–‘έ8©µδώ1J$b73d96d9-f47f-4d5d-8026-2edeced97c3f
-™kotlin:S3776Φ"SRefactor this method to reduce its Cognitive Complexity from 101 to the 15 allowed.(‚ΰΜξ8«µδώ1J$e22aabfb-9996-4ada-874f-1e8d586472a8
-kotlin:S3776ÿ"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(ΜΗ–8¬µδώ1J$4bc8a8a5-0920-45e3-b8dc-047ebaef113d
-kotlin:S6511Q"=Merge chained "if" statements into a single "when" statement.(±ªΑ%8²µδώ1J$78e400d8-14ea-4005-af40-946098e1274e
-kotlin:S6511"=Merge chained "if" statements into a single "when" statement.(ξ²ΏΧϋÿÿÿÿ8Ολ©ό2J$ecd74deb-ad6a-4f06-9c6b-20d41370355a
-ƒkotlin:S6511³"=Merge chained "if" statements into a single "when" statement.(²³¤8ΛνΏό2J$383a15df-993d-4572-b290-adf7bfdab79b

@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -31,6 +32,7 @@ import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text16_h1
 import com.grocery.mandixpress.features.home.ui.ui.theme.whiteColor
 import com.grocery.mandixpress.features.home.ui.viewmodal.AddressViewModal
+import com.grocery.mandixpress.roomdatabase.AllChooseAddresses
 import kotlinx.coroutines.launch
 
 @Composable
@@ -65,6 +67,46 @@ fun PredictionItem(prediction: AutocompletePrediction, click: (String) -> Unit) 
                             prediction
                                 .getFullText(null)
                                 .toString()
+                        )
+                    })
+        }
+
+    }
+
+}
+
+@Composable
+fun RecentSearchItem(address: AllChooseAddresses, click: (String,LatLng) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+            .padding(top = 10.dp)
+            .background(color = whiteColor)
+            .clickable {},
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.homeicon), // Replace with your icon resource
+                contentDescription = "Location Icon",
+                modifier = Modifier
+                    .size(24.dp)
+
+            )
+            Text12_body1(
+                text = address.address?:"NA",
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable {
+                        click(
+                            address.address?:"NA",
+                            LatLng(address.lat?:0.00,address.lng?:0.00)
+
                         )
                     })
         }

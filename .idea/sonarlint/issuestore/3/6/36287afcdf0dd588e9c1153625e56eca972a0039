@@ -1,10 +1,0 @@
-
-nkotlin:S11726"0Remove this unused function parameter "context".(„¿È‡J$1b3ad055-6455-4049-9498-794e88cccb7e
-Äkotlin:S6619ä"<Remove this useless null-safe access ?., it always succeeds.(˜à±ä˙ˇˇˇˇJ$21cf286c-89cb-43b0-835e-b146014020cb
-Äkotlin:S6619ã"<Remove this useless null-safe access ?., it always succeeds.(â•Û•¸ˇˇˇˇJ$cfd4b17e-544b-4980-89dd-bedd35b9b103
-{kotlin:S6619å"<Remove this useless null-safe access ?., it always succeeds.(Ç˛ ÏJ$9e1d2525-0b03-45ac-9a13-8b55c324888b
-{kotlin:S6619ç"<Remove this useless null-safe access ?., it always succeeds.(ÅÍÛ†J$2e679a30-c5d3-470c-9177-f5f6455490e5
-\kotlin:S125`"Remove this commented out code.(ı„ÎŸJ$b188f90d-034c-4746-a153-cdb88a435ef6
-mkotlin:S1481?"*Remove this unused "scope" local variable.(÷†∞üˇˇˇˇˇJ$cf3a721e-178f-4b79-880a-17a2689aa6c0
-Xkotlin:S1128"Remove this unused import.(ôÚÊ‹J$f512f486-2634-4976-830f-9b5cbcaed7f2
-{kotlin:S6511H"=Merge chained "if" statements into a single "when" statement.(Ö‹…æJ$2bd0fdea-55fa-4b81-a454-11db37db2408

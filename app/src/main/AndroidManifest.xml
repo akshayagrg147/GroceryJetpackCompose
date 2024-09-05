@@ -68,10 +68,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="AIzaSyD9BD5EvFNsN-CSlOdCWd5FF3EGrJVvYLU" />-->
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U" />
+            android:value="AIzaSyD9BD5EvFNsN-CSlOdCWd5FF3EGrJVvYLU" />
 
         <service
             android:name=".Utils.MyFirebaseMessagingService"

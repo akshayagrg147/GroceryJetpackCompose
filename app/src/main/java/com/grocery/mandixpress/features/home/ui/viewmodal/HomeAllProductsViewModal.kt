@@ -5,16 +5,16 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
-import com.grocery.mandixpress.SharedPreference.AppConstant
 import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
@@ -24,6 +24,7 @@ import com.grocery.mandixpress.features.home.domain.modal.AddressItems
 import com.grocery.mandixpress.features.home.domain.modal.getProductCategory
 import com.grocery.mandixpress.features.splash.domain.repository.CommonRepository
 import com.grocery.mandixpress.roomdatabase.AdminAccessTable
+import com.grocery.mandixpress.roomdatabase.AllChooseAddresses
 import com.grocery.mandixpress.roomdatabase.CartItemPriceBySeller
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.android.parcel.RawValue
@@ -32,7 +33,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.ArrayList
 import java.util.Locale
@@ -140,6 +140,7 @@ class HomeAllProductsViewModal @Inject constructor(
     val listState: State<HomeAllProductsResponse> = listMutable
 
     val predictions: MutableStateFlow<List<AutocompletePrediction>> = MutableStateFlow(emptyList())
+    val recentSearches: MutableStateFlow<List<AllChooseAddresses>> = MutableStateFlow(emptyList())
 
 
     val repo = getitemcount11
@@ -157,6 +158,7 @@ class HomeAllProductsViewModal @Inject constructor(
         getItemCount()
         getItemPrice()
         getFirstItemCartLatLng()
+        getAllRecentAddress()
 
 
     }
@@ -202,7 +204,12 @@ class HomeAllProductsViewModal @Inject constructor(
         }
     }
 
+ fun getAllRecentAddress(){
+     viewModelScope.launch {
+         recentSearches.emit(dao.getAllRecentAddress().first())
+     }
 
+}
     fun searchAddress(
         query: String,
         placesClient: PlacesClient
@@ -216,6 +223,8 @@ class HomeAllProductsViewModal @Inject constructor(
             viewModelScope.launch {
                 predictions.emit(response.autocompletePredictions)
             }
+        }.addOnFailureListener{
+            Log.d("failure",it.message?:"nothing")
         }
         return predictions
     }
@@ -488,6 +497,24 @@ HomeEvent.BannerImageEventFlow->viewModelScope.launch {
             roomrespo.updateCartItem(intger + 1, productIdNumber)
 
         }
+
+
+    }
+
+    fun insertAddresses(
+        lat1: Double,
+        lng: Double,
+        pincode: String,
+      address:String
+    ) = viewModelScope.launch(Dispatchers.IO) {
+
+        val data = AllChooseAddresses(
+          pincode=  pincode,
+          address = address,
+            lat = lat1,
+            lng = lng
+        )
+      //  roomrespo.insertChooseAddress(data)
 
 
     }

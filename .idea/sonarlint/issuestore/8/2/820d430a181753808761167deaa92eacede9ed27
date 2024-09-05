@@ -1,34 +1,0 @@
-
-tkotlin:S1172ò".Remove this unused function parameter "price".(¢ÓÓé8À÷ØıŠ2J$bc75b96b-79d9-466b-9609-82a94ff9c6bb
-skotlin:S1172‚	"(Remove these unused function parameters.(€Ú«¿ÿÿÿÿÿ8Â÷ØıŠ2J$9f35c685-a057-48ac-b612-dd59638d45a7
-hkotlin:S125w"Remove this commented out code.(ù²ãÔüÿÿÿÿ8Ç÷ØıŠ2J$4f748718-b874-41f4-9849-b8b8bf7cf357
-dkotlin:S125"Remove this commented out code.(´ì¿“8È÷ØıŠ2J$4de639a6-b79a-4798-b23c-a9ef82f240dc
-dkotlin:S125ì"Remove this commented out code.(Ù§ê8È÷ØıŠ2J$57d8f4a6-e1ac-4b8f-8ce6-03cc06a698b8
-ikotlin:S125 "Remove this commented out code.(»‹şÌÿÿÿÿÿ8È÷ØıŠ2J$8f4175f8-da88-4415-ba35-19de617a2269
-ikotlin:S125ƒ"Remove this commented out code.(±Š Ñúÿÿÿÿ8È÷ØıŠ2J$76744b4b-d672-4705-b7c9-c4a671e4c853
-ikotlin:S125“"Remove this commented out code.(²‹¶üÿÿÿÿ8É÷ØıŠ2J$1c7e2e21-3b0d-4c94-a333-629c08aa4725
-ikotlin:S125™"Remove this commented out code.(²‹¶üÿÿÿÿ8É÷ØıŠ2J$3f4ef880-d337-4055-9c00-e017ae784bf8
-ikotlin:S125î"Remove this commented out code.(Îñ®øÿÿÿÿ8É÷ØıŠ2J$bf8542df-8ade-4cef-bd35-e088fa2cdd5c
-ikotlin:S125‡	"Remove this commented out code.(ÏàÖıÿÿÿÿ8É÷ØıŠ2J$f8e92fe2-2508-400b-a284-03779b8261fc
-ckotlin:S125À	"Remove this commented out code.(šÓz8É÷ØıŠ2J$ac12e1fb-9239-4afc-b03d-6c3115e012d8
-bkotlin:S6310Ò"Avoid hardcoded dispatchers.(Ö‚„ó8Î÷ØıŠ2J$5f43f3bc-fb2f-4ba2-9f68-21da00fa4790
-bkotlin:S6310…"Avoid hardcoded dispatchers.(Ö‚„ó8Î÷ØıŠ2J$c5994768-e535-4df6-8643-0156cb7546b7
-qkotlin:S6311Ò"QRemove this dispatcher. It is pointless when used with only suspending functions.(Ö‚„ó8­¼Ï‡“2
-qkotlin:S6311…"QRemove this dispatcher. It is pointless when used with only suspending functions.(Ö‚„ó8­¼Ï‡“2
-rkotlin:S1481™"'Remove this unused "l3" local variable.(‘ô´şÿÿÿÿ8Ş÷ØıŠ2J$59ca3c1a-4cca-4d24-a01f-e8fbd96cb73f
-rkotlin:S1481™"'Remove this unused "l2" local variable.(‘ô´şÿÿÿÿ8Ş÷ØıŠ2J$5337f443-8705-473e-8d04-b4c99368824c
-}kotlin:S1481†"2Remove this unused "searchProduct" local variable.(áÓ†­øÿÿÿÿ8Ş÷ØıŠ2J$d8d95b6d-abf0-48e7-9f8b-9c4d0f4f04df
-_kotlin:S1128"Remove this unused import.(™òæÜ8ã÷ØıŠ2J$bbbaa5bb-3b2e-4f5c-a0b9-8fc9fe86fa12
-gkotlin:S1110©"!Remove these useless parentheses.(Øãìå8ç÷ØıŠ2J$46fccbf1-bfba-4304-a36f-1704b4be5e2d
-ikotlin:S1874¦"#Deprecated code should not be used.(´Š±Ş8è÷ØıŠ2J$48fa3987-24da-409e-8ad6-b80f656051bc
-ikotlin:S1874©"#Deprecated code should not be used.(Øãìå8è÷ØıŠ2J$57e1c22b-2116-4dc9-8eae-8b7d3b282d51
-ikotlin:S1874¶"#Deprecated code should not be used.(÷Ê“˜8è÷ØıŠ2J$bc8b201a-3a20-4860-8d5d-6c8ff9ddffcd
-hkotlin:S1874ƒ"#Deprecated code should not be used.(²»’W8è÷ØıŠ2J$3ae861c3-ebd4-4d91-af55-5b813e9a38b8
-hkotlin:S1874„"#Deprecated code should not be used.(şã­T8è÷ØıŠ2J$14681761-9d08-4e32-872d-bb2b9c4ace6f
-ikotlin:S1874†"#Deprecated code should not be used.(°æÌĞ8è÷ØıŠ2J$04232be7-7207-492f-ba03-57231e3ed2b1
-˜kotlin:S3776H"SRefactor this method to reduce its Cognitive Complexity from 130 to the 15 allowed.(’×¾´8é÷ØıŠ2J$6db8ef99-0981-4150-9aba-bb9acfa80345
-˜kotlin:S3776š"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(ĞºèÀ8é÷ØıŠ2J$aa44b5ba-567e-4e60-9ac4-4d90c1d5b868
-ykotlin:S1066‚".Merge this "if" statement with the nested one.(ŸŠ¹­ùÿÿÿÿ8ğ÷ØıŠ2J$8e7e042c-476d-46ab-9958-43a3bdf5509d
-qkotlin:S6518„",Replace function call with indexed accessor.(şã­T8ó÷ØıŠ2J$5e549435-0cd9-4cc5-a46d-83503fa76601
-rkotlin:S6518†",Replace function call with indexed accessor.(°æÌĞ8ó÷ØıŠ2J$0e8c4ea8-eea2-4a89-b1e2-76227856cbe7
-rkotlin:S6518©",Replace function call with indexed accessor.(Øãìå8ó÷ØıŠ2J$9dc189dd-0eb4-4844-9b98-37a250c384fb

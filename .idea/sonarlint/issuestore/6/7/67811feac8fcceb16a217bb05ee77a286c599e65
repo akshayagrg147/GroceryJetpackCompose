@@ -1,18 +1,0 @@
-
-okotlin:S1172á"0Remove this unused function parameter "context".(ìçÄ–J$20a63916-bffd-4241-bd5e-0e210fc474aa
-lkotlin:S1172Ä"(Remove these unused function parameters.(¬ç½™ûÿÿÿÿJ$b92298ce-1633-4ffa-ade1-186ee69310c7
-]kotlin:S125¨"Remove this commented out code.(Ãóê½J$f4045ac9-2970-434b-b053-33aff30b0f28
-]kotlin:S125€"Remove this commented out code.(³æò…J$c6d7ae31-151a-45bd-b150-078db98f406c
-<kotlin:S6314¹"Unused coroutines Flow.(¸öøãøÿÿÿÿ8±½Ï‡“2
-_kotlin:S1128?"Remove this unused import.(äàÝ‚8Êž¨ƒ‹2J$001c6b74-cd48-4d48-835e-b423dc3aa4b3
-dkotlin:S1128@"Remove this unused import.(Ä†Ìùÿÿÿÿ8Êž¨ƒ‹2J$3614dbd4-522b-40ce-aae7-33442f31e67c
-kotlin:S1192Œ"NDefine a constant instead of duplicating this literal "Added to cart" 4 times.(–Ž‘ÝJ$af415573-1ade-4da6-85f9-1717d83f71cb
-‘kotlin:S1192ƒ	"MDefine a constant instead of duplicating this literal "out of stock" 3 times.(¤Ô¥¦ùÿÿÿÿJ$89e6edaa-2349-4f81-b441-ae5e2d72f2da
-‘kotlin:S1192 	"MDefine a constant instead of duplicating this literal "splash image" 5 times.(ëËõµÿÿÿÿÿJ$1fa597dd-f2d2-456e-a41a-bdb7c2b1a081
-•kotlin:S3776]"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(È…®ÎüÿÿÿÿJ$4afcc543-36e3-4d10-9c57-343b0168d9a1
-’kotlin:S3776Ý"SRefactor this method to reduce its Cognitive Complexity from 173 to the 15 allowed.(«Š†üJ$b2095877-a2ba-455b-93e4-c779a2ea4110
-–kotlin:S3776ß"RRefactor this method to reduce its Cognitive Complexity from 24 to the 15 allowed.(æðÓ·þÿÿÿÿJ$fe12bcec-9c44-4c4b-9fa3-b5315c041c5d
-–kotlin:S3776÷	"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(¯ÿ€ßüÿÿÿÿJ$41937a28-47c3-43c8-a78d-7f20813e877c
-‘kotlin:S3776—"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(•òÊçJ$79c83543-04d8-42be-a5be-8f81783435b1
-mkotlin:S1066±".Merge this "if" statement with the nested one.(¦¢½­J$e90a88d8-fae8-4304-9dc1-f63483e1dc21
-rkotlin:S1066".Merge this "if" statement with the nested one.(ÚŒéŸùÿÿÿÿJ$aafb96fc-4640-435c-bb17-8418b7755e73

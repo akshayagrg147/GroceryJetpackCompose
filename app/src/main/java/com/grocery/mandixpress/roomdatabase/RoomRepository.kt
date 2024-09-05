@@ -15,6 +15,9 @@ constructor(private val dao: Dao) {
     suspend fun insert(data: CartItems) = withContext(Dispatchers.IO) {
         dao.insertCartItem(data)
     }
+//    suspend fun insertChooseAddress(data: AllChooseAddresses) = withContext(Dispatchers.IO) {
+//        dao.insertChooseAddress(data)
+//    }
     suspend fun deleteAllAdminAccessTable()= withContext(Dispatchers.IO){
         dao.deleteAllAdminAccessTable()
     }

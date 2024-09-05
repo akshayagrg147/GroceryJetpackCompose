@@ -1,14 +1,0 @@
-
-9kotlin:S6615‡" Remove this useless initializer.(ÌÙ…Ÿ
-Xkotlin:S6619y";Remove this useless elvis operation ?:, it always succeeds.(¥ý¶Ôøÿÿÿÿ
-<kotlin:S125Ž"Remove this commented out code.(Î¶Ë·ÿÿÿÿÿ
-<kotlin:S125—"Remove this commented out code.(é²§…úÿÿÿÿ
-7kotlin:S125™"Remove this commented out code.(„–¡Œ
-2kotlin:S1128
-"Remove this unused import.(¤¯†Ž
-2kotlin:S1128"Remove this unused import.(™òæÜ
-7kotlin:S11288"Remove this unused import.(•¼úÿÿÿÿ
-okotlin:S3776T"RRefactor this method to reduce its Cognitive Complexity from 47 to the 15 allowed.(ÚâÉ”üÿÿÿÿ
-kkotlin:S3776€"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(Œà™È
-kkotlin:S3776‚"RRefactor this method to reduce its Cognitive Complexity from 38 to the 15 allowed.(Ëàã´
-tkotlin:S3923¿"[Remove this conditional structure or edit its code blocks so that they're not all the same.(³ö¸Ã

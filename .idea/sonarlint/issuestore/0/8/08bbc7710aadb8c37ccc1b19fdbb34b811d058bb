@@ -1,18 +1,0 @@
-
-kotlin:S117•"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¾¦‡üÿÿÿÿ8„¨Ÿÿ2J$c08100f6-ae98-4721-a5dc-98878e7b5ea7
-akotlin:S6310é"Avoid hardcoded dispatchers.(ĞûÛ;8„¨Ÿÿ2J$48243429-9c5c-4c04-8e04-d86e51978699
-<kotlin:S6310ñ"Avoid hardcoded dispatchers.(ÍË‘“8¨¾Ï‡“2
-Akotlin:S6310ö"Avoid hardcoded dispatchers.(îş×üÿÿÿÿ8¨¾Ï‡“2
-Akotlin:S6310®"Avoid hardcoded dispatchers.(š’Ò‘úÿÿÿÿ8¨¾Ï‡“2
-bkotlin:S6310ï"Avoid hardcoded dispatchers.(ÏÃâ8…¨Ÿÿ2J$64d3c709-0ada-4f10-b079-0fc7722431f9
-Akotlin:S6310Ë"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿ8¨¾Ï‡“2
-dkotlin:S6313é"EClasses extending "ViewModel" should not expose suspending functions.(ĞûÛ;8«¾Ï‡“2
-ekotlin:S6313î"EClasses extending "ViewModel" should not expose suspending functions.(ôÏÄí8«¾Ï‡“2
-ekotlin:S6313Ö"EClasses extending "ViewModel" should not expose suspending functions.(’”˜Ã8«¾Ï‡“2
-skotlin:S108Ø")Either remove or fill this block of code.(ÑòìÀøÿÿÿÿ8¨Ÿÿ2J$5fb1c6d6-5d05-4c0b-9447-0d65b83bbf78
-fkotlin:S6305" Don't expose mutable flow types.(ˆ«€­8¨Ÿÿ2J$eb3b8a10-a678-4a39-98a3-c99c891f8318
-tkotlin:S1656±"/Remove or correct this useless self-assignment.(¦ŸÉ.8›¨Ÿÿ2J$e8cf814e-4f1f-4a87-b5ff-445a0836a901
-^kotlin:S1128#"Remove this unused import.(ÿÏ—8¤¨Ÿÿ2J$15c49e7c-b1b9-4929-b3fa-1f41a39cdd0f
-dkotlin:S1128$"Remove this unused import.(ÿş‹‡ÿÿÿÿÿ8¤¨Ÿÿ2J$f546b81d-41ea-466f-b8fa-4c3171603d27
-dkotlin:S1128&"Remove this unused import.(Úœåùÿÿÿÿ8¤¨Ÿÿ2J$287b7be1-a186-48e0-bc29-799b0bbbe188
-kotlin:S3776ú"RRefactor this method to reduce its Cognitive Complexity from 40 to the 15 allowed.(ëáĞÿÿÿÿÿ8­¨Ÿÿ2J$ab9463ee-b8a2-4d37-a843-39384f45761a

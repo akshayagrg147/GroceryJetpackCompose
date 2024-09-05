@@ -41,7 +41,7 @@ import coil.compose.rememberImagePainter
 import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.data.modal.UserResponse
 import com.grocery.mandixpress.features.home.ui.screens.HomeActivity

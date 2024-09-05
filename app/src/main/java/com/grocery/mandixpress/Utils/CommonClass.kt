@@ -181,7 +181,7 @@ fun CommonMathButton(
 }
 @Composable
 fun CommonHeader(text: String, color: Color= titleColor, onClick: () -> Unit = {}) {
-    Row {
+    Row(modifier = Modifier.fillMaxWidth().background(whiteColor)) {
         IconButton(
             onClick = { onClick() }
         ) {
@@ -246,6 +246,54 @@ fun CommonNumberField(
         )
     }
 
+@Composable
+fun CommonTextFieldClickable(
+    text: String,
+    placeholder: String,
+    trailingIcon: Int=R.drawable.eye,
+    iconColor: Color = Color.Transparent,
+    keyboardType: KeyboardType = KeyboardType.Number,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    size: Dp = 20.dp,
+    enable: Boolean = true,
+    onClick: () -> Unit = {}
+
+) {
+    OutlinedTextField(value = text, onValueChange = {
+        onClick()},
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.White,
+            focusedLabelColor = fadedTextColor,
+            textColor = headingColor,
+            unfocusedLabelColor = fadedTextColor,
+            unfocusedIndicatorColor = Color.LightGray, // Remove unfocused underline
+            focusedIndicatorColor = Color.LightGray,
+            disabledIndicatorColor = fadedTextColor,
+
+            ),
+        label = { Text(text = placeholder,color = veryLightGrey) },
+        placeholder = { Text(text = placeholder, color = veryLightGrey) },
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = trailingIcon),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(size),
+                tint = iconColor,
+            )
+        },
+        modifier = modifier
+            .fillMaxWidth().border(1.dp, Color.Transparent, shape = RoundedCornerShape(4.dp))
+            .clickable { onClick() },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        enabled = enable,
+        textStyle = TextStyle(
+            color = Color.Black
+        )
+    )
+}
+
+
 
 @Composable
 fun CommonTextField(
@@ -305,19 +353,17 @@ fun CommonTextField(
 fun CommonTextFieldNonEditable(
     text: MutableState<String>,
     placeholder: String,
-    trailingIcon: Int=R.drawable.eye,
+    trailingIcon: Int = R.drawable.eye,
     iconColor: Color = Color.Transparent,
     keyboardType: KeyboardType = KeyboardType.Text,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     size: Dp = 25.dp,
     enable: Boolean = false,
     onClick: (String) -> Unit = {}
-
 ) {
+    val roundedCornerShape = RoundedCornerShape(12.dp) // Adjust the corner radius as needed
 
-
-
-   OutlinedTextField(
+    OutlinedTextField(
         value = text.value,
         onValueChange = {
             text.value = it
@@ -330,28 +376,28 @@ fun CommonTextFieldNonEditable(
             unfocusedLabelColor = fadedTextColor,
             unfocusedIndicatorColor = Color.LightGray, // Remove unfocused underline
             focusedIndicatorColor = Color.LightGray,
-            disabledIndicatorColor = fadedTextColor,
-
+            disabledIndicatorColor = fadedTextColor
         ),
-       label = { Text(text = placeholder,color = veryLightGrey) },
-       placeholder = { Text(text = placeholder, color = veryLightGrey) },
+        label = { Text(text = placeholder, color = veryLightGrey) },
+        placeholder = { Text(text = placeholder, color = veryLightGrey) },
         trailingIcon = {
             Icon(
                 painter = painterResource(id = trailingIcon),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(size),
-                tint = iconColor,
+                contentDescription = null,
+                modifier = Modifier.size(size),
+                tint = iconColor
             )
         },
         modifier = modifier
-            .fillMaxWidth().border(1.dp, Color.Transparent, shape = RoundedCornerShape(4.dp))
+            .fillMaxWidth()
             .clickable { onClick(text.value) },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         enabled = enable,
         textStyle = TextStyle(
             color = Color.Black
-        )
+        ),
+        shape = roundedCornerShape // Ensure the shape matches the border shape
     )
 }
+
 

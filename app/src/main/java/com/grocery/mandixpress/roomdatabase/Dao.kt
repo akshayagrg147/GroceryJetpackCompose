@@ -13,6 +13,9 @@ interface Dao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCartItem(contact: CartItems)
 
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insertChooseAddress(contact: AllChooseAddresses)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAdminDetails(contact: AdminAccessTable)
 
@@ -58,6 +61,10 @@ interface Dao {
     fun insertAddressItem(address: AddressItems)
     @Query("SELECT * FROM AddressItems")
     fun getAllAddress(): Flow<List<AddressItems>>
+
+    @Query("SELECT * FROM AllChooseAddresses")
+    fun getAllRecentAddress(): Flow<List<AllChooseAddresses>>
+
     @Query("DELETE  FROM AddressItems WHERE id = :id")
     fun deleteAddress(id:String?)
 

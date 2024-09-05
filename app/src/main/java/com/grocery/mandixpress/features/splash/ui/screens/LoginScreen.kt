@@ -2,7 +2,6 @@ package com.grocery.mandixpress.features.splash.ui.screens
 
 import android.app.Activity
 import android.os.CountDownTimer
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -29,7 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.common.ApiState
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.common.OtpView
@@ -46,7 +45,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun loginScreen(
-    navController: NavHostController, context: Activity, sharedPreferences:sharedpreferenceCommon,
+    navController: NavHostController, context: Activity, sharedPreferences: sharedpreferenceCommon,
     viewModal: LoginViewModel = hiltViewModel()
 ) {
 

@@ -80,7 +80,7 @@ import com.grocery.mandixpress.roomdatabase.AdminAccessTable
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.screens.LocationPermissionsAndSettingDialogs
 import com.grocery.mandixpress.screens.LocationUtils
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.ui.theme.font_bold
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -166,7 +166,7 @@ fun Homescreen(
                         )
 
                 ) {
-                    val predictions by viewModal.predictions.collectAsState()
+                    val recentSearches by viewModal.recentSearches.collectAsState()
                     Text14_h2(
                         text = "Select Delivery Address", color = headingColor, modifier = Modifier
                             .fillMaxWidth()
@@ -237,9 +237,9 @@ fun Homescreen(
                     Divider()
 
                     LazyColumn {
-                        items(predictions) { prediction ->
+                        items(recentSearches) { chooseAddress ->
 
-                            PredictionItem(prediction = prediction) {
+                            RecentSearchItem(address = chooseAddress) {it,latlng->
                                 val pincode = extractSixDigitNumber(it).toString()
                                 if (pincode.length > 4) {
                                     sharedpreferenceCommon.setSearchAddress(it)

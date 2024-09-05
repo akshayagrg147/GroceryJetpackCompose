@@ -6,6 +6,7 @@
     <string name="exit_confirmation_message">Are you sure you want to exit the app?</string>
 
     <string name="phone_number">Enter Phone Number</string>
+    <string name="address_enter">Search for area</string>
     <string name="landmark">LandMark</string>
     <string name="address1">Address</string>
     <string name="city">City</string>

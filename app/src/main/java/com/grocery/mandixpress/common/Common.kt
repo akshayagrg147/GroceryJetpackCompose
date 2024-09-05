@@ -36,6 +36,8 @@ import com.grocery.mandixpress.Utils.Text12_h1
 import com.grocery.mandixpress.features.home.ui.ui.theme.*
 import kotlin.math.roundToInt
 
+val pinCodeSelect:String?=null
+val addressSelect:String?=null
 
 @Composable
 fun CommonProgressBar(text: String = "Easy shop with Us") {

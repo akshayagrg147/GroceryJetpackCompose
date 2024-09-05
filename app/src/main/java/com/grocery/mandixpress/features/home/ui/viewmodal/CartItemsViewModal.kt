@@ -1,6 +1,5 @@
 package com.grocery.mandixpress.features.home.ui.viewmodal
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -9,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.Constants
 import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.common.ApiState

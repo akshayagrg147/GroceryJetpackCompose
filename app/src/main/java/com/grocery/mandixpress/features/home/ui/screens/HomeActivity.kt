@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -22,7 +21,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.compose.rememberNavController
 import com.grocery.mandixpress.features.home.dashboardnavigation.NavigationGraph
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.Constants.Companion.ACTION_CUSTOM_BROADCAST
 import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.connectionState.ConnectionState

@@ -1,13 +1,12 @@
 package com.grocery.mandixpress.features.home.dashboardnavigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.grocery.mandixpress.Utils.showLog
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.data.modal.AllOrdersHistoryList
 import com.grocery.mandixpress.data.modal.OrderIdResponse
 import com.grocery.mandixpress.data.modal.PassingAddress
@@ -31,7 +30,7 @@ fun NavigationGraph(
 
 ) {
 
-    NavHost(navController, startDestination = DashBoardNavRoute.Home.screen_route) {
+    NavHost(navController, startDestination = DashBoardNavRoute.MapScreen.screen_route) {
         composable(DashBoardNavRoute.Home.screen_route) {
             Homescreen(navController, sharedPreferences, viewModal)
         }

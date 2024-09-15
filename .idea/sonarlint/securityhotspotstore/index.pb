@@ -229,3 +229,9 @@ Xapp/src/main/java/com/grocery/mandixpress/features/home/ui/viewmodal/ProfileVie
 Lapp/src/main/java/com/grocery/mandixpress/connectionState/AvailibityCheck.kt,8/4/84d86dd747829b8f27e8326162e184c5539f2920
 <
 build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
+n
+>app/src/main/java/com/grocery/mandixpress/screens/MapScreen.kt,5/f/5f66570afc24dff82709b8ee2abd82f69d9f93f0
+|
+Lapp/src/main/java/com/grocery/mandixpress/data/modal/RegisterLoginRequest.kt,c/b/cbe7f9cb135b12691f69e0c90d081373a2893e95
+ê
+`app/src/main/java/com/grocery/mandixpress/features/splash/ui/viewmodel/RegisterLoginViewModal.kt,8/0/807de476096d8828f01f9aafc0f8b8859fe3a4b8

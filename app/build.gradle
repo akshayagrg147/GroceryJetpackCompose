@@ -38,13 +38,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "base_url", '"https://76c6-2401-4900-1c6e-c1d4-d8be-332b-9388-a1b.ngrok-free.app/"'
-            buildConfigField "String", "api_key", '"AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U"'
+            buildConfigField "String", "base_url", '"https://7285-103-84-202-113.ngrok-free.app/"'
+            buildConfigField "String", "api_key", '"AIzaSyBPlX3AuJuNr8bsZaaL2QQOI4weEkZkBb0"'
         }
         debug {
 
-            buildConfigField "String", "base_url", '"https://76c6-2401-4900-1c6e-c1d4-d8be-332b-9388-a1b.ngrok-free.app/"'
-            buildConfigField "String", "api_key", '"AIzaSyBmYp6mt0CNOiZALzbN10jwBxgN6n2E8-U"'
+            buildConfigField "String", "base_url", '"https://7285-103-84-202-113.ngrok-free.app/"'
+            buildConfigField "String", "api_key", '"AIzaSyBPlX3AuJuNr8bsZaaL2QQOI4weEkZkBb0"'
         }
     }
     compileOptions {

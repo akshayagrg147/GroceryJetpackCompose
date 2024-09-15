@@ -216,6 +216,11 @@ class HomeAllProductsViewModal @Inject constructor(
             viewModelScope.launch {
                 predictions.emit(response.autocompletePredictions)
             }
+        }.addOnFailureListener{it->
+            run {
+                Log.d("errormessage", it.message ?: "")
+            }
+
         }
         return predictions
     }

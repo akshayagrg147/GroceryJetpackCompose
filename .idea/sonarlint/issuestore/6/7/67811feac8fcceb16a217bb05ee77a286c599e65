@@ -1,18 +1,17 @@
 
-okotlin:S1172á"0Remove this unused function parameter "context".(ìçÄ–J$20a63916-bffd-4241-bd5e-0e210fc474aa
-lkotlin:S1172Ä"(Remove these unused function parameters.(¬ç½™ûÿÿÿÿJ$b92298ce-1633-4ffa-ade1-186ee69310c7
-]kotlin:S125¨"Remove this commented out code.(Ãóê½J$f4045ac9-2970-434b-b053-33aff30b0f28
-]kotlin:S125€"Remove this commented out code.(³æò…J$c6d7ae31-151a-45bd-b150-078db98f406c
-<kotlin:S6314¹"Unused coroutines Flow.(¸öøãøÿÿÿÿ8±½Ï‡“2
-_kotlin:S1128?"Remove this unused import.(äàÝ‚8Êž¨ƒ‹2J$001c6b74-cd48-4d48-835e-b423dc3aa4b3
-dkotlin:S1128@"Remove this unused import.(Ä†Ìùÿÿÿÿ8Êž¨ƒ‹2J$3614dbd4-522b-40ce-aae7-33442f31e67c
-kotlin:S1192Œ"NDefine a constant instead of duplicating this literal "Added to cart" 4 times.(–Ž‘ÝJ$af415573-1ade-4da6-85f9-1717d83f71cb
-‘kotlin:S1192ƒ	"MDefine a constant instead of duplicating this literal "out of stock" 3 times.(¤Ô¥¦ùÿÿÿÿJ$89e6edaa-2349-4f81-b441-ae5e2d72f2da
-‘kotlin:S1192 	"MDefine a constant instead of duplicating this literal "splash image" 5 times.(ëËõµÿÿÿÿÿJ$1fa597dd-f2d2-456e-a41a-bdb7c2b1a081
-•kotlin:S3776]"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(È…®ÎüÿÿÿÿJ$4afcc543-36e3-4d10-9c57-343b0168d9a1
-’kotlin:S3776Ý"SRefactor this method to reduce its Cognitive Complexity from 173 to the 15 allowed.(«Š†üJ$b2095877-a2ba-455b-93e4-c779a2ea4110
-–kotlin:S3776ß"RRefactor this method to reduce its Cognitive Complexity from 24 to the 15 allowed.(æðÓ·þÿÿÿÿJ$fe12bcec-9c44-4c4b-9fa3-b5315c041c5d
-–kotlin:S3776÷	"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(¯ÿ€ßüÿÿÿÿJ$41937a28-47c3-43c8-a78d-7f20813e877c
-‘kotlin:S3776—"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(•òÊçJ$79c83543-04d8-42be-a5be-8f81783435b1
-mkotlin:S1066±".Merge this "if" statement with the nested one.(¦¢½­J$e90a88d8-fae8-4304-9dc1-f63483e1dc21
-rkotlin:S1066".Merge this "if" statement with the nested one.(ÚŒéŸùÿÿÿÿJ$aafb96fc-4640-435c-bb17-8418b7755e73
+okotlin:S1172á"0Remove this unused function parameter "context".(ìçÄ–J$63488e1e-4a64-432e-b1b2-0a903c3be166
+lkotlin:S1172Ä"(Remove these unused function parameters.(¬ç½™ûÿÿÿÿJ$11c40d51-6c35-490f-b920-011ef2e2d5f3
+]kotlin:S125¨"Remove this commented out code.(Ãóê½J$0a3a53c7-3fe0-4c5c-b4f4-b9a288c1bc17
+]kotlin:S125€"Remove this commented out code.(³æò…J$3b6e6ad3-1d98-4267-88ac-7d8511af80ff
+_kotlin:S1128?"Remove this unused import.(äàÝ‚8–Ãâœœ2J$ea7e1396-005d-4ec5-8686-7cf867248c32
+dkotlin:S1128@"Remove this unused import.(Ä†Ìùÿÿÿÿ8—Ãâœœ2J$dc17fbe9-f94e-42f6-b027-2da21851f999
+kotlin:S1192Œ"NDefine a constant instead of duplicating this literal "Added to cart" 4 times.(–Ž‘ÝJ$c1cdbe40-35fa-4847-a088-1912f2e96df7
+‘kotlin:S1192ƒ	"MDefine a constant instead of duplicating this literal "out of stock" 3 times.(¤Ô¥¦ùÿÿÿÿJ$7e16d786-810c-4313-8a23-c9df85824850
+‘kotlin:S1192 	"MDefine a constant instead of duplicating this literal "splash image" 5 times.(ëËõµÿÿÿÿÿJ$1a1b2d47-3987-4226-bbbf-5c43f7d417be
+vkotlin:S3776]"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(È…®Îüÿÿÿÿ8²›å’ž2
+’kotlin:S3776Ý"SRefactor this method to reduce its Cognitive Complexity from 173 to the 15 allowed.(«Š†üJ$5dea9624-92c4-4b89-a8a9-61e337725677
+–kotlin:S3776ß"RRefactor this method to reduce its Cognitive Complexity from 24 to the 15 allowed.(æðÓ·þÿÿÿÿJ$d9d5f50b-f8b6-4264-9f40-b4e775493a1b
+–kotlin:S3776÷	"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(¯ÿ€ßüÿÿÿÿJ$0134676d-916e-49b7-a8ef-1e1aee8d8411
+‘kotlin:S3776—"RRefactor this method to reduce its Cognitive Complexity from 32 to the 15 allowed.(•òÊçJ$af979cf5-d03b-4312-876c-e1f6d13e4b39
+mkotlin:S1066±".Merge this "if" statement with the nested one.(¦¢½­J$913f01dc-5071-4583-9cd8-fae190ad47bb
+rkotlin:S1066".Merge this "if" statement with the nested one.(ÚŒéŸùÿÿÿÿJ$a4f38551-86fd-4498-a2e0-d736dfae8ad8

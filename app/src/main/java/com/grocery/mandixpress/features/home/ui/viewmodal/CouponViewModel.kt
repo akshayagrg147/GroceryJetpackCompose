@@ -2,7 +2,7 @@ package com.grocery.mandixpress.features.home.ui.viewmodal
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.features.home.domain.modal.CouponResponse
 import com.grocery.mandixpress.features.splash.domain.repository.CommonRepository
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CouponViewModel @Inject constructor(val repository: CommonRepository,val sharedpreferenceCommon: sharedpreferenceCommon) : ViewModel() {
+class CouponViewModel @Inject constructor(val repository: CommonRepository,val sharedpreferenceCommon: CombinedSharedPreference) : ViewModel() {
     // Simulated list of coupons (you can replace this with your actual data source)
 
 

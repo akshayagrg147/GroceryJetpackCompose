@@ -60,8 +60,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.AddToCartCardView
@@ -80,7 +78,7 @@ import com.grocery.mandixpress.roomdatabase.AdminAccessTable
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.screens.LocationPermissionsAndSettingDialogs
 import com.grocery.mandixpress.screens.LocationUtils
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.ui.theme.font_bold
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -91,7 +89,7 @@ import java.text.DecimalFormat
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun Homescreen(
-    navcontroller: NavHostController, sharedpreferenceCommon: sharedpreferenceCommon,
+    navcontroller: NavHostController, sharedpreferenceCommon: CombinedSharedPreference,
     viewModal: HomeAllProductsViewModal
 ) {
     val lazyListState = rememberLazyListState()

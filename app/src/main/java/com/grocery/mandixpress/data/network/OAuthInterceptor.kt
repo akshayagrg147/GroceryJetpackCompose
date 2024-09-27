@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
 import com.grocery.mandixpress.LoginActivity
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 import okhttp3.Interceptor
@@ -12,7 +12,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
     class OAuthInterceptor @Inject constructor(
-        private val sharedPreference: sharedpreferenceCommon, @ApplicationContext context: Context
+        private val sharedPreference: CombinedSharedPreference, @ApplicationContext context: Context
     ) : Interceptor {
         val mContext=context
         override fun intercept(chain: Interceptor.Chain): Response {

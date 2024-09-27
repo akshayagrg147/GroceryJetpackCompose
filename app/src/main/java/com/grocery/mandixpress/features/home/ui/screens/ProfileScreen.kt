@@ -41,7 +41,7 @@ import coil.compose.rememberImagePainter
 import com.grocery.mandixpress.features.home.dashboardnavigation.DashBoardNavRoute
 import com.grocery.mandixpress.LoginActivity
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.data.modal.UserResponse
 import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
@@ -53,7 +53,7 @@ import com.grocery.mandixpress.features.home.ui.viewmodal.ProfileViewModal
 @Composable
 fun ProfileScreen(
     navController: NavHostController,
-    context: HomeActivity, sharedpreferenceCommon: sharedpreferenceCommon,
+    context: HomeActivity, sharedpreferenceCommon: CombinedSharedPreference,
     viewModal: ProfileViewModal = hiltViewModel()
 ) {
     var selectedImage by remember { mutableStateOf<Uri?>(Uri.parse(sharedpreferenceCommon.getImageUri())) }

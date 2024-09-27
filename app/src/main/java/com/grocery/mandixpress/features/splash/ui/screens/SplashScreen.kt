@@ -14,12 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.grocery.mandixpress.Utils.showLog
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.features.splash.splashnavigation.ScreenRoute
 import com.grocery.mandixpress.appupdate.InAppUpdateManager
 import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
+import com.grocery.mandixpress.features.splash.ui.viewmodel.RegisterLoginViewModal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -27,8 +28,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun SplashScreen(
     navController: NavHostController,
-    context: Context,
-    sharedpreferenceCommon: sharedpreferenceCommon
+    context: Context
 ) {
 
     Row(
@@ -61,7 +61,7 @@ fun SplashScreen(
 
 
     }
-    AutoUpdateScreen(sharedpreferenceCommon,navController)
+    AutoUpdateScreen(navController)
 
 
 
@@ -70,8 +70,8 @@ fun SplashScreen(
 }
 @Composable
 fun AutoUpdateScreen(
-    sharedpreferenceCommon: sharedpreferenceCommon,
-    navController: NavHostController
+    navController: NavHostController,
+    viewModal: RegisterLoginViewModal = hiltViewModel()
 ) {
     val context = LocalContext.current
     val updateManager = remember { InAppUpdateManager(context as ComponentActivity) }
@@ -80,9 +80,11 @@ fun AutoUpdateScreen(
     val resultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
+
+
                 // Handle successful update
-                    if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
-                        if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty()) {
+                    if (   viewModal.getJwtToken().isNotEmpty()) {
+                        if (viewModal.getCombinedAddress().isNotEmpty()) {
                             context.startActivity(Intent(context, HomeActivity::class.java))
 
                         }
@@ -117,9 +119,8 @@ fun AutoUpdateScreen(
         } else {
             LaunchedEffect(key1 = Unit){
                 delay(500)
-                showLog("CreateOrderId", "SplashScreen:${sharedpreferenceCommon.getJwtToken()}  ${sharedpreferenceCommon.getCombinedAddress()}")
-                if (sharedpreferenceCommon.getJwtToken().isNotEmpty()) {
-                    if (sharedpreferenceCommon.getCombinedAddress().isNotEmpty() && sharedpreferenceCommon.getCombinedAddress().any { it.isLetter() }) {
+                if (viewModal.getJwtToken().isNotEmpty()) {
+                    if (viewModal.getCombinedAddress().isNotEmpty() && viewModal.getCombinedAddress().any { it.isLetter() }) {
                         val intent = Intent(context, HomeActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         context.startActivity(intent)

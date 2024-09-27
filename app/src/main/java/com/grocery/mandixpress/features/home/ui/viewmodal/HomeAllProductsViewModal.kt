@@ -9,12 +9,11 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
-import com.grocery.mandixpress.SharedPreference.AppConstant
 import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.common.ApiState
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.CallingCategoryWiseData
@@ -32,10 +31,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.util.ArrayList
-import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -49,7 +45,7 @@ class HomeAllProductsViewModal @Inject constructor(
     val repository: CommonRepository,
     var databaseClearer: NetworkModule.DatabaseClearer,
     val
-    sharedPreferences: sharedpreferenceCommon,
+    sharedPreferences: CombinedSharedPreference,
     val dao: Dao,
     private val cat: CallingCategoryWiseData,
 

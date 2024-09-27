@@ -1,7 +1,7 @@
 package com.grocery.mandixpress.features.splash.domain.repository
 
 import com.grocery.mandixpress.FCMApiService
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.data.modal.*
 import com.grocery.mandixpress.data.network.ApiService
 import com.grocery.mandixpress.notification.model.NotificationModel
@@ -9,7 +9,7 @@ import com.grocery.mandixpress.common.base.toResultFlow
 import javax.inject.Inject
 
 class CommonRepository @Inject constructor(
-    @FCMApiService private val fcmService: ApiService,  private val apiService: ApiService,  var sharedPreferences: sharedpreferenceCommon
+    @FCMApiService private val fcmService: ApiService,  private val apiService: ApiService,  var sharedPreferences: CombinedSharedPreference
 ) {
 
     fun registerUser(
@@ -32,6 +32,10 @@ class CommonRepository @Inject constructor(
     fun ExclusiveProducts(city: String,pincode: String) = toResultFlow {
         apiService.getExclusiveProducts(pincode)
     }
+    fun getAllSociety(city: String="kaithal",pincode: String="136027") = toResultFlow {
+        apiService.getAllSocieties(pincode)
+    }
+
     fun BestSellingProducts(postalCode: String) = toResultFlow {
         apiService.getBestSellingProducts(postalCode)
     }

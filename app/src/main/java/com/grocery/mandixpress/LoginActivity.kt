@@ -10,8 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
-import com.google.firebase.auth.FirebaseAuth
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.features.splash.splashnavigation.splashScreenNavigation
 import com.grocery.mandixpress.features.home.ui.ui.theme.GroceryAppTheme
 import com.grocery.mandixpress.features.splash.ui.viewmodel.RegisterLoginViewModal
@@ -21,14 +20,14 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LoginActivity : ComponentActivity() {
     @Inject
-    lateinit var sharedPreferences: sharedpreferenceCommon
+    lateinit var sharedPreferences: CombinedSharedPreference
     private val viewModal: RegisterLoginViewModal by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initAppIntegrity()
         setContent {
             GroceryAppTheme {
-                splashScreenNavigation(this,sharedPreferences)
+                splashScreenNavigation(this)
 
             }
         }

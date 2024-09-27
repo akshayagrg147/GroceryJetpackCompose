@@ -19,6 +19,7 @@ class Constants {
         const val GetExclusiveProductById="Customers/GetExclusiveProductById"
         const val GetBestProductById="Customers/GetBestProductById"
         const val exclusive_collectionProducts ="Customers/ExclusiveOffers"
+        const val allSocieties ="Customers/allSocieties"
         const val ItemsCollections ="Customers/ItemsCollections"
         const val ACTION_CUSTOM_BROADCAST = "com.grocery.mandixpress.Utils.localBroadcast"
      const val ApiEnd_login ="login"

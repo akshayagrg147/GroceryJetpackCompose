@@ -1,11 +1,10 @@
 package com.grocery.mandixpress.features.home.ui.viewmodal
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.roomdatabase.Dao
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.common.doOnFailure
 import com.grocery.mandixpress.common.doOnLoading
 import com.grocery.mandixpress.common.doOnSuccess
@@ -23,7 +22,7 @@ import javax.inject.Inject
 class ProfileViewModal @Inject constructor(
     val repository: CommonRepository,
     val dao: Dao,
-    val shared: sharedpreferenceCommon
+    val shared: CombinedSharedPreference
 ) : ViewModel() {
 
     private val userProfileResponse: MutableStateFlow<CommonUiObjectResponse<UserResponse>> =

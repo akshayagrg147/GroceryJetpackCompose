@@ -20,7 +20,7 @@ import com.grocery.mandixpress.roomdatabase.CartItemPriceBySeller
 import com.grocery.mandixpress.roomdatabase.CartItems
 import com.grocery.mandixpress.roomdatabase.Dao
 import com.grocery.mandixpress.roomdatabase.RoomRepository
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -36,7 +36,7 @@ import kotlin.math.sqrt
 @HiltViewModel
 class ProductByIdViewModal @Inject constructor(
     val dao: Dao,
-    val sharedpreferenceCommon: sharedpreferenceCommon,
+    val sharedpreferenceCommon: CombinedSharedPreference,
     val repository: CommonRepository,
     private val repo: RoomRepository
 ) : ViewModel() {

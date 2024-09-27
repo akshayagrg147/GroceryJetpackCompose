@@ -6,7 +6,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.grocery.mandixpress.roomdatabase.Dao
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.features.home.domain.modal.AddressItems
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddressViewModal @Inject constructor(
     val dao: Dao,
-    val sharedpreferenceCommon: sharedpreferenceCommon
+    val sharedpreferenceCommon: CombinedSharedPreference
 ) : ViewModel() {
     val predictions: MutableStateFlow<List<AutocompletePrediction>> = MutableStateFlow(emptyList())
 

@@ -1,8 +1,8 @@
 package com.grocery.mandixpress.features.splash.ui.screens
 
 import android.app.Activity
+import android.content.Intent
 import android.os.CountDownTimer
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -29,10 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.grocery.mandixpress.R
 import com.grocery.mandixpress.common.ApiState
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.common.OtpView
+import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.home.ui.ui.theme.fadedTextColor
 import com.grocery.mandixpress.features.home.ui.ui.theme.headingColor
 import com.grocery.mandixpress.features.home.ui.ui.theme.titleColor
@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun loginScreen(
-    navController: NavHostController, context: Activity, sharedPreferences:sharedpreferenceCommon,
+    navController: NavHostController, context: Activity,
     viewModal: LoginViewModel = hiltViewModel()
 ) {
 
@@ -80,14 +80,19 @@ fun loginScreen(
 
             if (mobileRegisterResponse.data?.isMobileExist == true) {
                 showLog("loginViewModal", "checkMobileNumberExist: loadinged rr")
-                sharedPreferences.setJwtToken(mobileRegisterResponse.data?.jwtToken?:"")
-                sharedPreferences.setMobileNumber("+91${mobile}")
-                navController.navigate(ScreenRoute.LocateMeScreen.route)
+
+
+                viewModal.saveBasicInformation(mobileRegisterResponse,mobile,"136027")
+                val intent = Intent(context, HomeActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
+
+
             } else {
                 navController.currentBackStackEntry?.arguments?.apply {
                     putString("mobileNumber", "+91${mobile}")
                 }
-                navController.navigate(ScreenRoute.SignUpScreen.senddata("+91${mobile}")) {
+                navController.navigate(ScreenRoute.LocateMeScreen.senddata("+91${mobile}")) {
                     popUpTo(ScreenRoute.SplashScreen.route) {
                         inclusive = true
                     }

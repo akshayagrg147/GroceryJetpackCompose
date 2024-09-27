@@ -1,18 +1,16 @@
-package com.grocery.mandixpress.sharedPreference
+package com.grocery.mandixpress.SharedPreference
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.grocery.mandixpress.SharedPreference.AppConstant
 import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.features.home.ui.viewmodal.PinCodeStateModal
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 import javax.inject.Inject
 
-class sharedpreferenceCommon @Inject constructor(@ApplicationContext mContext: Context) {
+class CombinedSharedPreference @Inject constructor(@ApplicationContext mContext: Context) {
     private var mPrefs: SharedPreferences =
         mContext.getSharedPreferences(AppConstant.PREFERENCE_NAME, Context.MODE_PRIVATE)
 

@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.grocery.mandixpress.HiltApplication.Companion.context
@@ -27,13 +28,14 @@ import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
 import com.grocery.mandixpress.features.home.ui.ui.theme.greyLightColor
 import com.grocery.mandixpress.features.home.ui.ui.theme.headingColor
 import com.grocery.mandixpress.features.home.ui.ui.theme.titleColor
+import com.grocery.mandixpress.features.splash.splashnavigation.ScreenRoute
 import com.grocery.mandixpress.features.splash.ui.viewmodel.MapScreenViewModal
 import com.grocery.mandixpress.screens.LocationUtils
 import com.grocery.mandixpress.screens.LocationPermissionsAndSettingDialogs
 import java.util.*
 
 @Composable
-fun LocateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hiltViewModel()) {
+fun LocateMeScreen(context: Context, navController: NavHostController,mobileNumber:String, mapScreenViewModal: MapScreenViewModal= hiltViewModel()) {
     var mFusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
     var latitude: Double? = 0.0
@@ -115,10 +117,19 @@ fun LocateMeScreen( context: Context,mapScreenViewModal: MapScreenViewModal= hil
                 )
                 {   showLog("errorcheck","${extractSixDigitNumber(combinedaddress)}")
                     if(extractSixDigitNumber(combinedaddress)?.length==6){
-                        mapScreenViewModal.savePinCode(extractSixDigitNumber(combinedaddress))
-                        val intent = Intent(context, HomeActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        context.startActivity(intent)
+
+                        navController.navigate(ScreenRoute.SignUpScreen.senddata("${mobileNumber}_${extractSixDigitNumber(combinedaddress)}")) {
+                            popUpTo(ScreenRoute.SplashScreen.route) {
+                                inclusive = true
+                            }
+
+
+                        }
+
+//                        mapScreenViewModal.savePinCode(extractSixDigitNumber(combinedaddress))
+//                        val intent = Intent(context, HomeActivity::class.java)
+//                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//                        context.startActivity(intent)
                     }
                     else{
                         showLog("errorcheck","${extractSixDigitNumber(combinedaddress)}")

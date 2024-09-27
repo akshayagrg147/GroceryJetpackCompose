@@ -1,7 +1,6 @@
 package com.grocery.mandixpress.features.splash.ui.viewmodel
 
 import android.app.Activity
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -12,6 +11,7 @@ import com.grocery.mandixpress.data.modal.RegisterLoginRequest
 import com.grocery.mandixpress.features.home.ui.viewmodal.ComposeUiResponse
 import com.grocery.mandixpress.features.splash.domain.repository.AuthRepository
 import com.grocery.mandixpress.features.splash.domain.repository.CommonRepository
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val repo:AuthRepository,private val commonRepository: CommonRepository
+    private val repo:AuthRepository, private val commonRepository: CommonRepository, private val sharedpreference: CombinedSharedPreference,
 ) : ViewModel(){
     private val _loginResponse:MutableStateFlow<ComposeUiResponse<CheckNumberExistResponse>> = MutableStateFlow(
         ComposeUiResponse()
@@ -31,6 +31,16 @@ class LoginViewModel @Inject constructor(
         mobile:String,
         activity: Activity
     ) = repo.createUserWithPhone(mobile,activity)
+
+fun saveBasicInformation(
+    mobileRegisterResponse: ComposeUiResponse<CheckNumberExistResponse>,
+    mobile: String,
+    pincode: String
+) {
+    sharedpreference.setJwtToken(mobileRegisterResponse.data?.jwtToken?:"")
+    sharedpreference.setMobileNumber("+91${mobile}")
+    sharedpreference.setPinCode(pincode)
+}
 
     fun signWithCredential(
         code:String

@@ -1,0 +1,8 @@
+
+ukotlin:S1172"0Remove this unused function parameter "context".(¼þÍÉ8ÅÔ¾š£2J$d748ecf4-934f-4761-872a-59f0ec0188ed
+hkotlin:S1254"Remove this commented out code.(µ»ÃÆúÿÿÿÿ8ÆÔ¾š£2J$969303f9-f50d-4306-b500-b8df38c03267
+hkotlin:S125v"Remove this commented out code.(¹ÌªÊúÿÿÿÿ8ÆÔ¾š£2J$97f93233-2c9b-46fb-813b-aeca27b00a6e
+akotlin:S6310j"Avoid hardcoded dispatchers.(å¿öÔ8ÇÔ¾š£2J$fc80a1a1-cd4f-407d-bcd7-4def028d5dfe
+}kotlin:S1481P"3Remove this unused "resultLauncher" local variable.(õ÷—¥ùÿÿÿÿ8ÉÔ¾š£2J$d2a5b442-1277-4b19-b6fb-024cee789f11
+dkotlin:S1128"Remove this unused import.(ÊÒÅ­ùÿÿÿÿ8ÉÔ¾š£2J$d6d6ac06-1ae8-473e-b174-a95e739c9ce7
+œkotlin:S3776H"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(®ÐÛµûÿÿÿÿ8ÊÔ¾š£2J$1f79c036-5d39-43ee-ab1c-cd8026670646

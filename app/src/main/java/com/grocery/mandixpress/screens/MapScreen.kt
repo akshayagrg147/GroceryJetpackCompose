@@ -7,7 +7,6 @@ import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -30,19 +29,19 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.maps.android.compose.*
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
 import com.grocery.mandixpress.Utils.CommonButton
 import com.grocery.mandixpress.Utils.Text12_body1
 import com.grocery.mandixpress.Utils.Text14_h1
 import com.grocery.mandixpress.Utils.showLog
 import com.grocery.mandixpress.features.home.ui.screens.HomeActivity
+import com.grocery.mandixpress.features.splash.ui.viewmodel.LoginViewModel
 import com.grocery.mandixpress.features.splash.ui.viewmodel.RegisterLoginViewModal
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 
 @SuppressLint("MissingPermission")
 @Composable
-fun MapScreen1(fusedLocationProviderClient: FusedLocationProviderClient,@ApplicationContext context: Context,sharedPreferences: sharedpreferenceCommon) {
+fun MapScreen1(fusedLocationProviderClient: FusedLocationProviderClient,@ApplicationContext context: Context, viewModal: RegisterLoginViewModal = hiltViewModel()) {
 
     var currentLocation by remember { mutableStateOf(LocationUtils.getDefaultLocation()) }
     var address by remember {
@@ -56,9 +55,9 @@ fun MapScreen1(fusedLocationProviderClient: FusedLocationProviderClient,@Applica
 
     var requestLocationUpdate by remember { mutableStateOf(true) }
 
-    MyGoogleMap(sharedPreferences,address,
+    MyGoogleMap(address,
         currentLocation,
-        cameraPositionState, context = context
+        cameraPositionState, context = context,viewModal
     ) {
         requestLocationUpdate = true
     }
@@ -84,12 +83,14 @@ fun MapScreen1(fusedLocationProviderClient: FusedLocationProviderClient,@Applica
 
 @Composable
 private fun MyGoogleMap(
-    sharedPreferences: sharedpreferenceCommon,
+
     address: String,
     currentLocation: Location, cameraPositionState: CameraPositionState,
     context: Context,
+    viewModal: RegisterLoginViewModal,
     onGpsIconClick: () -> Unit,
-) {
+
+    ) {
     var add=address
     add= getAddress(context, LatLng(currentLocation.latitude,currentLocation.longitude))
     val mapUiSettings by remember {
@@ -130,7 +131,7 @@ private fun MyGoogleMap(
                 modifier = Modifier.fillMaxWidth()
             )
             {
-                sharedPreferences.setCombineAddress(add)
+                viewModal.setCombineAddress(add)
                 val intent = Intent(context, HomeActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     context.startActivity(intent)

@@ -7,7 +7,9 @@ sealed class ScreenRoute(val route: String) {
 
     }
     object LoginScreen : ScreenRoute("loginscreen")
-    object LocateMeScreen: ScreenRoute("locateMeScreen")
+    object LocateMeScreen: ScreenRoute("{data}/locateMeScreen"){
+        fun senddata(data:String)="$data/LocateMeScreen"
+    }
     object MapScreen: ScreenRoute("mapscreen")
 
     object HomeScreen: ScreenRoute("homescreen")

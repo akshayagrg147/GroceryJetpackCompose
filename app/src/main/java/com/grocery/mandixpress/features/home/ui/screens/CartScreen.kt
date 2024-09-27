@@ -39,7 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.grocery.mandixpress.R
-import com.grocery.mandixpress.sharedPreference.sharedpreferenceCommon
+import com.grocery.mandixpress.SharedPreference.CombinedSharedPreference
 import com.grocery.mandixpress.Utils.*
 import com.grocery.mandixpress.common.CommonProgressBar
 import com.grocery.mandixpress.common.SwipeButton
@@ -72,7 +72,7 @@ private const val titleFontScaleEnd = 0.66f
 fun CartScreen(
     navController: NavHostController,
     context: Activity,
-    sharedpreferenceCommon: sharedpreferenceCommon,
+    sharedpreferenceCommon: CombinedSharedPreference,
     viewModal: CartItemsViewModal = hiltViewModel()
 ) {
 

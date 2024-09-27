@@ -1,19 +1,16 @@
 
-–kotlin:S117š"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¾¦‡üÿÿÿÿJ$d2b49b3d-e7ae-462a-874e-4d32a2aaa1cb
-akotlin:S6310î"Avoid hardcoded dispatchers.(ĞûÛ;8§†Éı2J$c83d26ad-0408-43cf-a1e0-cc7cfc9e19df
-bkotlin:S6310ö"Avoid hardcoded dispatchers.(ÍË‘“8¨†Éı2J$876bf3b7-b0f7-4153-8f42-bc8eb4fb50d3
-gkotlin:S6310û"Avoid hardcoded dispatchers.(îş×üÿÿÿÿ8Ğ›å’2J$134a766b-20df-4a60-b97d-2c538855d319
-gkotlin:S6310³"Avoid hardcoded dispatchers.(š’Ò‘úÿÿÿÿ8Ğ›å’2J$6b71b78a-99f7-4658-bea1-544c073684db
-bkotlin:S6310ô"Avoid hardcoded dispatchers.(ÏÃâ8Ğ›å’2J$297e953c-29fc-4d5c-beb1-3eeefb67df50
-gkotlin:S6310Ğ"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿ8Ğ›å’2J$04a389b1-9b71-4380-a482-d4844836d688
-škotlin:S6558Û"URemove this it parameter declaration or give this lambda parameter a meaningful name.(ìİŠO8…Ë¹¶Ÿ2J$d134ea30-c4ad-4873-9729-fca50fcfe3b1
-Škotlin:S6313î"EClasses extending "ViewModel" should not expose suspending functions.(ĞûÛ;8¸¦åœœ2J$d82cf25d-198d-46b7-a063-8f31a0714713
-‹kotlin:S6313ó"EClasses extending "ViewModel" should not expose suspending functions.(ôÏÄí8ª†Éı2J$086109a5-d15e-41a2-9604-1e66d8976b0a
-‹kotlin:S6313Û"EClasses extending "ViewModel" should not expose suspending functions.(’”˜Ã8Ó›å’2J$6080a1c3-d1ab-44b3-9b02-c055d92e350c
-skotlin:S108İ")Either remove or fill this block of code.(ÑòìÀøÿÿÿÿ8Õ›å’2J$2f18df44-51a5-49ed-92f2-bb8f14b78092
-fkotlin:S6305" Don't expose mutable flow types.(ˆ«€­8Õ›å’2J$db6b7e11-d909-4484-a226-88deae95a95c
-tkotlin:S1656±"/Remove or correct this useless self-assignment.(¦ŸÉ.8Ú›å’2J$ff1e82f7-ed4a-48a6-9b40-7ac4a4cb70ee
-^kotlin:S1128#"Remove this unused import.(ÿÏ—8Ş›å’2J$95bb507d-b388-4a3e-bdcf-c8fa4998123c
-dkotlin:S1128$"Remove this unused import.(ÿş‹‡ÿÿÿÿÿ8Ş›å’2J$e78cc0c5-4857-4fba-a086-4be2b5fee77c
-dkotlin:S1128&"Remove this unused import.(Úœåùÿÿÿÿ8Ş›å’2J$9393f715-10f4-4d39-85f0-39b7731e6d7b
-kotlin:S3776ÿ"RRefactor this method to reduce its Cognitive Complexity from 40 to the 15 allowed.(ëáĞÿÿÿÿÿ8â›å’2J$8c41cffa-c391-48fc-98cd-dfc4d30fc8a5
+–kotlin:S117–"SRename this local variable to match the regular expression ^`?[_a-z][a-zA-Z0-9]*`?$(¾¦‡üÿÿÿÿJ$b8b3df07-a129-4e7f-9c5d-0b971cd03b97
+akotlin:S6310ê"Avoid hardcoded dispatchers.(ĞûÛ;8§†Éı2J$cdb884e0-8ff7-4062-8b5b-5649887658f6
+bkotlin:S6310ò"Avoid hardcoded dispatchers.(ÍË‘“8¨†Éı2J$c01823e6-7188-4777-9de3-845fcd0521a1
+gkotlin:S6310÷"Avoid hardcoded dispatchers.(îş×üÿÿÿÿ8Ğ›å’2J$20ed1ab2-178c-4e75-8ae2-509073060c16
+gkotlin:S6310¯"Avoid hardcoded dispatchers.(š’Ò‘úÿÿÿÿ8Ğ›å’2J$1e6a4e11-5d24-44ef-9b55-e1b619f019c1
+bkotlin:S6310ğ"Avoid hardcoded dispatchers.(ÏÃâ8Ğ›å’2J$4a24756b-07b1-4a78-ad25-b2c234017060
+gkotlin:S6310Ì"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿ8Ğ›å’2J$3def8c9f-4e86-424a-a73d-f4782d638061
+škotlin:S6558×"URemove this it parameter declaration or give this lambda parameter a meaningful name.(ìİŠO8…Ë¹¶Ÿ2J$1f85f771-5544-4a22-874f-30efb37fba94
+Škotlin:S6313ê"EClasses extending "ViewModel" should not expose suspending functions.(ĞûÛ;8¸¦åœœ2J$2f8972ca-22fa-4ad0-8f20-5b63e28b40cb
+‹kotlin:S6313ï"EClasses extending "ViewModel" should not expose suspending functions.(ôÏÄí8ª†Éı2J$e069ce8c-6558-4b97-9120-b06fe17c95da
+‹kotlin:S6313×"EClasses extending "ViewModel" should not expose suspending functions.(’”˜Ã8Ó›å’2J$20cfe51f-f468-42a7-9b1b-502facbc7ab9
+skotlin:S108Ù")Either remove or fill this block of code.(ÑòìÀøÿÿÿÿ8Õ›å’2J$25177404-d52d-4aaf-a475-7c615d7f3cdc
+fkotlin:S6305Š" Don't expose mutable flow types.(ˆ«€­8Õ›å’2J$e5bd991c-8255-43df-888e-a245f6a62dbe
+tkotlin:S1656­"/Remove or correct this useless self-assignment.(¦ŸÉ.8Ú›å’2J$2fc31947-6cfd-425e-a97c-a079ac490915
+kotlin:S3776û"RRefactor this method to reduce its Cognitive Complexity from 40 to the 15 allowed.(ëáĞÿÿÿÿÿ8â›å’2J$de7b1505-25c8-4132-bb27-29586e3874d3

@@ -22,7 +22,8 @@ interface ApiService {
 
     @GET(Constants.exclusive_collectionProducts)
     suspend fun getExclusiveProducts(@Query("pincode") pincode: String): Response<HomeAllProductsResponse>
-
+    @GET(Constants.allSocieties)
+    suspend fun getAllSocieties(@Query("pincode") pincode: String): Response<SocietyListResponse>
     @POST("fcm/send")
     suspend fun postNotification(
         @Body notification: NotificationModel
